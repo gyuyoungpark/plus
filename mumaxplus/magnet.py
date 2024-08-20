@@ -124,6 +124,40 @@ class Magnet(ABC):
         from .world import World  # imported here to avoid circular imports
         return World._from_impl(self._impl.world)
 
+    @property
+    def enable_as_stray_field_source(self):
+        """Enable/disable this magnet (self) as the source of stray fields felt
+        by other magnets. This does not influence demagnetization.
+        
+        Default = True.
+
+        See Also
+        --------
+        enable_as_stray_field_destination
+        """
+        return self._impl.enable_as_stray_field_source
+
+    @enable_as_stray_field_source.setter
+    def enable_as_stray_field_source(self, value):
+        self._impl.enable_as_stray_field_source = value
+
+    @property
+    def enable_as_stray_field_destination(self):
+        """Enable/disable whether this magnet (self) is influenced by the stray
+        fields of other magnets. This does not influence demagnetization.
+        
+        Default = True.
+
+        See Also
+        --------
+        enable_as_stray_field_source
+        """
+        return self._impl.enable_as_stray_field_destination
+
+    @enable_as_stray_field_destination.setter
+    def enable_as_stray_field_destination(self, value):
+        self._impl.enable_as_stray_field_destination = value
+
 
     def stray_field_from_magnet(self, source_magnet: "Magnet"):
         """Return the magnetic field created by the given input `source_magnet`,

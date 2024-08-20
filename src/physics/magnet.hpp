@@ -52,6 +52,8 @@ class Magnet {
 
 
  public:
+  bool enableAsStrayFieldSource;
+  bool enableAsStrayFieldDestination;
   std::shared_ptr<System> system_;  // the system_ has to be initialized first,
                                     // hence its listed as the first datamember here
   std::string name_;

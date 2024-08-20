@@ -134,3 +134,73 @@ class TestStrayFields:
         wanted = magnet2.demag_field.eval()[:, hzi:hzf, hyi:hyf, hxi:hxf]
 
         assert max_relative_error(hfield, wanted) < 1e-4
+
+
+# --------------------------------------------------
+
+@pytest.fixture(scope="class", params=[None, (1,1,0), (0, 0, 1)])
+def multi_magnets(request):
+    pbc = request.param
+
+    world = World((1e-9, 2e-9, 3.1e-9))
+
+    n_min, n_max = 2, 16
+    offset = np.array((n_max, n_max, n_max))
+
+    n_magnets = 4
+    magnets = []
+    for i in range(n_magnets):
+        grid = Grid(size=tuple(np.random.randint(n_min, n_max, (3))),
+                    origin=tuple(i*offset))
+        magnet = Ferromagnet(world, grid)
+        magnet.aex = 13e-12
+        magnet.msat = 800e3
+        magnets.append(magnet)
+
+    if pbc is not None:
+        world.set_pbc(pbc_repetitions=pbc)
+
+    return world, magnets
+
+
+class TestEnableStrayFields:
+    """Test enable_strayfield_as_source/destination"""
+
+    def test_enable_as_stray_field_destination(self, multi_magnets):
+        w, magnets = multi_magnets
+
+        for magnet in magnets:
+            magnet.enable_as_stray_field_destination = False
+            assert np.all(abs(magnet.external_field.eval()) < 1e-15)
+            magnet.enable_as_stray_field_destination = True
+
+    def test_enable_as_stray_field_source(self, multi_magnets):
+        w, magnets = multi_magnets
+        n_magnets = len(magnets)
+
+        # evaluate all possible external strayfields
+        strayfields_src_dst = {}
+        for src in magnets:
+            strayfields_src_dst[src.name] = {}
+            for dst in magnets:
+                if src.name == dst.name:  # skip demag
+                    continue
+                sf = StrayField(src, dst.grid)
+                strayfields_src_dst[src.name][dst.name] = sf.eval()
+
+        for i in range(2**n_magnets):
+            # go through all True/False permutations
+            permutation = [bool(int(j)) for j in bin(i)[2:].zfill(n_magnets)]
+            for enable, magnet in zip(permutation, magnets):
+                magnet.enable_as_stray_field_source = enable
+
+            for dst in magnets:  # check every magnet as a destination
+                result = dst.external_field.eval()
+
+                wanted = np.zeros_like(result)
+                for enable, src in zip(permutation, magnets):
+                    if (src.name == dst.name) or not enable:
+                        continue
+                    wanted += strayfields_src_dst[src.name][dst.name]
+
+                assert np.all(abs(result - wanted) < 1e-10)
