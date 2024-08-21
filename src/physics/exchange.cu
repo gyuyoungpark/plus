@@ -271,5 +271,5 @@ real evalMaxAngle(const Ferromagnet* magnet) {
 }
 
 FM_ScalarQuantity maxAngle(const Ferromagnet* magnet) {
-  return FM_ScalarQuantity(magnet, evalMaxAngle, "max_angle", "");
+  return FM_ScalarQuantity(magnet, evalMaxAngle, "max_angle", "rad");
 }
