@@ -19,6 +19,7 @@ class MumaxWorld;
 class System;
 
 class Magnet {
+ friend class MumaxWorld;
  public:
   explicit Magnet(std::shared_ptr<System> system_ptr,
                   std::string name);
@@ -48,15 +49,15 @@ class Magnet {
       StrayFieldExecutor::Method method = StrayFieldExecutor::METHOD_AUTO);
   void removeStrayField(const Magnet*);
 
+ private:
+  std::shared_ptr<System> system_;  // the system_ has to be initialized first,
+                                    // hence its listed as the first datamember here
+  std::string name_;
   std::map<const Magnet*, StrayField*> strayFields_;
-
 
  public:
   bool enableAsStrayFieldSource;
   bool enableAsStrayFieldDestination;
-  std::shared_ptr<System> system_;  // the system_ has to be initialized first,
-                                    // hence its listed as the first datamember here
-  std::string name_;
 
   // Delete copy constructor and copy assignment operator to prevent shallow copies
   Magnet(const Magnet&) = delete;
