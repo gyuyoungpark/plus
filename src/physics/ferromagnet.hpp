@@ -71,7 +71,6 @@ class Ferromagnet : public Magnet {
   Parameter kc3;
   Parameter alpha;
   Parameter temperature;
-  Parameter idmi;
   Parameter Lambda;
   Parameter FreeLayerThickness;
   Parameter eps_prime;
