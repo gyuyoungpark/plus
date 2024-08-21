@@ -36,7 +36,7 @@ class MumaxWorld : public World {
   /** Uniform bias magnetic field which will affect all magnets in the world. */
   real3 biasMagneticField;
 
-  void checkAddibility(Grid grid, std::string name);
+  void checkAddibility(Grid grid, std::string name) const;
 
   /** Add a ferromagnet to the world. */
   Ferromagnet* addFerromagnet(Grid grid, std::string name = "");

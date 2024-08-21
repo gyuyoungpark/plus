@@ -30,7 +30,7 @@ MumaxWorld::MumaxWorld(real3 cellsize, Grid mastergrid, int3 pbcRepetitions)
 
 MumaxWorld::~MumaxWorld() {}
 
-void MumaxWorld::checkAddibility(Grid grid, std::string name) {
+void MumaxWorld::checkAddibility(Grid grid, std::string name) const {
   if (!inMastergrid(grid)) {
       throw std::out_of_range(
           "Can not add magnet because the grid does not fit in the "
