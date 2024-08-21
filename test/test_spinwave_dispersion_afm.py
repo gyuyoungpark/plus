@@ -61,7 +61,8 @@ def test_spinwave_dispersion_afm():
     magnet.sub2.magnetization = (0, 0, -1)
     #magnet.minimize()  # TODO: put back in
 
-    timepoints = np.linspace(0, T, 1 + int(T / dt))
+    nt = 1 + int(T / dt)
+    timepoints = np.linspace(0, T, nt)
     outputquantities = {'m': lambda: magnet.sub1.magnetization.eval()}
 
     # Run solver
@@ -79,7 +80,7 @@ def test_spinwave_dispersion_afm():
     freq_mumaxplus = 1/T * np.argmax(positive_fft, axis=0)  # maximum of each column
 
     # The analytically derived dispersion relation
-    k = np.linspace(-np.pi/dx, np.pi/dx, nx)
+    k = np.linspace(-np.pi/dx, np.pi/dx * (nx-2)/nx, nx)
     mu0Ms = mu0 * Ms
     He = -4 * A_c / (dx*dx*mu0Ms)
     Ha = 2 * K / mu0Ms
