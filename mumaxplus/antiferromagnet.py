@@ -81,6 +81,10 @@ class Antiferromagnet(Magnet):
     def sublattices(self):
         return (self.sub1, self.sub2)
 
+    def other_sublattice(self, sub: "Ferromagnet"):
+        """Returns sister sublattice of given sublattice."""
+        return Ferromagnet._from_impl(self._impl.other_sublattice(sub._impl))
+
     @property
     def bias_magnetic_field(self):
         """Uniform bias magnetic field which will affect an antiferromagnet.
