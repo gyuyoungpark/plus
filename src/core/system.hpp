@@ -12,7 +12,8 @@ class System {
   /** Construct a system with a given grid which lives in a given world. */
   System(const World* world,
          Grid grid,
-         GpuBuffer<bool> geometry = GpuBuffer<bool>());
+         GpuBuffer<bool> geometry = GpuBuffer<bool>(),
+         GpuBuffer<unsigned int> regions = GpuBuffer<unsigned int>());
 
   // Systems should not be copied or moved
   System(const System&) = delete;
@@ -44,6 +45,9 @@ class System {
   /** Get the geometry of the system. */
   const GpuBuffer<bool>& geometry() const;
 
+  /** Get the regions of the system. */
+  const GpuBuffer<unsigned int>& regions() const;
+
   /** Return the number of cells which lie within the geometry*/
   int cellsingeo() const;
 
@@ -55,6 +59,7 @@ class System {
   const World* world_;
   Grid grid_;
   GpuBuffer<bool> geometry_;
+  GpuBuffer<unsigned int> regions_;
 
   friend CuSystem;
 };
@@ -65,9 +70,13 @@ struct CuSystem {
   const Grid grid;
   const real3 cellsize;
   bool const* geometry = nullptr;
+  unsigned int const* regions = nullptr;
 
   __device__ bool inGeometry(int3 coo) const;
   __device__ bool inGeometry(int idx) const;
+  __device__ unsigned int getRegionIdx(int3 coo) const;
+  __device__ unsigned int getRegionIdx(int idx) const;
+
 };
 
 __device__ inline bool CuSystem::inGeometry(int3 coo) const {
@@ -76,4 +85,14 @@ __device__ inline bool CuSystem::inGeometry(int3 coo) const {
 
 __device__ inline bool CuSystem::inGeometry(int idx) const {
   return grid.cellInGrid(idx) && (!geometry || geometry[idx]);
+}
+
+__device__ inline unsigned int CuSystem::getRegionIdx(int3 coo) const {
+  if (!regions) { return 0; }
+  else { return regions[grid.coord2index(coo)]; }
+}
+
+__device__ inline unsigned int CuSystem::getRegionIdx(int idx) const {
+  if (!regions) { return 0; }
+  else { return regions[idx]; }
 }
