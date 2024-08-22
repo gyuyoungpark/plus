@@ -22,14 +22,26 @@ class Antiferromagnet;
 
 class Ferromagnet : public Magnet {
  public:
+  /* Initialize Ferromagnet with system and name. */
   Ferromagnet(std::shared_ptr<System> system_ptr,
               std::string name,
               Antiferromagnet* hostMagnet_ = nullptr);
-              
+  /* Initialize Ferromagnet with world, grid, name and geometry. */
   Ferromagnet(MumaxWorld* world,
               Grid grid,
               std::string name,
               GpuBuffer<bool> geometry);
+  /* Initialize Ferromagnet with world, grid, name and regions. */
+  Ferromagnet(MumaxWorld* world,
+              Grid grid,
+              std::string name,
+              GpuBuffer<unsigned int> regions);
+  /* Initialize Ferromagnet with world, grid, name, geometry and regions. */
+  Ferromagnet(MumaxWorld* world,
+              Grid grid,
+              std::string name,
+              GpuBuffer<bool> geometry,
+              GpuBuffer<unsigned int> regions);
   ~Ferromagnet() override;
 
   const Variable* magnetization() const;

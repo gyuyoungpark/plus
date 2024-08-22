@@ -37,33 +37,37 @@ class Magnet(ABC):
     """
     
     @abstractmethod  # TODO: does this work?
-    def __init__(self, _impl_function, world, grid, name="", geometry=None):
+    def __init__(self, _impl_function, world, grid, name="", geometry=None, regions=None):
+   
+        geometry_array = self.get_mask_array(geometry, grid, world, "geometry")
+        regions_array = self.get_mask_array(regions, grid, world, "regions")
+        self._impl = _impl_function(grid._impl, geometry_array, regions_array, name)
 
-        if geometry is None:
-            self._impl = _impl_function(grid._impl, name)
-            return
-
-        if callable(geometry):
+    def get_mask_array(self, input, grid, world, input_name):
+        if input is None:
+            return None
+        
+        T = bool if input_name == "geometry" else int
+        if callable(input):
             # construct meshgrid of x, y, and z coordinates for the grid
             nx, ny, nz = grid.size
             cs = world.cellsize
             idxs = _np.flip(_np.mgrid[0:nz, 0:ny, 0:nx], axis=0)  # meshgrid of indices
             x, y, z = [(grid.origin[i] + idxs[i]) * cs[i] for i in [0, 1, 2]]
 
-            # evaluate the geometry function for each position in this meshgrid
-            geometry_array = _np.vectorize(geometry, otypes=[bool])(x, y, z)
+            # evaluate the input function for each position in this meshgrid
+            input_array = _np.vectorize(input, otypes=[T])(x, y, z)
 
         else:
-            # When here, the geometry is not None, not callable, so it should be an
+            # When here, the input is not None, not callable, so it should be an
             # ndarray or at least should be convertable to ndarray
-            geometry_array = _np.array(geometry, dtype=bool)
-            if geometry_array.shape != grid.shape:
+            input_array = _np.array(input, dtype=T)
+            if input_array.shape != grid.shape:
                 raise ValueError(
-                    "The dimensions of the geometry do not match the dimensions "
-                    + "of the grid."
+                    "The dimensions of the {} do not match the dimensions "
+                    + "of the grid.".format(input_name)
                 )
-        self._impl = _impl_function(grid._impl, geometry_array, name)
-
+        return input_array
 
     @abstractmethod
     def __repr__(self):

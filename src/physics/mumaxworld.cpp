@@ -53,15 +53,24 @@ void MumaxWorld::checkAddibility(Grid grid, std::string name) const {
 }
 
 Ferromagnet* MumaxWorld::addFerromagnet(Grid grid, std::string name) {
-  return addFerromagnet(grid, GpuBuffer<bool>(), name);
-}
-
-Antiferromagnet* MumaxWorld::addAntiferromagnet(Grid grid, std::string name) {
-  return addAntiferromagnet(grid, GpuBuffer<bool>(), name);
+  return addFerromagnet(grid, GpuBuffer<bool>(), GpuBuffer<uint>(), name);
 }
 
 Ferromagnet* MumaxWorld::addFerromagnet(Grid grid,
                                         GpuBuffer<bool> geometry,
+                                        std::string name) {
+  return addFerromagnet(grid, geometry, GpuBuffer<uint>(), name);
+}
+
+Ferromagnet* MumaxWorld::addFerromagnet(Grid grid,
+                                        GpuBuffer<uint> regions,
+                                        std::string name) {
+  return addFerromagnet(grid, GpuBuffer<bool>(), regions, name);
+}
+
+Ferromagnet* MumaxWorld::addFerromagnet(Grid grid,
+                                        GpuBuffer<bool> geometry,
+                                        GpuBuffer<uint> regions,
                                         std::string name) {
   // Create name if not given.
   static int idxUnnamed = 1;
@@ -74,7 +83,7 @@ Ferromagnet* MumaxWorld::addFerromagnet(Grid grid,
 
   // Create the magnet and add it to this world
   ferromagnets_[name] =
-      std::make_unique<Ferromagnet>(this, grid, name, geometry);
+      std::make_unique<Ferromagnet>(this, grid, name, geometry, regions);
 
   Ferromagnet* newMagnet = ferromagnets_[name].get();
   magnets_[name] = newMagnet;
@@ -82,6 +91,15 @@ Ferromagnet* MumaxWorld::addFerromagnet(Grid grid,
   handleNewStrayfield(newMagnet);
   resetTimeSolverEquations();
   return newMagnet;
+}
+
+
+
+
+
+
+Antiferromagnet* MumaxWorld::addAntiferromagnet(Grid grid, std::string name) {
+  return addAntiferromagnet(grid, GpuBuffer<bool>(), name);
 }
 
 Antiferromagnet* MumaxWorld::addAntiferromagnet(Grid grid,

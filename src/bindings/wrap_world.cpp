@@ -31,23 +31,36 @@ void wrap_world(py::module& m) {
 
       .def(
           "add_ferromagnet",
-          [](MumaxWorld* world, Grid grid, std::string name) {
-            return world->addFerromagnet(grid, name);
+          [](MumaxWorld* world, Grid grid, py::object geometryArray=py::none(),
+             py::object regionsArray=py::none(), std::string name="") {
+            
+             if (py::isinstance<py::none>(geometryArray)
+                 && py::isinstance<py::none>(regionsArray)) {
+               return world->addFerromagnet(grid, name);
+             }
+             else if (!py::isinstance<py::none>(geometryArray)
+                      && py::isinstance<py::none>(regionsArray)) {
+               py::buffer_info buf = geometryArray.cast<py::array_t<bool>>().request();
+               GpuBuffer<bool> geometry(buf.size, reinterpret_cast<bool*>(buf.ptr));
+               return world->addFerromagnet(grid, geometry, name);
+             }
+             else if (py::isinstance<py::none>(geometryArray)
+                      && !py::isinstance<py::none>(regionsArray)) {
+               py::buffer_info buf = regionsArray.cast<py::array_t<uint>>().request();
+               GpuBuffer<uint> regions(buf.size, reinterpret_cast<uint*>(buf.ptr));
+               return world->addFerromagnet(grid, regions, name);
+             }
+             else {
+               py::buffer_info geo_buf = geometryArray.cast<py::array_t<bool>>().request();
+               py::buffer_info reg_buf = regionsArray.cast<py::array_t<uint>>().request();
+               GpuBuffer<bool> geometry(geo_buf.size, reinterpret_cast<bool*>(geo_buf.ptr));
+               GpuBuffer<uint> regions(reg_buf.size, reinterpret_cast<uint*>(reg_buf.ptr));
+               return world->addFerromagnet(grid, geometry, regions, name);
+             }
           },
-          py::arg("grid"), py::arg("name") = std::string(""),
+          py::arg("grid"), py::arg("geometry_array")=py::none(),
+          py::arg("regions_array")=py::none(), py::arg("name") = std::string(""),
           py::return_value_policy::reference)
-
-      .def(
-          "add_ferromagnet",
-          [](MumaxWorld* world, Grid grid, py::array_t<bool> geometryArray,
-             std::string name) {
-            py::buffer_info buf = geometryArray.request();
-            GpuBuffer<bool> geometry(buf.size,
-                                     reinterpret_cast<bool*>(buf.ptr));
-            return world->addFerromagnet(grid, geometry, name);
-          },
-          py::arg("grid"), py::arg("geometry"),
-          py::arg("name") = std::string(""), py::return_value_policy::reference)
 
       .def(
           "add_antiferromagnet",

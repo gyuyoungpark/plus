@@ -40,13 +40,23 @@ class MumaxWorld : public World {
 
   /** Add a ferromagnet to the world. */
   Ferromagnet* addFerromagnet(Grid grid, std::string name = "");
-  /** Add an antiferromagnet to the world. */
-  Antiferromagnet* addAntiferromagnet(Grid grid, std::string name = "");
 
   /** Add a ferromagnet to the world with a non-trivial geometry. */
   Ferromagnet* addFerromagnet(Grid grid,
                               GpuBuffer<bool> geometry,
                               std::string name = "");
+  /** Add a ferromagnet to the world with non-trivial regions. */
+  Ferromagnet* addFerromagnet(Grid grid,
+                              GpuBuffer<uint> regions,
+                              std::string name = "");
+  /** Add a ferromagnet to the world with a non-trivial geometry and regions. */
+  Ferromagnet* addFerromagnet(Grid grid,
+                              GpuBuffer<bool> geometry,
+                              GpuBuffer<uint> regions,
+                              std::string name = "");
+
+  /** Add an antiferromagnet to the world. */
+  Antiferromagnet* addAntiferromagnet(Grid grid, std::string name = "");
   /** Add an antiferromagnet to the world with a non-trivial geometry. */
   Antiferromagnet* addAntiferromagnet(Grid grid,
                                       GpuBuffer<bool> geometry,

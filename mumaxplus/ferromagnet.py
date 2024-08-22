@@ -39,8 +39,8 @@ class Ferromagnet(Magnet):
         ferromagnet will be created.
     """
 
-    def __init__(self, world, grid, name="", geometry=None):
-        super().__init__(world._impl.add_ferromagnet, world, grid, name, geometry)
+    def __init__(self, world, grid, name="", geometry=None, regions=None):
+        super().__init__(world._impl.add_ferromagnet, world, grid, name, geometry, regions)
 
     def __repr__(self):
         """Return Ferromagnet string representation."""
