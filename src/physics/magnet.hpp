@@ -23,11 +23,11 @@ class Magnet {
  public:
   explicit Magnet(std::shared_ptr<System> system_ptr,
                   std::string name);
-  explicit Magnet(MumaxWorld* world,
+  /*explicit Magnet(MumaxWorld* world,
                   Grid grid,
                   std::string name,
                   GpuBuffer<bool> geometry = GpuBuffer<bool>());
-
+*/
   virtual ~Magnet();
 
   std::string name() const;
