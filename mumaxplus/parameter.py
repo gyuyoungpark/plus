@@ -32,6 +32,10 @@ class Parameter(FieldQuantity):
         """Return True if a Parameter instance has time dependent terms."""
         return self._impl.is_dynamic
 
+    @property
+    def get_uniform_value(self):
+        return self._impl.get_uniform_value
+
     def add_time_term(self, term, mask=None):
         """Add a time-dependent term.
 

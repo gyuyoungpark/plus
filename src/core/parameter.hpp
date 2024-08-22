@@ -119,6 +119,8 @@ class VectorParameter : public FieldQuantity, public DynamicParameter<real3> {
   int ncomp() const;
   std::shared_ptr<const System> system() const;
   Field eval() const;
+  real3 getUniformValue() const;
+
 
   CuVectorParameter cu() const;
 

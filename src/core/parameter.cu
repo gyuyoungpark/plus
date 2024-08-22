@@ -62,6 +62,13 @@ Field Parameter::eval() const {
   return staticField;
 }
 
+real Parameter::getUniformValue() const {
+  if (!isUniform()) {
+    throw std::invalid_argument("Cannot get uniform value of non-uniform Parameter.");
+  }
+  return uniformValue_;
+}
+
 CuParameter Parameter::cu() const {
   if (isDynamic()) {
     auto t = system_->world()->time();
@@ -129,7 +136,7 @@ Field VectorParameter::eval() const {
   return staticField;
 }
 
-real Parameter::getUniformValue() const {
+real3 VectorParameter::getUniformValue() const {
   if (!isUniform()) {
     throw std::invalid_argument("Cannot get uniform value of non-uniform Parameter.");
   }

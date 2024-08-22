@@ -23,6 +23,7 @@ void wrap_parameter(py::module& m) {
       .def_property_readonly("is_uniform", &Parameter::isUniform)
       .def_property_readonly("is_dynamic",
                              [](Parameter* p) { return p->isDynamic(); })
+      .def_property_readonly("get_uniform_value", &Parameter::getUniformValue)
       .def("remove_time_terms", &Parameter::removeAllTimeDependentTerms)
       .def("set", [](Parameter* p, real value) { p->set(value); })
       .def("set", [](Parameter* p, py::array_t<real> data) {
@@ -85,6 +86,7 @@ void wrap_parameter(py::module& m) {
       .def_property_readonly("is_uniform", &VectorParameter::isUniform)
       .def_property_readonly("is_dynamic",
                              [](VectorParameter* p) { return p->isDynamic(); })
+      .def_property_readonly("get_uniform_value", &VectorParameter::getUniformValue)
       .def("remove_time_terms", &VectorParameter::removeAllTimeDependentTerms)
       .def("set", [](VectorParameter* p, real3 value) { p->set(value); })
       .def("set", [](VectorParameter* p, py::array_t<real> data) {
