@@ -36,19 +36,19 @@ void wrap_world(py::module& m) {
             
              if (py::isinstance<py::none>(geometryArray)
                  && py::isinstance<py::none>(regionsArray)) {
-               return world->addFerromagnet(grid, name);
+               return world->addFerromagnet(grid, GpuBuffer<bool>(), GpuBuffer<uint>(), name);
              }
              else if (!py::isinstance<py::none>(geometryArray)
                       && py::isinstance<py::none>(regionsArray)) {
                py::buffer_info buf = geometryArray.cast<py::array_t<bool>>().request();
                GpuBuffer<bool> geometry(buf.size, reinterpret_cast<bool*>(buf.ptr));
-               return world->addFerromagnet(grid, geometry, name);
+               return world->addFerromagnet(grid, geometry, GpuBuffer<uint>(), name);
              }
              else if (py::isinstance<py::none>(geometryArray)
                       && !py::isinstance<py::none>(regionsArray)) {
                py::buffer_info buf = regionsArray.cast<py::array_t<uint>>().request();
                GpuBuffer<uint> regions(buf.size, reinterpret_cast<uint*>(buf.ptr));
-               return world->addFerromagnet(grid, regions, name);
+               return world->addFerromagnet(grid, GpuBuffer<bool>(), regions, name);
              }
              else {
                py::buffer_info geo_buf = geometryArray.cast<py::array_t<bool>>().request();

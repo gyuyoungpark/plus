@@ -71,23 +71,12 @@ Ferromagnet::Ferromagnet(std::shared_ptr<System> system_ptr,
   curandSetPseudoRandomGeneratorSeed(randomGenerator,
         static_cast<int>(std::chrono::high_resolution_clock::now().time_since_epoch().count()));
   }
-Ferromagnet::Ferromagnet(MumaxWorld* world,
-                         Grid grid,
-                         std::string name,
-                         GpuBuffer<bool> geometry)
-    : Ferromagnet(std::make_shared<System>(world, grid, geometry), name) {}
-
-Ferromagnet::Ferromagnet(MumaxWorld* world,
-                         Grid grid,
-                         std::string name,
-                         GpuBuffer<unsigned int> regions)
-    : Ferromagnet(std::make_shared<System>(world, grid, GpuBuffer<bool>(), regions), name) {}
 
 Ferromagnet::Ferromagnet(MumaxWorld* world,
                          Grid grid,
                          std::string name,
                          GpuBuffer<bool> geometry,
-                         GpuBuffer<unsigned int> regions)
+                         GpuBuffer<uint> regions)
     : Ferromagnet(std::make_shared<System>(world, grid, geometry, regions), name) {}
 
 Ferromagnet::~Ferromagnet() {
