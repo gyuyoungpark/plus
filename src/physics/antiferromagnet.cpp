@@ -24,8 +24,9 @@ Antiferromagnet::Antiferromagnet(std::shared_ptr<System> system_ptr,
 Antiferromagnet::Antiferromagnet(MumaxWorld* world,
                          Grid grid,
                          std::string name,
-                         GpuBuffer<bool> geometry)
-    : Antiferromagnet(std::make_shared<System>(world, grid, geometry), name) {}
+                         GpuBuffer<bool> geometry,
+                         GpuBuffer<uint> regions)
+    : Antiferromagnet(std::make_shared<System>(world, grid, geometry, regions), name) {}
 
 const Ferromagnet* Antiferromagnet::sub1() const {
   return &sub1_;

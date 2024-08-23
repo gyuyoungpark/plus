@@ -22,7 +22,8 @@ class Antiferromagnet : public Magnet {
   Antiferromagnet(MumaxWorld* world,
          Grid grid,
          std::string name,
-         GpuBuffer<bool> geometry);
+         GpuBuffer<bool> geometry,
+         GpuBuffer<uint> regions);
          
   /** Empty destructor
    *
