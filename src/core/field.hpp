@@ -108,6 +108,9 @@ struct CuField {
   __device__ bool cellInGeometry(int) const;
   __device__ bool cellInGeometry(int3) const;
 
+  __device__ bool cellInRegion(uint, int) const;
+  __device__ bool cellInRegion(uint, int3) const;
+
   __device__ real valueAt(int idx, int comp = 0) const;
   __device__ real valueAt(int3 coo, int comp = 0) const;
 
@@ -132,6 +135,14 @@ __device__ inline bool CuField::cellInGeometry(int idx) const {
 
 __device__ inline bool CuField::cellInGeometry(int3 coo) const {
   return system.inGeometry(coo);
+}
+
+__device__ inline bool CuField::cellInRegion(uint region_idx, int idx) const {
+  return system.inRegion(region_idx, idx);
+}
+
+__device__ inline bool CuField::cellInRegion(uint region_idx, int3 coo) const {
+  return system.inRegion(region_idx, coo);
 }
 
 __device__ inline real CuField::valueAt(int idx, int comp) const {

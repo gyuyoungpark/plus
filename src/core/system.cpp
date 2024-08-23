@@ -7,7 +7,7 @@
 #include "grid.hpp"
 #include "world.hpp"
 
-System::System(const World* world, Grid grid, GpuBuffer<bool> geometry, GpuBuffer<unsigned int> regions)
+System::System(const World* world, Grid grid, GpuBuffer<bool> geometry, GpuBuffer<uint> regions)
     : grid_(grid),
       world_(world),
       geometry_(geometry),
@@ -57,7 +57,7 @@ const GpuBuffer<bool>& System::geometry() const {
   return geometry_;
 }
 
-const GpuBuffer<unsigned int>& System::regions() const {
+const GpuBuffer<uint>& System::regions() const {
   return regions_;
 }
 
