@@ -114,6 +114,7 @@ class VectorParameter : public FieldQuantity, public DynamicParameter<real3> {
 
   void set(real3 value);
   void set(const Field& values);
+  void setInRegion(const uint region_idx, real3 value);
 
   bool isUniform() const;
   bool assuredZero() const;
@@ -121,7 +122,6 @@ class VectorParameter : public FieldQuantity, public DynamicParameter<real3> {
   std::shared_ptr<const System> system() const;
   Field eval() const;
   real3 getUniformValue() const;
-
 
   CuVectorParameter cu() const;
 

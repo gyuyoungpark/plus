@@ -75,8 +75,10 @@ class Field : public FieldQuantity {
   void setUniformComponent(int comp, real value);
   void setUniformComponentInRegion(int comp, real value, uint regionIdx);
   void setUniformValue(real value);
-  void setUniformValueInRegion(real value, uint regionIdx);
   void setUniformValue(real3 value);
+  void setUniformValueInRegion(real value, uint regionIdx);
+  void setUniformValueInRegion(real3 value, uint regionIdx);
+
 
   void makeZero();
 

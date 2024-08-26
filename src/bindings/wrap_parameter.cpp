@@ -32,7 +32,8 @@ void wrap_parameter(py::module& m) {
         p->set(std::move(tmp));
       })
       .def("set_in_region", [](Parameter* p, uint regionIdx, real value)
-                                { p->setInRegion(regionIdx, value); });
+                                { p->setInRegion(regionIdx, value);
+      });
 
   py::class_<VectorParameter, FieldQuantity>(m, "VectorParameter")
       .def(
@@ -95,5 +96,8 @@ void wrap_parameter(py::module& m) {
         Field tmp(p->system(), 3);
         setArrayInField(tmp, data);
         p->set(std::move(tmp));
-      });
+      })
+      .def("set_in_region", [](VectorParameter* p, uint regionIdx, real3 value)
+                                { p->setInRegion(regionIdx, value);
+      });;
 }

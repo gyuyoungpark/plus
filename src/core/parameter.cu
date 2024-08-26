@@ -110,6 +110,18 @@ void VectorParameter::set(const Field& values) {
   staticField_ = new Field(values);
 }
 
+void VectorParameter::setInRegion(const uint region_idx, real3 value) {
+  if (isUniform()) {
+    Field tmp(system_, 3);
+    tmp.setUniformValue(uniformValue_);
+    tmp.setUniformValueInRegion(value, region_idx);
+    staticField_ = new Field(tmp);
+  }
+  else {
+    staticField_->setUniformValueInRegion(value, region_idx);
+  }
+}
+
 bool VectorParameter::isUniform() const {
   return !staticField_ && DynamicParameter<real3>::isUniform();
 }
