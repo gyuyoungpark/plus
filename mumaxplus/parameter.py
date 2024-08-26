@@ -154,6 +154,10 @@ class Parameter(FieldQuantity):
         else:
             self._impl.set(value)
 
+    def set_in_region(self, region_idx, value):
+        self._impl.set_in_region(region_idx, value)
+
+
     def _set_func(self, func):
         X, Y, Z = self.meshgrid
         self._impl.set(_np.vectorize(func)(X, Y, Z))

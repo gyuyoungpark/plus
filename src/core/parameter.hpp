@@ -20,6 +20,7 @@ class Parameter : public FieldQuantity, public DynamicParameter<real> {
 
   void set(real value);
   void set(const Field& values);
+  void setInRegion(const uint region_idx, real value);
 
   bool isUniform() const;
   bool assuredZero() const;

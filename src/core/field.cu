@@ -139,6 +139,19 @@ __global__ void k_setComponent(CuField f, real value, int comp) {
   }
 }
 
+__global__ void k_setComponentInRegion(CuField f,
+                                       real value,
+                                       int comp,
+                                       uint region_idx) {
+  int idx = blockDim.x * blockIdx.x + threadIdx.x;
+  if (!f.cellInGrid(idx) || !f.cellInRegion(region_idx, idx))
+    return;
+  if (f.cellInGeometry(idx))
+    f.setValueInCell(idx, comp, value);
+  else
+    f.setValueInCell(idx, comp, 0.0);
+}
+
 __global__ void k_setVectorValue(CuField f, real3 value) {
   int idx = blockDim.x * blockIdx.x + threadIdx.x;
   if (!f.cellInGrid(idx))
@@ -155,9 +168,18 @@ void Field::setUniformComponent(int comp, real value) {
   cudaLaunch(grid().ncells(), k_setComponent, cu(), value, comp);
 }
 
+void Field::setUniformComponentInRegion(int comp, real value, uint regionIdx) {
+  cudaLaunch(grid().ncells(), k_setComponentInRegion, cu(), value, comp, regionIdx);
+}
+
 void Field::setUniformValue(real value) {
   for (int comp = 0; comp < ncomp_; comp++)
     setUniformComponent(comp, value);
+}
+
+void Field::setUniformValueInRegion(real value, uint regionIdx) {
+  for (int comp = 0; comp < ncomp_; comp++)
+    setUniformComponentInRegion(comp, value, regionIdx);
 }
 
 void Field::setUniformValue(real3 value) {

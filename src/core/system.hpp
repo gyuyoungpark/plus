@@ -100,9 +100,9 @@ __device__ inline bool CuSystem::inGeometry(int idx) const {
 }
 
 __device__ inline bool CuSystem::inRegion(uint regionIdx, int3 coo) const {
-  return grid.cellInGrid(coo) && (!regions || regionIdx == getRegionIdx(coo));
+  return grid.cellInGrid(coo) && (regionIdx == getRegionIdx(coo));
 }
 
 __device__ inline bool CuSystem::inRegion(uint regionIdx, int idx) const {
-  return grid.cellInGrid(idx) && (!regions || regionIdx == getRegionIdx(idx));
+  return grid.cellInGrid(idx) && ( regionIdx == getRegionIdx(idx));
 }

@@ -25,6 +25,17 @@ void Parameter::set(const Field& values) {
   staticField_ = new Field(values);
 }
 
+void Parameter::setInRegion(const uint region_idx, real value) {
+  if (isUniform()) {
+    Field tmp(system_, 1, uniformValue_);
+    tmp.setUniformValueInRegion(value, region_idx);
+    staticField_ = new Field(tmp);
+  }
+  else {
+    staticField_->setUniformValueInRegion(value, region_idx);
+  }
+}
+
 bool Parameter::isUniform() const {
   return !staticField_ && DynamicParameter<real>::isUniform();
 }
