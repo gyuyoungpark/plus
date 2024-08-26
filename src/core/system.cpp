@@ -1,6 +1,7 @@
 #include "system.hpp"
 
 #include <stdexcept>
+#include <algorithm>
 
 #include "datatypes.hpp"
 #include "gpubuffer.hpp"
@@ -59,6 +60,13 @@ const GpuBuffer<bool>& System::geometry() const {
 
 const GpuBuffer<uint>& System::regions() const {
   return regions_;
+}
+
+void System::checkIdxInRegions(int idx) const {
+  std::vector<uint> idxs = regions_.getData(); // Is this the most efficient way?
+  if (std::find(idxs.begin(), idxs.end(), idx) == idxs.end())
+    throw std::invalid_argument("The region index " + std::to_string(idx)
+                                                   + " is not defined.");
 }
 
 int System::cellsingeo() const {

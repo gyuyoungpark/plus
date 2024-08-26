@@ -48,8 +48,12 @@ class System {
   /** Get the regions of the system. */
   const GpuBuffer<uint>& regions() const;
 
-  /** Return the number of cells which lie within the geometry*/
+  /** Check if a certain region index is defined. */
+  void checkIdxInRegions(int idx) const;
+
+  /** Return the number of cells which lie within the geometry. */
   int cellsingeo() const;
+
 
   /** Return a CuSystem which can be copied to the gpu and be used in cuda
    * kernels. */

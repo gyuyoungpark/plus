@@ -181,6 +181,7 @@ void Field::setUniformComponent(int comp, real value) {
 }
 
 void Field::setUniformComponentInRegion(int comp, real value, uint regionIdx) {
+  system_->checkIdxInRegions(regionIdx);
   cudaLaunch(grid().ncells(), k_setComponentInRegion, cu(), value, comp, regionIdx);
 }
 
@@ -194,11 +195,13 @@ void Field::setUniformValue(real3 value) {
 }
 
 void Field::setUniformValueInRegion(real value, uint regionIdx) {
+  system_->checkIdxInRegions(regionIdx);
   for (int comp = 0; comp < ncomp_; comp++)
     setUniformComponentInRegion(comp, value, regionIdx);
 }
 
 void Field::setUniformValueInRegion(real3 value, uint regionIdx) {
+  system_->checkIdxInRegions(regionIdx);
   cudaLaunch(grid().ncells(), k_setVectorValueInRegion, cu(), value, regionIdx);
 }
 
