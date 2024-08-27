@@ -30,7 +30,10 @@ class Magnet(ABC):
            geometry.
         3. Use a function which takes x, y, and z coordinates as arguments and returns
            true if this position is inside the geometry and false otherwise.
-
+       
+    regions : None, ndarray, or callable (default=None)
+        The regional structure of a magnet can be set in the same three ways
+        as the geometry. This parameter indexes each grid cell to a certain region.
     name : str (default="")
         The magnet's identifier. If the name is empty (the default), a name for the
         magnet will be created.

@@ -34,6 +34,9 @@ class Ferromagnet(Magnet):
         3. Use a function which takes x, y, and z coordinates as arguments and returns
            true if this position is inside the geometry and false otherwise.
 
+    regions : None, ndarray, or callable (default=None)
+        The regional structure of a ferromagnet can be set in the same three ways
+        as the geometry. This parameter indexes each grid cell to a certain region.
     name : str (default="")
         The ferromagnet's identifier. If the name is empty (the default), a name for the
         ferromagnet will be created.
