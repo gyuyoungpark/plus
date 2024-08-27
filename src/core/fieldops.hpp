@@ -38,6 +38,10 @@ Field multiply(const Field& a, const Field& x);
 /// positional x*y
 Field operator*(const Field& a, const Field& x);
 
+/// add constant to Field
+Field addConstant(const Field& x, real value);
+
+/// normalize Field
 Field normalized(const Field& src);
 void normalize(Field&);
 
