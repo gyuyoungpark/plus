@@ -21,4 +21,5 @@ PYBIND11_MODULE(_mumaxpluscpp, m) {
   wrap_strayfield(m);
   wrap_system(m);
   wrap_dmitensor(m);
+  wrap_voronoi(m);
 }

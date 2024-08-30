@@ -22,6 +22,7 @@ pybind11_add_module(_mumaxpluscpp
     wrap_world.cpp
     wrap_poissonsystem.cpp
     wrap_linsolver.cpp
+    wrap_voronoi.cpp
 )
 
 target_include_directories(_mumaxpluscpp PRIVATE ${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES})

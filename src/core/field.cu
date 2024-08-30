@@ -19,6 +19,7 @@ Field::Field() : system_(nullptr), ncomp_(0) {}
 Field::Field(std::shared_ptr<const System> system, int nComponents)
     : system_(system), ncomp_(nComponents) {
   N_ = grid().ncells();
+  gridsize_ = grid().size();
   allocate();
   setZeroOutsideGeometry();
 }
@@ -28,8 +29,8 @@ Field::Field(std::shared_ptr<const System> system, int nComponents, real value)
   setUniformValue(value);
 }
 
-Field::Field(int nComponents, int size)
-    : system_(nullptr), ncomp_(nComponents), N_(size) {
+Field::Field(int nComponents, int3 gridsize, int size)
+    : system_(nullptr), ncomp_(nComponents), gridsize_(gridsize), N_(size) {
       allocate();
 }
 
