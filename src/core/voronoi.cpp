@@ -21,13 +21,11 @@ Field VoronoiTesselator::generate() {
    std::vector<real> data;
    for (int nx = 0; nx < grid_.size().x; nx++) {
         for (int ny = 0; ny < grid_.size().y; ny++) {
-            for (int nz = 0; nz < grid_.size().z; nz++) {
-                real3 coo = real3{nx * cellsize_.x,
-                                  ny * cellsize_.y,
-                                  0};
-                uint ridx = regionOf(coo);
-                data.push_back(ridx);
-            }
+            real3 coo = real3{nx * cellsize_.x,
+                              ny * cellsize_.y,
+                              0};
+            uint ridx = regionOf(coo);
+            data.push_back(ridx);
         }
     }
     Field idxField(1, grid_.size(), data.size());
@@ -57,7 +55,12 @@ uint VoronoiTesselator::regionOf(real3 coo) {
 }
 
 std::vector<Center> VoronoiTesselator::centersInTile(int3 pos) {
-// TODO: cache centers so not to calculate this multiple times.
+
+    // Check if centers in this tile are already cached
+    auto it = centerCache_.find(pos);
+    if (it != centerCache_.end())
+        return it->second;
+
     int64_t seed = (int64_t(pos.y) + (1<<24)) * (1<<24)
                  + (int64_t(pos.x) + (1<<24));
     engine_.seed (seed ^ 1234567);

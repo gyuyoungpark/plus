@@ -1,5 +1,6 @@
 #include <random>
 #include <vector>
+#include <unordered_map>
 
 #include "datatypes.hpp"
 #include "field.hpp"
@@ -14,6 +15,13 @@ struct Center {
 struct Tile {
   int3 pos;
   std::vector<Center> centers;
+};
+
+struct Int3Hash {
+  // Hash function to allow int3 to be used as a key
+    std::size_t operator()(const int3& k) const {
+        return std::hash<int>()(k.x) ^ std::hash<int>()(k.y) ^ std::hash<int>()(k.z);
+    }
 };
 
 class VoronoiTesselator {
@@ -42,6 +50,7 @@ public:
   real grainsize_;
   real3 cellsize_;
   real tilesize_;
+  std::unordered_map<int3, std::vector<Center>, Int3Hash> centerCache_;
 
  private:
  // RNG related members
