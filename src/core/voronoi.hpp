@@ -10,6 +10,8 @@
 struct Center {
   real3 pos;
   uint ridx;
+  Center(real3 position, uint region_idx)
+      : pos(position), ridx(region_idx) {}
 };
 
 struct Tile {
@@ -50,7 +52,7 @@ public:
   real grainsize_;
   real3 cellsize_;
   real tilesize_;
-  std::unordered_map<int3, std::vector<Center>, Int3Hash> centerCache_;
+  std::unordered_map<int3, Tile, Int3Hash> tileCache_;
 
  private:
  // RNG related members

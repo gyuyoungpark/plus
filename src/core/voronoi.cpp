@@ -57,9 +57,10 @@ uint VoronoiTesselator::regionOf(real3 coo) {
 std::vector<Center> VoronoiTesselator::centersInTile(int3 pos) {
 
     // Check if centers in this tile are already cached
-    auto it = centerCache_.find(pos);
-    if (it != centerCache_.end())
-        return it->second;
+    auto it = tileCache_.find(pos);
+    if (it != tileCache_.end()) {
+        return it->second.centers;
+    }
 
     int64_t seed = (int64_t(pos.y) + (1<<24)) * (1<<24)
                  + (int64_t(pos.x) + (1<<24));
@@ -70,15 +71,20 @@ std::vector<Center> VoronoiTesselator::centersInTile(int3 pos) {
     std::vector<Center> centers;
 
     for (int n = 0; n < N; n++) {
-        Center c;
         real cx = (pos.x + distReal_(engine_)) * tilesize_;
         real cy = (pos.y + distReal_(engine_)) * tilesize_;
 
-        c.pos = real3{cx, cy, 0};
-        c.ridx = distInt_(engine_);
-        centers.push_back(c);
+        Center c(real3{cx, cy, 0}, distInt_(engine_));
 
+        centers.push_back(c);
     }
+    
+    // Cache centers belonging to this tile
+    Tile newTile;
+    newTile.pos = pos;
+    newTile.centers = centers;
+    tileCache_[pos] = newTile;
+
     return centers;
 }
 
