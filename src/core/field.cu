@@ -18,6 +18,8 @@ Field::Field() : system_(nullptr), ncomp_(0) {}
 
 Field::Field(std::shared_ptr<const System> system, int nComponents)
     : system_(system), ncomp_(nComponents) {
+  N_ = grid().ncells();
+  gridsize_ = grid().size();
   allocate();
   setZeroOutsideGeometry();
 }
@@ -25,6 +27,11 @@ Field::Field(std::shared_ptr<const System> system, int nComponents)
 Field::Field(std::shared_ptr<const System> system, int nComponents, real value)
     : Field(system, nComponents) {
   setUniformValue(value);
+}
+
+Field::Field(int nComponents, int3 gridsize, int size)
+    : system_(nullptr), ncomp_(nComponents), gridsize_(gridsize), N_(size) {
+      allocate();
 }
 
 Field::Field(const Field& other)
@@ -78,11 +85,12 @@ void Field::updateDevicePointersBuffer() {
 void Field::allocate() {
   free();
 
-  if (empty())
-    return;
+  if((!system_ && N_ == 0 && ncomp_ == 0)
+  || (system_ && empty()))
+      return;
 
   buffers_ =
-      std::vector<GpuBuffer<real>>(ncomp_, GpuBuffer<real>(grid().ncells()));
+      std::vector<GpuBuffer<real>>(ncomp_, GpuBuffer<real>(N_));
 
   updateDevicePointersBuffer();
 }
@@ -98,15 +106,15 @@ CuField Field::cu() const {
 
 void Field::getData(real* buffer) const {
   for (int c = 0; c < ncomp_; c++) {
-    real* bufferComponent = buffer + c * grid().ncells();
+    real* bufferComponent = buffer + c * N_;
     checkCudaError(cudaMemcpyAsync(bufferComponent, buffers_[c].get(),
-                                   grid().ncells() * sizeof(real),
-                                   cudaMemcpyDeviceToHost, getCudaStream()));
+                                   N_ * sizeof(real), cudaMemcpyDeviceToHost,
+                                   getCudaStream()));
   }
 }
 
 std::vector<real> Field::getData() const {
-  auto size = ncomp_ * grid().ncells();
+  auto size = ncomp_ * N_;
   std::vector<real> buffer(size, 0);
   getData(buffer.data());
 
@@ -115,10 +123,10 @@ std::vector<real> Field::getData() const {
 
 void Field::setData(const real* buffer) {
   for (int c = 0; c < ncomp_; c++) {
-    auto bufferComponent = buffer + c * grid().ncells();
+    auto bufferComponent = buffer + c * N_;
     checkCudaError(cudaMemcpyAsync(buffers_[c].get(), bufferComponent,
-                                   grid().ncells() * sizeof(real),
-                                   cudaMemcpyHostToDevice, getCudaStream()));
+                                   N_ * sizeof(real), cudaMemcpyHostToDevice,
+                                   getCudaStream()));
   }
   setZeroOutsideGeometry();
 }
@@ -218,6 +226,8 @@ __global__ void k_setZeroOutsideGeometry(CuField f) {
 }
 
 void Field::setZeroOutsideGeometry() {
+  if (!system_)
+    return;
   if (system_->geometry().size() > 0)
     cudaLaunch(grid().ncells(), k_setZeroOutsideGeometry, cu());
 }

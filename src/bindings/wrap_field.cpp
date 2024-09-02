@@ -17,7 +17,7 @@ void wrap_field(py::module& m) {
 }
 
 py::array_t<real> fieldToArray(const Field& f) {
-  real* data = new real[f.grid().ncells() * f.ncomp()];
+  real* data = new real[f.ncells() * f.ncomp()];
   f.getData(data);
 
   // Create a Python object that will free the allocated
@@ -31,9 +31,9 @@ py::array_t<real> fieldToArray(const Field& f) {
 
   int shape[4];
   shape[0] = f.ncomp();
-  shape[1] = f.grid().size().z;
-  shape[2] = f.grid().size().y;
-  shape[3] = f.grid().size().x;
+  shape[1] = f.gridsize().z;
+  shape[2] = f.gridsize().y;
+  shape[3] = f.gridsize().x;
 
   int strides[4];
   strides[0] = sizeof(real) * shape[3] * shape[2] * shape[1];
