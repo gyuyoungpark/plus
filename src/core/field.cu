@@ -35,12 +35,19 @@ Field::Field(int nComponents, int3 gridsize, int size)
 }
 
 Field::Field(const Field& other)
-    : system_(other.system_), ncomp_(other.ncomp_) {
+    : system_(other.system_),
+      ncomp_(other.ncomp_),
+      N_(other.N_),
+      gridsize_(other.gridsize_) {
   buffers_ = other.buffers_;
   updateDevicePointersBuffer();
 }
 
-Field::Field(Field&& other) : system_(other.system_), ncomp_(other.ncomp_) {
+Field::Field(Field&& other)
+    : system_(other.system_),
+      ncomp_(other.ncomp_),
+      N_(other.N_),
+      gridsize_(other.gridsize_) {
   buffers_ = std::move(other.buffers_);
   bufferPtrs_ = std::move(other.bufferPtrs_);
   other.clear();
