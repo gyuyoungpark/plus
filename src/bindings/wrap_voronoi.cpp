@@ -13,9 +13,5 @@ void wrap_voronoi(py::module& m) {
 
         .def(py::init<Grid, real, real3>(), py::arg("grid"), py::arg("grainsize"), py::arg("cellsize"))
 
-        //.def("generate", &VoronoiTesselator::generate);
-        .def("generate", [](VoronoiTesselator t)
-        { 
-          return fieldToArray(t.generate());
-        });
+        .def("generate", [](VoronoiTesselator t) { return fieldToArray(t.generate()); });
 }
