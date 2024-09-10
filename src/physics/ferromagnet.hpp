@@ -46,9 +46,6 @@ class Ferromagnet : public Magnet {
   void setInterExchange(uint idx1, uint idx2, real value);
 
   std::tuple<std::vector<uint>, std::unordered_map<uint, uint>> constructIndexMap(std::vector<uint>);
-  // Host and device functions to get LUT index
-  int getLutIndex(int, int);
-  //__device__ real getInterExchange(this*, uint i, uint j) const;
 
  private:
   NormalizedVariable magnetization_;
@@ -95,25 +92,24 @@ class Ferromagnet : public Magnet {
 
   DmiTensor dmiTensor;
 
-  std::vector<uint> regIndices_;
-  GpuBuffer<uint> regionIndices_;
+  // Members related to regions
   std::unordered_map<uint, uint> indexMap_;
   GpuBuffer<real> interExchange_;
-  real* interExch_; // Device ptr of the gpu buffer
-  uint* regPtr_;
+    // Device pointers
+  real* interExch_ = nullptr;
+  uint* regPtr_ = nullptr;
 };
+
+__device__ __host__ inline int getLutIndex(int i, int j) {
+  // Look-up Table index
+  if (i <= j)
+    return j * (j + 1) / 2 + i;
+  return i * (i + 1) / 2 + j;
+}
 
 __device__ inline real getInterExchange(uint idx1, uint idx2,
                                         real const* interEx, uint const* regPtr) {
-
   int i = findIndex(regPtr, idx1);
   int j = findIndex(regPtr, idx2);
-
-  int index;
-  if (i <= j)
-    index = j * (j + 1) / 2 + i;
-  else
-    index = i * (i + 1) / 2 + j;
-
-  return interEx[index];
+  return interEx[getLutIndex(i, j)];
 }

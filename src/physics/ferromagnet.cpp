@@ -51,7 +51,7 @@ Ferromagnet::Ferromagnet(std::shared_ptr<System> system_ptr,
       amrRatio(system(), 0.0),
       RelaxTorqueThreshold(-1.0),
       poissonSystem(this) {
-    {
+    {// Initialize random magnetization
     // TODO: this can be done much more efficient somewhere else
     int nvalues = 3 * this->grid().ncells();
     std::vector<real> randomValues(nvalues);
@@ -66,6 +66,22 @@ Ferromagnet::Ferromagnet(std::shared_ptr<System> system_ptr,
     randomField.setData(&randomValues[0]);
     magnetization_.set(randomField);
   }
+  {// Initialize interregional exchange buffer
+    if (system()->regions().get()) {
+
+      std::vector<uint> rIdxs;
+      std::tie(rIdxs, indexMap_) = constructIndexMap(system()->regions().getData());
+      GpuBuffer<uint> regionIndices_ = GpuBuffer<uint>(rIdxs);
+
+      int N = rIdxs.size();
+      std::vector<real> data(N * (N + 1) / 2, 0);
+
+      interExchange_ = GpuBuffer<real>(data);
+      interExch_ = interExchange_.get();
+      regPtr_ = regionIndices_.get();
+    }
+  }
+  // Initialize CUDA RNG
   // TODO: move the generator to somewhere else
   curandCreateGenerator(&randomGenerator, CURAND_RNG_PSEUDO_DEFAULT);
   curandSetPseudoRandomGeneratorSeed(randomGenerator,
@@ -111,22 +127,11 @@ void Ferromagnet::setInterExchange(uint idx1, uint idx2, real value) {
   system()->checkIdxInRegions(idx1);
   system()->checkIdxInRegions(idx2);
 
-  if (interExchange_.size() == 0) {
-    std::vector<uint> regionsInGrid = system()->regions().getData();
-    std::tie(regIndices_, indexMap_) = constructIndexMap(regionsInGrid);
-    int N = regIndices_.size();
-    regionIndices_ = GpuBuffer<uint>(regIndices_);
-
-    std::vector<real> data(N * (N + 1) / 2, 0);
-    interExchange_ = GpuBuffer<real>(data);
-  }
-
   std::vector<real> interEx = interExchange_.getData(); // Copy data from GPU to host
   interEx[getLutIndex(indexMap_[idx1], indexMap_[idx2])] = value;
   
   interExchange_ = std::move(GpuBuffer<real>(interEx)); // Move back to old GpuBuffer
   interExch_ = interExchange_.get(); // Update pointer to buffer
-  regPtr_ = regionIndices_.get();
 
   return;
 }
@@ -144,12 +149,4 @@ std::tuple<std::vector<uint>, std::unordered_map<uint, uint>>
     }
   }
   return std::make_tuple(regions, indexMap);
-}
-
-int Ferromagnet::getLutIndex(int i, int j) {
-  // Look-up Table index
-  if (i <= j)
-    return j * (j + 1) / 2 + i;
-  return i * (i + 1) / 2 + j;
-
 }

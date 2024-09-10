@@ -83,6 +83,7 @@ struct CuSystem {
   __device__ bool inGeometry(int idx) const;
   __device__ bool inRegion(uint regionIdx, int3 coo) const;
   __device__ bool inRegion(uint regionIdx, int idx) const;
+  __device__ bool inSameRegion(uint idx1, uint idx2) const;
 };
 
 __device__ inline uint CuSystem::getRegionIdx(int3 coo) const {
@@ -109,4 +110,8 @@ __device__ inline bool CuSystem::inRegion(uint regionIdx, int3 coo) const {
 
 __device__ inline bool CuSystem::inRegion(uint regionIdx, int idx) const {
   return grid.cellInGrid(idx) && ( regionIdx == getRegionIdx(idx));
+}
+
+__device__ inline bool CuSystem::inSameRegion(uint idx1, uint idx2) const {
+  return (getRegionIdx(idx1) == getRegionIdx(idx2));
 }
