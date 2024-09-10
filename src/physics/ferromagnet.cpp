@@ -105,3 +105,51 @@ void Ferromagnet::relax(real tol) {
   Relaxer relaxer(this, {threshold}, tol);
   relaxer.exec();
 }
+
+void Ferromagnet::setInterExchange(uint idx1, uint idx2, real value) {
+
+  system()->checkIdxInRegions(idx1);
+  system()->checkIdxInRegions(idx2);
+
+  if (interExchange_.size() == 0) {
+    std::vector<uint> regionsInGrid = system()->regions().getData();
+    std::tie(regIndices_, indexMap_) = constructIndexMap(regionsInGrid);
+    int N = regIndices_.size();
+    regionIndices_ = GpuBuffer<uint>(regIndices_);
+
+    std::vector<real> data(N * (N + 1) / 2, 0);
+    interExchange_ = GpuBuffer<real>(data);
+  }
+
+  std::vector<real> interEx = interExchange_.getData(); // Copy data from GPU to host
+  interEx[getLutIndex(indexMap_[idx1], indexMap_[idx2])] = value;
+  
+  interExchange_ = std::move(GpuBuffer<real>(interEx)); // Move back to old GpuBuffer
+  interExch_ = interExchange_.get(); // Update pointer to buffer
+  regPtr_ = regionIndices_.get();
+
+  return;
+}
+
+std::tuple<std::vector<uint>, std::unordered_map<uint, uint>>
+            Ferromagnet::constructIndexMap(std::vector<uint> regionsInGrid) {
+  // Returns unique region indices and their position inside this container.
+  std::vector<uint> regions;            
+  std::unordered_map<uint, uint> indexMap;
+
+  for (const auto& reg : regionsInGrid) {
+    if (indexMap.find(reg) == indexMap.end()) {
+      regions.push_back(reg);
+      indexMap[reg] = regions.size() - 1;
+    }
+  }
+  return std::make_tuple(regions, indexMap);
+}
+
+int Ferromagnet::getLutIndex(int i, int j) {
+  // Look-up Table index
+  if (i <= j)
+    return j * (j + 1) / 2 + i;
+  return i * (i + 1) / 2 + j;
+
+}
