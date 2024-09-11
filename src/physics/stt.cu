@@ -105,7 +105,8 @@ __global__ void k_Slonczewski(CuField torque,
                                      const CuVectorParameter jcurParam,
                                      const CuParameter eps_prime,
                                      const CuVectorParameter FixedLayer,
-                                     const CuParameter FreeLayerThickness) {
+                                     const CuParameter FreeLayerThickness,
+                                     const bool fixedLayerOnTop) {
   const int idx = blockIdx.x * blockDim.x + threadIdx.x;
 
   // When outside the geometry, set to zero and return early
@@ -128,6 +129,7 @@ __global__ void k_Slonczewski(CuField torque,
   const real lambda = lambdaParam.valueAt(idx);
   const real eps_p = eps_prime.valueAt(idx);
   const real d = FreeLayerThickness.valueAt(idx);
+  if (!fixedLayerOnTop) d *= -1;  // change sign when the fixed layer is at the bottom
 
   if (msat == 0 || jz == 0 || d == 0 || p == real3{0,0,0} ||
       (eps_p == 0 && (lambda == 0 || pol == 0))) {
@@ -167,6 +169,7 @@ Field evalSpinTransferTorque(const Ferromagnet* magnet) {
   auto eps_prime = magnet->eps_prime.cu();
   auto FixedLayer = magnet->FixedLayer.cu();
   auto FreeLayerThickness = magnet->FreeLayerThickness.cu();
+  bool fixedLayerOnTop = magnet->fixedLayerOnTop;
 
   auto cellsize = magnet->world()->cellsize();
 
@@ -176,7 +179,7 @@ Field evalSpinTransferTorque(const Ferromagnet* magnet) {
                magnet->world()->mastergrid());
   else
     cudaLaunch(ncells, k_Slonczewski, torque.cu(), m, msat, pol, lambda, alpha,
-             jcur, eps_prime, FixedLayer, FreeLayerThickness);
+             jcur, eps_prime, FixedLayer, FreeLayerThickness, fixedLayerOnTop);
   return torque;
 }
 

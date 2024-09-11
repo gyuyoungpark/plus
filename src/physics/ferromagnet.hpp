@@ -73,6 +73,7 @@ class Ferromagnet : public Magnet {
   Parameter temperature;
   Parameter Lambda;
   Parameter FreeLayerThickness;
+  bool fixedLayerOnTop(true);
   Parameter eps_prime;
   Parameter xi;
   Parameter pol;
