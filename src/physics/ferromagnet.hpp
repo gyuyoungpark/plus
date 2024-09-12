@@ -53,6 +53,7 @@ class Ferromagnet : public Magnet {
   bool enableOpenBC;
   bool enableZhangLiTorque;
   bool enableSlonczewskiTorque;
+  bool fixedLayerOnTop;
   VectorParameter anisU;
   VectorParameter anisC1;
   VectorParameter anisC2;
@@ -73,7 +74,6 @@ class Ferromagnet : public Magnet {
   Parameter temperature;
   Parameter Lambda;
   Parameter FreeLayerThickness;
-  bool fixedLayerOnTop(true);
   Parameter eps_prime;
   Parameter xi;
   Parameter pol;

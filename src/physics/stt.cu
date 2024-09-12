@@ -128,7 +128,7 @@ __global__ void k_Slonczewski(CuField torque,
   const real3 p = FixedLayer.vectorAt(idx);
   const real lambda = lambdaParam.valueAt(idx);
   const real eps_p = eps_prime.valueAt(idx);
-  const real d = FreeLayerThickness.valueAt(idx);
+  real d = FreeLayerThickness.valueAt(idx);
   if (!fixedLayerOnTop) d *= -1;  // change sign when the fixed layer is at the bottom
 
   if (msat == 0 || jz == 0 || d == 0 || p == real3{0,0,0} ||

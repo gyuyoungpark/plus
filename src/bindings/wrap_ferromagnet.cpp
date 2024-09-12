@@ -33,7 +33,7 @@ void wrap_ferromagnet(py::module& m) {
       .def_readwrite("enable_slonczewski_torque", &Ferromagnet::enableSlonczewskiTorque)
       .def_readwrite("bias_magnetic_field", &Ferromagnet::biasMagneticField,
                      "uniform external magnetic field")
-      .def_readwrite("fixedLayerOnTop", &Ferromagnet::fixedLayerOnTop)
+      .def_readwrite("fixed_layer_on_top", &Ferromagnet::fixedLayerOnTop)
 
       .def_readonly("msat", &Ferromagnet::msat)
       .def_readonly("alpha", &Ferromagnet::alpha)
