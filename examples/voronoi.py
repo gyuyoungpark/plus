@@ -24,7 +24,7 @@ geo = Circle(diam).translate(diam/2, diam/2, 0)
 # Initialize a Voronoi Tesselator using a grainsize of 40e-9 m
 tesselator = VoronoiTesselator(world, grid, 40e-9)
 regions = tesselator.generate()
-
+print(regions.shape)
 # Create Ferromagnet
 magnet = Ferromagnet(world, grid, geometry=geo, regions=regions)
 magnet.alpha = 3
@@ -35,10 +35,10 @@ magnet.msat = 860e3
 magnet.magnetization = vortex(magnet.center, 2*c, 1, 1)
 show_field(magnet.magnetization)
 
-for i in np.ravel(regions):
+for i in tesselator.indices():
     # Set random anisotropy axes in each region
-    anisC1 = (np.random.normal(), np.random.normal(), np.random.normal())
-    anisC2 = (np.random.normal(), np.random.normal(), np.random.normal())
+    anisC1 = tuple(np.random.normal(size=3))
+    anisC2 = tuple(np.random.normal(size=3))
     magnet.anisC1.set_in_region(i, anisC1)
     magnet.anisC2.set_in_region(i, anisC2)
 
@@ -47,6 +47,7 @@ for i in np.ravel(regions):
     magnet.kc1.set_in_region(i, K + np.random.normal() * 0.1 * K)
 
     # TODO: vary interregion aex
+
 
 # Evolve the world in time
 world.timesolver.run(0.1e-9)
@@ -60,3 +61,4 @@ plt.title(r"First cubic anisotropy constant $K_{c1}$ (J / m³)")
 plt.xlabel(r"$x$ (m)")
 plt.ylabel(r"$y$ (m)")
 plt.colorbar()
+plt.show()

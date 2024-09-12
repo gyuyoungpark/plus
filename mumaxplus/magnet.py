@@ -42,11 +42,12 @@ class Magnet(ABC):
     @abstractmethod  # TODO: does this work?
     def __init__(self, _impl_function, world, grid, name="", geometry=None, regions=None):
    
-        geometry_array = self.get_mask_array(geometry, grid, world, "geometry")
-        regions_array = self.get_mask_array(regions, grid, world, "regions")
+        geometry_array = self._get_mask_array(geometry, grid, world, "geometry")
+        regions_array = self._get_mask_array(regions, grid, world, "regions")
         self._impl = _impl_function(grid._impl, geometry_array, regions_array, name)
 
-    def get_mask_array(self, input, grid, world, input_name):
+    @staticmethod
+    def _get_mask_array(input, grid, world, input_name):
         if input is None:
             return None
         

@@ -158,7 +158,7 @@ class Parameter(FieldQuantity):
         """
         Set a uniform, static value in a specified region.
         """
-        assert (isinstance(value, float) or
+        assert (isinstance(value, (float, int)) or
             (isinstance(value, tuple) and len(value) == 3)
             ), "The value should be uniform and static."
         self._impl.set_in_region(region_idx, value)

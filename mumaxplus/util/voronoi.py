@@ -5,15 +5,19 @@ class VoronoiTesselator:
 
     def __init__(self, world, grid, grainsize):
         self._impl = _cpp.VoronoiTesselator(grid._impl, grainsize, world.cellsize)
+        self.tesselation = self._impl.generate()
         
     def generate(self):
-        """Generate a Voronoi tesselation."""
-        self.tesselation = self._impl.generate()
+        """Returns a Voronoi tesselation.
+
+        Returns an ndarray of shape (nz, ny, nx) which is filled
+        with region indices."""
+
         return self.tesselation[0]
     
     def indexDictionary(self):
-        """Create a dictionary where each coordinate (value) is linked
-        to a region index (key)."""
+        """Create a dictionary where each region (key) is linked
+        to a list of grid coordinates (value)."""
         from collections import defaultdict
         _, nz, ny, nx = self.tesselation.shape
         
@@ -28,6 +32,10 @@ class VoronoiTesselator:
             
         idxDict = dict(idxDict)
         return idxDict
+
+    def indices(self):
+        """Returns list of unique region indices."""
+        return _np.unique(_np.ravel(self.tesselation)).astype(int)
 
     def numRegions(self):
         """Returns number of unique region indices."""
