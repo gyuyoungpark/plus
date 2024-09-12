@@ -343,7 +343,7 @@ class Ferromagnet(Magnet):
         
         See Also
         --------
-        eps_prime, jcur, pol, FixedLayer, fixedLayerOnTop, FreeLayerThickness
+        eps_prime, jcur, pol, FixedLayer, fixed_layer_on_top, FreeLayerThickness
         """
         return Parameter(self._impl.Lambda)
     
@@ -358,7 +358,7 @@ class Ferromagnet(Magnet):
         
         See Also
         --------
-        eps_prime, jcur, Lambda, pol, FixedLayer, fixedLayerOnTop
+        eps_prime, jcur, Lambda, pol, FixedLayer, fixed_layer_on_top
         """
         return Parameter(self._impl.FreeLayerThickness)
     
@@ -380,7 +380,7 @@ class Ferromagnet(Magnet):
     @fixed_layer_on_top.setter
     def fixed_layer_on_top(self, value: bool):
         if not type(value) is bool:
-            raise TypeError("fixedLayerOnTop should be a boolean")
+            raise TypeError("fixed_layer_on_top should be a boolean")
         self._impl.fixed_layer_on_top = value
 
     @property
@@ -389,7 +389,7 @@ class Ferromagnet(Magnet):
         
         See Also
         --------
-        jcur, Lambda, pol, FixedLayer, fixedLayerOnTop, FreeLayerThickness
+        jcur, Lambda, pol, FixedLayer, fixed_layer_on_top, FreeLayerThickness
         """
         return Parameter(self._impl.eps_prime)
     
@@ -403,7 +403,7 @@ class Ferromagnet(Magnet):
         
         See Also
         --------
-        eps_prime, jcur, Lambda, pol, fixedLayerOnTop, FreeLayerThickness
+        eps_prime, jcur, Lambda, pol, fixed_layer_on_top, FreeLayerThickness
         """
         return Parameter(self._impl.FixedLayer)
     
@@ -432,7 +432,7 @@ class Ferromagnet(Magnet):
         
         See Also
         --------
-        eps_prime, jcur, Lambda, FixedLayer, fixedLayerOnTop, FreeLayerThickness, xi
+        eps_prime, jcur, Lambda, FixedLayer, fixed_layer_on_top, FreeLayerThickness, xi
         """
         return Parameter(self._impl.pol)
 
@@ -446,7 +446,7 @@ class Ferromagnet(Magnet):
 
         See Also
         --------
-        eps_prime, Lambda, pol, FixedLayer, fixedLayerOnTop, FreeLayerThickness, xi
+        eps_prime, Lambda, pol, FixedLayer, fixed_layer_on_top, FreeLayerThickness, xi
         """
         return Parameter(self._impl.jcur)
 
