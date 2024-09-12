@@ -53,6 +53,7 @@ class Ferromagnet : public Magnet {
   bool enableOpenBC;
   bool enableZhangLiTorque;
   bool enableSlonczewskiTorque;
+  bool fixedLayerOnTop;
   VectorParameter anisU;
   VectorParameter anisC1;
   VectorParameter anisC2;
