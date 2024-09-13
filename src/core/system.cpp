@@ -6,6 +6,7 @@
 #include "datatypes.hpp"
 #include "gpubuffer.hpp"
 #include "grid.hpp"
+#include "reduce.hpp"
 #include "world.hpp"
 
 System::System(const World* world, Grid grid, GpuBuffer<bool> geometry, GpuBuffer<uint> regions)
@@ -63,10 +64,10 @@ const GpuBuffer<uint>& System::regions() const {
 }
 
 void System::checkIdxInRegions(int idx) const {
-  std::vector<uint> idxs = regions_.getData(); // Is this the most efficient way?
-  if (std::find(idxs.begin(), idxs.end(), idx) == idxs.end())
+  if (!idxInRegions(regions_, idx)) {
     throw std::invalid_argument("The region index " + std::to_string(idx)
                                                    + " is not defined.");
+  }
 }
 
 int System::cellsingeo() const {
