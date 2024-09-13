@@ -23,7 +23,7 @@ geo = Circle(diam).translate(diam/2, diam/2, 0)
 
 # Initialize a Voronoi Tesselator using a grainsize of 40e-9 m
 tessellator = VoronoiTessellator(world, grid, 40e-9)
-regions = tessellator.generate()
+regions = tessellator.tessellation
 
 # Create Ferromagnet
 magnet = Ferromagnet(world, grid, geometry=geo, regions=regions)

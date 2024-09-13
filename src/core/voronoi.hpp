@@ -50,6 +50,7 @@ class VoronoiTessellator {
 
 public:
   Grid grid;
+  GpuBuffer<uint> tessellation;
 private:
   real grainsize_;
   real3 cellsize_;

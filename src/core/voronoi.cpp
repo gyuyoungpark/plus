@@ -13,6 +13,7 @@ VoronoiTessellator::VoronoiTessellator(Grid grid, real grainsize, real3 cellsize
         real tilesize_in_grains = 2; // tile size in unit grains
         tilesize_ = tilesize_in_grains * grainsize;
         lambda_ = tilesize_in_grains * tilesize_in_grains;
+        tessellation = this->generate();
     }
 
 GpuBuffer<uint> VoronoiTessellator::generate() {

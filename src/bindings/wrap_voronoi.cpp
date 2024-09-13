@@ -13,10 +13,10 @@ void wrap_voronoi(py::module& m) {
 
         .def(py::init<Grid, real, real3>(), py::arg("grid"), py::arg("grainsize"), py::arg("cellsize"))
         // TODO: create template function (wrap_system.cpp)
-        .def("generate", [](VoronoiTessellator t) {
+        .def_property_readonly("tessellation", [](VoronoiTessellator t) {
             uint* tess = t.generate().getHostCopy();
 
-            // Create python capsule which will free geometry
+            // Create python capsule which will free tess
             py::capsule free_when_done(tess, [](void* p) {
             uint* tess = reinterpret_cast<uint*>(p);
             delete[] tess;
