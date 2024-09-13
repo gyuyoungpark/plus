@@ -14,8 +14,6 @@ class CuField;
 
 class Field : public FieldQuantity {
   int ncomp_;
-  int ncells_;
-  int3 gridsize_;
   std::shared_ptr<const System> system_;
   std::vector<GpuBuffer<real>> buffers_;
   GpuBuffer<real*> bufferPtrs_;
@@ -24,7 +22,6 @@ class Field : public FieldQuantity {
   Field();
   Field(std::shared_ptr<const System> system, int nComponents);
   Field(std::shared_ptr<const System> system, int nComponents, real value);
-  Field(int nComponents, int3 gridsize, int size);
   Field(const Field&);   // copies gpu field data
   Field(Field&& other);  // moves gpu field data
 
@@ -43,13 +40,11 @@ class Field : public FieldQuantity {
 
   void clear();
 
-  bool empty() const { return (!system_ && ncells_ == 0 && ncomp_ == 0)
-                           || (system_ && (ncells_ == 0 || ncomp_ == 0)); }
+  bool empty() const { return !system_ || grid().ncells() == 0 || ncomp_ == 0; }
   std::shared_ptr<const System> system() const;
   int ncomp() const { return ncomp_; }
   real* device_ptr(int comp) const { return buffers_[comp].get(); }
-  int ncells() const { return ncells_; }
-  int3 gridsize() const { return gridsize_; }
+
   CuField cu() const;
 
   /** Copy field values into a C-style array from the device to host memory.
