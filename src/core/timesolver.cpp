@@ -22,7 +22,7 @@ TimeSolver::~TimeSolver() {}
 
 void TimeSolver::setRungeKuttaMethod(RKmethod method) {
   stepper_ = std::make_unique<RungeKuttaStepper>(this, method);
-  timestep_ = sensibleTimeStep();
+  if (!fixedTimeStep_) timestep_ = sensibleTimeStep();
   method_ = method;
 }
 
@@ -96,6 +96,8 @@ void TimeSolver::run(real duration) {
   runwhile(runcondition);
 
   // make final time step to end exactly at stoptime
+  real oldTimestep = timestep();
   setTimeStep(stoptime - time_);
   step();
+  setTimeStep(oldTimestep);
 }
