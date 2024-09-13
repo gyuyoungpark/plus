@@ -31,7 +31,7 @@ def simulations(request):
     # Slonczewski parameters chosen specifically so no term is zero
     pol = 0.5669
     Lambda = 2
-    eps_prime = 1
+    epsilon_prime = 1
     jz = -6e-3/(length*width)
     jcur = (0, 0, jz)
     mp = (np.cos(20*np.pi/180), np.sin(20*np.pi/180), 0)  # fixed layer mag
@@ -51,9 +51,9 @@ def simulations(request):
 
     magnet.pol = pol
     magnet.Lambda = Lambda
-    magnet.eps_prime = eps_prime
+    magnet.epsilon_prime = epsilon_prime
     magnet.jcur = jcur
-    magnet.FixedLayer = mp
+    magnet.fixed_layer = mp
     magnet.fixed_layer_on_top = request.param
 
     timepoints = np.arange(0, max_time + 0.5*step_time, step_time)
@@ -82,7 +82,7 @@ def simulations(request):
 
             Pol = {pol}
             Lambda = {Lambda}
-            EpsilonPrime = {eps_prime}
+            EpsilonPrime = {epsilon_prime}
             J = vector{tuple(jcur)}
             FixedLayer = vector{tuple(mp)}
             FixedLayerPosition = {FixedLayerPosition}

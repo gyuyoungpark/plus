@@ -65,7 +65,7 @@ class Ferromagnet : public Magnet {
   VectorParameter anisC1;
   VectorParameter anisC2;
   VectorParameter jcur;
-  VectorParameter FixedLayer;
+  VectorParameter fixedLayer;
   /** Uniform bias magnetic field which will affect a ferromagnet.
    * Measured in Teslas.
    */
@@ -80,8 +80,8 @@ class Ferromagnet : public Magnet {
   Parameter alpha;
   Parameter temperature;
   Parameter Lambda;
-  Parameter FreeLayerThickness;
-  Parameter eps_prime;
+  Parameter freeLayerThickness;
+  Parameter epsilonPrime;
   Parameter xi;
   Parameter pol;
   Parameter appliedPotential;
