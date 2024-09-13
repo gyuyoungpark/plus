@@ -20,9 +20,10 @@ class VoronoiTessellator:
         """Create a dictionary where each region (key) is linked
         to a list of grid coordinates (value)."""
         from collections import defaultdict
-        _, nz, ny, nx = self._impl.tessellation.shape
+        tessellation = self.tessellation
+        _, nz, ny, nx = tessellation.shape
         
-        idxs = self._impl.tessellation.flatten()
+        idxs = tessellation.flatten()
         coords = _np.array(_np.meshgrid(range(nx), range(ny), range(nz), indexing='ij')
                           ).reshape(3, -1).T
         
