@@ -30,40 +30,47 @@ class Magnet(ABC):
            geometry.
         3. Use a function which takes x, y, and z coordinates as arguments and returns
            true if this position is inside the geometry and false otherwise.
-
+       
+    regions : None, ndarray, or callable (default=None)
+        The regional structure of a magnet can be set in the same three ways
+        as the geometry. This parameter indexes each grid cell to a certain region.
     name : str (default="")
         The magnet's identifier. If the name is empty (the default), a name for the
         magnet will be created.
     """
     
     @abstractmethod  # TODO: does this work?
-    def __init__(self, _impl_function, world, grid, name="", geometry=None):
+    def __init__(self, _impl_function, world, grid, name="", geometry=None, regions=None):
+   
+        geometry_array = self._get_mask_array(geometry, grid, world, "geometry")
+        regions_array = self._get_mask_array(regions, grid, world, "regions")
+        self._impl = _impl_function(grid._impl, geometry_array, regions_array, name)
 
-        if geometry is None:
-            self._impl = _impl_function(grid._impl, name)
-            return
-
-        if callable(geometry):
+    @staticmethod
+    def _get_mask_array(input, grid, world, input_name):
+        if input is None:
+            return None
+        
+        T = bool if input_name == "geometry" else int
+        if callable(input):
             # construct meshgrid of x, y, and z coordinates for the grid
             nx, ny, nz = grid.size
             cs = world.cellsize
             idxs = _np.flip(_np.mgrid[0:nz, 0:ny, 0:nx], axis=0)  # meshgrid of indices
             x, y, z = [(grid.origin[i] + idxs[i]) * cs[i] for i in [0, 1, 2]]
 
-            # evaluate the geometry function for each position in this meshgrid
-            geometry_array = _np.vectorize(geometry, otypes=[bool])(x, y, z)
+            # evaluate the input function for each position in this meshgrid
+            return _np.vectorize(input, otypes=[T])(x, y, z)
 
-        else:
-            # When here, the geometry is not None, not callable, so it should be an
-            # ndarray or at least should be convertable to ndarray
-            geometry_array = _np.array(geometry, dtype=bool)
-            if geometry_array.shape != grid.shape:
-                raise ValueError(
-                    "The dimensions of the geometry do not match the dimensions "
-                    + "of the grid."
-                )
-        self._impl = _impl_function(grid._impl, geometry_array, name)
-
+        # When here, the input is not None, not callable, so it should be an
+        # ndarray or at least should be convertable to ndarray
+        input_array = _np.array(input, dtype=T)
+        if input_array.shape != grid.shape:
+            raise ValueError(
+                "The dimensions of the {} do not match the dimensions "
+                + "of the grid.".format(input_name)
+                    )
+        return input_array
 
     @abstractmethod
     def __repr__(self):

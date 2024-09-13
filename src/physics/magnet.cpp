@@ -28,12 +28,12 @@ Magnet::Magnet(std::shared_ptr<System> system_ptr,
                                 "in all directions.");
 }
 
-Magnet::Magnet(MumaxWorld* world,
+/*Magnet::Magnet(MumaxWorld* world,
                Grid grid,
                std::string name,
                GpuBuffer<bool> geometry)
     : Magnet(std::make_shared<System>(world, grid, geometry), name) {}
-
+*/
 Magnet::~Magnet() {
   // TODO: stray field pointers should be smart
   for (auto& entry : strayFields_) {

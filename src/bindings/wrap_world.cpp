@@ -11,6 +11,28 @@
 #include "timesolver.hpp"
 #include "wrappers.hpp"
 
+/* Helper function to add any magnet instance to the world*/
+template<typename FuncType>
+auto add_magnet(MumaxWorld* world,
+                Grid grid,
+                py::object geometryArray,
+                py::object regionsArray,
+                std::string& name,
+                FuncType addFunc) {
+     GpuBuffer<bool> geometry;
+     GpuBuffer<uint> regions;
+
+     if (!py::isinstance<py::none>(geometryArray)) {
+          py::buffer_info buf = geometryArray.cast<py::array_t<bool>>().request();
+          geometry = GpuBuffer<bool>(buf.size, reinterpret_cast<bool*>(buf.ptr));
+     }
+     if (!py::isinstance<py::none>(regionsArray)) {
+          py::buffer_info buf = regionsArray.cast<py::array_t<uint>>().request();
+          regions = GpuBuffer<uint>(buf.size, reinterpret_cast<uint*>(buf.ptr));
+     }
+     return (world->*addFunc)(grid, geometry, regions, name);
+}
+
 void wrap_world(py::module& m) {
   // TODO: avoid destructor being called when python ref out of scope
 
@@ -29,45 +51,32 @@ void wrap_world(py::module& m) {
                      "uniform external magnetic field")
       .def_readwrite("RelaxTorqueThreshold", &MumaxWorld::RelaxTorqueThreshold)
 
-      .def(
-          "add_ferromagnet",
-          [](MumaxWorld* world, Grid grid, std::string name) {
-            return world->addFerromagnet(grid, name);
+      .def("add_ferromagnet",
+          [](MumaxWorld* world, Grid grid, py::object geometryArray=py::none(),
+             py::object regionsArray=py::none(), std::string name="") {
+               return add_magnet(world, grid,
+                                 geometryArray,
+                                 regionsArray,
+                                 name,
+                                 &MumaxWorld::addFerromagnet);
+
           },
-          py::arg("grid"), py::arg("name") = std::string(""),
+          py::arg("grid"), py::arg("geometry_array")=py::none(),
+          py::arg("regions_array")=py::none(), py::arg("name") = std::string(""),
           py::return_value_policy::reference)
 
-      .def(
-          "add_ferromagnet",
-          [](MumaxWorld* world, Grid grid, py::array_t<bool> geometryArray,
-             std::string name) {
-            py::buffer_info buf = geometryArray.request();
-            GpuBuffer<bool> geometry(buf.size,
-                                     reinterpret_cast<bool*>(buf.ptr));
-            return world->addFerromagnet(grid, geometry, name);
+      .def("add_antiferromagnet",
+          [](MumaxWorld* world, Grid grid, py::object geometryArray=py::none(),
+             py::object regionsArray=py::none(), std::string name="") {
+               return add_magnet(world, grid,
+                                 geometryArray,
+                                 regionsArray,
+                                 name,
+                                 &MumaxWorld::addAntiferromagnet);
           },
-          py::arg("grid"), py::arg("geometry"),
-          py::arg("name") = std::string(""), py::return_value_policy::reference)
-
-      .def(
-          "add_antiferromagnet",
-          [](MumaxWorld* world, Grid grid, std::string name) {
-            return world->addAntiferromagnet(grid, name);
-          },
-          py::arg("grid"), py::arg("name") = std::string(""),
+          py::arg("grid"), py::arg("geometry_array")=py::none(),
+          py::arg("regions_array")=py::none(), py::arg("name") = std::string(""),
           py::return_value_policy::reference)
-
-      .def(
-          "add_antiferromagnet",
-          [](MumaxWorld* world, Grid grid, py::array_t<bool> geometryArray,
-             std::string name) {
-            py::buffer_info buf = geometryArray.request();
-            GpuBuffer<bool> geometry(buf.size,
-                                     reinterpret_cast<bool*>(buf.ptr));
-            return world->addAntiferromagnet(grid, geometry, name);
-          },
-          py::arg("grid"), py::arg("geometry"),
-          py::arg("name") = std::string(""), py::return_value_policy::reference)
 
       .def("get_ferromagnet", &MumaxWorld::getFerromagnet, py::arg("name"),
            "get a reference to a ferromagnet by name",

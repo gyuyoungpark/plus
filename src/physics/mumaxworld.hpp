@@ -39,17 +39,15 @@ class MumaxWorld : public World {
   void checkAddibility(Grid grid, std::string name) const;
 
   /** Add a ferromagnet to the world. */
-  Ferromagnet* addFerromagnet(Grid grid, std::string name = "");
-  /** Add an antiferromagnet to the world. */
-  Antiferromagnet* addAntiferromagnet(Grid grid, std::string name = "");
-
-  /** Add a ferromagnet to the world with a non-trivial geometry. */
   Ferromagnet* addFerromagnet(Grid grid,
                               GpuBuffer<bool> geometry,
+                              GpuBuffer<uint> regions,
                               std::string name = "");
-  /** Add an antiferromagnet to the world with a non-trivial geometry. */
+
+  /** Add an antiferromagnet to the world. */
   Antiferromagnet* addAntiferromagnet(Grid grid,
                                       GpuBuffer<bool> geometry,
+                                      GpuBuffer<uint> regions,
                                       std::string name = "");
 
     

@@ -154,6 +154,16 @@ class Parameter(FieldQuantity):
         else:
             self._impl.set(value)
 
+    def set_in_region(self, region_idx, value):
+        """
+        Set a uniform, static value in a specified region.
+        """
+        assert (isinstance(value, (float, int)) or
+            (isinstance(value, tuple) and len(value) == 3)
+            ), "The value should be uniform and static."
+        self._impl.set_in_region(region_idx, value)
+
+
     def _set_func(self, func):
         X, Y, Z = self.meshgrid
         self._impl.set(_np.vectorize(func)(X, Y, Z))

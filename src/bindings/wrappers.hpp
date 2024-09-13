@@ -5,11 +5,12 @@
 #include <pybind11/operators.h>
 
 #include "cast.hpp"
+#include "fieldToArray.hpp" // Seperate header file for template declaration
 
 namespace py = pybind11;
 
 class Field;
-py::array_t<real> fieldToArray(const Field&);
+
 void setArrayInField(Field&, py::array_t<real>);
 
 void wrap_antiferromagnet(py::module& m);
@@ -32,3 +33,4 @@ void wrap_poissonsolver(py::module& m);
 void wrap_linsolver(py::module& m);
 void wrap_system(py::module& m);
 void wrap_dmitensor(py::module& m);
+void wrap_voronoi(py::module& m);

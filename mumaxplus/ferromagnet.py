@@ -34,13 +34,16 @@ class Ferromagnet(Magnet):
         3. Use a function which takes x, y, and z coordinates as arguments and returns
            true if this position is inside the geometry and false otherwise.
 
+    regions : None, ndarray, or callable (default=None)
+        The regional structure of a ferromagnet can be set in the same three ways
+        as the geometry. This parameter indexes each grid cell to a certain region.
     name : str (default="")
         The ferromagnet's identifier. If the name is empty (the default), a name for the
         ferromagnet will be created.
     """
 
-    def __init__(self, world, grid, name="", geometry=None):
-        super().__init__(world._impl.add_ferromagnet, world, grid, name, geometry)
+    def __init__(self, world, grid, name="", geometry=None, regions=None):
+        super().__init__(world._impl.add_ferromagnet, world, grid, name, geometry, regions)
 
     def __repr__(self):
         """Return Ferromagnet string representation."""
@@ -195,6 +198,20 @@ class Ferromagnet(Magnet):
     def RelaxTorqueThreshold(self, value):
         assert value != 0, "The relax threshold should not be zero."
         self._impl.RelaxTorqueThreshold = value
+
+    def set_inter_exchange(self, idx1, idx2, value):
+        """ Set the ferromagnetic exchange constant between region
+        with index idx1 and region with index idx2.
+        
+        If not set, the exchange between different regions is 0.
+
+        The current implementation only works for Ferromagnetic systems.
+        
+        See Also
+        --------
+        aex
+        """
+        return self._impl.set_inter_exchange(idx1, idx2, value)
 
     # ----- MATERIAL PARAMETERS -----------
 

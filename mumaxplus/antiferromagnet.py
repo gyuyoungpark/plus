@@ -31,15 +31,18 @@ class Antiferromagnet(Magnet):
            geometry.
         3. Use a function which takes x, y, and z coordinates as arguments and returns
            true if this position is inside the geometry and false otherwise.
-
+    
+    regions : None, ndarray, or callable (default=None)
+        The regional structure of an antiferromagnet can be set in the same three ways
+        as the geometry. This parameter indexes each grid cell to a certain region.
     name : str (default="")
         The antiferromagnet's identifier. If the name is empty (the default), a name for the
         antiferromagnet will be created.
     """
 
-    def __init__(self, world, grid, name="", geometry=None):
+    def __init__(self, world, grid, name="", geometry=None, regions=None):
         super().__init__(world._impl.add_antiferromagnet,
-                         world, grid, name, geometry)
+                         world, grid, name, geometry, regions)
 
     def __repr__(self):
         """Return Antiferromagnet string representation."""

@@ -30,6 +30,8 @@ add_library(core STATIC
     timesolver.hpp
     variable.hpp
     variable.cpp
+    voronoi.cpp
+    voronoi.hpp
     world.cpp
     world.hpp
 )
