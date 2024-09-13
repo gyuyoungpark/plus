@@ -2,10 +2,11 @@
 #include <random>
 
 #include "field.hpp"
+#include "gpubuffer.hpp"
 #include "voronoi.hpp"
 
 VoronoiTessellator::VoronoiTessellator(Grid grid, real grainsize, real3 cellsize)
-    : grid_(grid),
+    : grid(grid),
       grainsize_(grainsize),
       cellsize_(cellsize),
       distReal_(0.0, 1.0) {
@@ -14,21 +15,18 @@ VoronoiTessellator::VoronoiTessellator(Grid grid, real grainsize, real3 cellsize
         lambda_ = tilesize_in_grains * tilesize_in_grains;
     }
 
-Field VoronoiTessellator::generate() {
+GpuBuffer<uint> VoronoiTessellator::generate() {
 
-   std::vector<real> data(grid_.ncells());
-   for (int nx = 0; nx < grid_.size().x; nx++) {
-        for (int ny = 0; ny < grid_.size().y; ny++) {
+   std::vector<uint> data(grid.ncells());
+   for (int nx = 0; nx < grid.size().x; nx++) {
+        for (int ny = 0; ny < grid.size().y; ny++) {
             real3 coo = real3{nx * cellsize_.x,
                               ny * cellsize_.y,
                               0};
-            data[nx * grid_.size().y + ny] = regionOf(coo);
+            data[nx * grid.size().y + ny] = regionOf(coo);
         }
     }
-    Field idxField(1, grid_.size(), data.size());
-    idxField.setData(data);
-
-    return idxField;
+    return GpuBuffer<uint>(data);
 }
 
 uint VoronoiTessellator::regionOf(real3 coo) {

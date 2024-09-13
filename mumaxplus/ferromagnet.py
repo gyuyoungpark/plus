@@ -203,8 +203,9 @@ class Ferromagnet(Magnet):
         """ Set the ferromagnetic exchange constant between region
         with index idx1 and region with index idx2.
         
-        If not set, the harmonic mean of the exchange constants of
-        both regions is used.
+        If not set, the exchange between different regions is 0.
+
+        The current implementation only works for Ferromagnetic systems.
         
         See Also
         --------

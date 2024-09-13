@@ -13,7 +13,7 @@ class VoronoiTessellator:
         Returns an ndarray of shape (nz, ny, nx) which is filled
         with region indices."""
 
-        return self.tessellation[0]
+        return self.tessellation
     
     @property
     def indexDictionary(self):
@@ -22,7 +22,7 @@ class VoronoiTessellator:
         from collections import defaultdict
         _, nz, ny, nx = self.tessellation.shape
         
-        idxs = self.tessellation[0].flatten()
+        idxs = self.tessellation.flatten()
         coords = _np.array(_np.meshgrid(range(nx), range(ny), range(nz), indexing='ij')
                           ).reshape(3, -1).T
         

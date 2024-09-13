@@ -33,7 +33,7 @@ class VoronoiTessellator {
   ~VoronoiTessellator() = default;
 
   // * Generate a Voronoi tessellation
-  Field generate();
+  GpuBuffer<uint> generate();
 
  private:
   // * Calc nearest center and assign center index to coo
@@ -48,8 +48,9 @@ class VoronoiTessellator {
   // * Calculate to which tile the given cell belongs
   Tile tileOfCell(real3 coo);
 
+public:
+  Grid grid;
 private:
-  Grid grid_;
   real grainsize_;
   real3 cellsize_;
   real tilesize_;
