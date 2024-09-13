@@ -99,5 +99,5 @@ void TimeSolver::run(real duration) {
   real oldTimestep = timestep();
   setTimeStep(stoptime - time_);
   step();
-  setTimeStep(oldTimestep);
+  if (fixedTimeStep_) setTimeStep(oldTimestep);
 }
