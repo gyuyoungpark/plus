@@ -14,7 +14,7 @@ class CuField;
 
 class Field : public FieldQuantity {
   int ncomp_;
-  int N_;
+  int ncells_;
   int3 gridsize_;
   std::shared_ptr<const System> system_;
   std::vector<GpuBuffer<real>> buffers_;
@@ -43,11 +43,12 @@ class Field : public FieldQuantity {
 
   void clear();
 
-  bool empty() const { return !system_ || N_ == 0 || ncomp_ == 0; }
+  bool empty() const { return (!system_ && ncells_ == 0 && ncomp_ == 0)
+                           || (system_ && (ncells_ == 0 || ncomp_ == 0)); }
   std::shared_ptr<const System> system() const;
   int ncomp() const { return ncomp_; }
   real* device_ptr(int comp) const { return buffers_[comp].get(); }
-  int ncells() const { return N_; }
+  int ncells() const { return ncells_; }
   int3 gridsize() const { return gridsize_; }
   CuField cu() const;
 
@@ -77,11 +78,11 @@ class Field : public FieldQuantity {
    */
   void setData(const std::vector<real>& buffer);
   void setUniformComponent(int comp, real value);
-  void setUniformComponentInRegion(int comp, real value, uint regionIdx);
+  void setUniformComponentInRegion(uint regionIdx, int comp, real value);
   void setUniformValue(real value);
   void setUniformValue(real3 value);
-  void setUniformValueInRegion(real value, uint regionIdx);
-  void setUniformValueInRegion(real3 value, uint regionIdx);
+  void setUniformValueInRegion(uint regionIdx, real value);
+  void setUniformValueInRegion(uint regionIdx, real3 value);
 
 
   void makeZero();

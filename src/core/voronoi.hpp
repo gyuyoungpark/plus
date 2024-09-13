@@ -10,6 +10,7 @@
 struct Center {
   real3 pos;
   uint ridx;
+  Center() : pos{0, 0, 0}, ridx(0) {}
   Center(real3 position, uint region_idx)
       : pos(position), ridx(region_idx) {}
 };
@@ -26,12 +27,12 @@ struct Int3Hash {
     }
 };
 
-class VoronoiTesselator {
+class VoronoiTessellator {
  public:
-  VoronoiTesselator(Grid grid, real grainsize, real3 cellsize);
-  ~VoronoiTesselator() = default;
+  VoronoiTessellator(Grid grid, real grainsize, real3 cellsize);
+  ~VoronoiTessellator() = default;
 
-  // * Generate a Voronoi tesselation
+  // * Generate a Voronoi tessellation
   Field generate();
 
  private:
@@ -47,17 +48,16 @@ class VoronoiTesselator {
   // * Calculate to which tile the given cell belongs
   Tile tileOfCell(real3 coo);
 
-public:
+private:
   Grid grid_;
   real grainsize_;
   real3 cellsize_;
   real tilesize_;
+  uint centerIdx_ = 0;
   std::unordered_map<int3, Tile, Int3Hash> tileCache_;
 
- private:
  // RNG related members
   real lambda_; // Poisson parameter
   std::default_random_engine engine_;
   std::uniform_real_distribution<> distReal_;
-  std::uniform_int_distribution<uint> distInt_; 
 };

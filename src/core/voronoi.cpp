@@ -4,28 +4,25 @@
 #include "field.hpp"
 #include "voronoi.hpp"
 
-VoronoiTesselator::VoronoiTesselator(Grid grid, real grainsize, real3 cellsize)
+VoronoiTessellator::VoronoiTessellator(Grid grid, real grainsize, real3 cellsize)
     : grid_(grid),
       grainsize_(grainsize),
       cellsize_(cellsize),
-      distReal_(0.0, 1.0),
-      distInt_(std::numeric_limits<uint>::min(),
-               std::numeric_limits<uint>::max()) {
+      distReal_(0.0, 1.0) {
         real tilesize_in_grains = 2; // tile size in unit grains
         tilesize_ = tilesize_in_grains * grainsize;
         lambda_ = tilesize_in_grains * tilesize_in_grains;
     }
 
-Field VoronoiTesselator::generate() {
+Field VoronoiTessellator::generate() {
 
-   std::vector<real> data;
+   std::vector<real> data(grid_.ncells());
    for (int nx = 0; nx < grid_.size().x; nx++) {
         for (int ny = 0; ny < grid_.size().y; ny++) {
             real3 coo = real3{nx * cellsize_.x,
                               ny * cellsize_.y,
                               0};
-            uint ridx = regionOf(coo);
-            data.push_back(ridx);
+            data[nx * grid_.size().y + ny] = regionOf(coo);
         }
     }
     Field idxField(1, grid_.size(), data.size());
@@ -34,7 +31,7 @@ Field VoronoiTesselator::generate() {
     return idxField;
 }
 
-uint VoronoiTesselator::regionOf(real3 coo) {
+uint VoronoiTessellator::regionOf(real3 coo) {
     Tile t = tileOfCell(coo);
     Center nearest = Center{coo, 0};
     real mindist = INFINITY;
@@ -54,7 +51,7 @@ uint VoronoiTesselator::regionOf(real3 coo) {
     return nearest.ridx;
 }
 
-std::vector<Center> VoronoiTesselator::centersInTile(int3 pos) {
+std::vector<Center> VoronoiTessellator::centersInTile(int3 pos) {
 
     // Check if centers in this tile are already cached
     auto it = tileCache_.find(pos);
@@ -68,15 +65,14 @@ std::vector<Center> VoronoiTesselator::centersInTile(int3 pos) {
 
     int N = Poisson(lambda_);
 
-    std::vector<Center> centers;
+    std::vector<Center> centers(N);
 
     for (int n = 0; n < N; n++) {
         real cx = (pos.x + distReal_(engine_)) * tilesize_;
         real cy = (pos.y + distReal_(engine_)) * tilesize_;
 
-        Center c(real3{cx, cy, 0}, distInt_(engine_));
-
-        centers.push_back(c);
+        centers[n] = Center(real3{cx, cy, 0}, centerIdx_);
+        centerIdx_ += 1;
     }
     
     // Cache centers belonging to this tile
@@ -88,12 +84,12 @@ std::vector<Center> VoronoiTesselator::centersInTile(int3 pos) {
     return centers;
 }
 
-int VoronoiTesselator::Poisson(real lambda) {
+int VoronoiTessellator::Poisson(real lambda) {
     std::poisson_distribution<int> dist(lambda);
     return dist(engine_);
 }
 
-Tile VoronoiTesselator::tileOfCell(real3 coo) {
+Tile VoronoiTessellator::tileOfCell(real3 coo) {
     return Tile{int3{static_cast<int>(std::floor(coo.x / tilesize_)), // This cannot be the best way...
                      static_cast<int>(std::floor(coo.y / tilesize_)),
                      0}

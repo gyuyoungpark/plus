@@ -28,11 +28,11 @@ void Parameter::set(const Field& values) {
 void Parameter::setInRegion(const uint region_idx, real value) {
   if (isUniform()) {
     Field tmp(system_, 1, uniformValue_);
-    tmp.setUniformValueInRegion(value, region_idx);
+    tmp.setUniformValueInRegion(region_idx, value);
     staticField_ = new Field(tmp);
   }
   else {
-    staticField_->setUniformValueInRegion(value, region_idx);
+    staticField_->setUniformValueInRegion(region_idx, value);
   }
 }
 
@@ -114,11 +114,11 @@ void VectorParameter::setInRegion(const uint region_idx, real3 value) {
   if (isUniform()) {
     Field tmp(system_, 3);
     tmp.setUniformValue(uniformValue_);
-    tmp.setUniformValueInRegion(value, region_idx);
+    tmp.setUniformValueInRegion(region_idx, value);
     staticField_ = new Field(tmp);
   }
   else {
-    staticField_->setUniformValueInRegion(value, region_idx);
+    staticField_->setUniformValueInRegion(region_idx, value);
   }
 }
 

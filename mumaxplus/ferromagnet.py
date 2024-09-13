@@ -199,7 +199,7 @@ class Ferromagnet(Magnet):
         assert value != 0, "The relax threshold should not be zero."
         self._impl.RelaxTorqueThreshold = value
 
-    def setInterExchange(self, idx1, idx2, value):
+    def set_inter_exchange(self, idx1, idx2, value):
         """ Set the ferromagnetic exchange constant between region
         with index idx1 and region with index idx2.
         
@@ -210,7 +210,7 @@ class Ferromagnet(Magnet):
         --------
         aex
         """
-        return self._impl.setInterExchange(idx1, idx2, value)
+        return self._impl.set_inter_exchange(idx1, idx2, value)
 
     # ----- MATERIAL PARAMETERS -----------
 

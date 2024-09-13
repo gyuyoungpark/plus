@@ -95,9 +95,8 @@ class Ferromagnet : public Magnet {
   // Members related to regions
   std::unordered_map<uint, uint> indexMap_;
   GpuBuffer<real> interExchange_;
-    // Device pointers
-  real* interExch_ = nullptr;
-  uint* regPtr_ = nullptr;
+  real* interExchPtr_ = nullptr; // Device pointer to interexch GpuBuffer
+  uint* regPtr_ = nullptr; // Device pointer to GpuBuffer with unique region idxs
 };
 
 __device__ __host__ inline int getLutIndex(int i, int j) {
@@ -109,7 +108,7 @@ __device__ __host__ inline int getLutIndex(int i, int j) {
 
 __device__ inline real getInterExchange(uint idx1, uint idx2,
                                         real const* interEx, uint const* regPtr) {
-  int i = findIndex(regPtr, idx1);
+  int i = findIndex(regPtr, idx1); // TODO: CUDAfy this
   int j = findIndex(regPtr, idx2);
   return interEx[getLutIndex(i, j)];
 }

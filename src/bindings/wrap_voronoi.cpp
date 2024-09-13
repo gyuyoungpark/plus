@@ -9,8 +9,8 @@
 
 
 void wrap_voronoi(py::module& m) {
-    py::class_<VoronoiTesselator>(m, "VoronoiTesselator")
+    py::class_<VoronoiTessellator>(m, "VoronoiTessellator")
 
         .def(py::init<Grid, real, real3>(), py::arg("grid"), py::arg("grainsize"), py::arg("cellsize"))
-        .def("generate", [](VoronoiTesselator t) { return fieldToArray(t.generate()); });
+        .def("generate", [](VoronoiTessellator t) { return fieldToArray<uint>(t.generate()); });
 }

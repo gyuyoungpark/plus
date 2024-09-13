@@ -60,17 +60,16 @@ class Magnet(ABC):
             x, y, z = [(grid.origin[i] + idxs[i]) * cs[i] for i in [0, 1, 2]]
 
             # evaluate the input function for each position in this meshgrid
-            input_array = _np.vectorize(input, otypes=[T])(x, y, z)
+            return _np.vectorize(input, otypes=[T])(x, y, z)
 
-        else:
-            # When here, the input is not None, not callable, so it should be an
-            # ndarray or at least should be convertable to ndarray
-            input_array = _np.array(input, dtype=T)
-            if input_array.shape != grid.shape:
-                raise ValueError(
-                    "The dimensions of the {} do not match the dimensions "
-                    + "of the grid.".format(input_name)
-                )
+        # When here, the input is not None, not callable, so it should be an
+        # ndarray or at least should be convertable to ndarray
+        input_array = _np.array(input, dtype=T)
+        if input_array.shape != grid.shape:
+            raise ValueError(
+                "The dimensions of the {} do not match the dimensions "
+                + "of the grid.".format(input_name)
+                    )
         return input_array
 
     @abstractmethod

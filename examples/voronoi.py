@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from mumaxplus import Ferromagnet, Grid, World
-from mumaxplus.util import Circle, VoronoiTesselator
+from mumaxplus.util import Circle, VoronoiTessellator
 from mumaxplus.util import show_field, vortex
 
 # Set up simulation parameters
@@ -22,9 +22,9 @@ diam = N*c
 geo = Circle(diam).translate(diam/2, diam/2, 0)
 
 # Initialize a Voronoi Tesselator using a grainsize of 40e-9 m
-tesselator = VoronoiTesselator(world, grid, 40e-9)
-regions = tesselator.generate()
-print(regions.shape)
+tessellator = VoronoiTessellator(world, grid, 40e-9)
+regions = tessellator.generate()
+
 # Create Ferromagnet
 magnet = Ferromagnet(world, grid, geometry=geo, regions=regions)
 magnet.alpha = 3
@@ -35,7 +35,7 @@ magnet.msat = 860e3
 magnet.magnetization = vortex(magnet.center, 2*c, 1, 1)
 show_field(magnet.magnetization)
 
-for i in tesselator.indices():
+for i in tessellator.indices:
     # Set random anisotropy axes in each region
     anisC1 = tuple(np.random.normal(size=3))
     anisC2 = tuple(np.random.normal(size=3))

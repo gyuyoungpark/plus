@@ -99,5 +99,5 @@ void wrap_parameter(py::module& m) {
       })
       .def("set_in_region", [](VectorParameter* p, uint regionIdx, real3 value)
                                 { p->setInRegion(regionIdx, value);
-      });;
+      });
 }

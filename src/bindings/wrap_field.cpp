@@ -16,34 +16,6 @@ void wrap_field(py::module& m) {
            [](Field* f, py::array_t<real> data) { setArrayInField(*f, data); });
 }
 
-py::array_t<real> fieldToArray(const Field& f) {
-  real* data = new real[f.ncells() * f.ncomp()];
-  f.getData(data);
-
-  // Create a Python object that will free the allocated
-  // memory when destroyed
-  // TODO: figure out how this works
-  // https://stackoverflow.com/questions/44659924/returning-numpy-arrays-via-pybind11
-  py::capsule free_when_done(data, [](void* p) {
-    real* data = reinterpret_cast<real*>(p);
-    delete[] data;
-  });
-
-  int shape[4];
-  shape[0] = f.ncomp();
-  shape[1] = f.gridsize().z;
-  shape[2] = f.gridsize().y;
-  shape[3] = f.gridsize().x;
-
-  int strides[4];
-  strides[0] = sizeof(real) * shape[3] * shape[2] * shape[1];
-  strides[1] = sizeof(real) * shape[3] * shape[2];
-  strides[2] = sizeof(real) * shape[3];
-  strides[3] = sizeof(real);
-
-  return py::array_t<real>(shape, strides, data, free_when_done);
-}
-
 void setArrayInField(Field& f, py::array_t<real> data) {
   ssize_t ndim = data.ndim();
 
