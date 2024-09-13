@@ -46,7 +46,7 @@ real TimeSolver::sensibleTimeStep() const {
 
 void TimeSolver::setEquations(std::vector<DynamicEquation> eqs) {
   eqs_ = eqs;
-  timestep_ = sensibleTimeStep();
+  if (!fixedTimeStep_) timestep_ = sensibleTimeStep();
 }
 
 void TimeSolver::adaptTimeStep(real correctionFactor) {
