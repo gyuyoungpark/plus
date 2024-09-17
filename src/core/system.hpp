@@ -5,6 +5,8 @@
 #include "grid.hpp"
 #include "world.hpp"
 
+#include <unordered_map>
+
 class CuSystem;
 
 class System {
@@ -59,6 +61,9 @@ class System {
    * kernels. */
   CuSystem cu() const;
 
+ public:
+  std::vector<uint> uniqueRegions;
+  std::unordered_map<uint, uint> indexMap;
  private:
   const World* world_;
   Grid grid_;

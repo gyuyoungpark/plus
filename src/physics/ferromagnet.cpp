@@ -50,7 +50,8 @@ Ferromagnet::Ferromagnet(std::shared_ptr<System> system_ptr,
       conductivity(system(), 0.0),
       amrRatio(system(), 0.0),
       RelaxTorqueThreshold(-1.0),
-      poissonSystem(this) {
+      poissonSystem(this),
+      interExch(system()) {
     {// Initialize random magnetization
     // TODO: this can be done much more efficient somewhere else
     int nvalues = 3 * this->grid().ncells();

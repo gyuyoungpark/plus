@@ -24,6 +24,19 @@ System::System(const World* world, Grid grid, GpuBuffer<bool> geometry, GpuBuffe
         "The size of the region buffer does not match the size of the "
         "system.");
   }
+
+  if (regions.size() != 0) {
+    std::vector<uint> regionBuffer;
+    std::unordered_map<uint, uint> indices;
+
+    for (const auto& region : regions.getData()) {
+      if (indices.emplace(region, regionBuffer.size()).second) {
+        regionBuffer.push_back(region);
+      }
+    }
+    uniqueRegions = std::move(regionBuffer);
+    indexMap = std::move(indices);
+  }
 }
 
 const World* System::world() const {

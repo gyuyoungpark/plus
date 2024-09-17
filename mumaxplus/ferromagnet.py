@@ -243,6 +243,11 @@ class Ferromagnet(Magnet):
         self.aex.set(value)
 
     @property
+    def inter_exchange(self):
+        """Doc"""
+        return Parameter(self._impl.inter_exchange)
+
+    @property
     def ku1(self):
         """Uniaxial anisotropy parameter Ku1 (J/m³).
         

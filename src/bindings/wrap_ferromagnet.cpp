@@ -59,6 +59,7 @@ void wrap_ferromagnet(py::module& m) {
       .def_readonly("amr_ratio", &Ferromagnet::amrRatio)
       .def_readwrite("RelaxTorqueThreshold", &Ferromagnet::RelaxTorqueThreshold)
       .def_readonly("poisson_system", &Ferromagnet::poissonSystem)
+      .def_readonly("inter_exchange", &Ferromagnet::interExch)
       
       .def("minimize", &Ferromagnet::minimize, py::arg("tol"), py::arg("nsamples"))
       .def("relax", &Ferromagnet::relax, py::arg("tol"))

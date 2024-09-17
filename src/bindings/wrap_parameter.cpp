@@ -5,6 +5,7 @@
 
 #include "field.hpp"
 #include "fieldquantity.hpp"
+#include "inter_parameter.hpp"
 #include "parameter.hpp"
 #include "variable.hpp"
 #include "wrappers.hpp"
@@ -100,4 +101,7 @@ void wrap_parameter(py::module& m) {
       .def("set_in_region", [](VectorParameter* p, uint regionIdx, real3 value)
                                 { p->setInRegion(regionIdx, value);
       });
+
+  py::class_<InterParameter>(m, "InterParameter")
+      .def("set_between", [](InterParameter* p, uint i, uint j, real value) {p->setBetween(i, j, value);});
 }

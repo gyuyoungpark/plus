@@ -13,6 +13,7 @@
 #include "field.hpp"
 #include "gpubuffer.hpp"
 #include "grid.hpp"
+#include "inter_parameter.hpp"
 #include "magnet.hpp"
 #include "parameter.hpp"
 #include "poissonsystem.hpp"
@@ -87,6 +88,7 @@ class Ferromagnet : public Magnet {
   Parameter conductivity;
   Parameter amrRatio;
   real RelaxTorqueThreshold;
+  InterParameter interExch;
   
   curandGenerator_t randomGenerator;
 

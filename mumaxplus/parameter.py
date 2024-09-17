@@ -163,6 +163,12 @@ class Parameter(FieldQuantity):
             ), "The value should be uniform and static."
         self._impl.set_in_region(region_idx, value)
 
+    def set_between(self, i, j, value):
+        assert isinstance(self._impl, _cpp.InterParameter
+                          ), ("Cannot set value of a regular Parameter" +
+                              "between different regions")
+        self._impl.set_between(i, j, value)
+
 
     def _set_func(self, func):
         X, Y, Z = self.meshgrid
