@@ -1,19 +1,13 @@
-
-
-#include "cudalaunch.hpp"
+#include "cudalaunch.hpp" // Still necessary?
 #include "inter_parameter.hpp"
 #include "reduce.hpp"
 
-#include <iostream>
-
-
-InterParameter::InterParameter(std::shared_ptr<const System> system)
+InterParameter::InterParameter(std::shared_ptr<const System> system, real value)
     : system_(system),
       regions_(system->regions()),
-      indexMap(system->indexMap),
       uniqueRegions_(GpuBuffer<uint>(system->uniqueRegions)) {
         size_t N = system->uniqueRegions.size();
-        valuesbuffer_ = GpuBuffer<real>(N * (N + 1) / 2);
+        valuesbuffer_ = GpuBuffer<real>(std::vector<real>(N * (N + 1) / 2, value));
         numRegions_ = N;
       }
 
@@ -30,19 +24,12 @@ GpuBuffer<uint> InterParameter::uniqueRegions() const {
     return uniqueRegions_;
 }
 
-GpuBuffer<real> InterParameter::values() const {
+const GpuBuffer<real>& InterParameter::values() const {
     return valuesbuffer_;
 }
 
 size_t InterParameter::numberOfRegions() const {
     return numRegions_;
-}
-
-void InterParameter::checkIdxInRegions(uint idx) const {
-    if(!idxInRegions(regions_, idx)) {
-        throw std::invalid_argument("The region index " + std::to_string(idx)
-                                                   + " is not defined.");
-    }
 }
 
 __global__ void k_setBetween(real* values, int index, real value) {
@@ -51,16 +38,16 @@ __global__ void k_setBetween(real* values, int index, real value) {
 
 void InterParameter::setBetween(uint idx1, uint idx2, real value) {
         
-    // TODO: this function constitutes 5 kernel calls ---> replace by one general k_setBetween
+    // TODO: this function constitutes 5 kernel calls -> replace by one general k_setBetween?
     
     system_->checkIdxInRegions(idx1);
     system_->checkIdxInRegions(idx2);
 
-    // DOES THIS REPLACE INDEXMAP?????
     int i = getIdx(uniqueRegions_.get(), numRegions_, idx1);
     int j = getIdx(uniqueRegions_.get(), numRegions_, idx2);
     
     int index;
+    // TODO: replace by getLutIndex
     if (i <= j)
         index = j * (j + 1) / 2 + i;
     else

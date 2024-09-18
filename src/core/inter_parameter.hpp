@@ -1,7 +1,5 @@
 #pragma once
 
-#include <unordered_map>
-
 #include "datatypes.hpp"
 #include "gpubuffer.hpp"
 #include "reduce.hpp"
@@ -15,24 +13,20 @@ class CuInterParameter;
 
 class InterParameter {
  public:
-   explicit InterParameter(std::shared_ptr<const System> system);
+   explicit InterParameter(std::shared_ptr<const System> system, real value);
 
    ~InterParameter();
 
    GpuBuffer<uint> regions() const;
    GpuBuffer<uint> uniqueRegions() const;
-   GpuBuffer<real> values() const;
+   const GpuBuffer<real>& values() const;
    size_t numberOfRegions() const;
 
    // TODO: implement get()
 
-   void checkIdxInRegions(uint) const; // CAN THIS FUNCTION BE REMOVED???
    void setBetween(uint i, uint j, real value);
 
    CuInterParameter cu() const;
-
- public:
-   std::unordered_map<uint, uint> indexMap;
 
  private:
     GpuBuffer<uint> uniqueRegions_;

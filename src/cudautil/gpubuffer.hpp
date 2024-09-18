@@ -33,8 +33,8 @@ class GpuBuffer {
 
   // ____________________________________________________________________GETTERS
 
-  __host__ __device__ size_t size() const { return size_; } /** Number of elements in buffer. */
-  __host__ __device__ T* get() const { return ptr_; }       /** Device ptr of the buffer. */
+  size_t size() const { return size_; } /** Number of elements in buffer. */
+  T* get() const { return ptr_; }       /** Device ptr of the buffer. */
   std::vector<T> getData() const;                           /** Get copy of data on the host. */
 
   /**
@@ -62,17 +62,6 @@ class GpuBuffer {
   T* ptr_ = nullptr;
   size_t size_ = 0;
 };
-
-template <typename T>
-__device__ inline int findIndex(const T* buffer, T value) {
-    int i = 0;
-    while (true) {
-        if (buffer[i] == value) {
-            return i;
-        }
-        ++i;
-    }
-}
 
 //-------------------------------------------------------------------------------
 // IMPLEMENTATION OF GPUBUFFER METHODS

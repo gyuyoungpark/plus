@@ -26,6 +26,7 @@ System::System(const World* world, Grid grid, GpuBuffer<bool> geometry, GpuBuffe
   }
 
   if (regions.size() != 0) {
+    // No need for indexMap anymore, only uniqueRegions
     std::vector<uint> regionBuffer;
     std::unordered_map<uint, uint> indices;
 

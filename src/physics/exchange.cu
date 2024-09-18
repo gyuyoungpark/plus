@@ -23,7 +23,8 @@ __global__ void k_exchangeField(CuField hField,
                                 const Grid mastergrid,
                                 bool openBC,
                                 const CuDmiTensor dmiTensor,
-                                const CuInterParameter interEx) {
+                                const CuInterParameter interEx,
+                                const CuInterParameter scaleEx) {
   const int idx = blockIdx.x * blockDim.x + threadIdx.x;
   const auto system = hField.system;
 
@@ -67,21 +68,29 @@ __global__ void k_exchangeField(CuField hField,
       real a_;
       int3 normal = rel_coo * rel_coo;
 
+      real inter = 0;
+      real scale = 1;
+
       if(hField.cellInGeometry(coo_)) {
         m_ = mField.vectorAt(idx_);
         a_ = aex.valueAt(idx_);
+
+        uint ridx = system.getRegionIdx(idx);
+        uint ridx_ = system.getRegionIdx(idx_);
+        scale = scaleEx.valueBetween(ridx, ridx_);
+
+        if (ridx != ridx_) {
+          inter = interEx.valueBetween(ridx, ridx_);
+          // TODO: what if user WANTS inter to be zero???
+          if (inter != 0) { scale = 0; }
+        }
       }
       else { // Neumann BC
         real3 Gamma = getGamma(dmiTensor, idx, normal, m);
         m_ = m + (Gamma / (2*a)) * delta;
         a_ = a;
       }
-      real aa; // TODO: clean this up
-      if (!system.inSameRegion(idx, idx_) && hField.cellInGeometry(coo_))
-        aa = interEx.valueBetween(system.getRegionIdx(idx), system.getRegionIdx(idx_));
-      else
-        aa = harmonicMean(a, a_);
-      h += 2 * aa * dot(normal, w) * (m_ - m);
+      h += 2 * (scale * harmonicMean(a, a_) + inter) * dot(normal, w) * (m_ - m);
     }
   }
   hField.setVectorInCell(idx, h / msat.valueAt(idx));
@@ -177,11 +186,12 @@ Field evalExchangeField(const Ferromagnet* magnet) {
   auto grid = magnet->world()->mastergrid();
   auto dmiTensor = magnet->dmiTensor.cu();
   auto interEx = magnet->interExch.cu();
+  auto scaleEx = magnet->scaleExch.cu();
 
   if (!magnet->isSublattice() || magnet->enableOpenBC)
     cudaLaunch(ncells, k_exchangeField, hField.cu(), mag,
               aex, msat, w, grid, magnet->enableOpenBC, dmiTensor,
-              interEx);
+              interEx, scaleEx);
   else {
     // In case `magnet` is a sublattice, it's sister sublattice affects
     // the Neumann BC. There are no open boundaries when in this scope.

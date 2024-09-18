@@ -69,6 +69,7 @@ class Ferromagnet : public Magnet {
   Parameter msat;
   Parameter aex;
   InterParameter interExch;
+  InterParameter scaleExch;
   Parameter ku1;
   Parameter ku2;
   Parameter kc1;
