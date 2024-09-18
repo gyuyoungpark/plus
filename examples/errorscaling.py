@@ -58,12 +58,12 @@ exact_order = {"Heun": 2,
                "DormandPrince": 6
                }
 
-N = 41  # Amount of data points
-dts = {"Heun": np.logspace(-12, np.log10(0.9e-10), N), 
-       "BogackiShampine": np.logspace(np.log10(0.25e-11), np.log10(0.9e-10), N),
-       "CashKarp": np.logspace(np.log10(1.5e-11), np.log10(0.9e-10), N),
-       "Fehlberg": np.logspace(np.log10(1.5e-11), np.log10(0.9e-10), N),
-       "DormandPrince": np.logspace(np.log10(1.5e-11), np.log10(0.9e-10), N)
+N_dens = 20  # Amount of datapoints between two powers of 10
+dts = {"Heun": np.logspace(-12, np.log10(0.9e-10), int(N_dens * (np.log10(0.9e-10) + 12))), 
+       "BogackiShampine": np.logspace(np.log10(0.25e-11), np.log10(0.9e-10), int(N_dens * (np.log10(0.9e-10) - np.log10(0.25e-11)))),
+       "CashKarp": np.logspace(np.log10(1.5e-11), np.log10(0.9e-10), int(N_dens * (np.log10(0.9e-10) - np.log10(1.5e-11)))),
+       "Fehlberg": np.logspace(np.log10(1.5e-11), np.log10(0.9e-10), int(N_dens * (np.log10(0.9e-10) - np.log10(1.5e-11)))),
+       "DormandPrince": np.logspace(np.log10(1.5e-11), np.log10(0.9e-10), int(N_dens * (np.log10(0.9e-10) - np.log10(1.5e-11))))
        }
 
 # --- Plotting ---
