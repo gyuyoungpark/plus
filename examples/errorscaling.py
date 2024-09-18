@@ -58,18 +58,18 @@ exact_order = {"Heun": 2,
                "DormandPrince": 6
                }
 
-N_dens = 20  # Amount of datapoints between two powers of 10
-dts = {"Heun": np.logspace(-12, np.log10(0.9e-10), int(N_dens * (np.log10(0.9e-10) + 12))), 
-       "BogackiShampine": np.logspace(np.log10(0.25e-11), np.log10(0.9e-10), int(N_dens * (np.log10(0.9e-10) - np.log10(0.25e-11)))),
-       "CashKarp": np.logspace(np.log10(1.5e-11), np.log10(0.9e-10), int(N_dens * (np.log10(0.9e-10) - np.log10(1.5e-11)))),
-       "Fehlberg": np.logspace(np.log10(1.5e-11), np.log10(0.9e-10), int(N_dens * (np.log10(0.9e-10) - np.log10(1.5e-11)))),
-       "DormandPrince": np.logspace(np.log10(1.5e-11), np.log10(0.9e-10), int(N_dens * (np.log10(0.9e-10) - np.log10(1.5e-11))))
+N_dens = 30  # Amount of datapoints between two powers of 10
+dts = {"Heun": np.logspace(-12, np.log10(0.4e-10), int(N_dens * (np.log10(0.4e-10) + 12))), 
+       "BogackiShampine": np.logspace(np.log10(0.2e-11), np.log10(0.4e-10), int(N_dens * (np.log10(0.4e-10) - np.log10(0.2e-11)))),
+       "CashKarp": np.logspace(np.log10(1.5e-11), np.log10(0.4e-10), int(N_dens * (np.log10(0.4e-10) - np.log10(1.5e-11)))),
+       "Fehlberg": np.logspace(np.log10(1.2e-11), np.log10(0.4e-10), int(N_dens * (np.log10(0.4e-10) - np.log10(1.2e-11)))),
+       "DormandPrince": np.logspace(np.log10(1.4e-11), np.log10(0.4e-10), int(N_dens * (np.log10(0.4e-10) - np.log10(1.4e-11))))
        }
 
 # --- Plotting ---
 plt.xscale('log')
 plt.yscale('log')
-plt.xlim((0.9e-12, 0.1e-9))
+plt.xlim((0.9e-12, 0.5e-10))
 plt.ylim((1e-7, 1))
 plt.xlabel("time steps (s)")
 plt.ylabel("absolute error after 1 precession")
