@@ -6,6 +6,7 @@
 #include "exchange.hpp"
 #include "ferromagnet.hpp"
 #include "field.hpp"
+#include "inter_parameter.hpp"
 #include "parameter.hpp"
 #include "reduce.hpp"
 #include "world.hpp"
@@ -22,8 +23,7 @@ __global__ void k_exchangeField(CuField hField,
                                 const Grid mastergrid,
                                 bool openBC,
                                 const CuDmiTensor dmiTensor,
-                                real* inter,
-                                uint* regPtr) {
+                                const CuInterParameter interEx) {
   const int idx = blockIdx.x * blockDim.x + threadIdx.x;
   const auto system = hField.system;
 
@@ -78,7 +78,7 @@ __global__ void k_exchangeField(CuField hField,
       }
       real aa; // TODO: clean this up
       if (!system.inSameRegion(idx, idx_) && hField.cellInGeometry(coo_))
-        aa = getInterExchange(system.getRegionIdx(idx), system.getRegionIdx(idx_), inter, regPtr);
+        aa = interEx.valueBetween(system.getRegionIdx(idx), system.getRegionIdx(idx_));
       else
         aa = harmonicMean(a, a_);
       h += 2 * aa * dot(normal, w) * (m_ - m);
@@ -176,11 +176,12 @@ Field evalExchangeField(const Ferromagnet* magnet) {
   auto aex = magnet->aex.cu();
   auto grid = magnet->world()->mastergrid();
   auto dmiTensor = magnet->dmiTensor.cu();
+  auto interEx = magnet->interExch.cu();
 
   if (!magnet->isSublattice() || magnet->enableOpenBC)
     cudaLaunch(ncells, k_exchangeField, hField.cu(), mag,
               aex, msat, w, grid, magnet->enableOpenBC, dmiTensor,
-              magnet->interExchPtr_, magnet->regPtr_);
+              interEx);
   else {
     // In case `magnet` is a sublattice, it's sister sublattice affects
     // the Neumann BC. There are no open boundaries when in this scope.

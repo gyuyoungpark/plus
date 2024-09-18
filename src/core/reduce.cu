@@ -255,3 +255,12 @@ int getIdx(uint* bufferPtr, size_t size, int target) {
                                  cudaMemcpyDeviceToHost, getCudaStream()));
   return result;
 }
+
+__device__ int getIdxOnThread(uint* buffer, size_t size, int target) {
+  // Linear search since this is called from a single thread
+  for (size_t tid = 0; tid < size; ++tid) {
+    if (buffer[tid] == target)
+      return tid;
+  }
+  return -1;
+}

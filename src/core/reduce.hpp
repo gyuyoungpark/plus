@@ -13,3 +13,4 @@ real fieldComponentAverage(const Field&, int comp);
 std::vector<real> fieldAverage(const Field&);
 bool idxInRegions(GpuBuffer<uint>, int idx);
 int getIdx(uint* bufferPtr, size_t size, int target);
+__device__ int getIdxOnThread(uint* buffer, size_t size, int target);

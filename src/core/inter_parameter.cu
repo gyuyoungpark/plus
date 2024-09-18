@@ -26,6 +26,10 @@ GpuBuffer<uint> InterParameter::regions() const {
     return regions_;
 }
 
+GpuBuffer<uint> InterParameter::uniqueRegions() const {
+    return uniqueRegions_;
+}
+
 GpuBuffer<real> InterParameter::values() const {
     return valuesbuffer_;
 }
@@ -47,7 +51,7 @@ __global__ void k_setBetween(real* values, int index, real value) {
 
 void InterParameter::setBetween(uint idx1, uint idx2, real value) {
         
-    // TODO: this function is 3 kernel calls ---> replace by one general k_setBetween
+    // TODO: this function constitutes 5 kernel calls ---> replace by one general k_setBetween
     
     system_->checkIdxInRegions(idx1);
     system_->checkIdxInRegions(idx2);
