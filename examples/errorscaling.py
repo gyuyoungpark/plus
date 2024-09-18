@@ -92,6 +92,6 @@ for method in method_names:
     intercept = np.polyfit(log_dts, log_error - log_dts * exact_order[method], 0)
     plt.plot(np.array([1e-14, 1e-9]), (10**intercept)*np.array([1e-14, 1e-9])**exact_order[method], label=method,)
 
-# print(orders)  # Uncomment if you want to see the estimated orders
+#print(orders)  # Uncomment if you want to see the estimated orders
 plt.legend()
 plt.show()
