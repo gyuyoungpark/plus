@@ -51,6 +51,21 @@ def single_system(method, dt):
 
 
 method_names = ["Heun", "BogackiShampine", "CashKarp", "Fehlberg", "DormandPrince"]
+
+exact_names = {"Heun": "Heun",
+               "BogackiShampine": "Bogacki-Shampine",
+               "CashKarp": "Cash-Karp",
+               "Fehlberg": "Fehlberg",
+               "DormandPrince": "Dormand-Prince"
+               }
+
+RK_names = {"Heun": "RK12",
+            "BogackiShampine": "RK32",
+            "CashKarp": "RKCK45",
+            "Fehlberg": "RKF45",
+            "DormandPrince": "RK45"
+            }
+
 exact_order = {"Heun": 2,
                "BogackiShampine": 3,
                "CashKarp": 5,
@@ -85,12 +100,12 @@ for method in method_names:
     # Find the order
     log_dts, log_error = np.log10(dts[method]), np.log10(error)
     order = np.polyfit(log_dts, log_error, 1)[0]
-    orders[method] = order
+    orders[exact_names[method]] = order
 
     plt.scatter(dts[method], error, marker="o", zorder=2)
 
     intercept = np.polyfit(log_dts, log_error - log_dts * exact_order[method], 0)
-    plt.plot(np.array([1e-14, 1e-9]), (10**intercept)*np.array([1e-14, 1e-9])**exact_order[method], label=method,)
+    plt.plot(np.array([1e-14, 1e-9]), (10**intercept)*np.array([1e-14, 1e-9])**exact_order[method], label=f"{RK_names[method]} {exact_names[method]}")
 
 #print(orders)  # Uncomment if you want to see the estimated orders
 plt.legend()
