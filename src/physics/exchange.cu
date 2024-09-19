@@ -81,7 +81,6 @@ __global__ void k_exchangeField(CuField hField,
 
         if (ridx != ridx_) {
           inter = interEx.valueBetween(ridx, ridx_);
-          // TODO: what if user WANTS inter to be zero???
           if (inter != 0) { scale = 0; }
         }
       }
@@ -104,7 +103,9 @@ __global__ void k_exchangeField(CuField hField,
                                 const CuParameter msat,
                                 const real3 w,  // w = 1/cellsize^2
                                 Grid mastergrid,
-                                const CuDmiTensor dmiTensor) {
+                                const CuDmiTensor dmiTensor,
+                                const CuInterParameter interEx,
+                                const CuInterParameter scaleEx) {
   const int idx = blockIdx.x * blockDim.x + threadIdx.x;
   const auto system = hField.system;
 
@@ -146,9 +147,21 @@ __global__ void k_exchangeField(CuField hField,
       real a_;
       int3 normal = rel_coo * rel_coo;
 
+      real inter = 0;
+      real scale = 1;
+
       if(hField.cellInGeometry(coo_)) {
         m_ = m1Field.vectorAt(idx_);
         a_ = aex.valueAt(idx_);
+
+        uint ridx = system.getRegionIdx(idx);
+        uint ridx_ = system.getRegionIdx(idx_);
+        scale = scaleEx.valueBetween(ridx, ridx_);
+
+        if (ridx != ridx_) {
+          inter = interEx.valueBetween(ridx, ridx_);
+          if (inter != 0) { scale = 0; }
+        }
       }
       else { // Neumann BC
         real3 Gamma1 = getGamma(dmiTensor, idx, normal, m);
@@ -161,7 +174,7 @@ __global__ void k_exchangeField(CuField hField,
         }
         a_ = a;
       }
-      h += 2 * harmonicMean(a, a_) * dot(normal, w) * (m_ - m);
+      h += 2 * (scale * harmonicMean(a, a_) + inter) * dot(normal, w) * (m_ - m);
     }
   }
   hField.setVectorInCell(idx, h / msat.valueAt(idx));
@@ -198,7 +211,8 @@ Field evalExchangeField(const Ferromagnet* magnet) {
     auto mag2 = magnet->hostMagnet()->getOtherSublattice(magnet)->magnetization()->field().cu();
     auto afmex_nn = magnet->hostMagnet()->afmex_nn.cu();
     cudaLaunch(ncells, k_exchangeField, hField.cu(), mag,
-              mag2, aex, afmex_nn, msat, w, grid, dmiTensor);
+              mag2, aex, afmex_nn, msat, w, grid, dmiTensor,
+              interEx, scaleEx);
   }
   return hField;
 }

@@ -15,9 +15,9 @@ class InterParameter {
  public:
    explicit InterParameter(std::shared_ptr<const System> system, real value);
 
-   ~InterParameter();
+   // TODO: Necessary to explicitly destroy GpuBuffer members?
+   ~InterParameter() {};
 
-   GpuBuffer<uint> regions() const;
    GpuBuffer<uint> uniqueRegions() const;
    const GpuBuffer<real>& values() const;
    size_t numberOfRegions() const;
@@ -31,9 +31,8 @@ class InterParameter {
  private:
     GpuBuffer<uint> uniqueRegions_;
     std::shared_ptr<const System> system_;
-    GpuBuffer<uint> regions_;
     GpuBuffer<real> valuesbuffer_;
-    size_t numRegions_; // TODO: cast into (u)int
+    size_t numRegions_; // TODO: cast into (u)int?
 
 };
 
@@ -70,6 +69,5 @@ __device__ inline real CuInterParameter::valueBetween(uint idx1, uint idx2) cons
 
 __device__ inline real CuInterParameter::valueBetween(int3 coo1, int3 coo2) const {
    // TODO: implement this
-   //       let system be class member, then system->grid->coord2index
    return coo1.x*coo2.x;
 }

@@ -230,12 +230,39 @@ class Ferromagnet(Magnet):
 
     @property
     def inter_exchange(self):
-        """Doc"""
+        """Exchange constant (J/m) between different regions.
+        If set to zero (default), then the harmonic mean of
+        the exchange constants of the two regions are used.
+
+        When no exchange interaction between different regions
+        is wanted, set `scale_exchange` to zero.
+
+        This parameter should be set with
+        >>> magnet.inter_exchange.set_between(region1, region2, value)
+
+        See Also
+        --------
+        aex, scale_exchange
+        """
         return Parameter(self._impl.inter_exchange)
 
     @property
     def scale_exchange(self):
-        """Doc"""
+        """Scaling of the exchange constant between different
+        regions. This factor is multiplied by the harmonic mean
+        of the exchange constants of the two regions.
+
+        If `inter_exchange` is set to a non-zero value, then
+        this overrides `scale_exchange`, i.e. `scale_exchange`
+        is automatically set to zero when `inter_exchange` is not.
+
+        This parameter should be set with
+        >>> magnet.scale_exchange.set_between(region1, region2, value)
+
+        See Also
+        --------
+        aex, inter_exchange
+        """
         return Parameter(self._impl.scale_exchange)
 
     @property

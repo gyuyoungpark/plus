@@ -1,24 +1,14 @@
-#include "cudalaunch.hpp" // Still necessary?
+#include "cudalaunch.hpp"
 #include "inter_parameter.hpp"
 #include "reduce.hpp"
 
 InterParameter::InterParameter(std::shared_ptr<const System> system, real value)
     : system_(system),
-      regions_(system->regions()),
       uniqueRegions_(GpuBuffer<uint>(system->uniqueRegions)) {
         size_t N = system->uniqueRegions.size();
         valuesbuffer_ = GpuBuffer<real>(std::vector<real>(N * (N + 1) / 2, value));
         numRegions_ = N;
       }
-
-InterParameter::~InterParameter() {
-    valuesbuffer_.recycle(); // Test this, destroy geometry buffer of FM explicitely, is this necessary???
-    regions_.recycle();
-}
-
-GpuBuffer<uint> InterParameter::regions() const {
-    return regions_;
-}
 
 GpuBuffer<uint> InterParameter::uniqueRegions() const {
     return uniqueRegions_;
@@ -45,16 +35,9 @@ void InterParameter::setBetween(uint idx1, uint idx2, real value) {
 
     int i = getIdx(uniqueRegions_.get(), numRegions_, idx1);
     int j = getIdx(uniqueRegions_.get(), numRegions_, idx2);
-    
-    int index;
-    // TODO: replace by getLutIndex
-    if (i <= j)
-        index = j * (j + 1) / 2 + i;
-    else
-        index = i * (i + 1) / 2 + j;
-    
-    // TODO: replace by cudaReductionKernel???
-    cudaLaunch(1, k_setBetween, valuesbuffer_.get(), index, value);
+
+    // Update GPU memory directly
+    cudaLaunchReductionKernel(k_setBetween, valuesbuffer_.get(), getLutIndex(i, j), value);
     return;
 }
 
