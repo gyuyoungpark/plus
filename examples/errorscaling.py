@@ -71,7 +71,7 @@ plt.xscale('log')
 plt.yscale('log')
 plt.xlim((0.9e-12, 0.5e-10))
 plt.ylim((1e-7, 1))
-plt.xlabel("time steps (s)")
+plt.xlabel("time step (s)")
 plt.ylabel("absolute error after 1 precession")
 
 # --- Simulation Loops ---
