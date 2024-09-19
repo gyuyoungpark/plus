@@ -21,6 +21,7 @@ void wrap_timesolver(py::module& m) {
              RKmethod method = getRungeKuttaMethodFromName(methodName);
              solver.setRungeKuttaMethod(method);
            })
+      .def_property("max_error", &TimeSolver::maxerror, &TimeSolver::setMaxError)
       .def("step", &TimeSolver::step)
       .def("steps", &TimeSolver::steps)
       .def_property("timestep", &TimeSolver::timestep, &TimeSolver::setTimeStep)

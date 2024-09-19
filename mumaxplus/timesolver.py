@@ -154,3 +154,12 @@ class TimeSolver:
     @time.setter
     def time(self, time):
         self._impl.time = time
+
+    @property
+    def max_error(self):
+        """Return the maximum error."""
+        return self._impl.max_error
+
+    @max_error.setter
+    def maxError(self, error):
+        self._impl.max_error = error
