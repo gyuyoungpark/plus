@@ -53,12 +53,10 @@ void TimeSolver::adaptTimeStep(real correctionFactor) {
   if (fixedTimeStep_)
     return;
 
-  real headroom = 0.8;
-
   if (std::isnan(correctionFactor))
     correctionFactor = 1.;
 
-  correctionFactor *= headroom;
+  correctionFactor *= headroom_;
   correctionFactor = correctionFactor > 2.0 ? 2.0 : correctionFactor;
   correctionFactor = correctionFactor < 0.5 ? 0.5 : correctionFactor;
 

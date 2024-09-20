@@ -163,3 +163,12 @@ class TimeSolver:
     @max_error.setter
     def maxError(self, error):
         self._impl.max_error = error
+    
+    @property
+    def headroom(self):
+        """Return the maximum error."""
+        return self._impl.headroom
+
+    @headroom.setter
+    def headroom(self, headr):
+        self._impl.headroom = headr
