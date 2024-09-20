@@ -41,7 +41,7 @@ real TimeSolver::sensibleTimeStep() const {
   for (auto eq : eqs_)
     if (real maxNorm = maxVecNorm(eq.rhs->eval()); maxNorm > globalMaxNorm)
       globalMaxNorm = maxNorm;
-  return sensibleProportionality_ / globalMaxNorm;
+  return sensibleFactor_ / globalMaxNorm;
 }
 
 void TimeSolver::setEquations(std::vector<DynamicEquation> eqs) {

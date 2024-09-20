@@ -192,10 +192,10 @@ class TimeSolver:
         self._impl.upper_bound = upper
     
     @property
-    def sensible_proportionality(self):
-        """Return the sensible time step proportionality constant."""
-        return self._impl.sensible_proportionality
+    def sensible_factor(self):
+        """Return the sensible time step factor."""
+        return self._impl.sensible_factor
 
-    @sensible_proportionality.setter
-    def sensible_proportionality(self, prop):
-        self._impl.sensible_proportionality = prop
+    @sensible_factor.setter
+    def sensible_factor(self, fact):
+        self._impl.sensible_factor = fact
