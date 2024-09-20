@@ -24,6 +24,7 @@ void wrap_timesolver(py::module& m) {
       .def_property("headroom", &TimeSolver::headroom, &TimeSolver::setHeadroom)
       .def_property("lower_bound", &TimeSolver::lowerBound, &TimeSolver::setLowerBound)
       .def_property("max_error", &TimeSolver::maxError, &TimeSolver::setMaxError)
+      .def_property("sensible_proportionality", &TimeSolver::sensibleProportionality, &TimeSolver::setSensibleProportionality)
       .def_property("upper_bound", &TimeSolver::upperBound, &TimeSolver::setUpperBound)
       .def("step", &TimeSolver::step)
       .def("steps", &TimeSolver::steps)

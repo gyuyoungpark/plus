@@ -190,3 +190,12 @@ class TimeSolver:
     @upper_bound.setter
     def upper_bound(self, upper):
         self._impl.upper_bound = upper
+    
+    @property
+    def sensible_proportionality(self):
+        """Return the sensible time step proportionality constant."""
+        return self._impl.sensible_proportionality
+
+    @sensible_proportionality.setter
+    def sensible_proportionality(self, prop):
+        self._impl.sensible_proportionality = prop
