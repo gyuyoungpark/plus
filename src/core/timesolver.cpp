@@ -57,8 +57,8 @@ void TimeSolver::adaptTimeStep(real correctionFactor) {
     correctionFactor = 1.;
 
   correctionFactor *= headroom_;
-  correctionFactor = correctionFactor > 2.0 ? 2.0 : correctionFactor;
-  correctionFactor = correctionFactor < 0.5 ? 0.5 : correctionFactor;
+  correctionFactor = correctionFactor > upperBound_ ? upperBound_ : correctionFactor;
+  correctionFactor = correctionFactor < lowerBound_ ? lowerBound_ : correctionFactor;
 
   timestep_ *= correctionFactor;
 }

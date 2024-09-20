@@ -161,7 +161,7 @@ class TimeSolver:
         return self._impl.max_error
 
     @max_error.setter
-    def maxError(self, error):
+    def max_error(self, error):
         self._impl.max_error = error
     
     @property
@@ -172,3 +172,21 @@ class TimeSolver:
     @headroom.setter
     def headroom(self, headr):
         self._impl.headroom = headr
+    
+    @property
+    def lower_bound(self):
+        """Return the maximum error."""
+        return self._impl.lower_bound
+
+    @lower_bound.setter
+    def lower_bound(self, lower):
+        self._impl.lower_bound = lower
+    
+    @property
+    def upper_bound(self):
+        """Return the maximum error."""
+        return self._impl.upper_bound
+
+    @upper_bound.setter
+    def upper_bound(self, upper):
+        self._impl.upper_bound = upper
