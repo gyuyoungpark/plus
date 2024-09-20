@@ -111,7 +111,10 @@ class TimeSolver:
         output : TimeSolverOutput
             Collected values of specified quantities at specified timepoints.
         """
-        # TODO:check if time points are OK
+        # check if time points are increasing and lie in the future
+        assert all(i1 <= i2 for i1, i2 in zip(timepoints, timepoints[1:])), "The list of timepoints should be increasing."
+        assert self.time < timepoints[0], "The list of timepoints should lie in the future."
+
         self._assure_sensible_timestep()
         output = TimeSolverOutput(quantity_dict)
 
