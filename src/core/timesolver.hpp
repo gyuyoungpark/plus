@@ -32,7 +32,7 @@ class TimeSolver {
   RKmethod getRungeKuttaMethod();
   real headroom() const { return headroom_; }
   real lowerBound() const { return lowerBound_; }
-  real maxerror() const { return maxerror_; }
+  real maxError() const { return maxError_; }
   real time() const { return time_; }
   real timestep() const { return timestep_; }
   real upperBound() const { return upperBound_; }
@@ -45,7 +45,7 @@ class TimeSolver {
   void setEquations(std::vector<DynamicEquation> eq);
   void setHeadroom(real headroom) { headroom_ = headroom; }
   void setLowerBound(real lowerBound) { lowerBound_ = lowerBound; }
-  void setMaxError(real maxerror) { maxerror_ = maxerror; }
+  void setMaxError(real maxError) { maxError_ = maxError; }
   void setTime(real time) { time_ = time; }
   void setTimeStep(real dt) { timestep_ = dt; }
   void setUpperBound(real upperBound) { upperBound_ = upperBound; }
@@ -69,7 +69,7 @@ class TimeSolver {
 
   real headroom_ = 0.8;
   real lowerBound_ = 0.5;
-  real maxerror_ = 1e-5;
+  real maxError_ = 1e-5;
   real time_ = 0.0;
   real timestep_ = 0.0;
   real upperBound_ = 2.0;

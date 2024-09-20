@@ -63,14 +63,14 @@ void RungeKuttaStepper::step() {
       if (real e = eq.getError(); e > error)
         error = e;
 
-    success = error < solver_->maxerror();
+    success = error < solver_->maxError();
 
     // update the timestep
     real corrFactor;
     if (success) {
-      corrFactor = std::pow(solver_->maxerror() / error, 1. / butcher_.order2);
+      corrFactor = std::pow(solver_->maxError() / error, 1. / butcher_.order2);
     } else {
-      corrFactor = std::pow(solver_->maxerror() / error, 1. / butcher_.order1);
+      corrFactor = std::pow(solver_->maxError() / error, 1. / butcher_.order1);
     }
     solver_->adaptTimeStep(corrFactor);
 
