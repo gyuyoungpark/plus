@@ -217,7 +217,7 @@ class TimeSolver:
 
         See Also
         --------
-        headroom, lower_bound, max_error, sensible_factor, upper_bound
+        headroom, lower_bound, max_error, sensible_factor
         """
         return self._impl.upper_bound
 
