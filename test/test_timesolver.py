@@ -167,3 +167,13 @@ def test_solve_multiple_systems(test_world, method):
         for mc in ["mx", "my", "mz"]:
             max_error = np.max(np.abs(output[mc + f"_{magnet_idx}"] - exact[mc]))
             assert max_error < 1e-2
+
+@pytest.mark.parametrize("invalid_timepoints, expected_error_message", [
+    (np.array([10, 5, 3, 2]), "The list of timepoints should be increasing."),  # Non-increasing timepoints
+    (np.array([3, 5, 7, 9]), "The list of timepoints should lie in the future.")  # Valid timepoints but time > timepoints[0]
+])
+def test_set_invalid_timepoints(test_world, invalid_timepoints, expected_error_message):
+    test_world.timesolver.time = 5
+    # Catch the specific AssertionError and match its message
+    with pytest.raises(AssertionError, match=expected_error_message):
+        test_world.timesolver.solve(invalid_timepoints, {})
