@@ -8,6 +8,7 @@ import _mumaxpluscpp as _cpp
 from .magnet import Magnet
 from .fieldquantity import FieldQuantity
 from .ferromagnet import Ferromagnet
+from .interparameter import InterParameter
 from .parameter import Parameter
 from .scalarquantity import ScalarQuantity
 
@@ -150,7 +151,7 @@ class Antiferromagnet(Magnet):
 
     @property
     def afmex_cell(self):
-        """Intercell antiferromagnetic exchange constant (J/m).
+        """Intracell antiferromagnetic exchange constant (J/m).
         
         See Also
         --------
@@ -169,7 +170,7 @@ class Antiferromagnet(Magnet):
 
     @property
     def afmex_nn(self):
-        """Intracell antiferromagnetic exchange constant (J/m).
+        """Intercell antiferromagnetic exchange constant (J/m).
         
         See Also
         --------
@@ -184,6 +185,55 @@ class Antiferromagnet(Magnet):
                           + " is set to a positive value, instead of negative (or zero)."
                           + " Make sure this is intentional!", UserWarning)
         self.afmex_nn.set(value)
+
+    @property
+    def inter_afmex_nn(self):
+        """Interregional antiferromagnetic exchange constant (J/m).
+        If set to zero (default), then the harmonic mean of
+        the exchange constants of the two regions are used.
+
+        When no exchange interaction between different regions
+        is wanted, set `scale_afmex_nn` to zero.
+
+        This parameter should be set with
+        >>> magnet.inter_afmex_nn.set_between(region1, region2, value)
+
+        See Also
+        --------
+        afmex_nn, inter_exchange, scale_afmex_nn, scale_exchange
+        """
+        return InterParameter(self._impl.inter_afmex_nn)
+
+    @inter_afmex_nn.setter
+    def inter_afmex_nn(self, value):
+        if value > 0:
+            warnings.warn("The antiferromagnetic exchange constant inter_afmex_nn"
+                          + " is set to a positive value, instead of negative (or zero)."
+                          + " Make sure this is intentional!", UserWarning)
+        self.inter_afmex_nn.set(value)
+
+    @property
+    def scale_afmex_nn(self):
+        """Scaling of the antiferromagnetic exchange constant between
+        different regions. This factor is multiplied by the harmonic
+        mean of the exchange constants of the two regions.
+
+        If `inter_afmex_nn` is set to a non-zero value, then this
+        overrides `scale_afmex_nn`, i.e. `scale_afmex_nn` is
+        automatically set to zero when `inter_afmex_nn` is not.
+
+        This parameter should be set with
+        >>> magnet.scale_afmex_nn.set_between(region1, region2, value)
+
+        See Also
+        --------
+        afmex_nn, inter_afmex_nn, inter_exchange, scale_exchange
+        """
+        return InterParameter(self._impl.scale_afmex_nn)
+
+    @scale_afmex_nn.setter
+    def scale_afmex_nn(self, value):
+        self.scale_afmex_nn.set(value)
 
     @property
     def latcon(self):

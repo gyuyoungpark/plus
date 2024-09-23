@@ -28,7 +28,5 @@ class InterParameter():
         self._impl.set(value)
 
     def set_between(self, i, j, value):
-        assert isinstance(self._impl, _cpp.InterParameter
-                          ), ("Cannot set value of a regular Parameter" +
-                              "between different regions")
+        """Set InterParameter value between regions i and j."""
         self._impl.set_between(i, j, value)

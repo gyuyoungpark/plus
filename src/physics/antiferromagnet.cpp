@@ -17,6 +17,8 @@ Antiferromagnet::Antiferromagnet(std::shared_ptr<System> system_ptr,
     : Magnet(system_ptr, name),
       afmex_cell(system(), 0.0),
       afmex_nn(system(), 0.0),
+      interAfmExchNN(system(), 0.0),
+      scaleAfmExchNN(system(), 1.0),
       latcon(system(), 0.35e-9),
       sub1_(Ferromagnet(system_ptr, name + ":sublattice_1", this)),
       sub2_(Ferromagnet(system_ptr, name + ":sublattice_2", this)) {}
