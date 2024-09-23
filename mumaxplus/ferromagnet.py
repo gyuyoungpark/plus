@@ -7,6 +7,7 @@ import _mumaxpluscpp as _cpp
 from .magnet import Magnet
 from .dmitensor import DmiTensor
 from .fieldquantity import FieldQuantity
+from .interparameter import InterParameter
 from .parameter import Parameter
 from .poissonsystem import PoissonSystem
 from .scalarquantity import ScalarQuantity
@@ -244,7 +245,11 @@ class Ferromagnet(Magnet):
         --------
         aex, scale_exchange
         """
-        return Parameter(self._impl.inter_exchange)
+        return InterParameter(self._impl.inter_exchange)
+
+    @inter_exchange.setter
+    def inter_exchange(self, value):
+        self.inter_exchange.set(value)
 
     @property
     def scale_exchange(self):
@@ -263,7 +268,11 @@ class Ferromagnet(Magnet):
         --------
         aex, inter_exchange
         """
-        return Parameter(self._impl.scale_exchange)
+        return InterParameter(self._impl.scale_exchange)
+
+    @scale_exchange.setter
+    def scale_exchange(self, value):
+        self.scale_exchange.set(value)
 
     @property
     def ku1(self):

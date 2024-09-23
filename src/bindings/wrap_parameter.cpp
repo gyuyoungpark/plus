@@ -103,5 +103,6 @@ void wrap_parameter(py::module& m) {
       });
 
   py::class_<InterParameter>(m, "InterParameter")
+      .def("set", [](InterParameter* p, real value) { p->set(value); })
       .def("set_between", [](InterParameter* p, uint i, uint j, real value) {p->setBetween(i, j, value);});
 }

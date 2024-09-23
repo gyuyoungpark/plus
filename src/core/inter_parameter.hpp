@@ -23,7 +23,7 @@ class InterParameter {
    size_t numberOfRegions() const;
 
    // TODO: implement get()
-
+   void set(real value);
    void setBetween(uint i, uint j, real value);
 
    CuInterParameter cu() const;
