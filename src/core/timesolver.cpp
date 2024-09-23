@@ -57,6 +57,9 @@ void TimeSolver::adaptTimeStep(real correctionFactor) {
     correctionFactor = 1.;
 
   correctionFactor *= headroom_;
+  if (lowerBound_ >= upperBound_) {
+    throw std::runtime_error("The lower bound should be lower than the upper bound.");
+  }
   correctionFactor = correctionFactor > upperBound_ ? upperBound_ : correctionFactor;
   correctionFactor = correctionFactor < lowerBound_ ? lowerBound_ : correctionFactor;
 

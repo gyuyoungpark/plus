@@ -170,6 +170,7 @@ class TimeSolver:
 
     @max_error.setter
     def max_error(self, error):
+        assert error > 0, "The maximum error should be bigger than 0."
         self._impl.max_error = error
     
     @property
@@ -186,6 +187,7 @@ class TimeSolver:
 
     @headroom.setter
     def headroom(self, headr):
+        assert headr > 0, "The headroom should be bigger than 0."
         self._impl.headroom = headr
     
     @property
@@ -203,6 +205,7 @@ class TimeSolver:
 
     @lower_bound.setter
     def lower_bound(self, lower):
+        assert lower > 0, "The lower bound should be bigger than 0."
         self._impl.lower_bound = lower
     
     @property
@@ -220,6 +223,7 @@ class TimeSolver:
 
     @upper_bound.setter
     def upper_bound(self, upper):
+        assert upper > 0, "The upper bound should be bigger than 0."
         self._impl.upper_bound = upper
     
     @property
@@ -237,4 +241,5 @@ class TimeSolver:
 
     @sensible_factor.setter
     def sensible_factor(self, fact):
+        assert fact > 0, "The sensible factor should be bigger than 0."
         self._impl.sensible_factor = fact
