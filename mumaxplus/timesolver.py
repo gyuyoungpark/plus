@@ -113,7 +113,7 @@ class TimeSolver:
         """
         # check if time points are increasing and lie in the future
         assert all(i1 <= i2 for i1, i2 in zip(timepoints, timepoints[1:])), "The list of timepoints should be increasing."
-        assert self.time < timepoints[0], "The list of timepoints should lie in the future."
+        assert self.time <= timepoints[0], "The list of timepoints should lie in the future."
 
         self._assure_sensible_timestep()
         output = TimeSolverOutput(quantity_dict)
