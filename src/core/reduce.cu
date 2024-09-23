@@ -193,3 +193,44 @@ real dotSum(const Field& f, const Field& g) {
                                  cudaMemcpyDeviceToHost, getCudaStream()));
   return result;
 }
+
+__global__ void k_idxInRegions(bool* result, uint* regions, size_t size, int ridx) {
+  __shared__ bool sdata[BLOCKDIM];
+  int tid = threadIdx.x + blockIdx.x * blockDim.x;
+  int thread_id = threadIdx.x;
+
+  bool found = false;
+
+  for (int i = tid; i < size; i += blockDim.x * gridDim.x) {
+    if (regions[i] == ridx) {
+      found = true;
+      break;
+    }
+  }
+
+  sdata[thread_id] = found;
+  __syncthreads();
+
+  // Reduce the block
+  for (unsigned int s = BLOCKDIM / 2; s > 0; s >>= 1) {
+    if (thread_id < s)
+      sdata[thread_id] = sdata[thread_id] || sdata[thread_id + s];
+    __syncthreads();
+  }
+
+  // Set the result
+  if (thread_id == 0)
+    *result = sdata[0];
+}
+
+bool idxInRegions(GpuBuffer<uint> regions, int idx) {
+
+  GpuBuffer<bool> d_result(1);
+  cudaLaunchReductionKernel(k_idxInRegions, d_result.get(), regions.get(), regions.size(), idx);
+
+  // copy the result to the host and return
+  real result;
+  checkCudaError(cudaMemcpyAsync(&result, d_result.get(), sizeof(bool),
+                                 cudaMemcpyDeviceToHost, getCudaStream()));
+  return result;
+}

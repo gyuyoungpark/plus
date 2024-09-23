@@ -13,6 +13,11 @@ void wrap_magnet(py::module& m) {
       .def_property_readonly("system", &Magnet::system)
       .def_property_readonly("world", &Magnet::mumaxWorld)
 
+      .def_readwrite("enable_as_stray_field_source",
+                     &Magnet::enableAsStrayFieldSource)
+      .def_readwrite("enable_as_stray_field_destination",
+                     &Magnet::enableAsStrayFieldDestination)
+
       .def("stray_field_from_magnet",
           [](const Magnet* m, Magnet* magnet) {
             const StrayField* strayField = m->getStrayField(magnet);

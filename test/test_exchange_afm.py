@@ -85,9 +85,8 @@ class TestAfmExchange:
 
         for i in range(2):
             sub = magnet.sublattices[i]
-            othersub = magnet.sublattices[1 - i]
             result = sub.homogeneous_exchange_field()
-            wanted = compute_homo_exchange_numpy(magnet, othersub)
+            wanted = compute_homo_exchange_numpy(magnet, magnet.other_sublattice(sub))
 
             relative_error = np.abs(result - wanted) / np.abs(wanted)
             max_relative_error = np.max(relative_error)

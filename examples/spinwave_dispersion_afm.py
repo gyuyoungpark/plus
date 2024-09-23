@@ -55,7 +55,8 @@ magnet.sub1.magnetization = (0, 0, 1)
 magnet.sub2.magnetization = (0, 0, -1)
 #magnet.minimize()
 
-timepoints = np.linspace(0, T, 1 + int(T / dt))
+nt = 1 + int(T / dt)
+timepoints = np.linspace(0, T, nt)
 outputquantities = {'m': lambda: magnet.sub1.magnetization.eval()}
 
 # Run solver
@@ -69,10 +70,12 @@ mx_fft = np.fft.fftshift(mx_fft)
 
 plt.figure(figsize=(10, 6))
 
+# extent of k values and frequencies, compensated for cell-width
+extent = [-(2 * np.pi) / (2 * dx) * (nx+1)/nx,
+          (2 * np.pi) / (2 * dx) * (nx-1)/nx,
+          -1 / (2 * dt) * nt/(nt-1),
+          1 / (2 * dt) * nt/(nt-1)]
 # Show the intensity plot of the 2D FFT
-extent = [-(2 * np.pi) / (2 * dx), (2 * np.pi) / (2 * dx), -1 /
-          (2 * dt), 1 / (2 * dt)]  # extent of k values and frequencies
-
 plt.imshow(np.abs(mx_fft)**2, extent=extent,
            aspect='auto', origin='lower', cmap="inferno")
 

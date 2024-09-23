@@ -21,7 +21,9 @@ __global__ void k_exchangeField(CuField hField,
                                 const real3 w,  // w = 1/cellsize^2
                                 const Grid mastergrid,
                                 bool openBC,
-                                const CuDmiTensor dmiTensor) {
+                                const CuDmiTensor dmiTensor,
+                                real* inter,
+                                uint* regPtr) {
   const int idx = blockIdx.x * blockDim.x + threadIdx.x;
   const auto system = hField.system;
 
@@ -58,7 +60,6 @@ __global__ void k_exchangeField(CuField hField,
       continue;
 
     const int idx_ = grid.coord2index(coo_);
-    real delta = dot(rel_coo, system.cellsize);
 
     if(msat.valueAt(idx_) != 0 || !openBC) {
       real3 m_;
@@ -71,10 +72,16 @@ __global__ void k_exchangeField(CuField hField,
       }
       else { // Neumann BC
         real3 Gamma = getGamma(dmiTensor, idx, normal, m);
+        real delta = dot(rel_coo, system.cellsize);
         m_ = m + (Gamma / (2*a)) * delta;
         a_ = a;
       }
-      h += 2 * harmonicMean(a, a_) * dot(normal, w) * (m_ - m);
+      real aa; // TODO: clean this up
+      if (!system.inSameRegion(idx, idx_) && hField.cellInGeometry(coo_))
+        aa = getInterExchange(system.getRegionIdx(idx), system.getRegionIdx(idx_), inter, regPtr);
+      else
+        aa = harmonicMean(a, a_);
+      h += 2 * aa * dot(normal, w) * (m_ - m);
     }
   }
   hField.setVectorInCell(idx, h / msat.valueAt(idx));
@@ -123,7 +130,6 @@ __global__ void k_exchangeField(CuField hField,
                             int3{0, 1, 0}, int3{0, 0, -1}, int3{0, 0, 1}}) {
     const int3 coo_ = mastergrid.wrap(coo + rel_coo);
     const int idx_ = grid.coord2index(coo_);
-    real delta = dot(rel_coo, system.cellsize);
 
     if(msat.valueAt(idx_) != 0) {
       real3 m_;
@@ -137,6 +143,7 @@ __global__ void k_exchangeField(CuField hField,
       else { // Neumann BC
         real3 Gamma1 = getGamma(dmiTensor, idx, normal, m);
         real fac = an / (2 * a);
+        real delta = dot(rel_coo, system.cellsize);
         if (abs(fac) == 1)
           m_ = m + Gamma1 / (4*a) * delta;
         else {
@@ -172,7 +179,8 @@ Field evalExchangeField(const Ferromagnet* magnet) {
 
   if (!magnet->isSublattice() || magnet->enableOpenBC)
     cudaLaunch(ncells, k_exchangeField, hField.cu(), mag,
-              aex, msat, w, grid, magnet->enableOpenBC, dmiTensor);
+              aex, msat, w, grid, magnet->enableOpenBC, dmiTensor,
+              magnet->interExchPtr_, magnet->regPtr_);
   else {
     // In case `magnet` is a sublattice, it's sister sublattice affects
     // the Neumann BC. There are no open boundaries when in this scope.
@@ -271,5 +279,5 @@ real evalMaxAngle(const Ferromagnet* magnet) {
 }
 
 FM_ScalarQuantity maxAngle(const Ferromagnet* magnet) {
-  return FM_ScalarQuantity(magnet, evalMaxAngle, "max_angle", "");
+  return FM_ScalarQuantity(magnet, evalMaxAngle, "max_angle", "rad");
 }

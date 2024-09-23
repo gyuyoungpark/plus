@@ -1,17 +1,27 @@
 #include "system.hpp"
 
 #include <stdexcept>
+#include <algorithm>
 
 #include "datatypes.hpp"
 #include "gpubuffer.hpp"
 #include "grid.hpp"
+#include "reduce.hpp"
 #include "world.hpp"
 
-System::System(const World* world, Grid grid, GpuBuffer<bool> geometry)
-    : grid_(grid), world_(world), geometry_(geometry) {
+System::System(const World* world, Grid grid, GpuBuffer<bool> geometry, GpuBuffer<uint> regions)
+    : grid_(grid),
+      world_(world),
+      geometry_(geometry),
+      regions_(regions) {
   if (geometry.size() != 0 && geometry.size() != grid_.ncells()) {
     throw std::runtime_error(
         "The size of the geometry buffer does not match the size of the "
+        "system.");
+  }
+  if (regions.size() != 0 && regions.size() != grid_.ncells()) {
+    throw std::runtime_error(
+        "The size of the region buffer does not match the size of the "
         "system.");
   }
 }
@@ -49,6 +59,17 @@ const GpuBuffer<bool>& System::geometry() const {
   return geometry_;
 }
 
+const GpuBuffer<uint>& System::regions() const {
+  return regions_;
+}
+
+void System::checkIdxInRegions(int idx) const {
+  if (!idxInRegions(regions_, idx)) {
+    throw std::invalid_argument("The region index " + std::to_string(idx)
+                                                   + " is not defined.");
+  }
+}
+
 int System::cellsingeo() const {
   std::vector<bool> v = geometry_.getData();
   return grid_.ncells() - std::count(v.begin(), v.end(), false);
@@ -61,4 +82,5 @@ CuSystem System::cu() const {
 CuSystem::CuSystem(const System* system)
     : grid(system->grid()),
       cellsize(system->cellsize()),
-      geometry(system->geometry_.get()) {}
+      geometry(system->geometry_.get()),
+      regions(system->regions_.get()) {}

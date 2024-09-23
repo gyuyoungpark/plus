@@ -25,6 +25,17 @@ void Parameter::set(const Field& values) {
   staticField_ = new Field(values);
 }
 
+void Parameter::setInRegion(const uint region_idx, real value) {
+  if (isUniform()) {
+    Field tmp(system_, 1, uniformValue_);
+    tmp.setUniformValueInRegion(region_idx, value);
+    staticField_ = new Field(tmp);
+  }
+  else {
+    staticField_->setUniformValueInRegion(region_idx, value);
+  }
+}
+
 bool Parameter::isUniform() const {
   return !staticField_ && DynamicParameter<real>::isUniform();
 }
@@ -62,6 +73,13 @@ Field Parameter::eval() const {
   return staticField;
 }
 
+real Parameter::getUniformValue() const {
+  if (!isUniform()) {
+    throw std::invalid_argument("Cannot get uniform value of non-uniform Parameter.");
+  }
+  return uniformValue_;
+}
+
 CuParameter Parameter::cu() const {
   if (isDynamic()) {
     auto t = system_->world()->time();
@@ -90,6 +108,18 @@ void VectorParameter::set(real3 value) {
 
 void VectorParameter::set(const Field& values) {
   staticField_ = new Field(values);
+}
+
+void VectorParameter::setInRegion(const uint region_idx, real3 value) {
+  if (isUniform()) {
+    Field tmp(system_, 3);
+    tmp.setUniformValue(uniformValue_);
+    tmp.setUniformValueInRegion(region_idx, value);
+    staticField_ = new Field(tmp);
+  }
+  else {
+    staticField_->setUniformValueInRegion(region_idx, value);
+  }
 }
 
 bool VectorParameter::isUniform() const {
@@ -129,7 +159,7 @@ Field VectorParameter::eval() const {
   return staticField;
 }
 
-real Parameter::getUniformValue() const {
+real3 VectorParameter::getUniformValue() const {
   if (!isUniform()) {
     throw std::invalid_argument("Cannot get uniform value of non-uniform Parameter.");
   }

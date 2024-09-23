@@ -32,6 +32,10 @@ class Parameter(FieldQuantity):
         """Return True if a Parameter instance has time dependent terms."""
         return self._impl.is_dynamic
 
+    @property
+    def get_uniform_value(self):
+        return self._impl.get_uniform_value
+
     def add_time_term(self, term, mask=None):
         """Add a time-dependent term.
 
@@ -149,6 +153,16 @@ class Parameter(FieldQuantity):
             self.add_time_term(*value)
         else:
             self._impl.set(value)
+
+    def set_in_region(self, region_idx, value):
+        """
+        Set a uniform, static value in a specified region.
+        """
+        assert (isinstance(value, (float, int)) or
+            (isinstance(value, tuple) and len(value) == 3)
+            ), "The value should be uniform and static."
+        self._impl.set_in_region(region_idx, value)
+
 
     def _set_func(self, func):
         X, Y, Z = self.meshgrid

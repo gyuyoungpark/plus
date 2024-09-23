@@ -18,9 +18,17 @@ bool strayFieldsAssuredZero(const Ferromagnet* ferromagnet) {
     magnet = ferromagnet;
   }
 
+  if (!magnet->enableAsStrayFieldDestination)
+    return true;
+
   auto strayFields = magnet->getStrayFields();
   for (auto strayField : strayFields) {
-    if (!strayField->assuredZero()) {
+    // Avoid the demag field, we only want external fields
+    if (strayField->source() == magnet)
+      continue;
+
+    if (strayField->source()->enableAsStrayFieldSource &&
+        !strayField->assuredZero()) {
       return false;
     }
   }
@@ -59,21 +67,26 @@ Field evalExternalField(const Ferromagnet* magnet) {
 
   mB_bias.addToField(h);
 
-  std::vector<const StrayField*> strayFields;
-  if (magnet->isSublattice())
-    strayFields = magnet->hostMagnet()->getStrayFields();
-  else
-    strayFields = magnet->getStrayFields();
-  for (auto strayField : strayFields) {
-    // Avoid the demag field, we only want external fields
-    if (magnet->isSublattice()) {
-      if (strayField->source() == magnet->hostMagnet())
-        continue;
-    }
-    if (strayField->source() == magnet)
-      continue;
-    strayField->addToField(h);
+  // stray fields
+  const Magnet* dstMagnet;  // destination magnet of strayfields
+  if (magnet->isSublattice()) {
+    dstMagnet = magnet->hostMagnet();
+  } else {
+    dstMagnet = magnet;
   }
+  if (dstMagnet->enableAsStrayFieldDestination) {  // only calculate if enabled
+    std::vector<const StrayField*> strayFields = dstMagnet->getStrayFields();
+    for (auto strayField : strayFields) {
+      // Avoid the demag field, we only want external fields
+      if (strayField->source() == dstMagnet)
+        continue;
+      // Avoid disabled stray fields
+      if (!strayField->source()->enableAsStrayFieldSource)
+        continue;
+      strayField->addToField(h);
+    }
+  }
+
   return h;
 }
 

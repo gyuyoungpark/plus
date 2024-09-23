@@ -4,17 +4,17 @@ import numpy as _np
 import math as _math
 
 def twodomain(m1, m2, mw, wallposition, wallthickness=0.):
-    """ Return a two-domain state magnetization configuration
+    """Return a two-domain state magnetization configuration
     with a domain wall which is perpendicular to one of the
     three principal axes.
 
     Parameters
     ----------
-    m1: tuple of three or six floats
+    m1: tuple of three floats
         The magnetization of the first domain.
-    m2: tuple of three or six floats
+    m2: tuple of three floats
         The magnetization of the second domain.
-    mw: tuple of three or six floats
+    mw: tuple of three floats
         The magnetization inside the wall.
     wallposition: float
         The position of the domain wall.

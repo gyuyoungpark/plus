@@ -31,7 +31,7 @@ MumaxWorld::MumaxWorld(real3 cellsize, Grid mastergrid, int3 pbcRepetitions)
 
 MumaxWorld::~MumaxWorld() {}
 
-void MumaxWorld::checkAddibility(Grid grid, std::string name) {
+void MumaxWorld::checkAddibility(Grid grid, std::string name) const {
   if (!inMastergrid(grid)) {
       throw std::out_of_range(
           "Can not add magnet because the grid does not fit in the "
@@ -53,16 +53,9 @@ void MumaxWorld::checkAddibility(Grid grid, std::string name) {
   }
 }
 
-Ferromagnet* MumaxWorld::addFerromagnet(Grid grid, std::string name) {
-  return addFerromagnet(grid, GpuBuffer<bool>(), name);
-}
-
-Antiferromagnet* MumaxWorld::addAntiferromagnet(Grid grid, std::string name) {
-  return addAntiferromagnet(grid, GpuBuffer<bool>(), name);
-}
-
 Ferromagnet* MumaxWorld::addFerromagnet(Grid grid,
                                         GpuBuffer<bool> geometry,
+                                        GpuBuffer<uint> regions,
                                         std::string name) {
   // Create name if not given.
   static int idxUnnamed = 1;
@@ -75,7 +68,7 @@ Ferromagnet* MumaxWorld::addFerromagnet(Grid grid,
 
   // Create the magnet and add it to this world
   ferromagnets_[name] =
-      std::make_unique<Ferromagnet>(this, grid, name, geometry);
+      std::make_unique<Ferromagnet>(this, grid, name, geometry, regions);
 
   Ferromagnet* newMagnet = ferromagnets_[name].get();
   magnets_[name] = newMagnet;
@@ -87,6 +80,7 @@ Ferromagnet* MumaxWorld::addFerromagnet(Grid grid,
 
 Antiferromagnet* MumaxWorld::addAntiferromagnet(Grid grid,
                                                 GpuBuffer<bool> geometry,
+                                                GpuBuffer<uint> regions,
                                                 std::string name) {
   // Create name if not given.
   static int idxUnnamed = 1;
@@ -99,7 +93,7 @@ Antiferromagnet* MumaxWorld::addAntiferromagnet(Grid grid,
 
   // Create the magnet and add it to this world
   antiferromagnets_[name] =
-      std::make_unique<Antiferromagnet>(this, grid, name, geometry);
+      std::make_unique<Antiferromagnet>(this, grid, name, geometry, regions);
   Antiferromagnet* newMagnet = antiferromagnets_[name].get();
   magnets_[name] = newMagnet;
 

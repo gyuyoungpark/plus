@@ -41,6 +41,7 @@ void wrap_ferromagnet(py::module& m) {
                     &Ferromagnet::setEnableElastodynamics)
       .def_readwrite("bias_magnetic_field", &Ferromagnet::biasMagneticField,
                      "uniform external magnetic field")
+      .def_readwrite("fixed_layer_on_top", &Ferromagnet::fixedLayerOnTop)
 
       .def_readonly("msat", &Ferromagnet::msat)
       .def_readonly("alpha", &Ferromagnet::alpha)
@@ -54,9 +55,9 @@ void wrap_ferromagnet(py::module& m) {
       .def_readonly("anisC1", &Ferromagnet::anisC1)
       .def_readonly("anisC2", &Ferromagnet::anisC2)
       .def_readonly("Lambda", &Ferromagnet::Lambda)
-      .def_readonly("FreeLayerThickness", &Ferromagnet::FreeLayerThickness)
-      .def_readonly("eps_prime", &Ferromagnet::eps_prime)
-      .def_readonly("FixedLayer", &Ferromagnet::FixedLayer)
+      .def_readonly("free_layer_thickness", &Ferromagnet::freeLayerThickness)
+      .def_readonly("epsilon_prime", &Ferromagnet::epsilonPrime)
+      .def_readonly("fixed_layer", &Ferromagnet::fixedLayer)
       .def_readonly("xi", &Ferromagnet::xi)
       .def_readonly("pol", &Ferromagnet::pol)
       .def_readonly("jcur", &Ferromagnet::jcur)
@@ -77,7 +78,10 @@ void wrap_ferromagnet(py::module& m) {
       .def_readonly("B2", &Ferromagnet::B2)
       
       .def("minimize", &Ferromagnet::minimize, py::arg("tol"), py::arg("nsamples"))
-      .def("relax", &Ferromagnet::relax, py::arg("tol"));
+      .def("relax", &Ferromagnet::relax, py::arg("tol"))
+
+      .def("set_inter_exchange", &Ferromagnet::setInterExchange,
+              py::arg("idx1"), py::arg("idx2"), py::arg("value"));
 
   m.def("torque", &torqueQuantity);
   m.def("llg_torque", &llgTorqueQuantity);

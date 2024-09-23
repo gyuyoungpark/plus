@@ -33,12 +33,12 @@ magnet.minimize()
 # add polarized current and fixed FM layer
 magnet.pol = 0.5669
 magnet.Lambda = 2
-magnet.eps_prime = 1
+magnet.epsilon_prime = 1
 area = length*width*np.pi/4
 magnet.jcur = (0, 0, -4e-3/area)  # -4 mA
 
 theta = 20 * np.pi/180
-magnet.FixedLayer = (np.cos(theta), np.sin(theta), 0)
+magnet.fixed_layer = (np.cos(theta), np.sin(theta), 0)
 
 
 # --- schedule the output ---
