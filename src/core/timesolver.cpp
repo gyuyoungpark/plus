@@ -41,7 +41,7 @@ real TimeSolver::sensibleTimeStep() const {
   for (auto eq : eqs_)
     if (real maxNorm = maxVecNorm(eq.rhs->eval()); maxNorm > globalMaxNorm)
       globalMaxNorm = maxNorm;
-  return 0.01 / globalMaxNorm;
+  return sensibleFactor_ / globalMaxNorm;
 }
 
 void TimeSolver::setEquations(std::vector<DynamicEquation> eqs) {
@@ -53,14 +53,15 @@ void TimeSolver::adaptTimeStep(real correctionFactor) {
   if (fixedTimeStep_)
     return;
 
-  real headroom = 0.8;
-
   if (std::isnan(correctionFactor))
     correctionFactor = 1.;
 
-  correctionFactor *= headroom;
-  correctionFactor = correctionFactor > 2.0 ? 2.0 : correctionFactor;
-  correctionFactor = correctionFactor < 0.5 ? 0.5 : correctionFactor;
+  correctionFactor *= headroom_;
+  if (lowerBound_ >= upperBound_) {
+    throw std::runtime_error("The lower bound should be lower than the upper bound.");
+  }
+  correctionFactor = correctionFactor > upperBound_ ? upperBound_ : correctionFactor;
+  correctionFactor = correctionFactor < lowerBound_ ? lowerBound_ : correctionFactor;
 
   timestep_ *= correctionFactor;
 }

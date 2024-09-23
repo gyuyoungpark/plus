@@ -30,21 +30,29 @@ class TimeSolver {
 
   const std::vector<DynamicEquation>& equations() const { return eqs_; }
   RKmethod getRungeKuttaMethod();
+  real headroom() const { return headroom_; }
+  real lowerBound() const { return lowerBound_; }
+  real maxError() const { return maxError_; }
+  real sensibleFactor() const { return sensibleFactor_; }
   real time() const { return time_; }
   real timestep() const { return timestep_; }
+  real upperBound() const { return upperBound_; }
   bool hasAdaptiveTimeStep() const { return !fixedTimeStep_; }
-  real maxerror() const { return maxerror_; }
 
   //------------- SET SOLVER SETTINGS ------------------------------------------
 
   void setRungeKuttaMethod(RKmethod);
   void setRungeKuttaMethod(const std::string& method);
   void setEquations(std::vector<DynamicEquation> eq);
+  void setHeadroom(real headroom) { headroom_ = headroom; }
+  void setLowerBound(real lowerBound) { lowerBound_ = lowerBound; }
+  void setMaxError(real maxError) { maxError_ = maxError; }
+  void setSensibleFactor(real factor) { sensibleFactor_ = factor; }
   void setTime(real time) { time_ = time; }
   void setTimeStep(real dt) { timestep_ = dt; }
+  void setUpperBound(real upperBound) { upperBound_ = upperBound; }
   void enableAdaptiveTimeStep() { fixedTimeStep_ = false; }
   void disableAdaptiveTimeStep() { fixedTimeStep_ = true; }
-  void setMaxError(real maxerror) { maxerror_ = maxerror; }
 
   //------------- EXECUTING THE SOLVER -----------------------------------------
 
@@ -61,9 +69,13 @@ class TimeSolver {
  private:
   //------------- SOLVER SETTINGS ----------------------------------------------
 
-  real maxerror_ = 1e-5;
+  real headroom_ = 0.8;
+  real lowerBound_ = 0.5;
+  real maxError_ = 1e-5;
+  real sensibleFactor_ = 0.01;
   real time_ = 0.0;
   real timestep_ = 0.0;
+  real upperBound_ = 2.0;
   bool fixedTimeStep_ = false;
   std::vector<DynamicEquation> eqs_;
 
