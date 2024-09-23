@@ -157,7 +157,15 @@ class TimeSolver:
 
     @property
     def max_error(self):
-        """Return the maximum error."""
+        """Return the maximum error per step the solver can tollerate.
+        
+        The default value is 1e-5.
+
+        See Also
+        --------
+        headroom, lower_bound, sensible_factor, upper_bound
+        """
+
         return self._impl.max_error
 
     @max_error.setter
@@ -166,7 +174,14 @@ class TimeSolver:
     
     @property
     def headroom(self):
-        """Return the headroom."""
+        """Return the solver headroom.
+        
+        The default value is 0.8.
+
+        See Also
+        --------
+        lower_bound, max_error, sensible_factor, upper_bound
+        """
         return self._impl.headroom
 
     @headroom.setter
@@ -175,7 +190,15 @@ class TimeSolver:
     
     @property
     def lower_bound(self):
-        """Return the lower bound."""
+        """Return the lower bound which is used to cap the scaling of the time step
+        from below.
+        
+        The default value is 0.5.
+
+        See Also
+        --------
+        headroom, max_error, sensible_factor, upper_bound
+        """
         return self._impl.lower_bound
 
     @lower_bound.setter
@@ -184,7 +207,15 @@ class TimeSolver:
     
     @property
     def upper_bound(self):
-        """Return the upper bound."""
+        """Return the upper bound which is used to cap the scaling of the time step
+        from the top.
+        
+        The default value is 2.0.
+
+        See Also
+        --------
+        headroom, lower_bound, max_error, sensible_factor, upper_bound
+        """
         return self._impl.upper_bound
 
     @upper_bound.setter
@@ -193,7 +224,15 @@ class TimeSolver:
     
     @property
     def sensible_factor(self):
-        """Return the sensible time step factor."""
+        """Return the sensible time step factor which is used as a scaling factor
+        when determining a sensible timestep.
+        
+        The default value is 0.01.
+
+        See Also
+        --------
+        headroom, lower_bound, max_error, upper_bound
+        """
         return self._impl.sensible_factor
 
     @sensible_factor.setter
