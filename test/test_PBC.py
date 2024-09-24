@@ -1,0 +1,91 @@
+import pytest
+import numpy as np
+
+from mumaxplus import Ferromagnet, Grid, World
+import mumaxplus.util.shape as shape
+import matplotlib.pyplot as plt
+
+RTOL = 1e-3  # 0.1%
+
+def max_relative_error(result, wanted):
+    err = np.linalg.norm(result - wanted, axis=0)
+    relerr = err / np.linalg.norm(wanted, axis=0)
+    return np.max(relerr)
+
+def simulate():
+    """Creates a MuMaxPlus world with the same settings as the
+    PBC1.mx3 test in MuMax3 without PBC.    
+    """
+    c = 5e-9
+    nx = 128
+    ny = int(nx/2)
+
+    msat = 1000e3
+    aex = 10e-12
+    alpha = 1
+    m = (1.0, 0.1, 0.01)
+
+    # === mumaxplus ===
+    world = World(cellsize=(c,c,c))
+    r = shape.Rectangle(nx/2*c, ny/2*c)
+    r.translate((nx/2)*c, (ny/2)*c, 0)
+
+    magnet = Ferromagnet(world, Grid((nx*5, ny*5, 1)), geometry=r.repeat((0, 0, None), ((nx)*c, (ny)*c, None)))
+    magnet.msat = msat
+    magnet.aex = aex
+    magnet.alpha = alpha
+    magnet.magnetization = m
+
+    return world, magnet
+
+
+def simulate_PBC():
+    """Creates a MuMaxPlus world with the same settings as the
+    PBC1.mx3 test in MuMax3 with PBC.    
+    """
+    c = 5e-9
+    nx = 128
+    ny = int(nx/2)
+
+    msat = 1000e3
+    aex = 10e-12
+    alpha = 1
+    m = (1.0, 0.1, 0.01)
+
+    # === mumaxplus PBC ===
+    world_PBC = World(cellsize=(c,c,c), mastergrid=Grid((nx,ny,0)), pbc_repetitions=(2,2,0))
+    r_PBC = shape.Rectangle(nx/2*c, ny/2*c)
+    r_PBC.translate((nx/2)*c, (ny/2)*c, 0)
+
+    magnet_PBC = Ferromagnet(world_PBC, Grid((nx, ny, 1)), geometry=r_PBC.repeat((0, 0, None), ((nx)*c, (ny)*c, None)))
+    magnet_PBC.msat = msat
+    magnet_PBC.aex = aex
+    magnet_PBC.alpha = alpha
+    magnet_PBC.magnetization = m
+
+    return world_PBC, magnet_PBC
+
+
+class TestPBC:
+    def test_PBC1(self):
+        """Check if the demagnetization fields of the central magnet in the simulation
+        without PBC is the same as the one in the simulation with PBC.
+        """
+        nx = 128
+        ny = int(nx/2)
+        world_PBC, magnet_PBC = simulate_PBC()
+        world, magnet = simulate()
+
+        PBC_demag, demag = magnet_PBC.demag_field.eval(), magnet.demag_field.eval()
+        err = max_relative_error(result=np.array(PBC_demag)[:,:, int(ny/4)+1:int(3*ny/4)+1, int(nx/4)+1:int(3*nx/4)+1],
+                                 wanted=np.array(demag)[:,:, int(ny*5/2 - ny/4)+1:int(ny*5/2 + ny/4)+1, int(nx*5/2 - nx/4)+1:int(nx*5/2 + nx/4)+1])
+        assert err < RTOL
+    
+    def test_PBC2(self):
+        """Perform the same comparison with the PBC as in MuMax3."""
+        world_PBC, magnet_PBC = simulate_PBC()
+        world_PBC.timesolver.run(1e-9)
+        av_mag = magnet_PBC.magnetization.average()
+        err = max_relative_error(result=av_mag,
+                                 wanted=np.array([0.89947968, 0.23352228, -0.00010287]))
+        assert err < RTOL
