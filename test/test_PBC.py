@@ -56,7 +56,7 @@ def simulate_PBC():
 
 
 class TestPBC:
-    def test_PBC1(self):
+    def test_PBC_demag(self):
         """Check if the demagnetization fields of the central magnet in the simulation
         without PBC is the same as the one in the simulation with PBC.
         """
@@ -70,8 +70,8 @@ class TestPBC:
                                  wanted=np.array(demag)[:,:, int(ny*5/2 - ny/4)+1:int(ny*5/2 + ny/4)+1, int(nx*5/2 - nx/4)+1:int(nx*5/2 + nx/4)+1])
         assert err < RTOL
     
-    def test_PBC2(self):
-        """Perform the same comparison with the PBC as in MuMax3."""
+    def test_PBC_run_center(self):
+        """Perform the same comparison with the PBC as in MuMax3 with the magnet in the center."""
         world_PBC, magnet_PBC = simulate_PBC()
         world_PBC.timesolver.run(1e-9)
         av_mag = magnet_PBC.magnetization.average()
