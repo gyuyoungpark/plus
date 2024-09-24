@@ -3,7 +3,6 @@ import numpy as np
 
 from mumaxplus import Ferromagnet, Grid, World
 import mumaxplus.util.shape as shape
-import matplotlib.pyplot as plt
 
 RTOL = 1e-3  # 0.1%
 
