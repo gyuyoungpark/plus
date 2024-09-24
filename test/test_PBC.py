@@ -19,21 +19,16 @@ def simulate():
     nx = 128
     ny = int(nx/2)
 
-    msat = 1000e3
-    aex = 10e-12
-    alpha = 1
-    m = (1.0, 0.1, 0.01)
-
     # === mumaxplus ===
     world = World(cellsize=(c,c,c))
     r = shape.Rectangle(nx/2*c, ny/2*c)
     r.translate((nx/2)*c, (ny/2)*c, 0)
 
     magnet = Ferromagnet(world, Grid((nx*5, ny*5, 1)), geometry=r.repeat((0, 0, None), ((nx)*c, (ny)*c, None)))
-    magnet.msat = msat
-    magnet.aex = aex
-    magnet.alpha = alpha
-    magnet.magnetization = m
+    magnet.msat = 1000e3
+    magnet.aex = 10e-12
+    magnet.alpha = 1
+    magnet.magnetization = (1., .1, .01)
 
     return world, magnet
 
@@ -46,21 +41,16 @@ def simulate_PBC():
     nx = 128
     ny = int(nx/2)
 
-    msat = 1000e3
-    aex = 10e-12
-    alpha = 1
-    m = (1.0, 0.1, 0.01)
-
     # === mumaxplus PBC ===
     world_PBC = World(cellsize=(c,c,c), mastergrid=Grid((nx,ny,0)), pbc_repetitions=(2,2,0))
     r_PBC = shape.Rectangle(nx/2*c, ny/2*c)
     r_PBC.translate((nx/2)*c, (ny/2)*c, 0)
 
     magnet_PBC = Ferromagnet(world_PBC, Grid((nx, ny, 1)), geometry=r_PBC.repeat((0, 0, None), ((nx)*c, (ny)*c, None)))
-    magnet_PBC.msat = msat
-    magnet_PBC.aex = aex
-    magnet_PBC.alpha = alpha
-    magnet_PBC.magnetization = m
+    magnet_PBC.msat = 1000e3
+    magnet_PBC.aex = 10e-12
+    magnet_PBC.alpha = 1
+    magnet_PBC.magnetization = (1., .1, .01)
 
     return world_PBC, magnet_PBC
 
