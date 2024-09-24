@@ -259,7 +259,7 @@ class Shape:
     def __or__(self, other: "Shape"):
         """Returns new shape as union of given shapes (logical OR).
         Calling a+b or a|b is the same."""
-        return a+b
+        return self + other
 
     def __sub__(self, other: "Shape"):
         """Returns new shape as the first shape with the second shape removed
