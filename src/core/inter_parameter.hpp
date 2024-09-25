@@ -20,8 +20,6 @@ class InterParameter {
                            int ncomp);
     explicit InterParameter(std::shared_ptr<const System> system, real value);
 
-
-   // TODO: Necessary to explicitly destroy GpuBuffer members?
    ~InterParameter() {};
 
    size_t numberOfRegions() const;
@@ -35,7 +33,7 @@ class InterParameter {
 
    GpuBuffer<uint> uniqueRegions() const;
    const GpuBuffer<real>& values() const;
-   // TODO: implement get() (beware of empty GpuBuffers!!!)
+
    void set(real value);
    void setBetween(uint i, uint j, real value);
 

@@ -29,10 +29,14 @@ class InterParameter():
         region index corresponds to a row/column index. The elements of this
         matrix corresponds to the values of self between the two regions.
         """
+        values = self._impl.eval()
+        if not values:
+            raise ValueError(f"The InterParameter '{self.name}' is not defined.")
+
         N = int(_np.max(self.region_indices())) + 1
 
         value_matrix = _np.zeros((N, N))
-        value_matrix[_np.triu_indices(N, k=1)] = self._impl.eval()
+        value_matrix[_np.triu_indices(N, k=1)] = values
         return value_matrix
 
     def __call__(self):
