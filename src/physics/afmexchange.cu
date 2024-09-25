@@ -98,6 +98,7 @@ __global__ void k_afmExchangeFieldNN(CuField hField,
 
       real inter = 0;
       real scale = 1;
+      real Aex;
 
       if(hField.cellInGeometry(coo_)) {
         m2_ = m2Field.vectorAt(idx_);
@@ -109,7 +110,6 @@ __global__ void k_afmExchangeFieldNN(CuField hField,
 
         if (ridx != ridx_) {
           inter = interExch.valueBetween(ridx, ridx_);
-          if (inter != 0) { scale = 0; }
         }
       }
       else { // Neumann BC
@@ -124,7 +124,10 @@ __global__ void k_afmExchangeFieldNN(CuField hField,
         }
         ann_ = ann;
       }
-      h += (scale * harmonicMean(ann, ann_) + inter) * (m2_ - m2) / (delta * delta);
+      Aex = (inter != 0) ? inter : harmonicMean(ann, ann_);
+      Aex *= scale;
+
+      h += Aex * (m2_ - m2) / (delta * delta);
     }
   }
   hField.setVectorInCell(idx, h / msat2.valueAt(idx));

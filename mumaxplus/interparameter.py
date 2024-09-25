@@ -20,8 +20,8 @@ class InterParameter():
         return ""
 
     def set(self, value):
-        """Set the InterParameter value between every region to
-        the same value.
+        """Set the InterParameter value between every different region
+        to the same value.
         """
         assert isinstance(value, (float, int)
                           ), "The value should be uniform and static."

@@ -70,6 +70,7 @@ __global__ void k_exchangeField(CuField hField,
 
       real inter = 0;
       real scale = 1;
+      real Aex;
 
       if(hField.cellInGeometry(coo_)) {
         m_ = mField.vectorAt(idx_);
@@ -79,17 +80,18 @@ __global__ void k_exchangeField(CuField hField,
         uint ridx_ = system.getRegionIdx(idx_);
         scale = scaleEx.valueBetween(ridx, ridx_);
 
-        if (ridx != ridx_) {
+        if (ridx != ridx_)
           inter = interEx.valueBetween(ridx, ridx_);
-          if (inter != 0) { scale = 0; }
-        }
       }
       else { // Neumann BC
         real3 Gamma = getGamma(dmiTensor, idx, normal, m);
         m_ = m + (Gamma / (2*a)) * delta;
         a_ = a;
       }
-      h += 2 * (scale * harmonicMean(a, a_) + inter) * dot(normal, w) * (m_ - m);
+      Aex = (inter != 0) ? inter : harmonicMean(a, a_);
+      Aex *= scale;
+
+      h += 2 * Aex * dot(normal, w) * (m_ - m);
     }
   }
   hField.setVectorInCell(idx, h / msat.valueAt(idx));
@@ -149,6 +151,7 @@ __global__ void k_exchangeField(CuField hField,
 
       real inter = 0;
       real scale = 1;
+      real Aex;
 
       if(hField.cellInGeometry(coo_)) {
         m_ = m1Field.vectorAt(idx_);
@@ -158,10 +161,8 @@ __global__ void k_exchangeField(CuField hField,
         uint ridx_ = system.getRegionIdx(idx_);
         scale = scaleEx.valueBetween(ridx, ridx_);
 
-        if (ridx != ridx_) {
+        if (ridx != ridx_)
           inter = interEx.valueBetween(ridx, ridx_);
-          if (inter != 0) { scale = 0; }
-        }
       }
       else { // Neumann BC
         real3 Gamma1 = getGamma(dmiTensor, idx, normal, m);
@@ -174,7 +175,10 @@ __global__ void k_exchangeField(CuField hField,
         }
         a_ = a;
       }
-      h += 2 * (scale * harmonicMean(a, a_) + inter) * dot(normal, w) * (m_ - m);
+      Aex = (inter != 0) ? inter : harmonicMean(a, a_);
+      Aex *= scale;
+
+      h += 2 * Aex * dot(normal, w) * (m_ - m);
     }
   }
   hField.setVectorInCell(idx, h / msat.valueAt(idx));

@@ -66,8 +66,3 @@ __device__ inline real CuInterParameter::valueBetween(uint idx1, uint idx2) cons
   int j = getIdxOnThread(regPtr_, numRegions_, idx2);
   return valuePtr_[getLutIndex(i, j)];
 }
-
-__device__ inline real CuInterParameter::valueBetween(int3 coo1, int3 coo2) const {
-   // TODO: implement this
-   return coo1.x*coo2.x;
-}

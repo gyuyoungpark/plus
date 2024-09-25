@@ -240,6 +240,7 @@ class Ferromagnet(Magnet):
 
         This parameter should be set with
         >>> magnet.inter_exchange.set_between(region1, region2, value)
+        >>> magnet.inter_exchange = value # uniform value
 
         See Also
         --------
@@ -249,20 +250,19 @@ class Ferromagnet(Magnet):
 
     @inter_exchange.setter
     def inter_exchange(self, value):
+        """Set the interregional exchange value between every
+        different region to the same value.
+        """
         self.inter_exchange.set(value)
 
     @property
     def scale_exchange(self):
         """Scaling of the exchange constant between different
-        regions. This factor is multiplied by the harmonic mean
-        of the exchange constants of the two regions.
+        regions.
 
-        If `inter_exchange` is set to a non-zero value, then
-        this overrides `scale_exchange`, i.e. `scale_exchange`
-        is automatically set to zero when `inter_exchange` is not.
-
-        This parameter should be set with
+        This parameter can be set with
         >>> magnet.scale_exchange.set_between(region1, region2, value)
+        >>> magnet.scale_exchange = value # uniform value
 
         See Also
         --------
@@ -272,6 +272,9 @@ class Ferromagnet(Magnet):
 
     @scale_exchange.setter
     def scale_exchange(self, value):
+        """Set the scale factor between every different region
+        to the same value.
+        """
         self.scale_exchange.set(value)
 
     @property
