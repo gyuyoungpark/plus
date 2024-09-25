@@ -5,8 +5,13 @@
 #include "fieldops.hpp"
 #include "parameter.hpp"
 
+Parameter::Parameter(std::string name, std::string unit,
+                     std::shared_ptr<const System> system, real value)
+    : name_(name), unit_(unit),
+      system_(system), staticField_(nullptr), uniformValue_(value) {}
+
 Parameter::Parameter(std::shared_ptr<const System> system, real value)
-    : system_(system), staticField_(nullptr), uniformValue_(value) {}
+    : Parameter("", "", system, value) {}
 
 Parameter::~Parameter() {
   if (staticField_)
@@ -91,9 +96,15 @@ CuParameter Parameter::cu() const {
   return CuParameter(this);
 }
 
+VectorParameter::VectorParameter(std::string name, std::string unit,
+                                 std::shared_ptr<const System> system,
+                                 real3 value)
+    : name_(name), unit_(unit),
+      system_(system), staticField_(nullptr), uniformValue_(value) {}
+
 VectorParameter::VectorParameter(std::shared_ptr<const System> system,
                                  real3 value)
-    : system_(system), staticField_(nullptr), uniformValue_(value) {}
+    : VectorParameter("", "", system, value) {}
 
 VectorParameter::~VectorParameter() {
   if (staticField_)
