@@ -6,7 +6,7 @@ InterParameter::InterParameter(std::shared_ptr<const System> system, real value)
     : system_(system),
       uniqueRegions_(GpuBuffer<uint>(system->uniqueRegions)) {
         size_t N = system->uniqueRegions.size();
-        valuesbuffer_ = GpuBuffer<real>(std::vector<real>(N * (N + 1) / 2, value));
+        valuesbuffer_ = GpuBuffer<real>(std::vector<real>(N * (N - 1) / 2, value));
         numRegions_ = N;
       }
 
@@ -25,26 +25,22 @@ size_t InterParameter::numberOfRegions() const {
 __global__ void k_set(real* values, real value, int N) {
     int idx = blockIdx.x * blockDim.x + threadIdx.x;
 
-    if (idx >= N * (N + 1) / 2)
+    if (idx >= N * (N - 1) / 2)
         return;
 
-    // Set only non-diagonal elements by iterating
-    // through cumulative sums
-    int j = 0;
-    int previous = 0;
-
-    while (idx >= previous + (j + 1)) {
-        previous += (j + 1);
+    int j = 1;
+    while (idx >= (j * (j - 1)) / 2) {
         j++;
     }
+    j--;
 
-    int i = idx - previous;
+    int i = idx - (j * (j - 1)) / 2;
     if (i != j)
         values[idx] = value;
 }
 
 void InterParameter::set(real value) {
-    int N = numRegions_ * (numRegions_ + 1) / 2;
+    int N = numRegions_ * (numRegions_ - 1) / 2;
     cudaLaunch(N, k_set, valuesbuffer_.get(), value, static_cast<int>(numRegions_));
 }
 

@@ -56,9 +56,9 @@ inline CuInterParameter::CuInterParameter(const InterParameter* p)
 
 __device__ __host__ inline int getLutIndex(int i, int j) {
   // Look-up Table index
-  if (i <= j)
-    return j * (j + 1) / 2 + i;
-  return i * (i + 1) / 2 + j;
+  if (i > j)
+    return i * (i - 1) / 2 + j;
+  return j * (j - 1) / 2 + i;
 }
 
 __device__ inline real CuInterParameter::valueBetween(uint idx1, uint idx2) const {
