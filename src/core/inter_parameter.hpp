@@ -13,14 +13,24 @@ class CuInterParameter;
 
 class InterParameter {
  public:
-   explicit InterParameter(std::shared_ptr<const System> system, real value);
+   explicit InterParameter(std::shared_ptr<const System> system,
+                           real value,
+                           std::string name,
+                           std::string unit,
+                           int ncomp);
+    explicit InterParameter(std::shared_ptr<const System> system, real value);
+
 
    // TODO: Necessary to explicitly destroy GpuBuffer members?
    ~InterParameter() {};
 
+   size_t numberOfRegions() const;
+   std::string name() const { return name_; }
+   std::string unit() const { return unit_; }
+   int ncomp() const { return ncomp_; }
+
    GpuBuffer<uint> uniqueRegions() const;
    const GpuBuffer<real>& values() const;
-   size_t numberOfRegions() const;
 
    // TODO: implement get() (beware of empty GpuBuffers!!!)
    void set(real value);
@@ -29,6 +39,10 @@ class InterParameter {
    CuInterParameter cu() const;
 
  private:
+    std::string name_;
+    std::string unit_;
+    int ncomp_;
+
     GpuBuffer<uint> uniqueRegions_;
     std::shared_ptr<const System> system_;
     GpuBuffer<real> valuesbuffer_;

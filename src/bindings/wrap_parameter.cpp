@@ -103,6 +103,11 @@ void wrap_parameter(py::module& m) {
       });
 
   py::class_<InterParameter>(m, "InterParameter")
+      .def_property_readonly("name", &InterParameter::name)
+      .def_property_readonly("unit", &InterParameter::unit)
+      .def_property_readonly("ncomp", &InterParameter::ncomp)
+      .def_property_readonly("number_of_regions", &InterParameter::numberOfRegions)
+
       .def("set", [](InterParameter* p, real value) { p->set(value); })
       .def("set_between", [](InterParameter* p, uint i, uint j, real value) {p->setBetween(i, j, value);});
 }

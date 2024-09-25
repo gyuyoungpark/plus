@@ -4,8 +4,15 @@
 
 #include <algorithm>
 
-InterParameter::InterParameter(std::shared_ptr<const System> system, real value)
+InterParameter::InterParameter(std::shared_ptr<const System> system,
+                               real value,
+                               std::string name,
+                               std::string unit,
+                               int ncomp)
     : system_(system),
+      name_(name),
+      unit_(unit),
+      ncomp_(ncomp),
       numRegions_(0),
       uniqueRegions_(),
       valuesbuffer_() {
@@ -18,6 +25,9 @@ InterParameter::InterParameter(std::shared_ptr<const System> system, real value)
             valuesbuffer_ = GpuBuffer<real>(std::vector<real>(N * (N - 1) / 2, value));
         }
       }
+
+InterParameter::InterParameter(std::shared_ptr<const System> system, real value)
+    : InterParameter(system, value, "", "", 1) {}
 
 GpuBuffer<uint> InterParameter::uniqueRegions() const {
     return uniqueRegions_;
