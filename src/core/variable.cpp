@@ -8,10 +8,8 @@
 #include "fieldops.hpp"
 #include "system.hpp"
 
-Variable::Variable(std::string name,
-                   std::string unit,
-                   std::shared_ptr<const System> system,
-                   int ncomp)
+Variable::Variable(std::shared_ptr<const System> system, int ncomp,
+                   std::string name, std::string unit)
     : name_(name), unit_(unit) {
   field_ = new Field(system, ncomp);
 }
@@ -69,11 +67,11 @@ void Variable::set(real3 value) const {
   field_->setUniformComponent(2, value.z);
 }
 
-NormalizedVariable::NormalizedVariable(std::string name,
-                                       std::string unit,
-                                       std::shared_ptr<const System> system,
-                                       int ncomp)
-    : Variable(name, unit, system, ncomp) {}
+NormalizedVariable::NormalizedVariable(std::shared_ptr<const System> system,
+                                       int ncomp,
+                                       std::string name,
+                                       std::string unit)
+    : Variable(system, ncomp, name, unit) {}
 
 void NormalizedVariable::set(const Field& src) const {
   // TODO: check if this is possible without the extra copy
