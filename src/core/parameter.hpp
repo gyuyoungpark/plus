@@ -15,9 +15,8 @@ class CuParameter;
 
 class Parameter : public FieldQuantity, public DynamicParameter<real> {
  public:
-  explicit Parameter(std::string name, std::string unit,
-                     std::shared_ptr<const System> system, real value = 0.0);
-  explicit Parameter(std::shared_ptr<const System> system, real value = 0.0);
+  explicit Parameter(std::shared_ptr<const System> system, real value = 0.0,
+                     std::string name = "", std::string unit = "");
   ~Parameter();
 
   void set(real value);
@@ -115,11 +114,9 @@ class CuVectorParameter;
 
 class VectorParameter : public FieldQuantity, public DynamicParameter<real3> {
  public:
-  VectorParameter(std::string name, std::string unit,
-                  std::shared_ptr<const System> system,
-                  real3 value = {0.0, 0.0, 0.0});
   VectorParameter(std::shared_ptr<const System> system,
-                  real3 value = {0.0, 0.0, 0.0});
+                  real3 value = {0.0, 0.0, 0.0},
+                  std::string name = "", std::string unit = "");
   ~VectorParameter();
 
   void set(real3 value);
