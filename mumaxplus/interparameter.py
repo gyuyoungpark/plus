@@ -1,6 +1,7 @@
 """InterParameter implementation."""
 
 import _mumaxpluscpp as _cpp
+import numpy as _np
 
 class InterParameter():
     """Represent a physical material parameter which acts between
@@ -22,6 +23,25 @@ class InterParameter():
             f"name='{self.name}', ncomp={self.ncomp}, unit={self.unit})"
         )
 
+    def eval(self):
+        """Evaluate the quantity.
+        Return a numpy array containing an upper triangular matrix where each
+        region index corresponds to a row/column index. The elements of this
+        matrix corresponds to the values of self between the two regions.
+        """
+        N = int(_np.max(self.region_indices())) + 1
+
+        value_matrix = _np.zeros((N, N))
+        value_matrix[_np.triu_indices(N, k=1)] = self._impl.eval()
+        return value_matrix
+
+    def __call__(self):
+        """Evaluate the quantity.
+        Return a numpy array containing an upper triangular matrix where each
+        region index corresponds to a row/column index. The elements of this
+        matrix corresponds to the values of self between the two regions."""
+        return self.eval()
+
     @property
     def name(self):
         """Return instance's name."""
@@ -42,6 +62,11 @@ class InterParameter():
         """Return the number of regions between which the quantity
         is active."""
         return self._impl.number_of_regions
+
+    @property
+    def region_indices(self):
+        """Return list of unique region indices."""
+        return self._impl.unique_regions
 
     def set(self, value):
         """Set the InterParameter value between every different region

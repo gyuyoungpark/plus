@@ -29,9 +29,12 @@ class InterParameter {
    std::string unit() const { return unit_; }
    int ncomp() const { return ncomp_; }
 
+   const std::vector<real> eval() const { return valuesbuffer_.getData(); }
+   const std::vector<uint> uniqueRegionsVector() const { return uniqueRegions_.getData(); }
+
+
    GpuBuffer<uint> uniqueRegions() const;
    const GpuBuffer<real>& values() const;
-
    // TODO: implement get() (beware of empty GpuBuffers!!!)
    void set(real value);
    void setBetween(uint i, uint j, real value);

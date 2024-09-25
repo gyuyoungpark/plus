@@ -109,5 +109,7 @@ void wrap_parameter(py::module& m) {
       .def_property_readonly("number_of_regions", &InterParameter::numberOfRegions)
 
       .def("set", [](InterParameter* p, real value) { p->set(value); })
-      .def("set_between", [](InterParameter* p, uint i, uint j, real value) {p->setBetween(i, j, value);});
+      .def("set_between", [](InterParameter* p, uint i, uint j, real value) {p->setBetween(i, j, value);})
+      .def("eval", &InterParameter::eval)
+      .def("unique_regions", &InterParameter::uniqueRegionsVector);
 }
