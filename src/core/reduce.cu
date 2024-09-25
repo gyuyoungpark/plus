@@ -194,7 +194,7 @@ real dotSum(const Field& f, const Field& g) {
   return result;
 }
 
-__global__ void k_idxInRegions(bool* result, uint* regions, size_t size, int ridx) {
+__global__ void k_idxInRegions(bool* result, uint* regions, size_t size, uint ridx) {
   __shared__ bool sdata[BLOCKDIM];
   int tid = threadIdx.x + blockIdx.x * blockDim.x;
   int thread_id = threadIdx.x;
@@ -223,7 +223,7 @@ __global__ void k_idxInRegions(bool* result, uint* regions, size_t size, int rid
     *result = sdata[0];
 }
 
-bool idxInRegions(GpuBuffer<uint> regions, int idx) {
+bool idxInRegions(GpuBuffer<uint> regions, uint idx) {
 
   GpuBuffer<bool> d_result(1);
   cudaLaunchReductionKernel(k_idxInRegions, d_result.get(), regions.get(), regions.size(), idx);
@@ -235,22 +235,22 @@ bool idxInRegions(GpuBuffer<uint> regions, int idx) {
   return result;
 }
 
-__global__ void k_getIdx(int* result, uint* buffer, size_t size, int target) {
+__global__ void k_getIdx(uint* result, uint* buffer, size_t size, uint target) {
     int tid = threadIdx.x + blockIdx.x * blockDim.x;
 
     if (tid < size && buffer[tid] == target)
       atomicMin(result, tid); // Takes care of updating global memory
 }
 
-int getIdx(uint* bufferPtr, size_t size, int target) {
+int getIdx(uint* bufferPtr, size_t size, uint target) {
 
-  std::vector<int> vec(1, static_cast<int>(size));
-  GpuBuffer<int> d_result(vec);
+  std::vector<uint> vec(1, static_cast<uint>(size));
+  GpuBuffer<uint> d_result(vec);
 
   cudaLaunchReductionKernel(k_getIdx, d_result.get(), bufferPtr, size, target);
 
   // copy the result to the host and return
-  int result;
+  uint result;
   checkCudaError(cudaMemcpyAsync(&result, d_result.get(), sizeof(int),
                                  cudaMemcpyDeviceToHost, getCudaStream()));
   return result;

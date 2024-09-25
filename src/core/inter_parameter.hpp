@@ -22,7 +22,7 @@ class InterParameter {
    const GpuBuffer<real>& values() const;
    size_t numberOfRegions() const;
 
-   // TODO: implement get()
+   // TODO: implement get() (beware of empty GpuBuffers!!!)
    void set(real value);
    void setBetween(uint i, uint j, real value);
 
@@ -32,8 +32,7 @@ class InterParameter {
     GpuBuffer<uint> uniqueRegions_;
     std::shared_ptr<const System> system_;
     GpuBuffer<real> valuesbuffer_;
-    size_t numRegions_; // TODO: cast into (u)int?
-
+    size_t numRegions_;
 };
 
 class CuInterParameter {

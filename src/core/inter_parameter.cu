@@ -6,12 +6,17 @@
 
 InterParameter::InterParameter(std::shared_ptr<const System> system, real value)
     : system_(system),
-      uniqueRegions_(GpuBuffer<uint>(system->uniqueRegions)) {
-        int N = *std::max_element(system->uniqueRegions.begin(),
-                                  system->uniqueRegions.end()
-                                  ) + 1;
-        valuesbuffer_ = GpuBuffer<real>(std::vector<real>(N * (N - 1) / 2, value));
-        numRegions_ = system->uniqueRegions.size();
+      numRegions_(0),
+      uniqueRegions_(),
+      valuesbuffer_() {
+        std::vector<uint> uni = system->uniqueRegions;
+        if (!uni.empty()) {
+            uniqueRegions_ = GpuBuffer<uint>(uni);
+            numRegions_ = uni.size();
+
+            int N = *std::max_element(uni.begin(), uni.end()) + 1;
+            valuesbuffer_ = GpuBuffer<real>(std::vector<real>(N * (N - 1) / 2, value));
+        }
       }
 
 GpuBuffer<uint> InterParameter::uniqueRegions() const {

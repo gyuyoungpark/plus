@@ -5,8 +5,6 @@
 #include "grid.hpp"
 #include "world.hpp"
 
-#include <unordered_map>
-
 class CuSystem;
 
 class System {
@@ -56,14 +54,13 @@ class System {
   /** Return the number of cells which lie within the geometry. */
   int cellsingeo() const;
 
-
   /** Return a CuSystem which can be copied to the gpu and be used in cuda
    * kernels. */
   CuSystem cu() const;
 
  public:
   std::vector<uint> uniqueRegions;
-  std::unordered_map<uint, uint> indexMap;
+
  private:
   const World* world_;
   Grid grid_;

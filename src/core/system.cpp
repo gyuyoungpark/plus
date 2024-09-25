@@ -1,7 +1,8 @@
 #include "system.hpp"
 
-#include <stdexcept>
 #include <algorithm>
+#include <stdexcept>
+#include <set>
 
 #include "datatypes.hpp"
 #include "gpubuffer.hpp"
@@ -24,19 +25,11 @@ System::System(const World* world, Grid grid, GpuBuffer<bool> geometry, GpuBuffe
         "The size of the region buffer does not match the size of the "
         "system.");
   }
-
   if (regions.size() != 0) {
-    // No need for indexMap anymore, only uniqueRegions
-    std::vector<uint> regionBuffer;
-    std::unordered_map<uint, uint> indices;
-
-    for (const auto& region : regions.getData()) {
-      if (indices.emplace(region, regionBuffer.size()).second) {
-        regionBuffer.push_back(region);
-      }
-    }
-    uniqueRegions = std::move(regionBuffer);
-    indexMap = std::move(indices);
+    // Filter out unique region indices
+    std::vector<uint> regionsVec = regions.getData();
+    std::set<uint> uni(regionsVec.begin(), regionsVec.end()); // The order is of no importance
+    uniqueRegions = std::vector<uint>(uni.begin(), uni.end());
   }
 }
 
@@ -78,7 +71,7 @@ const GpuBuffer<uint>& System::regions() const {
 }
 
 void System::checkIdxInRegions(int idx) const {
-  if (!idxInRegions(regions_, idx)) {
+  if (!idxInRegions(GpuBuffer<uint>(uniqueRegions), idx)) {
     throw std::invalid_argument("The region index " + std::to_string(idx)
                                                    + " is not defined.");
   }
