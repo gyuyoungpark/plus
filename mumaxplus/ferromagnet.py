@@ -38,6 +38,13 @@ class Ferromagnet(Magnet):
     regions : None, ndarray, or callable (default=None)
         The regional structure of a ferromagnet can be set in the same three ways
         as the geometry. This parameter indexes each grid cell to a certain region.
+
+        !Important note! The region indices are stored in an array of length equal to
+        the maximal index value + 1. Therefore, if possible, it's good practice to keep
+        each region index as close to zero as possible.
+        E.g. defining two regions with indices 1 and 500 will work, but occupies more
+        memory and will pay in performance than giving them the values 0 and 1.
+
     name : str (default="")
         The ferromagnet's identifier. If the name is empty (the default), a name for the
         ferromagnet will be created.

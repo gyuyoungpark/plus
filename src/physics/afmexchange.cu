@@ -106,9 +106,9 @@ __global__ void k_afmExchangeFieldNN(CuField hField,
 
         uint ridx = system.getRegionIdx(idx);
         uint ridx_ = system.getRegionIdx(idx_);
-        scale = scaleExch.valueBetween(ridx, ridx_);
 
         if (ridx != ridx_) {
+          scale = scaleExch.valueBetween(ridx, ridx_);
           inter = interExch.valueBetween(ridx, ridx_);
         }
       }

@@ -45,7 +45,6 @@ class CuInterParameter {
  public:
    explicit CuInterParameter(const InterParameter* p);
    __device__ real valueBetween(uint i, uint j) const;
-   __device__ real valueBetween(int3 coo1, int3 coo2) const;
 };
 
 inline CuInterParameter::CuInterParameter(const InterParameter* p)
@@ -62,7 +61,5 @@ __device__ __host__ inline int getLutIndex(int i, int j) {
 }
 
 __device__ inline real CuInterParameter::valueBetween(uint idx1, uint idx2) const {
-  int i = getIdxOnThread(regPtr_, numRegions_, idx1);
-  int j = getIdxOnThread(regPtr_, numRegions_, idx2);
-  return valuePtr_[getLutIndex(i, j)];
+  return valuePtr_[getLutIndex(idx1, idx2)];
 }

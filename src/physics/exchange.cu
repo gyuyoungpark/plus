@@ -78,10 +78,11 @@ __global__ void k_exchangeField(CuField hField,
 
         uint ridx = system.getRegionIdx(idx);
         uint ridx_ = system.getRegionIdx(idx_);
-        scale = scaleEx.valueBetween(ridx, ridx_);
 
-        if (ridx != ridx_)
+        if (ridx != ridx_) {
+          scale = scaleEx.valueBetween(ridx, ridx_);
           inter = interEx.valueBetween(ridx, ridx_);
+        }
       }
       else { // Neumann BC
         real3 Gamma = getGamma(dmiTensor, idx, normal, m);
@@ -159,10 +160,11 @@ __global__ void k_exchangeField(CuField hField,
 
         uint ridx = system.getRegionIdx(idx);
         uint ridx_ = system.getRegionIdx(idx_);
-        scale = scaleEx.valueBetween(ridx, ridx_);
 
-        if (ridx != ridx_)
+        if (ridx != ridx_) {
+          scale = scaleEx.valueBetween(ridx, ridx_);
           inter = interEx.valueBetween(ridx, ridx_);
+        }
       }
       else { // Neumann BC
         real3 Gamma1 = getGamma(dmiTensor, idx, normal, m);

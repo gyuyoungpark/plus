@@ -2,12 +2,16 @@
 #include "inter_parameter.hpp"
 #include "reduce.hpp"
 
+#include <algorithm>
+
 InterParameter::InterParameter(std::shared_ptr<const System> system, real value)
     : system_(system),
       uniqueRegions_(GpuBuffer<uint>(system->uniqueRegions)) {
-        size_t N = system->uniqueRegions.size();
+        int N = *std::max_element(system->uniqueRegions.begin(),
+                                  system->uniqueRegions.end()
+                                  ) + 1;
         valuesbuffer_ = GpuBuffer<real>(std::vector<real>(N * (N - 1) / 2, value));
-        numRegions_ = N;
+        numRegions_ = system->uniqueRegions.size();
       }
 
 GpuBuffer<uint> InterParameter::uniqueRegions() const {
@@ -22,41 +26,24 @@ size_t InterParameter::numberOfRegions() const {
     return numRegions_;
 }
 
-__global__ void k_set(real* values, real value, int N) {
+__global__ void k_set(real* values, real value) {
+    // TODO: more efficient, memory-wise, to only set relevant elements?
     int idx = blockIdx.x * blockDim.x + threadIdx.x;
-
-    if (idx >= N * (N - 1) / 2)
-        return;
-
-    int j = 1;
-    while (idx >= (j * (j - 1)) / 2) {
-        j++;
-    }
-    j--;
-
-    int i = idx - (j * (j - 1)) / 2;
-    if (i != j)
-        values[idx] = value;
+    values[idx] = value;
 }
 
 void InterParameter::set(real value) {
-    int N = numRegions_ * (numRegions_ - 1) / 2;
-    cudaLaunch(N, k_set, valuesbuffer_.get(), value, static_cast<int>(numRegions_));
+    uint N = numRegions_ * (numRegions_ - 1) / 2;
+    cudaLaunch(N, k_set, valuesbuffer_.get(), value);
 }
 
 __global__ void k_setBetween(real* values, int index, real value) {
     values[index] = value;
 }
 
-void InterParameter::setBetween(uint idx1, uint idx2, real value) {
-        
-    // TODO: this function constitutes 5 kernel calls -> replace by one general k_setBetween?
-    
-    system_->checkIdxInRegions(idx1);
-    system_->checkIdxInRegions(idx2);
-
-    int i = getIdx(uniqueRegions_.get(), numRegions_, idx1);
-    int j = getIdx(uniqueRegions_.get(), numRegions_, idx2);
+void InterParameter::setBetween(uint i, uint j, real value) {
+    system_->checkIdxInRegions(i);
+    system_->checkIdxInRegions(j);
 
     // Update GPU memory directly
     cudaLaunchReductionKernel(k_setBetween, valuesbuffer_.get(), getLutIndex(i, j), value);
