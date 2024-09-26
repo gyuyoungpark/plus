@@ -234,24 +234,3 @@ bool idxInRegions(GpuBuffer<uint> regions, uint idx) {
                                  cudaMemcpyDeviceToHost, getCudaStream()));
   return result;
 }
-
-__global__ void k_getIdx(uint* result, uint* buffer, size_t size, uint target) {
-    int tid = threadIdx.x + blockIdx.x * blockDim.x;
-
-    if (tid < size && buffer[tid] == target)
-      atomicMin(result, tid); // Takes care of updating global memory
-}
-
-int getIdx(uint* bufferPtr, size_t size, uint target) {
-
-  std::vector<uint> vec(1, static_cast<uint>(size));
-  GpuBuffer<uint> d_result(vec);
-
-  cudaLaunchReductionKernel(k_getIdx, d_result.get(), bufferPtr, size, target);
-
-  // copy the result to the host and return
-  uint result;
-  checkCudaError(cudaMemcpyAsync(&result, d_result.get(), sizeof(int),
-                                 cudaMemcpyDeviceToHost, getCudaStream()));
-  return result;
-}

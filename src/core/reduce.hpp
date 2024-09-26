@@ -12,4 +12,3 @@ real dotSum(const Field&, const Field&);
 real fieldComponentAverage(const Field&, int comp);
 std::vector<real> fieldAverage(const Field&);
 bool idxInRegions(GpuBuffer<uint>, uint idx);
-int getIdx(uint* bufferPtr, size_t size, uint target);
