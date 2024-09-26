@@ -25,18 +25,20 @@ class InterParameter():
 
     def eval(self):
         """Evaluate the quantity.
-        Return a numpy array containing an upper triangular matrix where each
+        Return a numpy array containing a symmetric matrix where each
         region index corresponds to a row/column index. The elements of this
-        matrix corresponds to the values of self between the two regions.
+        matrix correspond to the values of self between the two regions.
         """
         values = self._impl.eval()
         if not values:
             raise ValueError(f"The InterParameter '{self.name}' is not defined.")
 
-        N = int(_np.max(self.region_indices())) + 1
+        N = int(_np.max(self.region_indices())) + 1  # TODO: use property instead of max+1
 
         value_matrix = _np.zeros((N, N))
-        value_matrix[_np.triu_indices(N, k=1)] = values
+        i_s, j_s = _np.tril_indices(N, k=-1)
+        value_matrix[i_s, j_s] = values  # lower triangle
+        value_matrix[j_s, i_s] = values  # upper triangle
         return value_matrix
 
     def __call__(self):
