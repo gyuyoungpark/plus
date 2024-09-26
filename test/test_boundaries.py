@@ -36,8 +36,18 @@ DMI = 0.9 * 4/np.pi  # 90% of critical DMI strength
 
 minimizerstop = 1e-7
 
-def absolute_error(simulated, wanted):
+
+def relative_error(simulated, wanted):
     return np.abs(simulated - wanted)/wanted
+
+
+def canting_x(magnet):  
+    return np.arctan2(magnet.magnetization.eval()[0,0,0,0],  
+                      magnet.magnetization.eval()[2,0,0,0]) 
+
+def canting_y(magnet):  
+    return np.arctan2(magnet.magnetization.eval()[1,0,0,0],  
+                      magnet.magnetization.eval()[2,0,0,0]) 
 
 
 def analytic():
@@ -80,9 +90,8 @@ class TestBoundaries:
         for a wire in the x-direction."""
         self.magnet_x.enable_openbc = False
         self.magnet_x.minimize(minimizerstop)
-        cant_neumann = np.arctan2(self.magnet_x.magnetization.eval()[0,0,0,0],
-                                  self.magnet_x.magnetization.eval()[2,0,0,0])
-        err = absolute_error(cant_neumann, 0.44716486657643906)
+        cant_neumann = canting_x(self.magnet_x)
+        err = relative_error(cant_neumann, 0.44716486657643906)
         assert err < RTOL
     
     def test_open_x(self):
@@ -90,9 +99,8 @@ class TestBoundaries:
         for a wire in the x-direction."""
         self.magnet_x.enable_openbc = True
         self.magnet_x.minimize(minimizerstop)
-        cant_open = np.arctan2(self.magnet_x.magnetization.eval()[0,0,0,0],
-                               self.magnet_x.magnetization.eval()[2,0,0,0])
-        err = absolute_error(cant_open, self.wanted)
+        cant_open = canting_x(self.magnet_x)
+        err = relative_error(cant_open, self.wanted)
         assert err < RTOL
     
     def test_periodic_x(self):
@@ -101,9 +109,8 @@ class TestBoundaries:
         self.magnet_x.enable_openbc = False
         self.world_x.set_pbc((0,1,0))
         self.magnet_x.minimize(minimizerstop)
-        cant_period = np.arctan2(self.magnet_x.magnetization.eval()[0,0,0,0],
-                                 self.magnet_x.magnetization.eval()[2,0,0,0])
-        err = absolute_error(cant_period, self.wanted)
+        cant_period = canting_x(self.magnet_x)
+        err = relative_error(cant_period, self.wanted)
         assert err < RTOL
     
     def test_neumann_y(self):
@@ -111,9 +118,8 @@ class TestBoundaries:
         for a wire in the y-direction."""
         self.magnet_y.enable_openbc = False
         self.magnet_y.minimize(minimizerstop)
-        cant_neumann = np.arctan2(self.magnet_y.magnetization.eval()[1,0,0,0],
-                                  self.magnet_y.magnetization.eval()[2,0,0,0])
-        err = absolute_error(cant_neumann, 0.44716486657643906)
+        cant_neumann = canting_y(self.magnet_y)
+        err = relative_error(cant_neumann, 0.44716486657643906)
         assert err < RTOL
     
     def test_open_y(self):
@@ -121,9 +127,8 @@ class TestBoundaries:
         for a wire in the y-direction."""
         self.magnet_y.enable_openbc = True
         self.magnet_y.minimize(minimizerstop)
-        cant_open = np.arctan2(self.magnet_y.magnetization.eval()[1,0,0,0],
-                               self.magnet_y.magnetization.eval()[2,0,0,0])
-        err = absolute_error(cant_open, self.wanted)
+        cant_open = canting_y(self.magnet_y)
+        err = relative_error(cant_open, self.wanted)
         assert err < RTOL
     
     def test_periodic_y(self):
@@ -132,7 +137,6 @@ class TestBoundaries:
         self.magnet_y.enable_openbc = False
         self.world_y.set_pbc((1,0,0))
         self.magnet_y.minimize(minimizerstop)
-        cant_period = np.arctan2(self.magnet_y.magnetization.eval()[1,0,0,0],
-                                 self.magnet_y.magnetization.eval()[2,0,0,0])
-        err = absolute_error(cant_period, self.wanted)
+        cant_period = canting_y(self.magnet_y)
+        err = relative_error(cant_period, self.wanted)
         assert err < RTOL
