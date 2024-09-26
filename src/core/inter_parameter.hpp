@@ -13,48 +13,45 @@ class CuInterParameter;
 
 class InterParameter {
  public:
-   explicit InterParameter(std::shared_ptr<const System> system,
+  explicit InterParameter(std::shared_ptr<const System> system,
                            real value,
-                           std::string name,
-                           std::string unit,
-                           int ncomp);
-    explicit InterParameter(std::shared_ptr<const System> system, real value);
+                           std::string name = "",
+                           std::string unit = "");
+  explicit InterParameter(std::shared_ptr<const System> system, real value);
 
-   ~InterParameter() {};
+  ~InterParameter() {};
 
-   size_t numberOfRegions() const;
-   std::string name() const { return name_; }
-   std::string unit() const { return unit_; }
-   int ncomp() const { return ncomp_; }
+  std::string name() const { return name_; }
+  std::string unit() const { return unit_; }
+  int ncomp() const { return 1; }
 
-   const std::vector<real> eval() const { return valuesbuffer_.getData(); }
-   const std::vector<uint> uniqueRegionsVector() const { return uniqueRegions_.getData(); }
+  const std::vector<real> eval() const { return valuesbuffer_.getData(); }
+  const GpuBuffer<real>& values() const;
 
+  void set(real value);
+  void setBetween(uint i, uint j, real value);
 
-   GpuBuffer<uint> uniqueRegions() const;
-   const GpuBuffer<real>& values() const;
+  CuInterParameter cu() const;
 
-   void set(real value);
-   void setBetween(uint i, uint j, real value);
-
-   CuInterParameter cu() const;
+  // TODO: these user-convenience functions should probably move
+  const std::vector<uint> uniqueRegions() const { return system_->uniqueRegions; }
+  int numberOfRegions() const { return system_->uniqueRegions.size(); }
 
  private:
-    std::string name_;
-    std::string unit_;
-    int ncomp_;
+  std::string name_;
+  std::string unit_;
 
-    GpuBuffer<uint> uniqueRegions_;
-    std::shared_ptr<const System> system_;
-    GpuBuffer<real> valuesbuffer_;
-    size_t numRegions_;
+  std::shared_ptr<const System> system_;
+  GpuBuffer<real> valuesbuffer_;
+  size_t valuesLimit_;  // N(N-1)/2 with N = maxRegionIdx+1
+
+  friend CuInterParameter;
 };
 
 class CuInterParameter {
  private:
-   uint* regPtr_;
-   real* valuePtr_;
-   size_t numRegions_;
+    real* valuePtr_;
+    uint valuesLimit_;  // TODO: not needed?
 
  public:
    explicit CuInterParameter(const InterParameter* p);
@@ -62,13 +59,16 @@ class CuInterParameter {
 };
 
 inline CuInterParameter::CuInterParameter(const InterParameter* p)
-   : regPtr_(p->uniqueRegions().get()),
-     valuePtr_(p->values().get()),
-     numRegions_(p->numberOfRegions()) {}
+   : valuePtr_(p->values().get()),
+     valuesLimit_(p->valuesLimit_) {}
 
 
+/** Look-up Table index
+ * This transforms a bottom triangular matrix row-first with 0-diagonal
+ * to a 1D array index, or an upper triangular matrix column-first.
+ * No built-in safety checks for the sake of performance.
+ */
 __device__ __host__ inline int getLutIndex(int i, int j) {
-  // Look-up Table index
   if (i > j)
     return i * (i - 1) / 2 + j;
   return j * (j - 1) / 2 + i;
