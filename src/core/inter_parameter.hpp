@@ -17,19 +17,20 @@ class InterParameter {
                            real value,
                            std::string name = "",
                            std::string unit = "");
-  explicit InterParameter(std::shared_ptr<const System> system, real value);
-
   ~InterParameter() {};
 
   std::string name() const { return name_; }
   std::string unit() const { return unit_; }
   int ncomp() const { return 1; }
+  bool isUniform() const { return valuesBuffer_.size() == 0; }
 
-  const std::vector<real> eval() const { return valuesbuffer_.getData(); }
-  const GpuBuffer<real>& values() const;
+  const std::vector<real> eval() const;
 
+  // set to uniform value
   void set(real value);
   void setBetween(uint i, uint j, real value);
+  real getUniformValue() const;
+  real getBetween(uint i, uint j) const;
 
   CuInterParameter cu() const;
 
@@ -38,11 +39,15 @@ class InterParameter {
   int numberOfRegions() const { return system_->uniqueRegions.size(); }
 
  private:
+  /** Set full buffer to uniform value. */
+  void setBuffer(real value);
+
   std::string name_;
   std::string unit_;
 
   std::shared_ptr<const System> system_;
-  GpuBuffer<real> valuesbuffer_;
+  real uniformValue_;
+  GpuBuffer<real> valuesBuffer_;
   size_t valuesLimit_;  // N(N-1)/2 with N = maxRegionIdx+1
 
   friend CuInterParameter;
@@ -50,18 +55,22 @@ class InterParameter {
 
 class CuInterParameter {
  private:
-    real* valuePtr_;
-    uint valuesLimit_;  // TODO: not needed?
+  real* valuesPtr_;
+  real uniformValue_;
 
  public:
-   explicit CuInterParameter(const InterParameter* p);
-   __device__ real valueBetween(uint i, uint j) const;
+  explicit CuInterParameter(const InterParameter* p);
+  __device__ bool isUniform() const { return !valuesPtr_; }
+  __device__ real valueBetween(uint i, uint j) const;
 };
 
 inline CuInterParameter::CuInterParameter(const InterParameter* p)
-   : valuePtr_(p->values().get()),
-     valuesLimit_(p->valuesLimit_) {}
-
+    : uniformValue_(p->uniformValue_),
+      valuesPtr_(nullptr) {
+  if (!p->isUniform()) {
+    valuesPtr_ = p->valuesBuffer_.get();
+  }
+}
 
 /** Look-up Table index
  * This transforms a bottom triangular matrix row-first with 0-diagonal
@@ -75,5 +84,7 @@ __device__ __host__ inline int getLutIndex(int i, int j) {
 }
 
 __device__ inline real CuInterParameter::valueBetween(uint idx1, uint idx2) const {
-  return valuePtr_[getLutIndex(idx1, idx2)];
+  if (isUniform())
+    return uniformValue_;
+  return valuesPtr_[getLutIndex(idx1, idx2)];
 }

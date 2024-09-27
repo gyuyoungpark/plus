@@ -33,7 +33,7 @@ class InterParameter():
         if not values:
             raise ValueError(f"The InterParameter '{self.name}' is not defined.")
 
-        N = int(_np.max(self.region_indices())) + 1  # TODO: use property instead of max+1
+        N = int(_np.max(self.region_indices)) + 1  # TODO: use property instead of max+1
 
         value_matrix = _np.zeros((N, N))
         i_s, j_s = _np.tril_indices(N, k=-1)
@@ -74,6 +74,25 @@ class InterParameter():
         """Return list of unique region indices."""
         return self._impl.unique_regions
 
+    @property
+    def is_uniform(self):
+        """Return True if an InterParameter instance is uniform, otherwise False."""
+        return self._impl.is_uniform
+
+    @property
+    def uniform_value(self):
+        """Return the uniform value of the InterParameter instance if it exists."""
+        return self._impl.uniform_value
+
+    @uniform_value.setter
+    def uniform_value(self, value):
+        """Set the InterParameter value between every different region
+        to the same value.
+        """
+        assert isinstance(value, (float, int)
+                          ), "The value should be uniform and static."
+        self._impl.uniform_value = value
+
     def set(self, value):
         """Set the InterParameter value between every different region
         to the same value.
@@ -85,3 +104,7 @@ class InterParameter():
     def set_between(self, i, j, value):
         """Set InterParameter value between regions i and j."""
         self._impl.set_between(i, j, value)
+
+    def get_between(self, i, j):
+        """Get the InterParameter value between regions i and j."""
+        return self._impl.get_between(i, j)

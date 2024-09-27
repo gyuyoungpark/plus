@@ -33,8 +33,14 @@ class Parameter(FieldQuantity):
         return self._impl.is_dynamic
 
     @property
-    def get_uniform_value(self):
-        return self._impl.get_uniform_value
+    def uniform_value(self):
+        """Return the uniform value of the Parameter instance if it exists."""
+        return self._impl.uniform_value
+
+    @uniform_value.setter
+    def uniform_value(self, value):
+        """Set the Parameter to a uniform value."""
+        self._impl.uniform_value = value
 
     def add_time_term(self, term, mask=None):
         """Add a time-dependent term.
