@@ -15,7 +15,8 @@ class CuParameter;
 
 class Parameter : public FieldQuantity, public DynamicParameter<real> {
  public:
-  explicit Parameter(std::shared_ptr<const System> system, real value = 0.0);
+  explicit Parameter(std::shared_ptr<const System> system, real value = 0.0,
+                     std::string name = "", std::string unit = "");
   ~Parameter();
 
   void set(real value);
@@ -26,6 +27,8 @@ class Parameter : public FieldQuantity, public DynamicParameter<real> {
   bool assuredZero() const;
   int ncomp() const;
   std::shared_ptr<const System> system() const;
+  std::string name() const {return name_;}
+  std::string unit() const {return unit_;}
   /** Evaluate parameter on its field. */
   Field eval() const;
   /** Get value of uniform parameter.*/
@@ -39,6 +42,9 @@ class Parameter : public FieldQuantity, public DynamicParameter<real> {
   real uniformValue_;
   /** Store time-independent values. */
   Field* staticField_;
+
+  std::string name_;
+  std::string unit_;
 
   friend CuParameter;
 };
@@ -109,7 +115,8 @@ class CuVectorParameter;
 class VectorParameter : public FieldQuantity, public DynamicParameter<real3> {
  public:
   VectorParameter(std::shared_ptr<const System> system,
-                  real3 value = {0.0, 0.0, 0.0});
+                  real3 value = {0.0, 0.0, 0.0},
+                  std::string name = "", std::string unit = "");
   ~VectorParameter();
 
   void set(real3 value);
@@ -120,6 +127,8 @@ class VectorParameter : public FieldQuantity, public DynamicParameter<real3> {
   bool assuredZero() const;
   int ncomp() const;
   std::shared_ptr<const System> system() const;
+  std::string name() const {return name_;}
+  std::string unit() const {return unit_;}
   Field eval() const;
   real3 getUniformValue() const;
 
@@ -129,6 +138,9 @@ class VectorParameter : public FieldQuantity, public DynamicParameter<real3> {
   std::shared_ptr<const System> system_;
   real3 uniformValue_;
   Field* staticField_;
+
+  std::string name_;
+  std::string unit_;
 
   friend CuVectorParameter;
 };
