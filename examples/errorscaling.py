@@ -19,10 +19,9 @@ def magnetic_moment_precession(time, initial_magnetization, hfield_z, damping):
     moment and an applied field along the z direction.
     """
     mx, my, mz = initial_magnetization
-    theta0 = acos(mz / sqrt(mx ** 2 + my ** 2 + mz ** 2))
+    theta0 = acos(mz)
     phi0 = atan(my / mx)
-    gammaLL = GAMMALL
-    freq = gammaLL * hfield_z / (1 + damping ** 2)
+    freq = GAMMALL * hfield_z / (1 + damping ** 2)
     phi = phi0 + freq * time
     theta = pi - 2 * atan(exp(damping * freq * time) * tan(pi / 2 - theta0 / 2))
     return np.array([sin(theta) * cos(phi), sin(theta) * sin(phi), cos(theta)])
