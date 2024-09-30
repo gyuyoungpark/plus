@@ -16,7 +16,7 @@ InterParameter::InterParameter(std::shared_ptr<const System> system,
   if (!uni.empty()) {
     N = *std::max_element(uni.begin(), uni.end()) + 1;
   }
-  valuesLimit_ = N*(N-1)/2;
+  valuesLimit_ = N * (N - 1) / 2;
 }
 
 const std::vector<real> InterParameter::eval() const {
@@ -49,6 +49,8 @@ void InterParameter::setBetween(uint i, uint j, real value) {
   }
 
   if (isUniform()) {
+    if (value == uniformValue_) return; // nothing to update
+
     valuesBuffer_.allocate(valuesLimit_);  // make memory available
     setBuffer(uniformValue_);  // keep old uniform value
   }

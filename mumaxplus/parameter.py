@@ -24,7 +24,12 @@ class Parameter(FieldQuantity):
 
     @property
     def is_uniform(self):
-        """Return True if a Parameter instance is uniform, otherwise False."""
+        """Return True if a Parameter instance is uniform, otherwise False.
+        
+        See Also
+        --------
+        uniform_value
+        """
         return self._impl.is_uniform
 
     @property
@@ -34,12 +39,23 @@ class Parameter(FieldQuantity):
 
     @property
     def uniform_value(self):
-        """Return the uniform value of the Parameter instance if it exists."""
+        """Return the uniform value of the Parameter instance if it exists.
+        
+        See Also
+        --------
+        is_uniform
+        """
         return self._impl.uniform_value
 
     @uniform_value.setter
     def uniform_value(self, value):
-        """Set the Parameter to a uniform value."""
+        """Set the Parameter to a uniform value. This functions the same as
+        simply setting the Parameter with `= value` or `set(value)`.
+        
+        See Also
+        --------
+        set
+        """
         self._impl.uniform_value = value
 
     def add_time_term(self, term, mask=None):

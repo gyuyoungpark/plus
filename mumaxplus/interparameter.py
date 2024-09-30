@@ -43,9 +43,10 @@ class InterParameter():
 
     def __call__(self):
         """Evaluate the quantity.
-        Return a numpy array containing an upper triangular matrix where each
+        Return a numpy array containing a symmetric matrix where each
         region index corresponds to a row/column index. The elements of this
-        matrix corresponds to the values of self between the two regions."""
+        matrix correspond to the values of self between the two regions.
+        """
         return self.eval()
 
     @property
@@ -76,18 +77,33 @@ class InterParameter():
 
     @property
     def is_uniform(self):
-        """Return True if an InterParameter instance is uniform, otherwise False."""
+        """Return True if an InterParameter instance is uniform, otherwise False.
+        
+        See Also
+        --------
+        uniform_value
+        """
         return self._impl.is_uniform
 
     @property
     def uniform_value(self):
-        """Return the uniform value of the InterParameter instance if it exists."""
+        """Return the uniform value of the InterParameter instance if it exists.
+        
+        See Also
+        --------
+        is_uniform
+        """
         return self._impl.uniform_value
 
     @uniform_value.setter
     def uniform_value(self, value):
         """Set the InterParameter value between every different region
-        to the same value.
+        to the same value. This functions the same as simply setting the
+        InterParameter with `= value` or `set(value)`.
+
+        See Also
+        --------
+        set
         """
         assert isinstance(value, (float, int)
                           ), "The value should be uniform and static."
@@ -96,15 +112,29 @@ class InterParameter():
     def set(self, value):
         """Set the InterParameter value between every different region
         to the same value.
+
+        See Also
+        --------
+        set_between
         """
         assert isinstance(value, (float, int)
                           ), "The value should be uniform and static."
         self._impl.set(value)
 
     def set_between(self, i, j, value):
-        """Set InterParameter value between regions i and j."""
+        """Set InterParameter value between regions i and j.
+        
+        See Also
+        --------
+        get_between, set
+        """
         self._impl.set_between(i, j, value)
 
     def get_between(self, i, j):
-        """Get the InterParameter value between regions i and j."""
+        """Get the InterParameter value between regions i and j.
+        
+        See Also
+        --------
+        set_between
+        """
         return self._impl.get_between(i, j)
