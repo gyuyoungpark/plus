@@ -5,6 +5,7 @@ from numpy import arccos, arctan, cos, exp, pi, sin, sqrt, tan
 import pytest
 
 from mumaxplus import Ferromagnet, Grid, World
+from mumaxplus.util.constants import GAMMALL
 
 VALID_METHOD_NAMES = [
     "Heun",
@@ -22,8 +23,7 @@ def magnetic_moment_precession(time, initial_magnetization, hfield_z, damping=0.
     mx, my, mz = initial_magnetization
     theta0 = arccos(mz / sqrt(mx ** 2 + my ** 2 + mz ** 2))
     phi0 = arctan(my / mx)
-    gammaLL = 1.76086e11
-    freq = gammaLL * hfield_z / (1 + damping ** 2)
+    freq = GAMMALL * hfield_z / (1 + damping ** 2)
     phi = phi0 + freq * time
     theta = pi - 2 * arctan(exp(damping * freq * time) * tan(pi / 2 - theta0 / 2))
     return {"mx": sin(theta) * cos(phi), "my": sin(theta) * sin(phi), "mz": cos(theta)}
@@ -115,7 +115,7 @@ def test_solve_single_system(test_world, method):
 
     for mc in ["mx", "my", "mz"]:
         max_error = np.max(np.abs(output[mc] - exact[mc]))
-        assert max_error < 1e-2
+        assert max_error < 1e-4
 
     # # uncomment for visual testing
     # import matplotlib.pyplot as plt
@@ -166,7 +166,8 @@ def test_solve_multiple_systems(test_world, method):
     for magnet_idx in [0, 1]:
         for mc in ["mx", "my", "mz"]:
             max_error = np.max(np.abs(output[mc + f"_{magnet_idx}"] - exact[mc]))
-            assert max_error < 1e-2
+            assert max_error < 1e-4
+
 
 @pytest.mark.parametrize("invalid_timepoints, expected_error_message", [
     (np.array([10, 5, 3, 2]), "The list of timepoints should be increasing."),  # Non-increasing timepoints

@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from mumaxplus import Antiferromagnet, Grid, World
+from mumaxplus.util.constants import GAMMALL
 
 # Antiferromagnetic spinwave dispersion relation
 
@@ -19,7 +20,7 @@ A_nn = -5E-12
 A_c = -400E-12
 Ms = 400e3         # saturation magnetization
 alpha = 0.005      # damping parameter
-gamma = 1.76E11    # gyromagnetic ratio
+gamma = GAMMALL    # gyromagnetic ratio
 K = 1e3
 mu0 = 1.256637062E-6
 
