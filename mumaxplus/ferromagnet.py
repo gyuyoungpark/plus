@@ -39,9 +39,10 @@ class Ferromagnet(Magnet):
         The regional structure of a ferromagnet can be set in the same three ways
         as the geometry. This parameter indexes each grid cell to a certain region.
 
-        !Important note! The region indices are stored in an array of length equal to
-        the maximal index value + 1. Therefore, if possible, it's good practice to keep
-        each region index as close to zero as possible.
+        !Important note! The values of `InterParameters` which act between
+        different regions are stored in an array with a size that scales with the
+        square of the maximal index value. Therefore, if possible, it's good
+        practice to keep each region index as close to zero as possible.
         E.g. defining two regions with indices 1 and 500 will work, but occupies more
         memory and will pay in performance than giving them the values 0 and 1.
 
