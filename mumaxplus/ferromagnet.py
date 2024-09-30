@@ -383,7 +383,7 @@ class Ferromagnet(Magnet):
     def anisC1(self, value):
         self.anisC1.set(value)
 
-    @ property
+    @property
     def anisC2(self):
         """Second cubic anisotropy direction.
         
@@ -403,7 +403,7 @@ class Ferromagnet(Magnet):
         
         See Also
         --------
-        eps_prime, jcur, pol, FixedLayer, FreeLayerThickness
+        epsilon_prime, jcur, pol, fixed_layer, fixed_layer_on_top, free_layer_thickness
         """
         return Parameter(self._impl.Lambda)
     
@@ -412,47 +412,64 @@ class Ferromagnet(Magnet):
         self.Lambda.set(value)
     
     @property
-    def FreeLayerThickness(self):
+    def free_layer_thickness(self):
         """Slonczewski free layer thickness (m). If set to zero (default),
         then the thickness will be deduced from the mesh size.
         
         See Also
         --------
-        eps_prime, jcur, Lambda, pol, FixedLayer
+        epsilon_prime, jcur, Lambda, pol, fixed_layer, fixed_layer_on_top
         """
-        return Parameter(self._impl.FreeLayerThickness)
+        return Parameter(self._impl.free_layer_thickness)
     
-    @FreeLayerThickness.setter
-    def FreeLayerThickness(self, value):
-        self.FreeLayerThickness.set(value)
+    @free_layer_thickness.setter
+    def free_layer_thickness(self, value):
+        self.free_layer_thickness.set(value)
+    
+    @property
+    def fixed_layer_on_top(self):
+        """The position of the fixed layer. If set to True (default),
+        then the layer will be at the top. Otherwise it will be at the bottom.
+        
+        See Also
+        --------
+        epsilon_prime, jcur, Lambda, pol, fixed_layer, free_layer_thickness
+        """
+        return self._impl.fixed_layer_on_top
+
+    @fixed_layer_on_top.setter
+    def fixed_layer_on_top(self, value: bool):
+        if not type(value) is bool:
+            raise TypeError("fixed_layer_on_top should be a boolean")
+        self._impl.fixed_layer_on_top = value
 
     @property
-    def eps_prime(self):
+    def epsilon_prime(self):
         """Slonczewski secondary STT term ε'.
         
         See Also
         --------
-        jcur, Lambda, pol, FixedLayer, FreeLayerThickness
+        jcur, Lambda, pol, fixed_layer, fixed_layer_on_top, free_layer_thickness
         """
-        return Parameter(self._impl.eps_prime)
+        return Parameter(self._impl.epsilon_prime)
     
-    @eps_prime.setter
-    def eps_prime(self, value):
-        self.eps_prime.set(value)
+    @epsilon_prime.setter
+    def epsilon_prime(self, value):
+        self.epsilon_prime.set(value)
 
     @property
-    def FixedLayer(self):
+    def fixed_layer(self):
         """Slonczewski fixed layer polarization.
         
         See Also
         --------
-        eps_prime, jcur, Lambda, pol, FreeLayerThickness
+        epsilon_prime, jcur, Lambda, pol, fixed_layer_on_top, free_layer_thickness
         """
-        return Parameter(self._impl.FixedLayer)
+        return Parameter(self._impl.fixed_layer)
     
-    @FixedLayer.setter
-    def FixedLayer(self, value):
-        self.FixedLayer.set(value)
+    @fixed_layer.setter
+    def fixed_layer(self, value):
+        self.fixed_layer.set(value)
 
 
     @property
@@ -475,7 +492,7 @@ class Ferromagnet(Magnet):
         
         See Also
         --------
-        eps_prime, jcur, Lambda, FixedLayer, FreeLayerThickness, xi
+        epsilon_prime, jcur, Lambda, fixed_layer, fixed_layer_on_top, free_layer_thickness, xi
         """
         return Parameter(self._impl.pol)
 
@@ -489,7 +506,7 @@ class Ferromagnet(Magnet):
 
         See Also
         --------
-        eps_prime, Lambda, pol, FixedLayer, FreeLayerThickness, xi
+        epsilon_prime, Lambda, pol, fixed_layer, fixed_layer_on_top, free_layer_thickness, xi
         """
         return Parameter(self._impl.jcur)
 

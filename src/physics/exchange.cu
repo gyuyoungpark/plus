@@ -61,7 +61,6 @@ __global__ void k_exchangeField(CuField hField,
       continue;
 
     const int idx_ = grid.coord2index(coo_);
-    real delta = dot(rel_coo, system.cellsize);
 
     if(msat.valueAt(idx_) != 0 || !openBC) {
       real3 m_;
@@ -86,6 +85,7 @@ __global__ void k_exchangeField(CuField hField,
       }
       else { // Neumann BC
         real3 Gamma = getGamma(dmiTensor, idx, normal, m);
+        real delta = dot(rel_coo, system.cellsize);
         m_ = m + (Gamma / (2*a)) * delta;
         a_ = a;
       }
@@ -143,7 +143,6 @@ __global__ void k_exchangeField(CuField hField,
                             int3{0, 1, 0}, int3{0, 0, -1}, int3{0, 0, 1}}) {
     const int3 coo_ = mastergrid.wrap(coo + rel_coo);
     const int idx_ = grid.coord2index(coo_);
-    real delta = dot(rel_coo, system.cellsize);
 
     if(msat.valueAt(idx_) != 0) {
       real3 m_;
@@ -169,6 +168,7 @@ __global__ void k_exchangeField(CuField hField,
       else { // Neumann BC
         real3 Gamma1 = getGamma(dmiTensor, idx, normal, m);
         real fac = an / (2 * a);
+        real delta = dot(rel_coo, system.cellsize);
         if (abs(fac) == 1)
           m_ = m + Gamma1 / (4*a) * delta;
         else {

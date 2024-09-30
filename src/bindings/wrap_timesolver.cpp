@@ -21,6 +21,11 @@ void wrap_timesolver(py::module& m) {
              RKmethod method = getRungeKuttaMethodFromName(methodName);
              solver.setRungeKuttaMethod(method);
            })
+      .def_property("headroom", &TimeSolver::headroom, &TimeSolver::setHeadroom)
+      .def_property("lower_bound", &TimeSolver::lowerBound, &TimeSolver::setLowerBound)
+      .def_property("max_error", &TimeSolver::maxError, &TimeSolver::setMaxError)
+      .def_property("sensible_factor", &TimeSolver::sensibleFactor, &TimeSolver::setSensibleFactor)
+      .def_property("upper_bound", &TimeSolver::upperBound, &TimeSolver::setUpperBound)
       .def("step", &TimeSolver::step)
       .def("steps", &TimeSolver::steps)
       .def_property("timestep", &TimeSolver::timestep, &TimeSolver::setTimeStep)

@@ -90,7 +90,7 @@ void Relaxer::exec() {
   real time = timesolver_.time();
   real timestep = timesolver_.timestep();
   bool adaptive = timesolver_.hasAdaptiveTimeStep();
-  real maxerr = timesolver_.maxerror();
+  real maxerr = timesolver_.maxError();
   std::string method = getRungeKuttaNameFromMethod(timesolver_.getRungeKuttaMethod());
   auto eqs = timesolver_.equations();
 
@@ -120,7 +120,7 @@ void Relaxer::exec() {
     real t0 = 0;
     real t1 = calcTorque(torque);
   
-    real err = timesolver_.maxerror();
+    real err = timesolver_.maxError();
 
     while (err > tol_) {
       err /= std::sqrt(2);
@@ -144,7 +144,7 @@ void Relaxer::exec() {
   // If threshold is set by user: relax until torque is smaller than or equal to threshold.
   else {
 
-    real err = timesolver_.maxerror();
+    real err = timesolver_.maxError();
     std::vector<FM_FieldQuantity> torque = getTorque();
 
     while (err > tol_) {

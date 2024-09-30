@@ -187,7 +187,10 @@ class Parameter(FieldQuantity):
 
     def _set_func(self, func):
         X, Y, Z = self.meshgrid
-        self._impl.set(_np.vectorize(func)(X, Y, Z))
+        values = _np.vectorize(func, otypes=[float]*self.shape[0])(X, Y, Z)
+        if self.shape[0] == 1:
+            values = [values]
+        self._impl.set(values)
 
     def _reset_fields_default(self):
         if isinstance(self._impl, _cpp.Parameter):

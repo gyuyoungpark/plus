@@ -221,6 +221,14 @@ __global__ void k_addConstant(CuField y,
   y.setValueInCell(idx, comp, x.valueAt(idx, comp) + value);
 }
 
+Field addConstant(const Field& x, real value) {
+  Field y(x.system(), x.ncomp());
+  for (int i = 0; i < x.ncomp(); i++) {
+    cudaLaunch(y.grid().ncells(), k_addConstant, y.cu(), x.cu(), value, i);
+  }
+  return y;
+}
+
 __global__ void k_normalize(CuField dst, const CuField src) {
   int idx = blockIdx.x * blockDim.x + threadIdx.x;
   if (!dst.cellInGeometry(idx))

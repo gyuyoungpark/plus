@@ -18,10 +18,10 @@ bool ZhangLiSTTAssuredZero(const Ferromagnet* magnet) {
 bool SlonczewskiSTTAssuredZero(const Ferromagnet* magnet) {
   return !magnet->enableSlonczewskiTorque ||
          magnet->msat.assuredZero() || magnet->jcur.assuredZero() ||
-         magnet->FreeLayerThickness.assuredZero() ||  // safe but redundant
-         magnet->FixedLayer.assuredZero() ||
+         magnet->freeLayerThickness.assuredZero() ||  // safe but redundant
+         magnet->fixedLayer.assuredZero() ||
          // or both ε' and ε~PΛ² are zero
-         (magnet->eps_prime.assuredZero() &&
+         (magnet->epsilonPrime.assuredZero() &&
          (magnet->Lambda.assuredZero() || magnet->pol.assuredZero()));
 }
 __global__ void k_ZhangLi(CuField torque,
@@ -103,9 +103,10 @@ __global__ void k_Slonczewski(CuField torque,
                                      const CuParameter lambdaParam,
                                      const CuParameter alphaParam,
                                      const CuVectorParameter jcurParam,
-                                     const CuParameter eps_prime,
-                                     const CuVectorParameter FixedLayer,
-                                     const CuParameter FreeLayerThickness) {
+                                     const CuParameter epsilonPrime,
+                                     const CuVectorParameter fixedLayer,
+                                     const CuParameter freeLayerThickness,
+                                     const bool fixedLayerOnTop) {
   const int idx = blockIdx.x * blockDim.x + threadIdx.x;
 
   // When outside the geometry, set to zero and return early
@@ -124,10 +125,11 @@ __global__ void k_Slonczewski(CuField torque,
   const real pol = polParam.valueAt(idx);
   const real alpha = alphaParam.valueAt(idx);
 
-  const real3 p = FixedLayer.vectorAt(idx);
+  const real3 p = fixedLayer.vectorAt(idx);
   const real lambda = lambdaParam.valueAt(idx);
-  const real eps_p = eps_prime.valueAt(idx);
-  const real d = FreeLayerThickness.valueAt(idx);
+  const real eps_p = epsilonPrime.valueAt(idx);
+  real d = freeLayerThickness.valueAt(idx);
+  if (!fixedLayerOnTop) d *= -1;  // change sign when the fixed layer is at the bottom
 
   if (msat == 0 || jz == 0 || d == 0 || p == real3{0,0,0} ||
       (eps_p == 0 && (lambda == 0 || pol == 0))) {
@@ -164,9 +166,10 @@ Field evalSpinTransferTorque(const Ferromagnet* magnet) {
   auto alpha = magnet->alpha.cu();
   auto jcur = magnet->jcur.cu();
   auto lambda = magnet->Lambda.cu();
-  auto eps_prime = magnet->eps_prime.cu();
-  auto FixedLayer = magnet->FixedLayer.cu();
-  auto FreeLayerThickness = magnet->FreeLayerThickness.cu();
+  auto epsilonPrime = magnet->epsilonPrime.cu();
+  auto fixedLayer = magnet->fixedLayer.cu();
+  auto freeLayerThickness = magnet->freeLayerThickness.cu();
+  bool fixedLayerOnTop = magnet->fixedLayerOnTop;
 
   auto cellsize = magnet->world()->cellsize();
 
@@ -176,7 +179,7 @@ Field evalSpinTransferTorque(const Ferromagnet* magnet) {
                magnet->world()->mastergrid());
   else
     cudaLaunch(ncells, k_Slonczewski, torque.cu(), m, msat, pol, lambda, alpha,
-             jcur, eps_prime, FixedLayer, FreeLayerThickness);
+             jcur, epsilonPrime, fixedLayer, freeLayerThickness, fixedLayerOnTop);
   return torque;
 }
 
