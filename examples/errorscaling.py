@@ -1,15 +1,31 @@
 """This script compares numerical and analytical result of one spin after one precession
-in an external magnetic field of 0.1 T. This comparison is done for different time steps
+in an external magnetic field of 0.1 T with damping. This comparison is done for different time steps
 in order to recreate figure 10 of the paper "The design and verification of MuMax3".
 However with different algorithms.
-https://doi.org/10.1063/1.4899186 """
+https://doi.org/10.1063/1.4899186
+"""
 
 
 import matplotlib.pyplot as plt
 import numpy as np
+from math import acos, atan, pi, exp, tan, sin, cos, sqrt
 
 from mumaxplus import *
 from mumaxplus.util import *
+
+
+def magnetic_moment_precession(time, initial_magnetization, hfield_z, damping):
+    """Return the analytical solution of the LLG equation for a single magnetic
+    moment and an applied field along the z direction.
+    """
+    mx, my, mz = initial_magnetization
+    theta0 = acos(mz / sqrt(mx ** 2 + my ** 2 + mz ** 2))
+    phi0 = atan(my / mx)
+    gammaLL = GAMMALL
+    freq = gammaLL * hfield_z / (1 + damping ** 2)
+    phi = phi0 + freq * time
+    theta = pi - 2 * atan(exp(damping * freq * time) * tan(pi / 2 - theta0 / 2))
+    return np.array([sin(theta) * cos(phi), sin(theta) * sin(phi), cos(theta)])
 
 
 def single_system(method, dt):
@@ -24,13 +40,15 @@ def single_system(method, dt):
     # --- Setup ---
     world = World(cellsize=(1e-9, 1e-9, 1e-9))
     
+    magnetization = (1/np.sqrt(2), 0, 1/np.sqrt(2))
+    damping = 0.001
     hfield_z = 0.1  # External field strength
-    duration = 2*np.pi/(GAMMALL * hfield_z)  # Time of one precession
+    duration = 2*np.pi/(GAMMALL * hfield_z) * (1 + damping**2) *10  # Time of one precession
 
     magnet = Ferromagnet(world, grid=Grid((1, 1, 1)))
     magnet.enable_demag = False
-    magnet.magnetization = (1/np.sqrt(2), 0, 1/np.sqrt(2))
-    magnet.alpha = 0.
+    magnet.magnetization = magnetization
+    magnet.alpha = damping
     magnet.aex = 10e-12
     magnet.msat = 1/MU0
     world.bias_magnetic_field = (0, 0, hfield_z)
@@ -44,7 +62,7 @@ def single_system(method, dt):
     output = magnet.magnetization.average()
 
     # --- Compare with exact solution ---
-    exact = np.array([1/np.sqrt(2), 0., 1/np.sqrt(2)])
+    exact = magnetic_moment_precession(duration, magnetization, hfield_z, damping)
     error = np.linalg.norm(exact - output)
 
     return error
@@ -70,22 +88,22 @@ exact_order = {"Heun": 2,
                "BogackiShampine": 3,
                "CashKarp": 5,
                "Fehlberg": 5,
-               "DormandPrince": 6
+               "DormandPrince": 5
                }
 
 N_dens = 30  # Amount of datapoints between two powers of 10
-dts = {"Heun": np.logspace(-12, np.log10(0.4e-10), int(N_dens * (np.log10(0.4e-10) + 12))), 
-       "BogackiShampine": np.logspace(np.log10(0.2e-11), np.log10(0.4e-10), int(N_dens * (np.log10(0.4e-10) - np.log10(0.2e-11)))),
-       "CashKarp": np.logspace(np.log10(1.5e-11), np.log10(0.4e-10), int(N_dens * (np.log10(0.4e-10) - np.log10(1.5e-11)))),
-       "Fehlberg": np.logspace(np.log10(1.2e-11), np.log10(0.4e-10), int(N_dens * (np.log10(0.4e-10) - np.log10(1.2e-11)))),
-       "DormandPrince": np.logspace(np.log10(1.4e-11), np.log10(0.4e-10), int(N_dens * (np.log10(0.4e-10) - np.log10(1.4e-11))))
+dts = {"Heun": np.logspace(np.log10(0.2e-11), np.log10(0.3e-10), int(N_dens * (np.log10(0.3e-10) - np.log10(0.2e-11)))), 
+       "BogackiShampine": np.logspace(np.log10(0.4e-11), np.log10(0.5e-10), int(N_dens * (np.log10(0.5e-10) - np.log10(0.4e-11)))),
+       "CashKarp": np.logspace(np.log10(0.2e-10), np.log10(0.8e-10), int(N_dens * (np.log10(0.8e-10) - np.log10(0.2e-10)))),
+       "Fehlberg": np.logspace(np.log10(1.6e-11), np.log10(0.5e-10), int(N_dens * (np.log10(0.5e-10) - np.log10(1.6e-11)))),
+       "DormandPrince": np.logspace(np.log10(1.6e-11), np.log10(0.5e-10), int(N_dens * (np.log10(0.5e-10) - np.log10(1.6e-11))))
        }
 
 # --- Plotting ---
 plt.xscale('log')
 plt.yscale('log')
-plt.xlim((0.9e-12, 0.5e-10))
-plt.ylim((1e-7, 1))
+plt.xlim((2e-12, 1e-10))
+plt.ylim((1e-5, 1))
 plt.xlabel("time step (s)")
 plt.ylabel("absolute error after 1 precession")
 
@@ -109,4 +127,4 @@ for method in method_names:
 
 #print(orders)  # Uncomment if you want to see the estimated orders
 plt.legend()
-plt.show()
+plt.savefig("error.png")
