@@ -91,11 +91,29 @@ exact_order = {"Heun": 2,
                }
 
 N_dens = 30  # Amount of datapoints between two powers of 10
-dts = {"Heun": np.logspace(np.log10(0.2e-11), np.log10(0.3e-10), int(N_dens * (np.log10(0.3e-10) - np.log10(0.2e-11)))), 
-       "BogackiShampine": np.logspace(np.log10(0.4e-11), np.log10(0.5e-10), int(N_dens * (np.log10(0.5e-10) - np.log10(0.4e-11)))),
-       "CashKarp": np.logspace(np.log10(0.2e-10), np.log10(0.8e-10), int(N_dens * (np.log10(0.8e-10) - np.log10(0.2e-10)))),
-       "Fehlberg": np.logspace(np.log10(1.6e-11), np.log10(0.5e-10), int(N_dens * (np.log10(0.5e-10) - np.log10(1.6e-11)))),
-       "DormandPrince": np.logspace(np.log10(1.6e-11), np.log10(0.5e-10), int(N_dens * (np.log10(0.5e-10) - np.log10(1.6e-11))))
+
+# Lower bounds for the time steps
+dts_lower = {"Heun": 0.2e-11,
+             "BogackiShampine": 0.4e-11,
+             "CashKarp": 0.2e-10,
+             "Fehlberg": 1.6e-11,
+             "DormandPrince": 1.6e-11
+             }
+
+# Upper bounds for the time steps
+dts_upper = {"Heun": 0.3e-10,
+             "BogackiShampine": 0.5e-10,
+             "CashKarp": 0.8e-10,
+             "Fehlberg": 0.5e-10,
+             "DormandPrince": 0.5e-10
+             }
+
+# Time step arrays
+dts = {"Heun": np.logspace(np.log10(dts_lower["Heun"]), np.log10(dts_upper["Heun"]), int(N_dens * (np.log10(dts_upper["Heun"]) - np.log10(dts_lower["Heun"])))), 
+       "BogackiShampine": np.logspace(np.log10(dts_lower["BogackiShampine"]), np.log10(dts_upper["BogackiShampine"]), int(N_dens * (np.log10(dts_upper["BogackiShampine"]) - np.log10(dts_lower["BogackiShampine"])))),
+       "CashKarp": np.logspace(np.log10(dts_lower["CashKarp"]), np.log10(dts_upper["CashKarp"]), int(N_dens * (np.log10(dts_upper["CashKarp"]) - np.log10(dts_lower["CashKarp"])))),
+       "Fehlberg": np.logspace(np.log10(dts_lower["Fehlberg"]), np.log10(dts_upper["Fehlberg"]), int(N_dens * (np.log10(dts_upper["Fehlberg"]) - np.log10(dts_lower["Fehlberg"])))),
+       "DormandPrince": np.logspace(np.log10(dts_lower["DormandPrince"]), np.log10(dts_upper["DormandPrince"]), int(N_dens * (np.log10(dts_upper["DormandPrince"]) - np.log10(dts_lower["DormandPrince"]))))
        }
 
 # --- Plotting ---
