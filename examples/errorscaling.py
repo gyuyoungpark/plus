@@ -1,4 +1,4 @@
-"""This script compares numerical and analytical result of one spin after one precession
+"""This script compares numerical and analytical result of one spin after 10 precession
 in an external magnetic field of 0.1 T with damping. This comparison is done for different time steps
 in order to recreate figure 10 of the paper "The design and verification of MuMax3".
 However with different algorithms.
@@ -42,7 +42,7 @@ def single_system(method, dt):
     magnetization = (1/np.sqrt(2), 0, 1/np.sqrt(2))
     damping = 0.001
     hfield_z = 0.1  # External field strength
-    duration = 2*np.pi/(GAMMALL * hfield_z) * (1 + damping**2) *10  # Time of one precession
+    duration = 2*np.pi/(GAMMALL * hfield_z) * (1 + damping**2) * 10  # Time of 10 precessions
 
     magnet = Ferromagnet(world, grid=Grid((1, 1, 1)))
     magnet.enable_demag = False
@@ -104,7 +104,10 @@ plt.yscale('log')
 plt.xlim((2e-12, 1e-10))
 plt.ylim((1e-5, 1))
 plt.xlabel("time step (s)")
-plt.ylabel("absolute error after 1 precession")
+plt.ylabel("absolute error after 10 precession")
+
+plt.plot([], [], color="black", label="Theory")  # Labels for theoretical results
+plt.scatter([], [], marker="o", color="black", label="Simulation")  # Labels for simulated results
 
 # --- Simulation Loops ---
 orders = {}
@@ -122,8 +125,9 @@ for method in method_names:
     plt.scatter(dts[method], error, marker="o", zorder=2)
 
     intercept = np.polyfit(log_dts, log_error - log_dts * exact_order[method], 0)
-    plt.plot(np.array([1e-14, 1e-9]), (10**intercept)*np.array([1e-14, 1e-9])**exact_order[method], label=f"{RK_names[method]} {exact_names[method]}")
+    plt.plot(np.array([1e-14, 1e-9]), (10**intercept)*np.array([1e-14, 1e-9])**exact_order[method], marker="o", label=f"{RK_names[method]} {exact_names[method]}")
+
 
 #print(orders)  # Uncomment if you want to see the estimated orders
 plt.legend()
-plt.savefig("error.png")
+plt.show()
