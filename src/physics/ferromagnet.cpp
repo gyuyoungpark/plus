@@ -23,6 +23,8 @@ Ferromagnet::Ferromagnet(std::shared_ptr<System> system_ptr,
       magnetization_(system(), 3, name + ":magnetization", ""),
       msat(system(), 1.0, name + ":msat", "A/m"),
       aex(system(), 0.0, name + ":aex", "J/m"),
+      interExch(system(), 0.0, name + ":inter_exchange", "J/m"),
+      scaleExch(system(), 1.0, name + ":scale_exchange", ""),
       ku1(system(), 0.0, name + ":ku1", "J/m3"),
       ku2(system(), 0.0, name + "ku2", "J/m3"),
       kc1(system(), 0.0, name + ":kc1", "J/m3"),
@@ -68,21 +70,6 @@ Ferromagnet::Ferromagnet(std::shared_ptr<System> system_ptr,
     randomField.setData(&randomValues[0]);
     magnetization_.set(randomField);
   }
-  {// Initialize interregional exchange buffer
-    if (system()->regions().get()) {
-
-      std::vector<uint> rIdxs;
-      std::tie(rIdxs, indexMap_) = constructIndexMap(system()->regions().getData());
-      GpuBuffer<uint> regionIndices_ = GpuBuffer<uint>(rIdxs);
-      
-      int N = rIdxs.size();
-      std::vector<real> data(N * (N + 1) / 2, 0);
-      
-      interExchange_ = GpuBuffer<real>(data);
-      interExchPtr_ = interExchange_.get();
-      regPtr_ = regionIndices_.get();
-    }
-  }
   // Initialize CUDA RNG
   // TODO: move the generator to somewhere else
   curandCreateGenerator(&randomGenerator, CURAND_RNG_PSEUDO_DEFAULT);
@@ -123,61 +110,3 @@ void Ferromagnet::relax(real tol) {
   Relaxer relaxer(this, {threshold}, tol);
   relaxer.exec();
 }
-
-void Ferromagnet::setInterExchange(uint idx1, uint idx2, real value) {
-
-  system()->checkIdxInRegions(idx1);
-  system()->checkIdxInRegions(idx2);
-
-  std::vector<real> interEx = interExchange_.getData(); // Copy data from GPU to host
-  interEx[getLutIndex(indexMap_[idx1], indexMap_[idx2])] = value;
-  
-  interExchange_ = std::move(GpuBuffer<real>(interEx)); // Move back to old GpuBuffer
-  interExchPtr_ = interExchange_.get(); // Update pointer to buffer
-
-  return;
-}
-
-std::tuple<std::vector<uint>, std::unordered_map<uint, uint>>
-            Ferromagnet::constructIndexMap(std::vector<uint> regionsInGrid) {
-  // Returns unique region indices and their position inside this container.
-  std::vector<uint> regions;            
-  std::unordered_map<uint, uint> indexMap;
-
-  for (const auto& reg : regionsInGrid) {
-    if (indexMap.find(reg) == indexMap.end()) {
-      regions.push_back(reg);
-      indexMap[reg] = regions.size() - 1;
-    }
-  }
-  return std::make_tuple(regions, indexMap);
-}
-
-
-/*Replace setInterExchange with
-(this directly updates gpu data without the need to copy it back and forth)
-
-__global__ void updateInterExchangeKernel(real* interEx, const uint* regPtr, int size, uint idx1, uint idx2, real value) {
-    int i = findIndex(regPtr, size, idx1);
-    int j = findIndex(regPtr, size, idx2);
-    int index;
-    if (i < j)
-        index = (i * (2 * size - i + 1)) / 2 + (j - i);
-    else
-        index = (j * (2 * size - j + 1)) / 2 + (i - j);
-    interEx[index] = value;
-}
-
-// Host function
-void Ferromagnet::setInterExchange(uint idx1, uint idx2, real value) {
-    system()->checkIdxInRegions(idx1);
-    system()->checkIdxInRegions(idx2);
-
-    // Launch kernel to update the buffer directly on the GPU
-    int size = regionIndices_.size();
-    updateInterExchangeKernel<<<1, 1>>>(interExchPtr_, regPtr_, size, idx1, idx2, value);
-
-    // Ensure CUDA kernel execution completes
-    cudaDeviceSynchronize();
-}
-*/

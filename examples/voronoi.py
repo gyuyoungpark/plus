@@ -46,8 +46,8 @@ for i in tessellator.indices:
     K = 1e5
     magnet.kc1.set_in_region(i, K + np.random.normal() * 0.1 * K)
 
-    # TODO: vary interregion aex
-
+# Vary interregion aex
+magnet.scale_exchange = 0.9
 
 # Evolve the world in time
 world.timesolver.run(0.1e-9)

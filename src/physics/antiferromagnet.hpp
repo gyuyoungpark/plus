@@ -9,6 +9,7 @@
 #include "field.hpp"
 #include "gpubuffer.hpp"
 #include "grid.hpp"
+#include "inter_parameter.hpp"
 #include "magnet.hpp"
 #include "parameter.hpp"
 #include "world.hpp"
@@ -42,6 +43,8 @@ class Antiferromagnet : public Magnet {
  public:
   Parameter afmex_cell;
   Parameter afmex_nn;
+  InterParameter interAfmExchNN;
+  InterParameter scaleAfmExchNN;
   Parameter latcon;
   Ferromagnet sub1_;
   Ferromagnet sub2_;

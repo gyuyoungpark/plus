@@ -104,6 +104,11 @@ class Magnet(ABC):
         return self._impl.system.geometry
 
     @property
+    def regions(self):
+        """Regions of the magnet."""
+        return self._impl.system.regions
+
+    @property
     def origin(self):
         """Origin of the magnet.
 

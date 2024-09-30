@@ -5,11 +5,13 @@
 
 #include "field.hpp"
 #include "fieldquantity.hpp"
+#include "inter_parameter.hpp"
 #include "parameter.hpp"
 #include "variable.hpp"
 #include "wrappers.hpp"
 
 void wrap_parameter(py::module& m) {
+  // ===== Parameter =====
   py::class_<Parameter, FieldQuantity>(m, "Parameter")
       .def("add_time_term", py::overload_cast<const std::function<real(real)>&>(
                                 &Parameter::addTimeDependentTerm))
@@ -23,7 +25,8 @@ void wrap_parameter(py::module& m) {
       .def_property_readonly("is_uniform", &Parameter::isUniform)
       .def_property_readonly("is_dynamic",
                              [](Parameter* p) { return p->isDynamic(); })
-      .def_property_readonly("get_uniform_value", &Parameter::getUniformValue)
+      .def_property("uniform_value", &Parameter::getUniformValue,
+                    static_cast<void (Parameter::*)(real)>(&Parameter::set))
       .def("remove_time_terms", &Parameter::removeAllTimeDependentTerms)
       .def("set", [](Parameter* p, real value) { p->set(value); })
       .def("set", [](Parameter* p, py::array_t<real> data) {
@@ -35,6 +38,7 @@ void wrap_parameter(py::module& m) {
                                 { p->setInRegion(regionIdx, value);
       });
 
+  // ===== VectorParameter =====
   py::class_<VectorParameter, FieldQuantity>(m, "VectorParameter")
       .def(
           "add_time_term",
@@ -89,7 +93,8 @@ void wrap_parameter(py::module& m) {
       .def_property_readonly("is_uniform", &VectorParameter::isUniform)
       .def_property_readonly("is_dynamic",
                              [](VectorParameter* p) { return p->isDynamic(); })
-      .def_property_readonly("get_uniform_value", &VectorParameter::getUniformValue)
+      .def_property("uniform_value", &VectorParameter::getUniformValue,
+           static_cast<void (VectorParameter::*)(real3)>(&VectorParameter::set))
       .def("remove_time_terms", &VectorParameter::removeAllTimeDependentTerms)
       .def("set", [](VectorParameter* p, real3 value) { p->set(value); })
       .def("set", [](VectorParameter* p, py::array_t<real> data) {
@@ -100,4 +105,22 @@ void wrap_parameter(py::module& m) {
       .def("set_in_region", [](VectorParameter* p, uint regionIdx, real3 value)
                                 { p->setInRegion(regionIdx, value);
       });
+
+  // ===== InterParameter =====
+  py::class_<InterParameter>(m, "InterParameter")
+      .def_property_readonly("name", &InterParameter::name)
+      .def_property_readonly("unit", &InterParameter::unit)
+      .def_property_readonly("ncomp", &InterParameter::ncomp)
+      .def_property_readonly("number_of_regions", &InterParameter::numberOfRegions)
+      .def_property_readonly("unique_regions", &InterParameter::uniqueRegions)
+      .def_property_readonly("is_uniform", &InterParameter::isUniform)
+      .def_property("uniform_value", &InterParameter::getUniformValue,
+                                     &InterParameter::set)
+
+      .def("set", &InterParameter::set, py::arg("value"))
+      .def("set_between", &InterParameter::setBetween,
+           py::arg("i"), py::arg("j"), py::arg("value"))
+      .def("get_between", &InterParameter::getBetween, py::arg("i"), py::arg("j"))
+      .def("eval", &InterParameter::eval)
+      ;
 }

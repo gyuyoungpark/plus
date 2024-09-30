@@ -13,7 +13,9 @@ add_library(core STATIC
     fieldquantity.cpp 
     fieldquantity.hpp 
     grid.cu 
-    grid.hpp 
+    grid.hpp
+    inter_parameter.cu
+    inter_parameter.hpp
     parameter.cu
     parameter.hpp
     reduce.cu

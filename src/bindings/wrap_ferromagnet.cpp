@@ -38,6 +38,8 @@ void wrap_ferromagnet(py::module& m) {
       .def_readonly("msat", &Ferromagnet::msat)
       .def_readonly("alpha", &Ferromagnet::alpha)
       .def_readonly("aex", &Ferromagnet::aex)
+      .def_readonly("inter_exchange", &Ferromagnet::interExch)
+      .def_readonly("scale_exchange", &Ferromagnet::scaleExch)
       .def_readonly("ku1", &Ferromagnet::ku1)
       .def_readonly("ku2", &Ferromagnet::ku2)
       .def_readonly("kc1", &Ferromagnet::kc1)
@@ -62,10 +64,7 @@ void wrap_ferromagnet(py::module& m) {
       .def_readonly("poisson_system", &Ferromagnet::poissonSystem)
       
       .def("minimize", &Ferromagnet::minimize, py::arg("tol"), py::arg("nsamples"))
-      .def("relax", &Ferromagnet::relax, py::arg("tol"))
-
-      .def("set_inter_exchange", &Ferromagnet::setInterExchange,
-              py::arg("idx1"), py::arg("idx2"), py::arg("value"));
+      .def("relax", &Ferromagnet::relax, py::arg("tol"));
 
   m.def("torque", &torqueQuantity);
   m.def("llg_torque", &llgTorqueQuantity);
