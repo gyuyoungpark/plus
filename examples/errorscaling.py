@@ -119,8 +119,8 @@ dts = {"Heun": np.logspace(np.log10(dts_lower["Heun"]), np.log10(dts_upper["Heun
 # --- Plotting ---
 plt.xscale('log')
 plt.yscale('log')
-plt.xlim((2e-12, 1e-10))
-plt.ylim((1e-5, 1))
+plt.xlim((0.9e-12, 1e-10))
+plt.ylim((1e-6, 1))
 plt.xlabel("time step (s)")
 plt.ylabel("absolute error after 10 precession")
 
