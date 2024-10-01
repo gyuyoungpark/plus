@@ -1,15 +1,30 @@
-"""This script compares numerical and analytical result of one spin after one precession
-in an external magnetic field of 0.1 T. This comparison is done for different time steps
+"""This script compares numerical and analytical result of one spin after 10 precession
+in an external magnetic field of 0.1 T with damping. This comparison is done for different time steps
 in order to recreate figure 10 of the paper "The design and verification of MuMax3".
 However with different algorithms.
-https://doi.org/10.1063/1.4899186 """
+https://doi.org/10.1063/1.4899186
+"""
 
 
 import matplotlib.pyplot as plt
 import numpy as np
+from math import acos, atan, pi, exp, tan, sin, cos, sqrt
 
 from mumaxplus import *
 from mumaxplus.util import *
+
+
+def magnetic_moment_precession(time, initial_magnetization, hfield_z, damping):
+    """Return the analytical solution of the LLG equation for a single magnetic
+    moment and an applied field along the z direction.
+    """
+    mx, my, mz = initial_magnetization
+    theta0 = acos(mz)
+    phi0 = atan(my / mx)
+    freq = GAMMALL * hfield_z / (1 + damping ** 2)
+    phi = phi0 + freq * time
+    theta = pi - 2 * atan(exp(damping * freq * time) * tan(pi / 2 - theta0 / 2))
+    return np.array([sin(theta) * cos(phi), sin(theta) * sin(phi), cos(theta)])
 
 
 def single_system(method, dt):
@@ -24,13 +39,15 @@ def single_system(method, dt):
     # --- Setup ---
     world = World(cellsize=(1e-9, 1e-9, 1e-9))
     
+    magnetization = (1/np.sqrt(2), 0, 1/np.sqrt(2))
+    damping = 0.001
     hfield_z = 0.1  # External field strength
-    duration = 2*np.pi/(GAMMALL * hfield_z)  # Time of one precession
+    duration = 2*np.pi/(GAMMALL * hfield_z) * (1 + damping**2) * 10  # Time of 10 precessions
 
     magnet = Ferromagnet(world, grid=Grid((1, 1, 1)))
     magnet.enable_demag = False
-    magnet.magnetization = (1/np.sqrt(2), 0, 1/np.sqrt(2))
-    magnet.alpha = 0.
+    magnet.magnetization = magnetization
+    magnet.alpha = damping
     magnet.aex = 10e-12
     magnet.msat = 1/MU0
     world.bias_magnetic_field = (0, 0, hfield_z)
@@ -44,7 +61,7 @@ def single_system(method, dt):
     output = magnet.magnetization.average()
 
     # --- Compare with exact solution ---
-    exact = np.array([1/np.sqrt(2), 0., 1/np.sqrt(2)])
+    exact = magnetic_moment_precession(duration, magnetization, hfield_z, damping)
     error = np.linalg.norm(exact - output)
 
     return error
@@ -70,24 +87,45 @@ exact_order = {"Heun": 2,
                "BogackiShampine": 3,
                "CashKarp": 5,
                "Fehlberg": 5,
-               "DormandPrince": 6
+               "DormandPrince": 5
                }
 
 N_dens = 30  # Amount of datapoints between two powers of 10
-dts = {"Heun": np.logspace(-12, np.log10(0.4e-10), int(N_dens * (np.log10(0.4e-10) + 12))), 
-       "BogackiShampine": np.logspace(np.log10(0.2e-11), np.log10(0.4e-10), int(N_dens * (np.log10(0.4e-10) - np.log10(0.2e-11)))),
-       "CashKarp": np.logspace(np.log10(1.5e-11), np.log10(0.4e-10), int(N_dens * (np.log10(0.4e-10) - np.log10(1.5e-11)))),
-       "Fehlberg": np.logspace(np.log10(1.2e-11), np.log10(0.4e-10), int(N_dens * (np.log10(0.4e-10) - np.log10(1.2e-11)))),
-       "DormandPrince": np.logspace(np.log10(1.4e-11), np.log10(0.4e-10), int(N_dens * (np.log10(0.4e-10) - np.log10(1.4e-11))))
+
+# Lower bounds for the time steps
+dts_lower = {"Heun": 0.2e-11,
+             "BogackiShampine": 0.4e-11,
+             "CashKarp": 0.2e-10,
+             "Fehlberg": 1.6e-11,
+             "DormandPrince": 1.6e-11
+             }
+
+# Upper bounds for the time steps
+dts_upper = {"Heun": 0.3e-10,
+             "BogackiShampine": 0.5e-10,
+             "CashKarp": 0.8e-10,
+             "Fehlberg": 0.5e-10,
+             "DormandPrince": 0.5e-10
+             }
+
+# Time step arrays
+dts = {"Heun": np.logspace(np.log10(dts_lower["Heun"]), np.log10(dts_upper["Heun"]), int(N_dens * (np.log10(dts_upper["Heun"]) - np.log10(dts_lower["Heun"])))), 
+       "BogackiShampine": np.logspace(np.log10(dts_lower["BogackiShampine"]), np.log10(dts_upper["BogackiShampine"]), int(N_dens * (np.log10(dts_upper["BogackiShampine"]) - np.log10(dts_lower["BogackiShampine"])))),
+       "CashKarp": np.logspace(np.log10(dts_lower["CashKarp"]), np.log10(dts_upper["CashKarp"]), int(N_dens * (np.log10(dts_upper["CashKarp"]) - np.log10(dts_lower["CashKarp"])))),
+       "Fehlberg": np.logspace(np.log10(dts_lower["Fehlberg"]), np.log10(dts_upper["Fehlberg"]), int(N_dens * (np.log10(dts_upper["Fehlberg"]) - np.log10(dts_lower["Fehlberg"])))),
+       "DormandPrince": np.logspace(np.log10(dts_lower["DormandPrince"]), np.log10(dts_upper["DormandPrince"]), int(N_dens * (np.log10(dts_upper["DormandPrince"]) - np.log10(dts_lower["DormandPrince"]))))
        }
 
 # --- Plotting ---
 plt.xscale('log')
 plt.yscale('log')
-plt.xlim((0.9e-12, 0.5e-10))
-plt.ylim((1e-7, 1))
+plt.xlim((0.9e-12, 1e-10))
+plt.ylim((1e-6, 1))
 plt.xlabel("time step (s)")
-plt.ylabel("absolute error after 1 precession")
+plt.ylabel("absolute error after 10 precession")
+
+plt.plot([], [], color="black", label="Theory")  # Labels for theoretical results
+plt.scatter([], [], marker="o", color="black", label="Simulation")  # Labels for simulated results
 
 # --- Simulation Loops ---
 orders = {}
@@ -105,7 +143,8 @@ for method in method_names:
     plt.scatter(dts[method], error, marker="o", zorder=2)
 
     intercept = np.polyfit(log_dts, log_error - log_dts * exact_order[method], 0)
-    plt.plot(np.array([1e-14, 1e-9]), (10**intercept)*np.array([1e-14, 1e-9])**exact_order[method], label=f"{RK_names[method]} {exact_names[method]}")
+    plt.plot(np.array([1e-14, 1e-9]), (10**intercept)*np.array([1e-14, 1e-9])**exact_order[method], marker="o", label=f"{RK_names[method]} {exact_names[method]}")
+
 
 #print(orders)  # Uncomment if you want to see the estimated orders
 plt.legend()
