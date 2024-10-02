@@ -31,6 +31,17 @@ __global__ void k_afmExchangeFieldSite(CuField hField,
                                 const CuParameter afmex_cell,
                                 const CuParameter latcon) {
   const int idx = blockIdx.x * blockDim.x + threadIdx.x;
+
+    if (!hField.cellInGeometry(idx)) {
+      if (hField.cellInGrid(idx))
+        hField.setVectorInCell(idx, real3{0, 0, 0});
+      return;
+    }
+    if (msat.valueAt(idx) == 0.) {
+      hField.setVectorInCell(idx, real3{0, 0, 0});
+      return;
+    }
+
   const real l = latcon.valueAt(idx);
   real3 h = 4 * afmex_cell.valueAt(idx) * mField.vectorAt(idx) / (l * l);
   hField.setVectorInCell(idx, h / msat.valueAt(idx));
