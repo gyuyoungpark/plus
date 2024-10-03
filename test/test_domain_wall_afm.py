@@ -13,13 +13,18 @@ in the mentioned article.
 import pytest
 
 import numpy as np
-from scipy.optimize import curve_fit  # SCIPY NEEDED
+from scipy.optimize import curve_fit
 
 from mumaxplus import Antiferromagnet, Grid, World
 from mumaxplus.util import *
 
 
 RTOL = 5e-3
+
+cx, cy, cz = 2e-9, 2e-9, 2e-9  # Cellsize
+nx, ny, nz = 1, 100, 200  # Number of cells
+dw = 4  # Width of the domain wall in number of cells
+z = np.linspace(-ny*cy, ny*cy, nz)  # Sample range when fitting
 
 def max_relative_error(result, wanted):
     err = np.abs(result - wanted)
@@ -52,8 +57,7 @@ def DW_profile(x, position, width):
 def fit_domain_wall(magnet):
     """Fit Walker ansatz to domain wall profile"""
     mz = magnet.sub1.magnetization()[0,]
-    profile = mz[:, 50, 0]  # middle row of the grid
-    z = np.linspace(-200e-9, 200e-9, 200)
+    profile = mz[:, int(ny/2), 0]  # middle row of the grid
     popt, pcov = curve_fit(DW_profile, z, profile, p0=(0, 5e-9))
     return popt
 
@@ -69,9 +73,9 @@ def get_domain_wall_speed(self):
 def initialize(self):
     """Create a two-domain state"""
     m = np.zeros(self.magnet.sub1.magnetization.shape)
-    m[0,0:99,:,:] = -1
-    m[2,99:101,:,:] = 1  # Domain wall has a width of 4 nm.
-    m[0,101:,:,:] = 1
+    m[0,0:int(nz/2)-int(dw/2),:,:] = -1
+    m[2,int(nz/2)-int(dw/2):int(nz/2)+int(dw/2),:,:] = 1  # Domain wall has a width of 4 nm.
+    m[0,int(nz/2)+int(dw/2):,:,:] = 1
     self.magnet.sub1.magnetization = m
     self.magnet.sub2.magnetization = -m
     self.world.timesolver.run(1e-11)  # instead of minimize for better performance
@@ -82,8 +86,8 @@ class TestStaticDomainWall:
     """Test width of stable domain wall."""
 
     def setup_class(self):
-        self.world = World(cellsize=(2e-9, 2e-9, 2e-9))
-        self.magnet = Antiferromagnet(self.world, Grid((1, 100, 200)))
+        self.world = World(cellsize=(cx, cy, cz))
+        self.magnet = Antiferromagnet(self.world, Grid((nx, ny, nz)))
         self.magnet.msat = 0.4e6
         self.magnet.alpha = 0.1
         self.magnet.ku1 = 64e3
@@ -107,8 +111,8 @@ class TestDynamicDomainWall:
     """Test speed of domain wall motion."""
 
     def setup_class(self):
-        self.world = World(cellsize=(2e-9, 2e-9, 2e-9))
-        self.magnet = Antiferromagnet(self.world, Grid((1, 100, 200)))
+        self.world = World(cellsize=(cx, cy, cz))
+        self.magnet = Antiferromagnet(self.world, Grid((nx, ny, nz)))
         self.magnet.msat = 0.4e6
         self.magnet.alpha = 0.1
         self.magnet.ku1 = 64e3
