@@ -23,9 +23,12 @@ bool elasticForceAssuredZero(const Ferromagnet* magnet) {
 __device__ int coord2safeIndex(int3 coo, int3 relcoo,
                                const CuSystem& system, const Grid& mastergrid) {
   const Grid grid = system.grid;
-  int idx_ = grid.coord2index(mastergrid.wrap(coo + relcoo));
-  if (system.inGeometry(idx_))
-    return idx_;
+  int3 coo_ = mastergrid.wrap(coo + relcoo);
+  if (grid.cellInGrid(coo_)) {  // don't convert to index if outside grid!
+    int idx_ = grid.coord2index(coo_);
+    if (system.inGeometry(idx_))
+      return idx_;
+  }
   return grid.coord2index(coo);
 }
 
@@ -41,9 +44,11 @@ __device__ int coord2safeIndex(int3 coo, int3 relcoo1, int3 relcoo2,
   int3 coo_[3] = {mastergrid.wrap(coo+relcoo1+relcoo2),
                   mastergrid.wrap(coo+relcoo1), mastergrid.wrap(coo+relcoo2)};
   for (int i=0; i<3; i++) {
-    int idx_ = grid.coord2index(coo_[i]);
-    if (system.inGeometry(idx_))
-      return idx_;
+    if (grid.cellInGrid(coo_[i])) {  // don't convert to index if outside grid!
+      int idx_ = grid.coord2index(coo_[i]);
+      if (system.inGeometry(idx_))
+        return idx_;
+    }
   }
   return grid.coord2index(coo);
 }
