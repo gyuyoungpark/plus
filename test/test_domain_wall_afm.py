@@ -58,6 +58,7 @@ def fit_domain_wall(magnet):
     return popt
 
 def get_domain_wall_speed(self):
+    """Find stationary value of the velocity"""
     t = 1e-11
     self.world.timesolver.run(t/2)
     q1 = fit_domain_wall(self.magnet)[0]
