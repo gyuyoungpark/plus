@@ -72,12 +72,28 @@ def get_domain_wall_speed(self):
 
 def initialize(self):
     """Create a two-domain state"""
+
+    """
     m = np.zeros(self.magnet.sub1.magnetization.shape)
     m[0,0:int(nz/2)-int(dw/2),:,:] = -1
     m[2,int(nz/2)-int(dw/2):int(nz/2)+int(dw/2),:,:] = 1  # Domain wall has a width of 4 nm.
     m[0,int(nz/2)+int(dw/2):,:,:] = 1
+    
     self.magnet.sub1.magnetization = m
     self.magnet.sub2.magnetization = -m
+    """
+
+    twodomain_m1 = twodomain((-1,0,0), (0,0,1), (1,0,0), nz*cz/2, dw*cz)  # Domain for first sublatice
+    twodomain_m2 = twodomain((1,0,0), (0,0,-1), (-1,0,0), nz*cz/2, dw*cz)  # Domain for second sublatice
+
+    # Switch x and z to get the domain wall perpendicular to the z-axis
+    def rotated_twodomain_m1(x, y ,z):
+        return twodomain_m1(z, y, x)
+    def rotated_twodomain_m2(x, y, z):
+        return twodomain_m2(z, y, x)
+    
+    self.magnet.sub1.magnetization = rotated_twodomain_m1
+    self.magnet.sub2.magnetization = rotated_twodomain_m2
     self.world.timesolver.run(1e-11)  # instead of minimize for better performance
 
 
