@@ -20,7 +20,7 @@ bool elasticForceAssuredZero(const Ferromagnet* magnet) {
  * Otherwise it returns index of coo itself (assumed to be safe).
  * This mimics open boundary conditions.
 */
-__device__ int coord2safeIndex(const int3 coo, const int3 relcoo,
+__device__ int coord2safeIndex(int3 coo, int3 relcoo,
                                const CuSystem& system, const Grid& mastergrid) {
   const Grid grid = system.grid;
   int idx_ = grid.coord2index(mastergrid.wrap(coo + relcoo));
@@ -35,7 +35,7 @@ __device__ int coord2safeIndex(const int3 coo, const int3 relcoo,
  * Or it returns index of coo itself (assumed to be safe).
  * This mimics open boundary conditions.
 */
-__device__ int coord2safeIndex(const int3 coo, const int3 relcoo1, int3 relcoo2,
+__device__ int coord2safeIndex(int3 coo, int3 relcoo1, int3 relcoo2,
                                const CuSystem& system, const Grid& mastergrid) {
   const Grid grid = system.grid;
   int3 coo_[3] = {mastergrid.wrap(coo+relcoo1+relcoo2),
@@ -107,7 +107,7 @@ __global__ void k_elasticForce(CuField fField,
   const int3 im1_arr[3] = {int3{-1, 0, 0}, int3{0,-1, 0}, int3{0, 0,-1}};
   const int3 coo = grid.index2coord(idx);
 
-#pragma unroll
+#pragma unroll  // TODO: check if faster with or without this unrolling
   for (int i=0; i<3; i++) {  // i is a {x, y, z} component/direction
     real f_i = 0;  // force component i
 
@@ -117,33 +117,33 @@ __global__ void k_elasticForce(CuField fField,
     // translte all in direction i
 
     // take u component i
-    const real ui = uField.valueAt(idx, i);  // take u component i
+    real ui = uField.valueAt(idx, i);  // take u component i
     // take translation in i direction
-    const real di = cs[i]; 
-    const int3 im1 = im1_arr[i], ip1 = ip1_arr[i];  // transl in direction i
-    const int safeIdx_im1 = coord2safeIndex(coo, im1, system, mastergrid);
-    const int safeIdx_ip1 = coord2safeIndex(coo, ip1, system, mastergrid);
+    real di = cs[i]; 
+    int3 im1 = im1_arr[i], ip1 = ip1_arr[i];  // transl in direction i
+    int safeIdx_im1 = coord2safeIndex(coo, im1, system, mastergrid);
+    int safeIdx_ip1 = coord2safeIndex(coo, ip1, system, mastergrid);
     f_i += doubleDerivative(c11.valueAt(safeIdx_im1),
                             c11.valueAt(idx),
                             c11.valueAt(safeIdx_ip1),
                             uField.valueAt(safeIdx_im1, i), ui,
                             uField.valueAt(safeIdx_ip1, i), di);
 
-#pragma unroll  // might not be possible
+#pragma unroll  // TODO: check if faster with or without this unrolling
     for (int j_=i+1; j_<i+3; j_++) {
       // j is one of the *other* {x, y, z} components/directions
       int j = j_;
       if (j > 2) {j -= 3;};
 
       // translate in direction j
-      const real dj = cs[j];
-      const int3 jm1 = im1_arr[j], jp1 = ip1_arr[j];
-      const int safeIdx_jm1 = coord2safeIndex(coo, jm1, system, mastergrid);
-      const int safeIdx_jp1 = coord2safeIndex(coo, jp1, system, mastergrid);
-
-      const real c44_jm1 = c44.valueAt(safeIdx_jm1);
-      const real c44_    = c44.valueAt(idx);
-      const real c44_jp1 = c44.valueAt(safeIdx_jp1);
+      real dj = cs[j];
+      int3 jm1 = im1_arr[j], jp1 = ip1_arr[j];
+      int safeIdx_jm1 = coord2safeIndex(coo, jm1, system, mastergrid);
+      int safeIdx_jp1 = coord2safeIndex(coo, jp1, system, mastergrid);
+      
+      real c44_jm1 = c44.valueAt(safeIdx_jm1);
+      real c44_    = c44.valueAt(idx);
+      real c44_jp1 = c44.valueAt(safeIdx_jp1);
 
       // =============================================
       // f_i += ∂j(c44 ∂j(u_i))    so c44 with ∂²_j u_i
@@ -160,10 +160,10 @@ __global__ void k_elasticForce(CuField fField,
       // translate u in both i and j directions
 
       // translate in both i and j directions
-      const int safeIdx_im1_jm1 = coord2safeIndex(coo, im1, jm1, system, mastergrid);
-      const int safeIdx_im1_jp1 = coord2safeIndex(coo, im1, jp1, system, mastergrid);
-      const int safeIdx_ip1_jm1 = coord2safeIndex(coo, ip1, jm1, system, mastergrid);
-      const int safeIdx_ip1_jp1 = coord2safeIndex(coo, ip1, jp1, system, mastergrid);
+      int safeIdx_im1_jm1 = coord2safeIndex(coo, im1, jm1, system, mastergrid);
+      int safeIdx_im1_jp1 = coord2safeIndex(coo, im1, jp1, system, mastergrid);
+      int safeIdx_ip1_jm1 = coord2safeIndex(coo, ip1, jm1, system, mastergrid);
+      int safeIdx_ip1_jp1 = coord2safeIndex(coo, ip1, jp1, system, mastergrid);
 
       f_i += mixedDerivative(c12.valueAt(safeIdx_jm1) + c44_jm1,
                              c12.valueAt(idx) + c44_,
