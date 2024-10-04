@@ -16,6 +16,7 @@ class Grid {
   __device__ __host__ int ncells() const;
 
   __device__ __host__ int3 index2coord(int idx) const;
+  // Don't convert a coordinate outside of the grid to an index!
   __device__ __host__ int coord2index(int3 coo) const;
 
   __device__ __host__ bool cellInGrid(int idx) const;
