@@ -22,6 +22,8 @@ add_library(physics STATIC
     effectivefield.cpp
     elasticforce.cu
     elasticforce.hpp
+    elasticity.cu
+    elasticity.hpp
     electricalpotential.hpp
     electricalpotential.cu
     energy.hpp 
@@ -34,8 +36,10 @@ add_library(physics STATIC
     ferromagnetquantity.hpp
     magnet.cpp
     magnet.hpp 
-    magnetoelastics.cu
-    magnetoelastics.hpp
+    magnetoelasticfield.cu
+    magnetoelasticfield.hpp
+    magnetoelasticforce.cu
+    magnetoelasticforce.hpp
     minimizer.cu
     minimizer.hpp
     mumaxworld.cpp

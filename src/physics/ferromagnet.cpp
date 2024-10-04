@@ -57,6 +57,7 @@ Ferromagnet::Ferromagnet(std::shared_ptr<System> system_ptr,
       RelaxTorqueThreshold(-1.0),
       poissonSystem(this), 
       // magnetoelasticity
+      externalBodyForce(system(), {0, 0, 0}, name + ":external_body_force", "N/m3"),
       c11(system(), 0.0, name + ":c11", "N/m2"),
       c12(system(), 0.0, name + ":c12", "N/m2"),
       c44(system(), 0.0, name + ":c44", "N/m2"),

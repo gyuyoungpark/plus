@@ -105,6 +105,8 @@ class Ferromagnet : public Magnet {
   // Magnetoelasticity
   // TODO: should these be Magnet Parameters or Ferromagnet parameters?
   
+  VectorParameter externalBodyForce;
+
   // stiffness constant; TODO: can this be generalized to 6x6 tensor?
   Parameter c11;  // c11 = c22 = c33
   Parameter c12;  // c12 = c13 = c23
