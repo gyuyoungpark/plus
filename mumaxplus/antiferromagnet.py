@@ -156,6 +156,9 @@ class Antiferromagnet(Magnet):
     @property
     def afmex_cell(self):
         """Intracell antiferromagnetic exchange constant (J/m).
+        This parameter plays the role of exchange constant of
+        the antiferromagnetic homogeneous exchange interaction
+        in a single simulation cell.
         
         See Also
         --------
@@ -175,6 +178,9 @@ class Antiferromagnet(Magnet):
     @property
     def afmex_nn(self):
         """Intercell antiferromagnetic exchange constant (J/m).
+        This parameter plays the role of exchange constant of
+        the antiferromagnetic inhomogeneous exchange interaction
+        between neighbouring simulation cells.
         
         See Also
         --------
