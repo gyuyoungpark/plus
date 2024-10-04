@@ -22,6 +22,8 @@ void wrap_antiferromagnet(py::module& m) {
             py::return_value_policy::reference)
       .def_readonly("afmex_cell", &Antiferromagnet::afmex_cell)
       .def_readonly("afmex_nn", &Antiferromagnet::afmex_nn)
+      .def_readonly("inter_afmex_nn", &Antiferromagnet::interAfmExchNN)
+      .def_readonly("scale_afmex_nn", &Antiferromagnet::scaleAfmExchNN)
       .def_readonly("latcon", &Antiferromagnet::latcon)
       .def("minimize", &Antiferromagnet::minimize, py::arg("tol"), py::arg("nsamples"))
       .def("relax", &Antiferromagnet::relax, py::arg("tol"));

@@ -160,6 +160,13 @@ class Shape:
         
         Setting any coordinate to None will not repeat the shape in this direction.
         """
+        for min_p, max_p in zip(min_point, max_point):
+            if min_p is not None and max_p is not None:
+                assert min_p < max_p, \
+                "All coordinates of min_point must be strictly smaller than " + \
+                "all coordinates of max_point. Use None instead if you do " + \
+                "not want to repeat the shape in a particular direction."
+
         def none_mod(x, x_min, x_max):
             if x_min is None or x_max is None:
                 return x
@@ -259,7 +266,7 @@ class Shape:
     def __or__(self, other: "Shape"):
         """Returns new shape as union of given shapes (logical OR).
         Calling a+b or a|b is the same."""
-        return a+b
+        return self + other
 
     def __sub__(self, other: "Shape"):
         """Returns new shape as the first shape with the second shape removed

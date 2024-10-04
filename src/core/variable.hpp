@@ -11,10 +11,8 @@ class System;
 
 class Variable : public FieldQuantity {
  public:
-  Variable(std::string name,
-           std::string unit,
-           std::shared_ptr<const System> system,
-           int ncomp);
+  Variable(std::shared_ptr<const System> system, int ncomp,
+           std::string name = "", std::string unit = "");
   ~Variable();
 
   int ncomp() const;
@@ -47,10 +45,8 @@ class Variable : public FieldQuantity {
 // normalized
 class NormalizedVariable : public Variable {
  public:
-  NormalizedVariable(std::string name,
-                     std::string unit,
-                     std::shared_ptr<const System> system,
-                     int ncomp);
+  NormalizedVariable(std::shared_ptr<const System> system, int ncomp,
+                     std::string name = "", std::string unit = "");
   void set(const Field&) const;
   void set(real) const;
   void set(real3) const;

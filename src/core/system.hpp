@@ -54,10 +54,12 @@ class System {
   /** Return the number of cells which lie within the geometry. */
   int cellsingeo() const;
 
-
   /** Return a CuSystem which can be copied to the gpu and be used in cuda
    * kernels. */
   CuSystem cu() const;
+
+ public:
+  std::vector<uint> uniqueRegions;
 
  private:
   const World* world_;

@@ -20,47 +20,50 @@ Ferromagnet::Ferromagnet(std::shared_ptr<System> system_ptr,
                          Antiferromagnet* hostMagnet)
     : Magnet(system_ptr, name),
       hostMagnet_(hostMagnet),
-      magnetization_(name + ":magnetization", "", system(), 3),
-      msat(system(), 1.0),
-      aex(system(), 0.0),
-      ku1(system(), 0.0),
-      ku2(system(), 0.0),
-      kc1(system(), 0.0),
-      kc2(system(), 0.0),
-      kc3(system(), 0.0),
-      alpha(system(), 0.0),
-      temperature(system(), 0.0),
-      xi(system(), 0.0),
-      Lambda(system(), 0.0),
-      freeLayerThickness(system(), grid().size().z * cellsize().z),
+      magnetization_(system(), 3, name + ":magnetization", ""),
+      msat(system(), 1.0, name + ":msat", "A/m"),
+      aex(system(), 0.0, name + ":aex", "J/m"),
+      interExch(system(), 0.0, name + ":inter_exchange", "J/m"),
+      scaleExch(system(), 1.0, name + ":scale_exchange", ""),
+      ku1(system(), 0.0, name + ":ku1", "J/m3"),
+      ku2(system(), 0.0, name + "ku2", "J/m3"),
+      kc1(system(), 0.0, name + ":kc1", "J/m3"),
+      kc2(system(), 0.0, name + ":kc2", "J/m3"),
+      kc3(system(), 0.0, name + "kc3", "J/m3"),
+      alpha(system(), 0.0, name + ":alpha", ""),
+      temperature(system(), 0.0, name + ":temperature", "K"),
+      xi(system(), 0.0, name + ":xi", ""),
+      Lambda(system(), 0.0, name + ":lambda", ""),
+      freeLayerThickness(system(), grid().size().z * cellsize().z,
+                         name + ":free_layer_thickness", "m"),
       fixedLayerOnTop(true),
-      epsilonPrime(system(), 0.0),
-      fixedLayer(system(), {0, 0, 0}),
-      pol(system(), 0.0),
-      anisU(system(), {0, 0, 0}),
-      anisC1(system(), {0, 0, 0}),
-      anisC2(system(), {0, 0, 0}),
-      jcur(system(), {0, 0, 0}),
-      biasMagneticField(system(), {0, 0, 0}),
+      epsilonPrime(system(), 0.0, name + ":epsilon_prime", ""),
+      fixedLayer(system(), {0, 0, 0}, name + ":fixed_layer", ""),
+      pol(system(), 0.0, name + ":pol", ""),
+      anisU(system(), {0, 0, 0}, name + ":anisU", ""),
+      anisC1(system(), {0, 0, 0}, name + ":anisC1", ""),
+      anisC2(system(), {0, 0, 0}, name + ":anisC2", ""),
+      jcur(system(), {0, 0, 0}, name + ":jcur", "A/m2"),
+      biasMagneticField(system(), {0, 0, 0}, name + ":bias_magnetic_field", "T"),
       dmiTensor(system()),
       enableDemag(true),
       enableOpenBC(false),
       enableZhangLiTorque(true),
       enableSlonczewskiTorque(true),
       enableElastodynamics_(false),
-      appliedPotential(system(), std::nanf("0")),
-      conductivity(system(), 0.0),
-      amrRatio(system(), 0.0),
+      appliedPotential(system(), std::nanf("0"), name + ":applied_potential", "V"),
+      conductivity(system(), 0.0, name + ":conductivity", "S/m"),
+      amrRatio(system(), 0.0, name + ":amr_ratio", ""),
       RelaxTorqueThreshold(-1.0),
       poissonSystem(this), 
       // magnetoelasticity
-      c11(system(), 0.0),
-      c12(system(), 0.0),
-      c44(system(), 0.0),
-      eta(system(), 0.0),
-      rho(system(), 1.0),  // TODO: different default?
-      B1(system(), 0.0),
-      B2(system(), 0.0) {
+      c11(system(), 0.0, name + ":c11", "N/m2"),
+      c12(system(), 0.0, name + ":c12", "N/m2"),
+      c44(system(), 0.0, name + ":c44", "N/m2"),
+      eta(system(), 0.0, name + ":eta", "kg/m3s"),
+      rho(system(), 1.0, name + "rho", "kg/m3"),
+      B1(system(), 0.0, name + ":B1", "J/m3"),
+      B2(system(), 0.0, name + ":B1", "J/m3") {
     {// Initialize random magnetization
     // TODO: this can be done much more efficient somewhere else
     int nvalues = 3 * this->grid().ncells();
@@ -75,21 +78,6 @@ Ferromagnet::Ferromagnet(std::shared_ptr<System> system_ptr,
     Field randomField(system(), 3);
     randomField.setData(&randomValues[0]);
     magnetization_.set(randomField);
-  }
-  {// Initialize interregional exchange buffer
-    if (system()->regions().get()) {
-
-      std::vector<uint> rIdxs;
-      std::tie(rIdxs, indexMap_) = constructIndexMap(system()->regions().getData());
-      GpuBuffer<uint> regionIndices_ = GpuBuffer<uint>(rIdxs);
-      
-      int N = rIdxs.size();
-      std::vector<real> data(N * (N + 1) / 2, 0);
-      
-      interExchange_ = GpuBuffer<real>(data);
-      interExchPtr_ = interExchange_.get();
-      regPtr_ = regionIndices_.get();
-    }
   }
   // Initialize CUDA RNG
   // TODO: move the generator to somewhere else
@@ -146,11 +134,11 @@ void Ferromagnet::setEnableElastodynamics(bool value) {
 
     if (value) {
       // properly initialize Variables now
-      elasticDisplacement_ = std::make_unique<Variable>(
-                              name() + ":elasticDisplacement", "m", system(), 3);
+      elasticDisplacement_ = std::make_unique<Variable>(system(), 3,
+                                        name() + ":elastic_displacement", "m");
       elasticDisplacement_->set(real3{0,0,0});
-      elasticVelocity_ = std::make_unique<Variable>(
-                                name() + ":elasticVelocity", "m/s", system(), 3);
+      elasticVelocity_ = std::make_unique<Variable>(system(), 3,
+                                        name() + ":elastic_velocity", "m/s");
       elasticVelocity_->set(real3{0,0,0});
     } else {
       // free memory of unnecessary Variables
@@ -161,61 +149,3 @@ void Ferromagnet::setEnableElastodynamics(bool value) {
     this->mumaxWorld()->resetTimeSolverEquations();
   }
 }
-
-void Ferromagnet::setInterExchange(uint idx1, uint idx2, real value) {
-
-  system()->checkIdxInRegions(idx1);
-  system()->checkIdxInRegions(idx2);
-
-  std::vector<real> interEx = interExchange_.getData(); // Copy data from GPU to host
-  interEx[getLutIndex(indexMap_[idx1], indexMap_[idx2])] = value;
-  
-  interExchange_ = std::move(GpuBuffer<real>(interEx)); // Move back to old GpuBuffer
-  interExchPtr_ = interExchange_.get(); // Update pointer to buffer
-
-  return;
-}
-
-std::tuple<std::vector<uint>, std::unordered_map<uint, uint>>
-            Ferromagnet::constructIndexMap(std::vector<uint> regionsInGrid) {
-  // Returns unique region indices and their position inside this container.
-  std::vector<uint> regions;            
-  std::unordered_map<uint, uint> indexMap;
-
-  for (const auto& reg : regionsInGrid) {
-    if (indexMap.find(reg) == indexMap.end()) {
-      regions.push_back(reg);
-      indexMap[reg] = regions.size() - 1;
-    }
-  }
-  return std::make_tuple(regions, indexMap);
-}
-
-
-/*Replace setInterExchange with
-(this directly updates gpu data without the need to copy it back and forth)
-
-__global__ void updateInterExchangeKernel(real* interEx, const uint* regPtr, int size, uint idx1, uint idx2, real value) {
-    int i = findIndex(regPtr, size, idx1);
-    int j = findIndex(regPtr, size, idx2);
-    int index;
-    if (i < j)
-        index = (i * (2 * size - i + 1)) / 2 + (j - i);
-    else
-        index = (j * (2 * size - j + 1)) / 2 + (i - j);
-    interEx[index] = value;
-}
-
-// Host function
-void Ferromagnet::setInterExchange(uint idx1, uint idx2, real value) {
-    system()->checkIdxInRegions(idx1);
-    system()->checkIdxInRegions(idx2);
-
-    // Launch kernel to update the buffer directly on the GPU
-    int size = regionIndices_.size();
-    updateInterExchangeKernel<<<1, 1>>>(interExchPtr_, regPtr_, size, idx1, idx2, value);
-
-    // Ensure CUDA kernel execution completes
-    cudaDeviceSynchronize();
-}
-*/

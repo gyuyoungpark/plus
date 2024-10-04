@@ -30,7 +30,7 @@ class Variable(FieldQuantity):
 
     def _set_func(self, func):
         X, Y, Z = self.meshgrid
-        self._impl.set(_np.vectorize(func)(X, Y, Z))
+        self._impl.set(_np.vectorize(func, otypes=[float]*self.shape[0])(X, Y, Z))
 
     def get(self):
         """Get the variable value."""

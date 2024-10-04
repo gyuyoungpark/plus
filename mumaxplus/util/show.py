@@ -73,7 +73,9 @@ def get_rgba(field, quantity=None, layer=None):
     """
     if layer is not None:
         field = field[:, layer]  # select the layer
-    field /= _np.max(_np.linalg.norm(field, axis=0))  # rescale to make maximum norm 1
+
+    if _np.any(field):
+        field /= _np.max(_np.linalg.norm(field, axis=0))  # rescale to make maximum norm 1
 
     # Create rgba image from the vector data
     rgba = _np.ones((*(field.shape[1:]), 4))  # last index for R,G,B, and alpha channel

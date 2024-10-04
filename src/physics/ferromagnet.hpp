@@ -13,6 +13,7 @@
 #include "field.hpp"
 #include "gpubuffer.hpp"
 #include "grid.hpp"
+#include "inter_parameter.hpp"
 #include "magnet.hpp"
 #include "parameter.hpp"
 #include "poissonsystem.hpp"
@@ -46,10 +47,6 @@ class Ferromagnet : public Magnet {
   void minimize(real tol = 1e-6, int nSamples = 10);
   void relax(real tol);
 
-  void setInterExchange(uint idx1, uint idx2, real value);
-
-  std::tuple<std::vector<uint>, std::unordered_map<uint, uint>> constructIndexMap(std::vector<uint>);
-
  private:
   NormalizedVariable magnetization_;
 
@@ -82,6 +79,8 @@ class Ferromagnet : public Magnet {
   VectorParameter biasMagneticField;
   Parameter msat;
   Parameter aex;
+  InterParameter interExch;
+  InterParameter scaleExch;
   Parameter ku1;
   Parameter ku2;
   Parameter kc1;
@@ -122,17 +121,3 @@ class Ferromagnet : public Magnet {
   real* interExchPtr_ = nullptr; // Device pointer to interexch GpuBuffer
   uint* regPtr_ = nullptr; // Device pointer to GpuBuffer with unique region idxs
 };
-
-__device__ __host__ inline int getLutIndex(int i, int j) {
-  // Look-up Table index
-  if (i <= j)
-    return j * (j + 1) / 2 + i;
-  return i * (i + 1) / 2 + j;
-}
-
-__device__ inline real getInterExchange(uint idx1, uint idx2,
-                                        real const* interEx, uint const* regPtr) {
-  int i = findIndex(regPtr, idx1); // TODO: CUDAfy this
-  int j = findIndex(regPtr, idx2);
-  return interEx[getLutIndex(i, j)];
-}

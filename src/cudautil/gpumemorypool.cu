@@ -10,8 +10,12 @@ GpuMemoryPool memoryPool;
 
 GpuMemoryPool::~GpuMemoryPool() {
   for (const auto& poolEntry : pool_)
-    for (auto& ptr : poolEntry.second)
-      checkCudaError(cudaFree(ptr));
+    for (auto& ptr : poolEntry.second) {
+      cudaError_t freeErr = cudaFree(ptr);
+       if (freeErr == cudaErrorCudartUnloading)
+          continue; // Expect CUDA driver to be shutting down
+      checkCudaError(freeErr);
+    }
 }
 
 void* GpuMemoryPool::allocate(size_t size) {

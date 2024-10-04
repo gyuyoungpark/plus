@@ -5,8 +5,6 @@
 #if FP_PRECISION == SINGLE
 // Gyromagnetic ratio in rad/Ts
 #define GAMMALL 1.7595E11F
-// Reduced gyromagnetic ratio in Hz/T
-#define GAMMA0 2.8024951E10F
 // Vacuum permeability in H/m
 #define MU0 1.256637062E-6F
 // Boltzmann constant in J/K
@@ -20,8 +18,6 @@
 #elif FP_PRECISION == DOUBLE
 // Gyromagnetic ratio in rad/Ts
 #define GAMMALL 1.7595E11
-// Reduced gyromagnetic ratio in Hz/T
-#define GAMMA0 2.8024951E10
 // Vacuum permeability in H/m
 #define MU0 1.25663706212E-6
 // Boltzmann constant in J/K

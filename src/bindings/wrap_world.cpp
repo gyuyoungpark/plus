@@ -34,8 +34,6 @@ auto add_magnet(MumaxWorld* world,
 }
 
 void wrap_world(py::module& m) {
-  // TODO: avoid destructor being called when python ref out of scope
-
   // in mumaxplus module, MumaxWorld is the World
   py::class_<MumaxWorld>(m, "World")
 
@@ -63,7 +61,7 @@ void wrap_world(py::module& m) {
           },
           py::arg("grid"), py::arg("geometry_array")=py::none(),
           py::arg("regions_array")=py::none(), py::arg("name") = std::string(""),
-          py::return_value_policy::reference)
+          py::return_value_policy::reference_internal)
 
       .def("add_antiferromagnet",
           [](MumaxWorld* world, Grid grid, py::object geometryArray=py::none(),
@@ -76,7 +74,7 @@ void wrap_world(py::module& m) {
           },
           py::arg("grid"), py::arg("geometry_array")=py::none(),
           py::arg("regions_array")=py::none(), py::arg("name") = std::string(""),
-          py::return_value_policy::reference)
+          py::return_value_policy::reference_internal)
 
       .def("get_ferromagnet", &MumaxWorld::getFerromagnet, py::arg("name"),
            "get a reference to a ferromagnet by name",

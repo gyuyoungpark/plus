@@ -5,6 +5,7 @@
 #include "afmexchange.hpp"
 #include "ferromagnet.hpp"
 #include "field.hpp"
+#include "inter_parameter.hpp"
 #include "parameter.hpp"
 #include "reduce.hpp"
 #include "world.hpp"
@@ -30,6 +31,17 @@ __global__ void k_afmExchangeFieldSite(CuField hField,
                                 const CuParameter afmex_cell,
                                 const CuParameter latcon) {
   const int idx = blockIdx.x * blockDim.x + threadIdx.x;
+
+    if (!hField.cellInGeometry(idx)) {
+      if (hField.cellInGrid(idx))
+        hField.setVectorInCell(idx, real3{0, 0, 0});
+      return;
+    }
+    if (msat.valueAt(idx) == 0.) {
+      hField.setVectorInCell(idx, real3{0, 0, 0});
+      return;
+    }
+
   const real l = latcon.valueAt(idx);
   real3 h = 4 * afmex_cell.valueAt(idx) * mField.vectorAt(idx) / (l * l);
   hField.setVectorInCell(idx, h / msat.valueAt(idx));
@@ -41,6 +53,8 @@ __global__ void k_afmExchangeFieldNN(CuField hField,
                                 const CuField m2Field,
                                 const CuParameter aex,
                                 const CuParameter afmex_nn,
+                                const CuInterParameter interExch,
+                                const CuInterParameter scaleExch,
                                 const CuParameter msat2,
                                 const Grid mastergrid,
                                 const CuDmiTensor dmiTensor,
@@ -93,9 +107,21 @@ __global__ void k_afmExchangeFieldNN(CuField hField,
       real ann_;
       int3 normal = rel_coo * rel_coo;
 
+      real inter = 0;
+      real scale = 1;
+      real Aex;
+
       if(hField.cellInGeometry(coo_)) {
         m2_ = m2Field.vectorAt(idx_);
         ann_ = afmex_nn.valueAt(idx_);
+
+        uint ridx = system.getRegionIdx(idx);
+        uint ridx_ = system.getRegionIdx(idx_);
+
+        if (ridx != ridx_) {
+          scale = scaleExch.valueBetween(ridx, ridx_);
+          inter = interExch.valueBetween(ridx, ridx_);
+        }
       }
       else { // Neumann BC
         real3 Gamma1 = getGamma(dmiTensor, idx, normal, m1Field.vectorAt(idx));
@@ -109,7 +135,10 @@ __global__ void k_afmExchangeFieldNN(CuField hField,
         }
         ann_ = ann;
       }
-      h += harmonicMean(ann, ann_) * (m2_ - m2) / (delta * delta);
+      Aex = (inter != 0) ? inter : harmonicMean(ann, ann_);
+      Aex *= scale;
+
+      h += Aex * (m2_ - m2) / (delta * delta);
     }
   }
   hField.setVectorInCell(idx, h / msat2.valueAt(idx));
@@ -151,10 +180,12 @@ Field evalInHomogeneousAfmExchangeField(const Ferromagnet* magnet) {
   auto afmex_nn = magnet->hostMagnet()->afmex_nn.cu();
   auto BC = magnet->enableOpenBC;
   auto dmiTensor = magnet->dmiTensor.cu();
+  auto inter = magnet->hostMagnet()->interAfmExchNN.cu();
+  auto scale = magnet->hostMagnet()->scaleAfmExchNN.cu();
 
   cudaLaunch(hField.grid().ncells(), k_afmExchangeFieldNN, hField.cu(),
-            mag, otherMag, aex, afmex_nn, msat2, magnet->world()->mastergrid(),
-            dmiTensor, BC);
+            mag, otherMag, aex, afmex_nn, inter, scale, msat2,
+            magnet->world()->mastergrid(), dmiTensor, BC);
   return hField;
 }
 

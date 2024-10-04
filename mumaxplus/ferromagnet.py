@@ -7,6 +7,7 @@ import _mumaxpluscpp as _cpp
 from .magnet import Magnet
 from .dmitensor import DmiTensor
 from .fieldquantity import FieldQuantity
+from .interparameter import InterParameter
 from .parameter import Parameter
 from .poissonsystem import PoissonSystem
 from .scalarquantity import ScalarQuantity
@@ -37,6 +38,14 @@ class Ferromagnet(Magnet):
     regions : None, ndarray, or callable (default=None)
         The regional structure of a ferromagnet can be set in the same three ways
         as the geometry. This parameter indexes each grid cell to a certain region.
+
+        !Important note! The values of `InterParameters` which act between
+        different regions are stored in an array with a size that scales with the
+        square of the maximal index value. Therefore, if possible, it's good
+        practice to keep each region index as close to zero as possible.
+        E.g. defining two regions with indices 1 and 500 will work, but occupies more
+        memory and will pay in performance than giving them the values 0 and 1.
+
     name : str (default="")
         The ferromagnet's identifier. If the name is empty (the default), a name for the
         ferromagnet will be created.
@@ -246,20 +255,6 @@ class Ferromagnet(Magnet):
         assert value != 0, "The relax threshold should not be zero."
         self._impl.RelaxTorqueThreshold = value
 
-    def set_inter_exchange(self, idx1, idx2, value):
-        """ Set the ferromagnetic exchange constant between region
-        with index idx1 and region with index idx2.
-        
-        If not set, the exchange between different regions is 0.
-
-        The current implementation only works for Ferromagnetic systems.
-        
-        See Also
-        --------
-        aex
-        """
-        return self._impl.set_inter_exchange(idx1, idx2, value)
-
     # ----- MATERIAL PARAMETERS -----------
 
     @property
@@ -288,6 +283,54 @@ class Ferromagnet(Magnet):
     @aex.setter
     def aex(self, value):
         self.aex.set(value)
+
+    @property
+    def inter_exchange(self):
+        """Exchange constant (J/m) between different regions.
+        If set to zero (default), then the harmonic mean of
+        the exchange constants of the two regions are used.
+
+        When no exchange interaction between different regions
+        is wanted, set `scale_exchange` to zero.
+
+        This parameter should be set with
+        >>> magnet.inter_exchange.set_between(region1, region2, value)
+        >>> magnet.inter_exchange = value # uniform value
+
+        See Also
+        --------
+        aex, scale_exchange
+        """
+        return InterParameter(self._impl.inter_exchange)
+
+    @inter_exchange.setter
+    def inter_exchange(self, value):
+        """Set the interregional exchange value between every
+        different region to the same value.
+        """
+        self.inter_exchange.set(value)
+
+    @property
+    def scale_exchange(self):
+        """Scaling of the exchange constant between different
+        regions.
+
+        This parameter can be set with
+        >>> magnet.scale_exchange.set_between(region1, region2, value)
+        >>> magnet.scale_exchange = value # uniform value
+
+        See Also
+        --------
+        aex, inter_exchange
+        """
+        return InterParameter(self._impl.scale_exchange)
+
+    @scale_exchange.setter
+    def scale_exchange(self, value):
+        """Set the scale factor between every different region
+        to the same value.
+        """
+        self.scale_exchange.set(value)
 
     @property
     def ku1(self):

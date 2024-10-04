@@ -23,7 +23,7 @@ class FieldQuantity:
 
     @property
     def name(self):
-        """Return isntance's name."""
+        """Return instance's name."""
         return self._impl.name
 
     @property

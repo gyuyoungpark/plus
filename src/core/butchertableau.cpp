@@ -184,8 +184,8 @@ const ButcherTableau ButcherTableau::CashKarp = []() {
 
 const ButcherTableau ButcherTableau::DormandPrince = []() {
   int N = 7;
-  int order1 = 6;
-  int order2 = 5;
+  int order1 = 5;
+  int order2 = 4;
   std::vector<real> nodes(N);
   nodes[0] = 0.;
   nodes[1] = 1. / 5.;

@@ -1,4 +1,4 @@
-"""Patameter implementation."""
+"""Parameter implementation."""
 
 import numpy as _np
 
@@ -24,7 +24,12 @@ class Parameter(FieldQuantity):
 
     @property
     def is_uniform(self):
-        """Return True if a Parameter instance is uniform, otherwise False."""
+        """Return True if a Parameter instance is uniform, otherwise False.
+        
+        See Also
+        --------
+        uniform_value
+        """
         return self._impl.is_uniform
 
     @property
@@ -33,8 +38,25 @@ class Parameter(FieldQuantity):
         return self._impl.is_dynamic
 
     @property
-    def get_uniform_value(self):
-        return self._impl.get_uniform_value
+    def uniform_value(self):
+        """Return the uniform value of the Parameter instance if it exists.
+        
+        See Also
+        --------
+        is_uniform
+        """
+        return self._impl.uniform_value
+
+    @uniform_value.setter
+    def uniform_value(self, value):
+        """Set the Parameter to a uniform value. This functions the same as
+        simply setting the Parameter with `= value` or `set(value)`.
+        
+        See Also
+        --------
+        set
+        """
+        self._impl.uniform_value = value
 
     def add_time_term(self, term, mask=None):
         """Add a time-dependent term.
@@ -163,10 +185,12 @@ class Parameter(FieldQuantity):
             ), "The value should be uniform and static."
         self._impl.set_in_region(region_idx, value)
 
-
     def _set_func(self, func):
         X, Y, Z = self.meshgrid
-        self._impl.set(_np.vectorize(func)(X, Y, Z))
+        values = _np.vectorize(func, otypes=[float]*self.shape[0])(X, Y, Z)
+        if self.shape[0] == 1:
+            values = [values]
+        self._impl.set(values)
 
     def _reset_fields_default(self):
         if isinstance(self._impl, _cpp.Parameter):
