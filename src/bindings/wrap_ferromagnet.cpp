@@ -20,6 +20,7 @@
 #include "magnetoelasticforce.hpp"
 #include "mumaxworld.hpp"
 #include "parameter.hpp"
+#include "straintensor.hpp"
 #include "stt.hpp"
 #include "thermalnoise.hpp"
 #include "torque.hpp"
@@ -133,7 +134,10 @@ void wrap_ferromagnet(py::module& m) {
         py::overload_cast<const Ferromagnet*>(&fullMagnetizationQuantity));
 
   // Magnetoelasticity
+  m.def("strain_tensor", &strainTensorQuantity);
+
   m.def("magnetoelastic_field", &magnetoelasticFieldQuantity);
+
   m.def("elastic_force", &elasticForceQuantity);
   m.def("magnetoelastic_force", &magnetoelasticForceQuantity);
   m.def("effective_body_force", &effectiveBodyForceQuantity);

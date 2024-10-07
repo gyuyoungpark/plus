@@ -1118,6 +1118,39 @@ class Ferromagnet(Magnet):
     # ----- MAGNETOELASTIC QUANTITIES -------
 
     @property
+    def strain_tensor(self):
+        """Strain tensor (N/m2), calculated according to ε = 1/2 (∇u + (∇u)^T),
+        with u the elastic displacement.
+
+        This quantity has six components (εxx, εyy, εzz, εxy, εxz, εyz),
+        which forms the symmetric strain tensor::
+
+               εxx εxy εxz
+               εxy εyy εyz
+               εxz εyz εzz
+
+        Note that the strain corresponds to the real strain and not the
+        engineering strain.
+
+        See Also
+        --------
+        elastic_displacement
+        """
+        return FieldQuantity(_cpp.strain_tensor(self._impl))
+
+    @property
+    def magnetoelastic_field(self):
+        """Magnetoelastic effective field due to effects of inverse
+        magnetostriction (T).
+
+        See Also
+        --------
+        B1, B2
+        magnetoelastic_force
+        """
+        return FieldQuantity(_cpp.magnetoelastic_field(self._impl))
+
+    @property
     def elastic_force(self):
         """Elastic body force due to mechanical stress gradients (N/m³).
 
@@ -1137,7 +1170,7 @@ class Ferromagnet(Magnet):
         See Also
         --------
         B1, B2
-        effective_body_force
+        effective_body_force, magnetoelastic_field
         """
         return FieldQuantity(_cpp.magnetoelastic_force(self._impl))
 
