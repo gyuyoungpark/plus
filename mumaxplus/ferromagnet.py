@@ -522,10 +522,17 @@ class Ferromagnet(Magnet):
         --------
         thermal_noise
         """
+
+
         return Parameter(self._impl.temperature)
 
     @temperature.setter
     def temperature(self, value):
+        if self.grid.ncells % 2:
+            raise ValueError("The CUDA random number generator used to generate"
+                             + " a random noise field only works for an even"
+                             + " number of grid cells.\n"
+                             + "The used number of grid cells is {}.".format(self.grid.ncells))
         self.temperature.set(value)
 
     @property
