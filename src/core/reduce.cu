@@ -234,3 +234,62 @@ bool idxInRegions(GpuBuffer<uint> regions, uint idx) {
                                  cudaMemcpyDeviceToHost, getCudaStream()));
   return result;
 }
+
+__global__ void k_isUniformComponent(bool* isUniform, CuField f, int c) {
+  __shared__ bool sdata[BLOCKDIM];
+  int ncells = f.system.grid.ncells();
+  int tid = threadIdx.x;
+
+  bool result = true;
+
+  real firstValue = 0.0;
+  for (int i = 0; i < ncells; i ++)
+    if (f.cellInGeometry(i)) {
+      firstValue = f.valueAt(i, c);
+      break;
+    }
+
+  for (int i = tid; i < ncells; i += BLOCKDIM) {
+    if (!f.cellInGeometry(i))
+      continue;
+
+    if (f.valueAt(i, c) != firstValue) {
+      result = false;
+      break;
+    }
+  }
+
+  sdata[tid] = result;
+  __syncthreads();
+
+  for (unsigned int s = BLOCKDIM / 2; s > 0; s >>= 1) {
+    if (tid < s)
+      sdata[tid] = sdata[tid] && sdata[tid + s];
+    __syncthreads();
+  }
+
+  if (tid == 0)
+    *isUniform = sdata[0];
+}
+
+bool isUniformFieldComponent(const Field& f, int comp) {
+  GpuBuffer<bool> d_isUniform(1);
+
+  cudaLaunchReductionKernel(k_isUniformComponent, d_isUniform.get(), f.cu(), comp);
+
+  bool isUniform;
+  checkCudaError(cudaMemcpyAsync(&isUniform, d_isUniform.get(), sizeof(bool),
+                                 cudaMemcpyDeviceToHost, getCudaStream()));
+  return isUniform;
+}
+
+bool isUniformField(const Field& f) {
+  bool result = true;
+  for (int c = 0; c < f.ncomp(); c++) {
+    if (!isUniformFieldComponent(f, c)) {
+      result = false;
+      break;
+    }
+  }
+  return result;
+}

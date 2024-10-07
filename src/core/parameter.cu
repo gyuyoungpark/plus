@@ -4,6 +4,7 @@
 #include "field.hpp"
 #include "fieldops.hpp"
 #include "parameter.hpp"
+#include "reduce.hpp"
 
 Parameter::Parameter(std::shared_ptr<const System> system, real value,
                      std::string name, std::string unit)
@@ -24,7 +25,13 @@ void Parameter::set(real value) {
 }
 
 void Parameter::set(const Field& values) {
-  staticField_ = new Field(values);
+  if (isUniformField(values)) {
+    real* value = values.device_ptr(0);
+    checkCudaError(cudaMemcpy(&uniformValue_, value, sizeof(real),
+                            cudaMemcpyDeviceToHost));
+  }
+  else
+    staticField_ = new Field(values);
 }
 
 void Parameter::setInRegion(const uint region_idx, real value) {
@@ -111,7 +118,20 @@ void VectorParameter::set(real3 value) {
 }
 
 void VectorParameter::set(const Field& values) {
-  staticField_ = new Field(values);
+  if (isUniformField(values)) {
+    real* valueX = values.device_ptr(0);
+    real* valueY = values.device_ptr(1);
+    real* valueZ = values.device_ptr(2);
+
+    checkCudaError(cudaMemcpy(&uniformValue_.x, valueX, sizeof(real),
+                            cudaMemcpyDeviceToHost));
+    checkCudaError(cudaMemcpy(&uniformValue_.y, valueY, sizeof(real),
+                            cudaMemcpyDeviceToHost));
+    checkCudaError(cudaMemcpy(&uniformValue_.z, valueZ, sizeof(real),
+                            cudaMemcpyDeviceToHost));
+  }
+  else
+    staticField_ = new Field(values);
 }
 
 void VectorParameter::setInRegion(const uint region_idx, real3 value) {
