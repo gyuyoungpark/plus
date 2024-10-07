@@ -522,8 +522,6 @@ class Ferromagnet(Magnet):
         --------
         thermal_noise
         """
-
-
         return Parameter(self._impl.temperature)
 
     @temperature.setter
