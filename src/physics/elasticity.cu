@@ -36,8 +36,7 @@ __global__ void k_elasticDamping(CuField fField,
   fField.setVectorInCell(idx, -eta.valueAt(idx) * vField.vectorAt(idx));
 }
 
-
-Field evalElasticDamping(const Ferromagnet* magnet){
+Field evalElasticDamping(const Ferromagnet* magnet) {
     Field fField(magnet->system(), 3);
     if (elasticDampingAssuredZero(magnet)) {
         fField.makeZero();
@@ -51,6 +50,11 @@ Field evalElasticDamping(const Ferromagnet* magnet){
     cudaLaunch(ncells, k_elasticDamping, fField.cu(), vField, eta);
 
     return fField;
+}
+
+FM_FieldQuantity elasticDampingQuantity(const Ferromagnet* magnet) {
+  return FM_FieldQuantity(magnet, evalElasticDamping, 3,
+                          "elastic_damping", "N/m3");
 }
 
 // ========== Effective Body Force ==========
@@ -68,7 +72,7 @@ Field evalEffectiveBodyForce(const Ferromagnet* magnet) {
   return fField;
 }
 
-FM_FieldQuantity effectiveBodyForce(const Ferromagnet* magnet) {
+FM_FieldQuantity effectiveBodyForceQuantity(const Ferromagnet* magnet) {
     return FM_FieldQuantity(magnet, evalEffectiveBodyForce, 3,
                             "effective_body_force", "N/m3");
 }

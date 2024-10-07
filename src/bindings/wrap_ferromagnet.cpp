@@ -8,6 +8,7 @@
 #include "dmi.hpp"
 #include "effectivefield.hpp"
 #include "elasticforce.hpp"
+#include "elasticity.hpp"
 #include "electricalpotential.hpp"
 #include "energy.hpp"
 #include "exchange.hpp"
@@ -15,7 +16,8 @@
 #include "fieldquantity.hpp"
 #include "fullmag.hpp"
 #include "magnet.hpp"
-#include "magnetoelastics.hpp"
+#include "magnetoelasticfield.hpp"
+#include "magnetoelasticforce.hpp"
 #include "mumaxworld.hpp"
 #include "parameter.hpp"
 #include "stt.hpp"
@@ -71,6 +73,7 @@ void wrap_ferromagnet(py::module& m) {
       .def_readwrite("RelaxTorqueThreshold", &Ferromagnet::RelaxTorqueThreshold)
       .def_readonly("poisson_system", &Ferromagnet::poissonSystem)
       // magnetoelasticity
+      .def_readonly("external_body_force", &Ferromagnet::externalBodyForce)
       .def_readonly("c11", &Ferromagnet::c11)
       .def_readonly("c12", &Ferromagnet::c12)
       .def_readonly("c44", &Ferromagnet::c44)
@@ -129,5 +132,11 @@ void wrap_ferromagnet(py::module& m) {
   m.def("full_magnetization",
         py::overload_cast<const Ferromagnet*>(&fullMagnetizationQuantity));
 
+  // Magnetoelasticity
+  m.def("magnetoelastic_field", &magnetoelasticFieldQuantity);
   m.def("elastic_force", &elasticForceQuantity);
+  m.def("magnetoelastic_force", &magnetoelasticForceQuantity);
+  m.def("effective_body_force", &effectiveBodyForceQuantity);
+  m.def("elastic_damping", &elasticDampingQuantity);
+  m.def("elastic_acceleration", &elasticAccelerationQuantity);
 }

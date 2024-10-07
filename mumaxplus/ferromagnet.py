@@ -632,6 +632,21 @@ class Ferromagnet(Magnet):
         self.amr_ratio.set(value)
 
     # --- magnetoelasticity ---
+
+    @property
+    def external_body_force(self):
+        """External body force f_ext that is added to the effective body force (N/m³).
+
+        See Also
+        --------
+        effective_body_force
+        """
+        return Parameter(self._impl.external_body_force)
+
+    @external_body_force.setter
+    def external_body_force(self, value):
+        self.external_body_force.set(value)
+
     @property
     def c11(self):
         """Stiffness constant c11 = c22 = c33 of the stiffness tensor (N/m²).
@@ -1106,5 +1121,58 @@ class Ferromagnet(Magnet):
     def elastic_force(self):
         """Elastic body force due to mechanical stress gradients (N/m³).
 
-        f = ∇σ = ∇(cε)"""
+        f = ∇σ = ∇(cε)
+        
+        See Also
+        --------
+        c11, c12, c44
+        effective_body_force
+        """
         return FieldQuantity(_cpp.elastic_force(self._impl))
+
+    @property
+    def magnetoelastic_force(self):
+        """Magnetoelastic body force due to magnetostriction effect (N/m³).
+
+        See Also
+        --------
+        B1, B2
+        effective_body_force
+        """
+        return FieldQuantity(_cpp.magnetoelastic_force(self._impl))
+
+    @property
+    def effective_body_force(self):
+        """Elastic effective body force is the sum of elastic, magnetoelastic
+        and external body forces (N/m³).
+        Elastic damping is not included.
+
+        f_eff = f_el + f_mel + f_ext
+
+        See Also
+        --------
+        elastic_force, external_body_force, magnetoelastic_force
+        """
+
+    @property
+    def elastic_damping(self):
+        """Elastic damping body force proportional to η and velocity: -ηv (N/m³).
+
+        See Also
+        --------
+        eta, elastic_velocity
+        """
+        FieldQuantity(_cpp.elastic_damping(self._impl))
+
+    @property
+    def elastic_acceleration(self):
+        """Elastic acceleration includes all effects that influence the elastic
+        velocity including elastic, magnetoelastic and external body forces,
+        and elastic damping (m/s²).
+
+        See Also
+        --------
+        rho
+        effective_body_force, elastic_damping
+        """
+        return FieldQuantity(_cpp.elastic_acceleration(self._impl))

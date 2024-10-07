@@ -1,5 +1,4 @@
 // TODO: check if these includes are really all necessary
-#include "magnetoelastics.hpp"
 #include "cudalaunch.hpp"
 #include "elasticforce.hpp"
 #include "energy.hpp"

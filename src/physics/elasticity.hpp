@@ -13,11 +13,11 @@ Field evalEffectiveBodyForce(const Ferromagnet*);
 Field evalElasticAcceleration(const Ferromagnet*);
 
 // Elastic damping proportional to η and velocity: -ηv.
-FM_FieldQuantity elasticDamping(const Ferromagnet*);
+FM_FieldQuantity elasticDampingQuantity(const Ferromagnet*);
 
 // Elastic effective body force is the sum of elastic, magnetoelastic and
 // external body forces. Elastic damping is not included.
-FM_FieldQuantity effectiveBodyForce(const Ferromagnet*);
+FM_FieldQuantity effectiveBodyForceQuantity(const Ferromagnet*);
 
 // Translate const Variable* elasticVelocity to usable FM_fieldQuantity
 FM_FieldQuantity elasticVelocityQuantity(const Ferromagnet*);
