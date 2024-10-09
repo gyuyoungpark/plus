@@ -74,12 +74,12 @@ def get_rgba(field, quantity=None, layer=None):
     if layer is not None:
         field = field[:, layer]  # select the layer
 
-    if _np.any(field):
-        field /= _np.max(_np.linalg.norm(field, axis=0))  # rescale to make maximum norm 1
+    # rescale to make maximum norm 1
+    data = field / _np.max(_np.linalg.norm(field, axis=0)) if _np.any(field) else field
 
     # Create rgba image from the vector data
-    rgba = _np.ones((*(field.shape[1:]), 4))  # last index for R,G,B, and alpha channel
-    rgba[...,0], rgba[...,1], rgba[...,2] = vector_to_rgb(field[0], field[1], field[2])
+    rgba = _np.ones((*(data.shape[1:]), 4))  # last index for R,G,B, and alpha channel
+    rgba[...,0], rgba[...,1], rgba[...,2] = vector_to_rgb(data[0], data[1], data[2])
 
     # Set alpha channel to one inside the geometry, and zero outside
     if quantity is not None:
