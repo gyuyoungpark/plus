@@ -1186,6 +1186,7 @@ class Ferromagnet(Magnet):
         --------
         elastic_force, external_body_force, magnetoelastic_force
         """
+        return FieldQuantity(_cpp.effective_body_force(self._impl))
 
     @property
     def elastic_damping(self):
@@ -1195,7 +1196,7 @@ class Ferromagnet(Magnet):
         --------
         eta, elastic_velocity
         """
-        FieldQuantity(_cpp.elastic_damping(self._impl))
+        return FieldQuantity(_cpp.elastic_damping(self._impl))
 
     @property
     def elastic_acceleration(self):
