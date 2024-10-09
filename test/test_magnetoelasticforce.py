@@ -2,20 +2,14 @@ import pytest
 import numpy as np
 import math
 
-import matplotlib.pyplot as plt
-
-from mumaxplus.util import show
-
 from mumaxplus import Grid, World, Ferromagnet
 
 RTOL = 2e-2
 
 cx, cy, cz = 1e-9, 1e-9, 1e-9
 cellsize = (cx, cy, cz)
-n1, n2 = 64, 1
 P = 2  # sine periods
-B1 = 1
-B2 = 2
+N = 64  # number of 1D cells
 
 def max_absolute_error(result, wanted):
     """Maximum error for vector quantities."""
@@ -28,11 +22,16 @@ def max_semirelative_error(result, wanted):
     return max_absolute_error(result, wanted) / np.max(abs(wanted))
 
 
-def create_magnet(gridsize, pbc_repetitions):
-    """Makes a world with a magnet
+def create_magnet(d_comp, B1, B2):
+    """Makes a world with a 1D magnet in the d_comp direction.
     """
+    gridsize, gridsize_magnet, pbc_repetitions = [0, 0, 0], [1, 1, 1], [0, 0, 0]
+    gridsize[d_comp], pbc_repetitions[d_comp] = N,1  # set for PBC grid
+    gridsize_magnet[d_comp] = N
+
     world = World(cellsize, mastergrid=Grid(gridsize), pbc_repetitions=pbc_repetitions)
-    magnet =  Ferromagnet(world, Grid((n1, n2, 1)))
+    
+    magnet =  Ferromagnet(world, Grid(gridsize_magnet))
     magnet.enable_elastodynamics = True
 
     magnet.enable_elastodynamics = True
@@ -41,44 +40,101 @@ def create_magnet(gridsize, pbc_repetitions):
 
     return world, magnet
 
-def sine_force(magnet):
-    """Creates a magnetization of the form (cos(x), sin(x), 0) and calculates the magnetoelastic force
+
+def sine_force(magnet, d_comp, comp_cos, B1, B2):
+    """Creates the magnetization following a sine in the d_comp direction
+    and cosine in another direction it then calculates the magnetoelasticforce.
     """
     magnet.enable_elastodynamics = True  # just in case
 
-    L = n1*cellsize[0]
+    L = N*cellsize[d_comp]
     k = P*2*math.pi/L
+
     def magnetization_func(x, y, z):
-        m = (math.cos(k * x), math.sin(k * x), 0)
-        return m
+        m = [0,0,0]
+        comp = (x,y,z)[d_comp]
+        m[d_comp] = math.sin(k * comp)
+        m[comp_cos] = math.cos(k * comp)
+        return tuple(m)
 
     magnet.magnetization = magnetization_func
 
     force_num = magnet.magnetoelastic_force.eval()
-
-    force_anal_x = -2 * B1 * k * magnet.magnetization.eval()[0,...] * magnet.magnetization.eval()[1,...]
-    force_anal_y = B2 * k * (magnet.magnetization.eval()[0,...]**2 - magnet.magnetization.eval()[1,...]**2)
-    force_anal_z = np.zeros(shape=magnet.magnetization.eval()[0,...].shape)
     
-    return force_num, [force_anal_x, force_anal_y, force_anal_z]
+    force_anal = np.zeros(shape=force_num.shape)
+    force_anal[d_comp,...] = 2 * B1 * k * magnet.magnetization.eval()[d_comp,...] * magnet.magnetization.eval()[comp_cos,...]
+    force_anal[comp_cos,...] = B2 * k * (magnet.magnetization.eval()[comp_cos,...]**2 - magnet.magnetization.eval()[d_comp,...]**2)
+    return force_num, force_anal
 
 
-class TestMagnetoElasticForce:
-    def setup_class(self):
-        world, magnet = create_magnet((0,0,0), (0,0,0))
-        self.force_num, self.force_anal = sine_force(magnet)
-        
-        world_pbc, magnet_pbc = create_magnet((n1,0,0), (1,0,0))
-        self.force_num_pbc, self.force_anal_pbc = sine_force(magnet_pbc)
+def test_sinx_cosx_0_B1():
+    d_comp = 0
+    B1, B2 = 1, 0
+    world, magnet = create_magnet(d_comp, B1, B2)
+    force_num, force_anal = sine_force(magnet, d_comp, (d_comp+1)%3, B1, B2)
 
-    def test_x(self):
-        assert max_semirelative_error(self.force_num_pbc[0,...], self.force_anal_pbc[0]) < RTOL
-    
-    def test_y(self):
-        assert max_semirelative_error(self.force_num_pbc[1,...], self.force_anal_pbc[1]) < RTOL
+    assert max_semirelative_error(force_num, force_anal) < RTOL
 
-    def test_x_PBC(self):
-        assert max_semirelative_error(self.force_num_pbc[0,...], self.force_anal_pbc[0]) < RTOL
-    
-    def test_y_PBC(self):
-        assert max_semirelative_error(self.force_num_pbc[1,...], self.force_anal_pbc[1]) < RTOL
+def test_0_siny_cosy_B1():
+    d_comp = 1
+    B1, B2 = 1, 0
+    world, magnet = create_magnet(d_comp, B1, B2)
+    force_num, force_anal = sine_force(magnet, d_comp, (d_comp+1)%3, B1, B2)
+
+    assert max_semirelative_error(force_num, force_anal) < RTOL
+
+def test_cosz_0_sinz_B1():
+    d_comp = 2
+    B1, B2 = 1, 0
+    world, magnet = create_magnet(d_comp, B1, B2)
+    force_num, force_anal = sine_force(magnet, d_comp, (d_comp+1)%3, B1, B2)
+
+    assert max_semirelative_error(force_num, force_anal) < RTOL
+
+def test_sinx_cosx_0_B2():
+    d_comp = 0
+    B1, B2 = 0, 1
+    world, magnet = create_magnet(d_comp, B1, B2)
+    force_num, force_anal = sine_force(magnet, d_comp, (d_comp+1)%3, B1, B2)
+
+    assert max_semirelative_error(force_num, force_anal) < RTOL
+
+def test_0_siny_cosy_B2():
+    d_comp = 1
+    B1, B2 = 0, 1
+    world, magnet = create_magnet(d_comp, B1, B2)
+    force_num, force_anal = sine_force(magnet, d_comp, (d_comp+1)%3, B1, B2)
+
+    assert max_semirelative_error(force_num, force_anal) < RTOL
+
+def test_cosz_0_sinz_B2():
+    d_comp = 2
+    B1, B2 = 0, 1
+    world, magnet = create_magnet(d_comp, B1, B2)
+    force_num, force_anal = sine_force(magnet, d_comp, (d_comp+1)%3, B1, B2)
+
+    assert max_semirelative_error(force_num, force_anal) < RTOL
+
+def test_sinx_0_cosx_B2():
+    d_comp = 0
+    B1, B2 = 0, 1
+    world, magnet = create_magnet(d_comp, B1, B2)
+    force_num, force_anal = sine_force(magnet, d_comp, (d_comp+2)%3, B1, B2)
+
+    assert max_semirelative_error(force_num, force_anal) < RTOL
+
+def test_cosy_siny_0_B2():
+    d_comp = 1
+    B1, B2 = 0, 1
+    world, magnet = create_magnet(d_comp, B1, B2)
+    force_num, force_anal = sine_force(magnet, d_comp, (d_comp+2)%3, B1, B2)
+
+    assert max_semirelative_error(force_num, force_anal) < RTOL
+
+def test_0_cosz_sinz_B2():
+    d_comp = 2
+    B1, B2 = 0, 1
+    world, magnet = create_magnet(d_comp, B1, B2)
+    force_num, force_anal = sine_force(magnet, d_comp, (d_comp+2)%3, B1, B2)
+
+    assert max_semirelative_error(force_num, force_anal) < RTOL
