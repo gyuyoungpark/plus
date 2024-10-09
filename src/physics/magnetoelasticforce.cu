@@ -40,50 +40,45 @@ __global__ void k_magnetoelasticForce(CuField fField,
     for (int j=0; j<3; j++) {  // j is a {x, y, z} direction
       // take translation in j direction
       real dj = cs[j]; 
-      int3 im2 = im2_arr[j], im1 = im1_arr[j];  // transl in direction -j
-      int3 ip1 = ip1_arr[j], ip2 = ip2_arr[j];  // transl in direction +j
+      int3 jm2 = im2_arr[j], jm1 = im1_arr[j];  // transl in direction -j
+      int3 jp1 = ip1_arr[j], jp2 = ip2_arr[j];  // transl in direction +j
       
-      int idx_im2 = grid.coord2index(mastergrid.wrap(coo + im2));
-      int idx_im1 = grid.coord2index(mastergrid.wrap(coo + im1));
-      int idx_ip1 = grid.coord2index(mastergrid.wrap(coo + ip1));
-      int idx_ip2 = grid.coord2index(mastergrid.wrap(coo + ip2));
+      int3 coo_jm2 = mastergrid.wrap(coo + jm2);
+      int3 coo_jm1 = mastergrid.wrap(coo + jm1);
+      int3 coo_jp1 = mastergrid.wrap(coo + jp1);
+      int3 coo_jp2 = mastergrid.wrap(coo + jp2);
       
       // determine a derivative ∂j(m_i)
       real dmidj;
-      if (!grid.cellInGrid(idx_im1) && !grid.cellInGrid(idx_ip1))
-      {
-        dmidj = 0.f;                                                                         // --1-- zero
-      }
-      else if ((!grid.cellInGrid(idx_im2) | !grid.cellInGrid(idx_ip2)) && grid.cellInGrid(idx_im1) && grid.cellInGrid(idx_ip1))
-      {
-        dmidj = 0.5f * (m.valueAt(idx_ip1, i) - m.valueAt(idx_im1, i));                      // -111-, 1111-, -1111 central difference,  ε ~ h^2
-      }
-      else if (!grid.cellInGrid(idx_im2) && !grid.cellInGrid(idx_ip1))
-      {
-        dmidj =  (mi - m.valueAt(idx_im1, i));                                               // -11-- backward difference, ε ~ h^1
-      }
-      else if (!grid.cellInGrid(idx_im1) && !grid.cellInGrid(idx_ip2))
-      {
-        dmidj = (-mi + m.valueAt(idx_ip1, i));                                               // --11- forward difference,  ε ~ h^1
-      }
-      else if (grid.cellInGrid(idx_im2) && !grid.cellInGrid(idx_ip1))
-      {
-        dmidj =  (0.5f * m.valueAt(idx_im2, i) - 2.0f * m.valueAt(idx_im1, i) + 1.5f * mi);  // 111-- backward difference, ε ~ h^2
-      }
-      else if (!grid.cellInGrid(idx_im1) && grid.cellInGrid(idx_ip1))
-      {
-        dmidj = (-0.5f * m.valueAt(idx_ip2, i) + 2.0f * m.valueAt(idx_ip1, i) - 1.5f * mi);  // --111 forward difference,  ε ~ h^2
-      }
-      else
-      {
-        dmidj = ((2.0f/3.0f)*(m.valueAt(idx_ip1, i) - m.valueAt(idx_im1, i)) + 
-                (1.0f/12.0f)*(m.valueAt(idx_im2, i) - m.valueAt(idx_ip2, i)));               // 11111 central difference,  ε ~ h^4
+      if (!system.inGeometry(coo_jm1) && !system.inGeometry(coo_jp1)) {
+        // --1-- zero
+        dmidj = 0.f;
+      } else if ((!system.inGeometry(coo_jm2) || !system.inGeometry(coo_jp2)) &&
+                  system.inGeometry(coo_jm1) && system.inGeometry(coo_jp1)) {
+        // -111-, 1111-, -1111 central difference,  ε ~ h^2
+        dmidj = 0.5f * (m.valueAt(coo_jp1, i) - m.valueAt(coo_jm1, i));
+      } else if (!system.inGeometry(coo_jm2) && !system.inGeometry(coo_jp1)) {
+        // -11-- backward difference, ε ~ h^1
+        dmidj =  (mi - m.valueAt(coo_jm1, i));
+      } else if (!system.inGeometry(coo_jm1) && !system.inGeometry(coo_jp2)) {
+        // --11- forward difference,  ε ~ h^1
+        dmidj = (-mi + m.valueAt(coo_jp1, i));
+      } else if (system.inGeometry(coo_jm2) && !system.inGeometry(coo_jp1)) {
+        // 111-- backward difference, ε ~ h^2
+        dmidj =  (0.5f * m.valueAt(coo_jm2, i) - 2.0f * m.valueAt(coo_jm1, i) + 1.5f * mi);
+      } else if (!system.inGeometry(coo_jm1) && system.inGeometry(coo_jp1)) {
+        // --111 forward difference,  ε ~ h^2
+        dmidj = (-0.5f * m.valueAt(coo_jp2, i) + 2.0f * m.valueAt(coo_jp1, i) - 1.5f * mi);
+      } else {
+        // 11111 central difference,  ε ~ h^4
+        dmidj = ((2.0f/3.0f)*(m.valueAt(coo_jp1, i) - m.valueAt(coo_jm1, i)) + 
+                (1.0f/12.0f)*(m.valueAt(coo_jm2, i) - m.valueAt(coo_jp2, i)));
       }
       der[j][i] = dmidj / dj;
     }
   }
   for (int i=0; i<3; i++) {
-    real m_here[3] = {m.vectorAt(idx).x, m.vectorAt(idx).y, m.vectorAt(idx).z};
+    real m_here[3] = {m.valueAt(idx, 0), m.valueAt(idx, 1), m.valueAt(idx, 2)};
     int ip1 = i+1;
     int ip2 = i+2;
 
