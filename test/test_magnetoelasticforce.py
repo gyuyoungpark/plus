@@ -6,10 +6,11 @@ from mumaxplus import Grid, World, Ferromagnet
 
 RTOL = 2e-2
 
-cx, cy, cz = 1e-9, 1e-9, 1e-9
+cx, cy, cz = 1.5e-9, 2e-9, 2.5e-9
 cellsize = (cx, cy, cz)
 P = 2  # sine periods
-N = 64  # number of 1D cells
+N = 128  # number of 1D cells
+B = -8.8e6
 
 def max_absolute_error(result, wanted):
     """Maximum error for vector quantities."""
@@ -34,7 +35,6 @@ def create_magnet(d_comp, B1, B2):
     magnet =  Ferromagnet(world, Grid(gridsize_magnet))
     magnet.enable_elastodynamics = True
 
-    magnet.enable_elastodynamics = True
     magnet.B1 = B1
     magnet.B2 = B2
 
@@ -64,77 +64,60 @@ def sine_force(magnet, d_comp, comp_cos, B1, B2):
     force_anal = np.zeros(shape=force_num.shape)
     force_anal[d_comp,...] = 2 * B1 * k * magnet.magnetization.eval()[d_comp,...] * magnet.magnetization.eval()[comp_cos,...]
     force_anal[comp_cos,...] = B2 * k * (magnet.magnetization.eval()[comp_cos,...]**2 - magnet.magnetization.eval()[d_comp,...]**2)
-    return force_num, force_anal
+    
+    assert max_semirelative_error(force_num, force_anal) < RTOL
 
 
 def test_sinx_cosx_0_B1():
     d_comp = 0
-    B1, B2 = 1, 0
+    B1, B2 = B, 0
     world, magnet = create_magnet(d_comp, B1, B2)
-    force_num, force_anal = sine_force(magnet, d_comp, (d_comp+1)%3, B1, B2)
-
-    assert max_semirelative_error(force_num, force_anal) < RTOL
+    sine_force(magnet, d_comp, (d_comp+1)%3, B1, B2)
 
 def test_0_siny_cosy_B1():
     d_comp = 1
-    B1, B2 = 1, 0
+    B1, B2 = B, 0
     world, magnet = create_magnet(d_comp, B1, B2)
-    force_num, force_anal = sine_force(magnet, d_comp, (d_comp+1)%3, B1, B2)
-
-    assert max_semirelative_error(force_num, force_anal) < RTOL
+    sine_force(magnet, d_comp, (d_comp+1)%3, B1, B2)
 
 def test_cosz_0_sinz_B1():
     d_comp = 2
-    B1, B2 = 1, 0
+    B1, B2 = B, 0
     world, magnet = create_magnet(d_comp, B1, B2)
-    force_num, force_anal = sine_force(magnet, d_comp, (d_comp+1)%3, B1, B2)
-
-    assert max_semirelative_error(force_num, force_anal) < RTOL
+    sine_force(magnet, d_comp, (d_comp+1)%3, B1, B2)
 
 def test_sinx_cosx_0_B2():
     d_comp = 0
-    B1, B2 = 0, 1
+    B1, B2 = 0, B
     world, magnet = create_magnet(d_comp, B1, B2)
-    force_num, force_anal = sine_force(magnet, d_comp, (d_comp+1)%3, B1, B2)
-
-    assert max_semirelative_error(force_num, force_anal) < RTOL
+    sine_force(magnet, d_comp, (d_comp+1)%3, B1, B2)
 
 def test_0_siny_cosy_B2():
     d_comp = 1
-    B1, B2 = 0, 1
+    B1, B2 = 0, B
     world, magnet = create_magnet(d_comp, B1, B2)
-    force_num, force_anal = sine_force(magnet, d_comp, (d_comp+1)%3, B1, B2)
-
-    assert max_semirelative_error(force_num, force_anal) < RTOL
+    sine_force(magnet, d_comp, (d_comp+1)%3, B1, B2)
 
 def test_cosz_0_sinz_B2():
     d_comp = 2
-    B1, B2 = 0, 1
+    B1, B2 = 0, B
     world, magnet = create_magnet(d_comp, B1, B2)
-    force_num, force_anal = sine_force(magnet, d_comp, (d_comp+1)%3, B1, B2)
-
-    assert max_semirelative_error(force_num, force_anal) < RTOL
+    sine_force(magnet, d_comp, (d_comp+1)%3, B1, B2)
 
 def test_sinx_0_cosx_B2():
     d_comp = 0
-    B1, B2 = 0, 1
+    B1, B2 = 0, B
     world, magnet = create_magnet(d_comp, B1, B2)
-    force_num, force_anal = sine_force(magnet, d_comp, (d_comp+2)%3, B1, B2)
-
-    assert max_semirelative_error(force_num, force_anal) < RTOL
+    sine_force(magnet, d_comp, (d_comp+2)%3, B1, B2)
 
 def test_cosy_siny_0_B2():
     d_comp = 1
-    B1, B2 = 0, 1
+    B1, B2 = 0, B
     world, magnet = create_magnet(d_comp, B1, B2)
-    force_num, force_anal = sine_force(magnet, d_comp, (d_comp+2)%3, B1, B2)
-
-    assert max_semirelative_error(force_num, force_anal) < RTOL
+    sine_force(magnet, d_comp, (d_comp+2)%3, B1, B2)
 
 def test_0_cosz_sinz_B2():
     d_comp = 2
-    B1, B2 = 0, 1
+    B1, B2 = 0, B
     world, magnet = create_magnet(d_comp, B1, B2)
-    force_num, force_anal = sine_force(magnet, d_comp, (d_comp+2)%3, B1, B2)
-
-    assert max_semirelative_error(force_num, force_anal) < RTOL
+    sine_force(magnet, d_comp, (d_comp+2)%3, B1, B2)
