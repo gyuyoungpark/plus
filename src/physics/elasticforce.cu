@@ -70,7 +70,8 @@ __device__ real mixedDerivative(real c_i_jm1, real c_i_j, real c_i_jp1,
                                 real u_ip1_jm1, real u_ip1_jp1,
                                 real di, real dj) {
   real f = (c_i_jp1 - c_i_jm1) * (u_ip1_j - u_im1_j);  // ~ ∂j(c)∂i(u)
-  f += c_i_j * (u_ip1_jp1 - u_ip1_jm1 - u_im1_jp1 + u_ip1_jp1);  // ~ c ∂j∂i(u)
+  // optimal order of terms to minimize numerical noise for 2D materials (nz = 1)
+  f += c_i_j * (u_ip1_jp1 - u_im1_jp1 - u_ip1_jm1 + u_im1_jm1);  // ~ c ∂j∂i(u)
   f /= 4*di*dj;
   return f;
 }
