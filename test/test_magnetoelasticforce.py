@@ -1,10 +1,9 @@
-import pytest
 import numpy as np
 import math
 
 from mumaxplus import Grid, World, Ferromagnet
 
-RTOL = 2e-2
+RTOL = 1e-4
 
 cx, cy, cz = 1.5e-9, 2e-9, 2.5e-9
 cellsize = (cx, cy, cz)
