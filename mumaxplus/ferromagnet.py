@@ -1149,6 +1149,30 @@ class Ferromagnet(Magnet):
         magnetoelastic_force
         """
         return FieldQuantity(_cpp.magnetoelastic_field(self._impl))
+    
+    @property
+    def magnetoelastic_energy_density(self):
+        """Magnetoelastic effective field due to effects of inverse
+        magnetostriction (T).
+
+        See Also
+        --------
+        B1, B2
+        magnetoelastic_force
+        """
+        return FieldQuantity(_cpp.magnetoelastic_energy_density(self._impl))
+    
+    @property
+    def magnetoelastic_energy(self):
+        """Magnetoelastic effective field due to effects of inverse
+        magnetostriction (T).
+
+        See Also
+        --------
+        B1, B2
+        magnetoelastic_force
+        """
+        return FieldQuantity(_cpp.magnetoelastic_energy(self._impl))
 
     @property
     def elastic_force(self):
