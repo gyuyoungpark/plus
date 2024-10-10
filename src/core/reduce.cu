@@ -284,12 +284,9 @@ bool isUniformFieldComponent(const Field& f, int comp) {
 }
 
 bool isUniformField(const Field& f) {
-  bool result = true;
   for (int c = 0; c < f.ncomp(); c++) {
-    if (!isUniformFieldComponent(f, c)) {
-      result = false;
-      break;
-    }
+    if (!isUniformFieldComponent(f, c))
+      return false;
   }
-  return result;
+  return true;
 }
