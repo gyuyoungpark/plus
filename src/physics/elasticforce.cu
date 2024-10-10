@@ -70,7 +70,8 @@ __device__ real mixedDerivative(real c_i_jm1, real c_i_j, real c_i_jp1,
                                 real u_ip1_jm1, real u_ip1_jp1,
                                 real di, real dj) {
   real f = (c_i_jp1 - c_i_jm1) * (u_ip1_j - u_im1_j);  // ~ ∂j(c)∂i(u)
-  f += c_i_j * (u_ip1_jp1 - u_ip1_jm1 - u_im1_jp1 + u_ip1_jp1);  // ~ c ∂j∂i(u)
+  // optimal order of terms to minimize numerical noise for 2D materials (nz = 1)
+  f += c_i_j * (u_ip1_jp1 - u_im1_jp1 - u_ip1_jm1 + u_im1_jm1);  // ~ c ∂j∂i(u)
   f /= 4*di*dj;
   return f;
 }
@@ -108,6 +109,7 @@ __global__ void k_elasticForce(CuField fField,
 
   // array instead of real3 to get indexing [i]
   const real cs[3] = {cellsize.x, cellsize.y, cellsize.z};
+  const int gs[3] = {grid.size().x, grid.size().y, grid.size().z};
   const int3 ip1_arr[3] = {int3{ 1, 0, 0}, int3{0, 1, 0}, int3{0, 0, 1}};
   const int3 im1_arr[3] = {int3{-1, 0, 0}, int3{0,-1, 0}, int3{0, 0,-1}};
   const int3 coo = grid.index2coord(idx);
@@ -128,17 +130,20 @@ __global__ void k_elasticForce(CuField fField,
     int3 im1 = im1_arr[i], ip1 = ip1_arr[i];  // transl in direction i
     int safeIdx_im1 = coord2safeIndex(coo, im1, system, mastergrid);
     int safeIdx_ip1 = coord2safeIndex(coo, ip1, system, mastergrid);
-    f_i += doubleDerivative(c11.valueAt(safeIdx_im1),
-                            c11.valueAt(idx),
-                            c11.valueAt(safeIdx_ip1),
-                            uField.valueAt(safeIdx_im1, i), ui,
-                            uField.valueAt(safeIdx_ip1, i), di);
+    if (gs[i] > 1)  // only derivative calculation if more than 1 cell
+      f_i += doubleDerivative(c11.valueAt(safeIdx_im1),
+                              c11.valueAt(idx),
+                              c11.valueAt(safeIdx_ip1),
+                              uField.valueAt(safeIdx_im1, i), ui,
+                              uField.valueAt(safeIdx_ip1, i), di);
 
 #pragma unroll  // TODO: check if faster with or without this unrolling
     for (int j_=i+1; j_<i+3; j_++) {
       // j is one of the *other* {x, y, z} components/directions
       int j = j_;
       if (j > 2) {j -= 3;};
+
+      if (gs[j] <= 1) continue;  // no derivative calculation if only 1 cell
 
       // translate in direction j
       real dj = cs[j];
@@ -163,6 +168,8 @@ __global__ void k_elasticForce(CuField fField,
       // translate c12+c44 in j direction
       // take u component j
       // translate u in both i and j directions
+
+      if (gs[i] <= 1) continue;  // no derivative calculation if only 1 cell
 
       // translate in both i and j directions
       int safeIdx_im1_jm1 = coord2safeIndex(coo, im1, jm1, system, mastergrid);
