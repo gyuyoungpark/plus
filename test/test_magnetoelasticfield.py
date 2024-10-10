@@ -148,3 +148,45 @@ def test_y_Eyz_B2():
     B1, B2 = 0, B
     magnet = create_magnet(i, m_comp)
     sine_displacement(magnet, i, j, B1, B2)
+
+def test_random():
+    """Test with a random magnetization and displacement.
+    Trust the numerical strain.
+    """
+    gridsize, gridsize_magnet, pbc_repetitions = [0, 0, 0], [1, 1, 1], [0, 0, 0]
+
+    gridsize[0], pbc_repetitions[0] = N, 1  # set for PBC grid
+    gridsize_magnet[0] = N
+
+    world = World(cellsize, mastergrid=Grid(gridsize), pbc_repetitions=pbc_repetitions)
+    magnet =  Ferromagnet(world, Grid(gridsize_magnet))
+    magnet.enable_elastodynamics = True
+
+    magnet.msat = msat
+    magnet.enable_elastodynamics = True  # just in case
+
+    magnet.B1 = B
+    magnet.B2 = 0.5*B
+
+    L = N*cellsize[0]
+    k = P*2*math.pi/L
+
+    def displacement_func(x, y, z):
+        return tuple(np.random.rand(3))
+
+    magnet.elastic_displacement = displacement_func
+    strain = magnet.strain_tensor.eval()
+    
+    B_num = magnet.magnetoelastic_field.eval()
+    B_anal = np.zeros(shape=B_num.shape)
+
+    m = magnet.magnetization.eval()
+    for i in range(3):
+        ip1 = (i+1)%3
+        ip2 = (i+2)%3
+
+        B_anal[i,...] = - 2  / msat * (B * strain[i,...] * m[i,...] + 
+                        0.5*B * (strain[i+ip1+2,...] * m[ip1,...] + 
+                                 strain[i+ip2+2,...] * m[ip2,...]))
+
+    assert max_semirelative_error(B_num, B_anal) < RTOL
