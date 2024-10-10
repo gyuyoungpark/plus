@@ -1119,7 +1119,7 @@ class Ferromagnet(Magnet):
 
     @property
     def strain_tensor(self):
-        """Strain tensor (N/m2), calculated according to ε = 1/2 (∇u + (∇u)^T),
+        """Strain tensor (m/m), calculated according to ε = 1/2 (∇u + (∇u)^T),
         with u the elastic displacement.
 
         This quantity has six components (εxx, εyy, εzz, εxy, εxz, εyz),
