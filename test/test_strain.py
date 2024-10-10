@@ -24,7 +24,8 @@ def max_semirelative_error(result, wanted):
 
 
 def check_strain(i_comp, j_comp):
-    """Makes a world with a 1D magnet in the d_comp direction.
+    """Makes a world with a 1D magnet in the i_comp direction,
+    then checks the strain calculation.
     """
     gridsize, gridsize_magnet, pbc_repetitions = [0, 0, 0], [1, 1, 1], [0, 0, 0]
     gridsize[i_comp], pbc_repetitions[i_comp] = N, 1  # set for PBC grid
