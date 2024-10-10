@@ -21,8 +21,7 @@ __global__ void k_magnetoelasticField(CuField hField,
                                       const CuField strain,
                                       const CuParameter B1,
                                       const CuParameter B2,
-                                      const CuParameter msat,
-                                      const real3 cellsize) {
+                                      const CuParameter msat) {
   const int idx = blockIdx.x * blockDim.x + threadIdx.x;
   const CuSystem system = hField.system;
   const Grid grid = system.grid;
@@ -47,9 +46,10 @@ __global__ void k_magnetoelasticField(CuField hField,
     }
 
     hField.setValueInCell(idx, i,
-                          - 2 * (B1.valueAt(idx) * strain.valueAt(idx, i) * mField.valueAt(idx, i) + 
-                          B2.valueAt(idx) * (strain.valueAt(idx, i+ip1+2) * mField.valueAt(idx, ip1) + 
-                          strain.valueAt(idx, i+ip2+2) * mField.valueAt(idx, ip2))) / msat.valueAt(idx));
+          - 2 / msat.valueAt(idx) *
+          (B1.valueAt(idx) * strain.valueAt(idx, i) * mField.valueAt(idx, i) + 
+           B2.valueAt(idx) * (strain.valueAt(idx, i+ip1+2) * mField.valueAt(idx, ip1) + 
+                              strain.valueAt(idx, i+ip2+2) * mField.valueAt(idx, ip2))));
   }
 }
 
@@ -66,9 +66,8 @@ Field evalMagnetoelasticField(const Ferromagnet* magnet) {
   CuParameter B1 = magnet->B1.cu();
   CuParameter B2 = magnet->B2.cu();
   CuParameter msat = magnet->msat.cu();
-  real3 cellsize = magnet->cellsize();
 
-  cudaLaunch(ncells, k_magnetoelasticField, hField.cu(), mField, strain, B1, B2, msat, cellsize);
+  cudaLaunch(ncells, k_magnetoelasticField, hField.cu(), mField, strain, B1, B2, msat);
   return hField;
 }
 
