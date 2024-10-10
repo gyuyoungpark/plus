@@ -27,6 +27,11 @@ Field::Field(std::shared_ptr<const System> system, int nComponents, real value)
   setUniformValue(value);
 }
 
+Field::Field(std::shared_ptr<const System> system, int nComponents, real3 value)
+    : Field(system, nComponents) {
+  setUniformValue(value);
+}
+
 Field::Field(const Field& other) : system_(other.system_), ncomp_(other.ncomp_) {
   buffers_ = other.buffers_;
   updateDevicePointersBuffer();
