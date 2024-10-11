@@ -135,6 +135,7 @@ void wrap_ferromagnet(py::module& m) {
 
   // Magnetoelasticity
   m.def("strain_tensor", &strainTensorQuantity);
+  m.def("stress_tensor", &stressTensorQuantity);
 
   m.def("magnetoelastic_field", &magnetoelasticFieldQuantity);
   m.def("magnetoelastic_energy_density", &magnetoelasticEnergyDensityQuantity);
@@ -145,4 +146,9 @@ void wrap_ferromagnet(py::module& m) {
   m.def("effective_body_force", &effectiveBodyForceQuantity);
   m.def("elastic_damping", &elasticDampingQuantity);
   m.def("elastic_acceleration", &elasticAccelerationQuantity);
+  
+  m.def("kinetic_energy_density", &kineticEnergyDensityQuantity);
+  m.def("kinetic_energy", &kineticEnergyQuantity);
+  m.def("elastic_energy_density", &elasticEnergyDensityQuantity);
+  m.def("elastic_energy", &elasticEnergyQuantity);
 }

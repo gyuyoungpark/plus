@@ -1,9 +1,9 @@
 // TODO: check if these includes are really all necessary
 #include "cudalaunch.hpp"
-#include "elasticforce.hpp"
 #include "energy.hpp"
 #include "ferromagnet.hpp"
 #include "field.hpp"
+#include "magnetoelasticfield.hpp"
 #include "parameter.hpp"
 #include "reduce.hpp"
 #include "straintensor.hpp"
@@ -82,12 +82,11 @@ real magnetoelasticEnergy(const Ferromagnet* magnet) {
   if (magnetoelasticAssuredZero(magnet))
     return 0.0;
 
-  real edens = MagnetoelasticEnergyDensityQuantity(magnet).average()[0];
+  real edens = magnetoelasticEnergyDensityQuantity(magnet).average()[0];
   int ncells = magnet->grid().ncells();
   real cellVolume = magnet->world()->cellVolume();
   return ncells * edens * cellVolume;
 }
-
 
 FM_FieldQuantity magnetoelasticFieldQuantity(const Ferromagnet* magnet) {
   return FM_FieldQuantity(magnet, evalMagnetoelasticField, 3,
