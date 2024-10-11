@@ -55,24 +55,26 @@ __device__ int coord2safeIndex(int3 coo, int3 relcoo1, int3 relcoo2,
 
 // ∂i(c ∂i(u))
 // position index due to derivative, not component index!
+// w = 1/cellsize²
 __device__ real doubleDerivative(real c_im1, real c_i, real c_ip1,
-                                 real u_im1, real u_i, real u_ip1, real di) {
+                                 real u_im1, real u_i, real u_ip1, real wi) {
   return (  harmonicMean(c_ip1, c_i) * (u_ip1 - u_i  )
-          - harmonicMean(c_i, c_im1) * (u_i   - u_im1)) / (di*di);
+          - harmonicMean(c_i, c_im1) * (u_i   - u_im1)) * (wi*wi);
 }
 
 // ∂j(c ∂i(u))
 // ≈ ∂j(c)∂i(u) + c ∂j∂i(u)
 // position index due to derivative, not component index!
+// w = 1/cellsize²
 __device__ real mixedDerivative(real c_i_jm1, real c_i_j, real c_i_jp1,
                                 real u_im1_j, real u_ip1_j,
                                 real u_im1_jm1, real u_im1_jp1,
                                 real u_ip1_jm1, real u_ip1_jp1,
-                                real di, real dj) {
+                                real wi, real wj) {
   real f = (c_i_jp1 - c_i_jm1) * (u_ip1_j - u_im1_j);  // ~ ∂j(c)∂i(u)
   // optimal order of terms to minimize numerical noise for 2D materials (nz = 1)
   f += c_i_j * (u_ip1_jp1 - u_im1_jp1 - u_ip1_jm1 + u_im1_jm1);  // ~ c ∂j∂i(u)
-  f /= 4*di*dj;
+  f *= 0.25 * wi * wj;
   return f;
 }
 
@@ -93,7 +95,7 @@ __global__ void k_elasticForce(CuField fField,
                                const CuParameter c11,
                                const CuParameter c12,
                                const CuParameter c44,
-                               const real3 cellsize,
+                               const real3 w,
                                const Grid mastergrid) {
   const int idx = blockIdx.x * blockDim.x + threadIdx.x;
   const CuSystem system = fField.system;
@@ -108,7 +110,7 @@ __global__ void k_elasticForce(CuField fField,
   }
 
   // array instead of real3 to get indexing [i]
-  const real cs[3] = {cellsize.x, cellsize.y, cellsize.z};
+  const real ws[3] = {w.x, w.y, w.z};
   const int gs[3] = {grid.size().x, grid.size().y, grid.size().z};
   const int3 ip1_arr[3] = {int3{ 1, 0, 0}, int3{0, 1, 0}, int3{0, 0, 1}};
   const int3 im1_arr[3] = {int3{-1, 0, 0}, int3{0,-1, 0}, int3{0, 0,-1}};
@@ -126,7 +128,7 @@ __global__ void k_elasticForce(CuField fField,
     // take u component i
     real ui = uField.valueAt(idx, i);  // take u component i
     // take translation in i direction
-    real di = cs[i]; 
+    real wi = ws[i]; 
     int3 im1 = im1_arr[i], ip1 = ip1_arr[i];  // transl in direction i
     int safeIdx_im1 = coord2safeIndex(coo, im1, system, mastergrid);
     int safeIdx_ip1 = coord2safeIndex(coo, ip1, system, mastergrid);
@@ -135,7 +137,7 @@ __global__ void k_elasticForce(CuField fField,
                               c11.valueAt(idx),
                               c11.valueAt(safeIdx_ip1),
                               uField.valueAt(safeIdx_im1, i), ui,
-                              uField.valueAt(safeIdx_ip1, i), di);
+                              uField.valueAt(safeIdx_ip1, i), wi);
 
 #pragma unroll  // TODO: check if faster with or without this unrolling
     for (int j_=i+1; j_<i+3; j_++) {
@@ -146,7 +148,7 @@ __global__ void k_elasticForce(CuField fField,
       if (gs[j] <= 1) continue;  // no derivative calculation if only 1 cell
 
       // translate in direction j
-      real dj = cs[j];
+      real wj = ws[j];
       int3 jm1 = im1_arr[j], jp1 = ip1_arr[j];
       int safeIdx_jm1 = coord2safeIndex(coo, jm1, system, mastergrid);
       int safeIdx_jp1 = coord2safeIndex(coo, jp1, system, mastergrid);
@@ -161,7 +163,7 @@ __global__ void k_elasticForce(CuField fField,
       // translate all in j direction
       f_i += doubleDerivative(c44_jm1, c44_, c44_jp1,
                               uField.valueAt(safeIdx_jm1, i), ui,
-                              uField.valueAt(safeIdx_jp1, i), dj);
+                              uField.valueAt(safeIdx_jp1, i), wj);
 
       // ===========================================================
       // f_i += ∂j((c12+c44) ∂i(u_j))    so (c12+c44) with ∂_j∂_i u_j
@@ -185,7 +187,7 @@ __global__ void k_elasticForce(CuField fField,
                              uField.valueAt(safeIdx_im1_jm1, j),
                              uField.valueAt(safeIdx_im1_jp1, j),
                              uField.valueAt(safeIdx_ip1_jm1, j),
-                             uField.valueAt(safeIdx_ip1_jp1, j), di, dj);
+                             uField.valueAt(safeIdx_ip1_jp1, j), wi, wj);
     }
     fField.setValueInCell(idx, i, f_i);
   }
@@ -205,11 +207,12 @@ Field evalElasticForce(const Ferromagnet* magnet) {
   CuParameter c11 = magnet->c11.cu();
   CuParameter c12 = magnet->c12.cu();
   CuParameter c44 = magnet->c44.cu();
-  real3 cellsize = magnet->cellsize();
+  real3 c = magnet->cellsize();
+  real3 w = {1/c.x, 1/c.y, 1/c.z};
   Grid mastergrid = magnet->world()->mastergrid();
 
-  cudaLaunch(ncells, k_elasticForce, fField.cu(), uField, c11, c12, c44,
-             cellsize, mastergrid);
+  cudaLaunch(ncells, k_elasticForce, fField.cu(), uField, c11, c12, c44, w,
+             mastergrid);
 
   return fField;
 }

@@ -12,7 +12,7 @@ bool strainTensorAssuredZero(const Ferromagnet* magnet) {
 
 __global__ void k_strainTensor(CuField strain,
                                const CuField u,
-                               const real3 cellsize,
+                               const real3 w,  // w = 1/cellsize²
                                const Grid mastergrid) {
   const int idx = blockIdx.x * blockDim.x + threadIdx.x;
   const CuSystem system = strain.system;
@@ -27,7 +27,7 @@ __global__ void k_strainTensor(CuField strain,
     return;
   }
 
-  const real cs[3] = {cellsize.x, cellsize.y, cellsize.z};
+  const real ws[3] = {w.x, w.y, w.z};
   const int3 im2_arr[3] = {int3{-2, 0, 0}, int3{0,-2, 0}, int3{0, 0,-2}};
   const int3 im1_arr[3] = {int3{-1, 0, 0}, int3{0,-1, 0}, int3{0, 0,-1}};
   const int3 ip1_arr[3] = {int3{ 1, 0, 0}, int3{0, 1, 0}, int3{0, 0, 1}};
@@ -39,7 +39,7 @@ __global__ void k_strainTensor(CuField strain,
 #pragma unroll
   for (int i=0; i<3; i++) {  // i is a {x, y, z} direction
     // take translation in i direction
-    real di = cs[i]; 
+    real wi = ws[i]; 
     int3 im2 = im2_arr[i], im1 = im1_arr[i];  // transl in direction -i
     int3 ip1 = ip1_arr[i], ip2 = ip2_arr[i];  // transl in direction +i
 
@@ -74,7 +74,7 @@ __global__ void k_strainTensor(CuField strain,
       dudi = ((2.0f/3.0f)*(u.vectorAt(coo_ip1) - u.vectorAt(coo_im1)) + 
               (1.0f/12.0f)*(u.vectorAt(coo_im2) - u.vectorAt(coo_ip2)));
     }
-    dudi /= di;
+    dudi *= wi;
 
     der[i][0] = dudi.x;
     der[i][1] = dudi.y;
@@ -103,10 +103,11 @@ Field evalStrainTensor(const Ferromagnet* magnet) {
 
   int ncells = strain.grid().ncells();
   CuField u = magnet->elasticDisplacement()->field().cu();
-  real3 cellsize = magnet->cellsize();
+  real3 c = magnet->cellsize();
+  real3 w = {1/c.x, 1/c.y, 1/c.z};
   Grid mastergrid = magnet->world()->mastergrid();
 
-  cudaLaunch(ncells, k_strainTensor, strain.cu(), u, cellsize, mastergrid);
+  cudaLaunch(ncells, k_strainTensor, strain.cu(), u, w, mastergrid);
   return strain;
 }
 
