@@ -14,7 +14,7 @@ __global__ void k_magnetoelasticForce(CuField fField,
                                       const CuField m,
                                       const CuParameter B1,
                                       const CuParameter B2,
-                                      const real3 cellsize,
+                                      const real3 w,  // w = 1/cellsize²
                                       const Grid mastergrid) {
   const int idx = blockIdx.x * blockDim.x + threadIdx.x;
   const CuSystem system = fField.system;
@@ -26,7 +26,7 @@ __global__ void k_magnetoelasticForce(CuField fField,
     }
     return;
   }
-  const real cs[3] = {cellsize.x, cellsize.y, cellsize.z};
+  const real ws[3] = {w.x, w.y, w.z};
   const int3 im2_arr[3] = {int3{-2, 0, 0}, int3{0,-2, 0}, int3{0, 0,-2}};
   const int3 im1_arr[3] = {int3{-1, 0, 0}, int3{0,-1, 0}, int3{0, 0,-1}};
   const int3 ip1_arr[3] = {int3{ 1, 0, 0}, int3{0, 1, 0}, int3{0, 0, 1}};
@@ -38,7 +38,7 @@ __global__ void k_magnetoelasticForce(CuField fField,
 #pragma unroll
   for (int i=0; i<3; i++) {  // i is a {x, y, z} direction
     // take translation in i direction
-    real di = cs[i]; 
+    real wi = ws[i]; 
     int3 im2 = im2_arr[i], im1 = im1_arr[i];  // transl in direction -i
     int3 ip1 = ip1_arr[i], ip2 = ip2_arr[i];  // transl in direction +i
     
@@ -73,7 +73,7 @@ __global__ void k_magnetoelasticForce(CuField fField,
       dmdi = ((2.0f/3.0f)*(m.vectorAt(coo_ip1) - m.vectorAt(coo_im1)) + 
               (1.0f/12.0f)*(m.vectorAt(coo_im2) - m.vectorAt(coo_ip2)));
     }
-    dmdi /= di;
+    dmdi *= wi;
 
     der[i][0] = dmdi.x;
     der[i][1] = dmdi.y;
@@ -81,18 +81,13 @@ __global__ void k_magnetoelasticForce(CuField fField,
   }
 
   real m_here[3] = {m.valueAt(idx, 0), m.valueAt(idx, 1), m.valueAt(idx, 2)};
+  int ip1, ip2;
 #pragma unroll
   for (int i=0; i<3; i++) {
-    int ip1 = i+1;
-    int ip2 = i+2;
-
+    ip1 = i+1; ip2 = i+2;
     // If they exceed 3, loop around
-    if (ip1 >= 3){
-      ip1 -= 3;
-    } 
-    if (ip2 >= 3){
-      ip2 -= 3;
-    }
+    if (ip1 >= 3) ip1 -= 3;
+    if (ip2 >= 3) ip2 -= 3;
 
     real f_i = 2 * B1.valueAt(idx) * m_here[i] * der[i][i];
     f_i += B2.valueAt(idx) * m_here[i] * (der[ip1][ip1] + der[ip2][ip2]);
@@ -112,9 +107,10 @@ Field evalMagnetoelasticForce(const Ferromagnet* magnet) {
   CuField m = magnet->magnetization()->field().cu();
   CuParameter B1 = magnet->B1.cu();
   CuParameter B2 = magnet->B2.cu();
-  real3 cellsize = magnet->cellsize();
+  real3 c = magnet->cellsize();
+  real3 w = {1/c.x, 1/c.y, 1/c.z};
   Grid mastergrid = magnet->world()->mastergrid();
-  cudaLaunch(ncells, k_magnetoelasticForce, fField.cu(), m, B1, B2, cellsize, mastergrid);
+  cudaLaunch(ncells, k_magnetoelasticForce, fField.cu(), m, B1, B2, w, mastergrid);
   return fField;
 }
 

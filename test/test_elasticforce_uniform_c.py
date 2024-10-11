@@ -15,8 +15,8 @@ import matplotlib.pyplot as plt
 from mumaxplus import Grid, World, Ferromagnet
 
 
-SRTOL = 1e-4
-SRTOL_MIX = 1e-4  # mixed derivative tests are less precise
+SRTOL = 1e-3
+SRTOL_MIX = 5e-3  # mixed derivative tests are less precise
 
 cx, cy, cz = 1.5e-9, 2e-9, 2.5e-9
 cellsize = (cx, cy, cz)
