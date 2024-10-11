@@ -13,7 +13,7 @@ bool dmiAssuredZero(const Ferromagnet* magnet) {
   return (magnet->dmiTensor.assuredZero() || magnet->msat.assuredZero());
 }
 
-__global__ void k_dmiField(CuField hField,
+__global__ void k_dmiFieldFM(CuField hField,
                            const CuField mField,
                            const CuDmiTensor dmiTensor,
                            const CuParameter msat,
@@ -106,14 +106,15 @@ __global__ void k_dmiField(CuField hField,
   hField.setVectorInCell(idx, h);
 }
 
-__global__ void k_dmiField(CuField hField,
+__global__ void k_dmiFieldAFM(CuField hField,
                            const CuField m1Field,
                            const CuField m2Field,
                            const CuDmiTensor dmiTensor,
                            const CuParameter msat,
                            Grid mastergrid,
                            const CuParameter aex,
-                           const CuParameter afmex_nn) {
+                           const CuParameter afmex_nn,
+                           bool openBC) {
   const int idx = blockIdx.x * blockDim.x + threadIdx.x;
   const auto system = hField.system;
  
@@ -142,6 +143,16 @@ __global__ void k_dmiField(CuField hField,
     if (!system.inGeometry(neighbor_coo)) { neighbor_idx = idx; }
     else { neighbor_idx = system.grid.coord2index(neighbor_coo); }
     
+    // If there is no FM-exchange at the boundary, open BC are assumed
+    real a = aex.valueAt(idx);
+    openBC = (a == 0) ? true : openBC;
+
+    // If we assume open boundary conditions and if there is no neighbor,
+    // then simply continue without adding to the effective field.
+    if (openBC && (!system.inGeometry(neighbor_coo)
+               || msat.valueAt(neighbor_idx) == 0))
+      continue;
+
     // Get the dmi strengths between the center cell and the neighbor, which are
     // the harmonic means of the dmi strengths of both cells.
     real Dxz, Dxy, Dyz, Dzx, Dyx, Dzy;
@@ -171,9 +182,6 @@ __global__ void k_dmiField(CuField hField,
 
     real3 m_;
     if (!system.inGeometry(neighbor_coo)) { // Neumann BC
-      real a = aex.valueAt(idx);
-      if(a == 0) // Assume open BC
-          continue;
       int3 n = relative_coo * relative_coo;
       real3 Gamma1 = getGamma(dmiTensor, idx, n, m);
 
@@ -199,22 +207,7 @@ __global__ void k_dmiField(CuField hField,
   }  // end loop over neighbors
 
   /* TO DO: implement DMI-contribution to afm-exchange at a single site
-  if (comp == 6) {
-    // Compute effective field contribution of the DMI between sublattices at a single site
-    real Dyz = dmiTensor.xyz.valueAt(idx);
-    real Dxz = dmiTensor.yxz.valueAt(idx);
-    real Dxy = dmiTensor.zxy.valueAt(idx);
-    real Dzx = -Dxz;
-    real Dyx = -Dxy;
-    real Dzy = -Dyz;
-    real l = latcon.valueAt(idx);
-    h.x1 += (Dxy * m.y2 + Dxz * m.z2) / l;
-    h.y1 += (Dyx * m.x2 + Dyz * m.z2) / l;
-    h.z1 += (Dzx * m.x2 + Dzy * m.y2) / l;
-    h.x2 += (Dxy * m.y1 + Dxz * m.z1) / l;
-    h.y2 += (Dyx * m.x1 + Dyz * m.z1) / l;
-    h.z2 += (Dzx * m.x1 + Dzy * m.y1) / l;
-  }*/
+  */
 
   h /= msat.valueAt(idx);
   hField.setVectorInCell(idx, h);
@@ -235,16 +228,16 @@ Field evalDmiField(const Ferromagnet* magnet) {
   auto dmiTensor = magnet->dmiTensor.cu();
   auto BC = magnet->enableOpenBC;
   
-  if (!magnet->isSublattice() || magnet->enableOpenBC)
-    cudaLaunch(ncells, k_dmiField, hField.cu(),
+  if (!magnet->isSublattice())
+    cudaLaunch(ncells, k_dmiFieldFM, hField.cu(),
               mag, dmiTensor, msat, grid, aex, BC);
   else {
-    // In case `magnet` is a sublattice, it's sister sublattice affects
-    // the Neumann BC. There are no open boundaries when in this scope.
+    // In case `magnet` is a sublattice, it's sister sublattice adds to
+    // the DMI interaction and affects the Neumann BC.
     auto mag2 = magnet->hostMagnet()->getOtherSublattice(magnet)->magnetization()->field().cu();
     auto afmex_nn = magnet->hostMagnet()->afmex_nn.cu();
-    cudaLaunch(ncells, k_dmiField, hField.cu(), mag, mag2,
-              dmiTensor, msat, grid, aex, afmex_nn);
+    cudaLaunch(ncells, k_dmiFieldAFM, hField.cu(), mag, mag2,
+              dmiTensor, msat, grid, aex, afmex_nn, BC);
   }
   return hField;
 }
