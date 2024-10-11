@@ -33,17 +33,12 @@ __global__ void k_magnetoelasticField(CuField hField,
     return;
   }
 
+  int ip1, ip2;
   for (int i=0; i<3; i++) {
-    int ip1 = i+1;
-    int ip2 = i+2;
-
+    ip1 = i+1; ip2 = i+2;
     // If they exceed 3, loop around
-    if (ip1 >= 3){
-      ip1 -= 3;
-    } 
-    if (ip2 >= 3){
-      ip2 -= 3;
-    }
+    if (ip1 >= 3) ip1 -= 3;
+    if (ip2 >= 3) ip2 -= 3;
 
     hField.setValueInCell(idx, i,
           - 2 / msat.valueAt(idx) *

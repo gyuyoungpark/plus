@@ -81,18 +81,13 @@ __global__ void k_magnetoelasticForce(CuField fField,
   }
 
   real m_here[3] = {m.valueAt(idx, 0), m.valueAt(idx, 1), m.valueAt(idx, 2)};
+  int ip1, ip2;
 #pragma unroll
   for (int i=0; i<3; i++) {
-    int ip1 = i+1;
-    int ip2 = i+2;
-
+    ip1 = i+1; ip2 = i+2;
     // If they exceed 3, loop around
-    if (ip1 >= 3){
-      ip1 -= 3;
-    } 
-    if (ip2 >= 3){
-      ip2 -= 3;
-    }
+    if (ip1 >= 3) ip1 -= 3;
+    if (ip2 >= 3) ip2 -= 3;
 
     real f_i = 2 * B1.valueAt(idx) * m_here[i] * der[i][i];
     f_i += B2.valueAt(idx) * m_here[i] * (der[ip1][ip1] + der[ip2][ip2]);
