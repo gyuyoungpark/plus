@@ -268,9 +268,9 @@ Field evalElasticEnergyDensity(const Ferromagnet* magnet) {
   }
 
   int ncells = elField.grid().ncells();
-  CuField stress = evalStressTensor(magnet).cu();
-  CuField strain = evalStrainTensor(magnet).cu();
-  cudaLaunch(ncells, k_elasticEnergy, elField.cu(), stress, strain);
+  Field stress = evalStressTensor(magnet);
+  Field strain = evalStrainTensor(magnet);
+  cudaLaunch(ncells, k_elasticEnergy, elField.cu(), stress.cu(), strain.cu());
   return elField;
 }
 
