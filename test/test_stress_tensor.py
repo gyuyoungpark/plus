@@ -22,7 +22,6 @@ def max_semirelative_error(result, wanted):
     """Like relative error, but divides by the maximum of wanted.
     Useful when removing units but the results go through zero.
     """
-    print(np.max(wanted))
     return max_absolute_error(result, wanted) / np.max(abs(wanted))
 
 
