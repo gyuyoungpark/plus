@@ -47,7 +47,7 @@ def create_magnet(d_comp, m_comp):
 
 
 def sine_displacement(magnet, i_comp, j_comp, B1, B2):
-    """Creates the magnetization following a sine in the d_comp direction
+    """Creates the displacement following a sine in the d_comp direction
     and cosine in another direction it then calculates the magnetoelasticforce.
     """
     magnet.enable_elastodynamics = True  # just in case
