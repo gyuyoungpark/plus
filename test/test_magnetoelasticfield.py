@@ -90,8 +90,8 @@ def sine_displacement(magnet, i_comp, j_comp, B1, B2):
         ip2 = (i+2)%3
 
         B_anal[i,...] = - 2  / msat * (B1 * strain_anal[i,...] * m[i,...] + 
-                        B2 * (strain_num[i+ip1+2,...] * m[ip1,...] + 
-                              strain_num[i+ip2+2,...] * m[ip2,...]))
+                        B2 * (strain_anal[i+ip1+2,...] * m[ip1,...] + 
+                              strain_anal[i+ip2+2,...] * m[ip2,...]))
 
     assert max_semirelative_error(B_num, B_anal) < RTOL
 
