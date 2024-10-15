@@ -151,4 +151,6 @@ void wrap_ferromagnet(py::module& m) {
   m.def("kinetic_energy", &kineticEnergyQuantity);
   m.def("elastic_energy_density", &elasticEnergyDensityQuantity);
   m.def("elastic_energy", &elasticEnergyQuantity);
+
+  m.def("poynting_vector", &poyntingVectorQuantity);
 }
