@@ -7,6 +7,7 @@ class Field;
 
 
 bool elasticDampingAssuredZero(const Ferromagnet*);
+bool kineticEnergyAssuredZero(const Ferromagnet*)
 
 Field evalElasticDamping(const Ferromagnet*);
 Field evalEffectiveBodyForce(const Ferromagnet*);

@@ -165,7 +165,7 @@ __global__ void k_stress(CuField stressField,
 
 Field evalStressTensor(const Ferromagnet* magnet) {
   Field stressField(magnet->system(), 6, 0.0);
-  if (strainTensorAssuredZero(magnet)) return stressField;
+  if (elasticForceAssuredZero(magnet)) return stressField;
 
   int ncells = stressField.grid().ncells();
   CuField strain = evalStrainTensor(magnet).cu();
@@ -182,6 +182,10 @@ FM_FieldQuantity stressTensorQuantity(const Ferromagnet* magnet) {
 }
 
 // ========== Kinetic Energy ==========
+
+bool kineticEnergyAssuredZero(const Ferromagnet* magnet) {
+  return ((!magnet->getEnableElastodynamics()) || magnet->rho.assuredZero());
+}
 
 __global__ void k_kineticEnergy(CuField kinField,
                                 const CuField velocity,
@@ -205,7 +209,7 @@ __global__ void k_kineticEnergy(CuField kinField,
 
 Field evalKineticEnergyDensity(const Ferromagnet* magnet) {
   Field kinField(magnet->system(), 1);
-  if (!magnet->getEnableElastodynamics()) {
+  if (kineticEnergyAssuredZero(magnet)) {
     kinField.makeZero();
     return kinField;
   }
@@ -218,7 +222,7 @@ Field evalKineticEnergyDensity(const Ferromagnet* magnet) {
 }
 
 real kineticEnergy(const Ferromagnet* magnet) {
-  if (!magnet->getEnableElastodynamics())
+  if (kineticEnergyAssuredZero(magnet))
     return 0.0;
 
   real edens = kineticEnergyDensityQuantity(magnet).average()[0];

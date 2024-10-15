@@ -57,7 +57,7 @@ Field evalTotalEnergyDensity(const Ferromagnet* magnet) {
   if (!homoAfmExchangeAssuredZero(magnet)) {edens += evalHomoAfmExchangeEnergyDensity(magnet);}
   if (!inHomoAfmExchangeAssuredZero(magnet)) {edens += evalInHomoAfmExchangeEnergyDensity(magnet);}
   if (!magnetoelasticAssuredZero(magnet)) {edens += evalMagnetoelasticEnergyDensity(magnet);}
-  if (magnet->getEnableElastodynamics()) {edens += evalKineticEnergyDensity(magnet);}
+  if (!kineticEnergyAssuredZero(magnet)) {edens += evalKineticEnergyDensity(magnet);}
   if (magnet->getEnableElastodynamics()) {edens += evalElasticEnergyDensity(magnet);}
   return edens;
 }
