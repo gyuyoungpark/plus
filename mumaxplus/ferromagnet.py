@@ -653,7 +653,7 @@ class Ferromagnet(Magnet):
         
         See Also
         --------
-        c12, c44
+        c12, c44, stress_tensor
         """
         return Parameter(self._impl.c11)
 
@@ -667,7 +667,7 @@ class Ferromagnet(Magnet):
         
         See Also
         --------
-        c11, c44
+        c11, c44, stress_tensor
         """
         return Parameter(self._impl.c12)
 
@@ -681,7 +681,7 @@ class Ferromagnet(Magnet):
         
         See Also
         --------
-        c11, c12
+        c11, c12, stress_tensor
         """
         return Parameter(self._impl.c44)
 
@@ -1134,9 +1134,27 @@ class Ferromagnet(Magnet):
 
         See Also
         --------
-        elastic_displacement
+        elastic_energy, elastic_energy_density, elastic_displacement, stress_tensor
         """
         return FieldQuantity(_cpp.strain_tensor(self._impl))
+    
+    @property
+    def stress_tensor(self):
+        """Stress tensor (N/m²), calculated according to Hooke's law
+        σ = cε.
+
+        This quantity has six components (σxx, σyy, σzz, σxy, σxz, σyz),
+        which forms the symmetric stress tensor::
+
+               σxx σxy σxz
+               σxy σyy σyz
+               σxz σyz σzz
+
+        See Also
+        --------
+        c11, c12, c44, strain_tensor
+        """
+        return FieldQuantity(_cpp.stress_tensor(self._impl))
 
     @property
     def magnetoelastic_field(self):
@@ -1149,6 +1167,26 @@ class Ferromagnet(Magnet):
         magnetoelastic_force
         """
         return FieldQuantity(_cpp.magnetoelastic_field(self._impl))
+    
+    @property
+    def magnetoelastic_energy_density(self):
+        """Energy density related to magnetoelastic field (J/m³).
+
+        See Also
+        --------
+        magnetoelastic_energy, magnetoelastic_field
+        """
+        return FieldQuantity(_cpp.magnetoelastic_energy_density(self._impl))
+    
+    @property
+    def magnetoelastic_energy(self):
+        """Energy related to magnetoelastic field (J).
+
+        See Also
+        --------
+        magnetoelastic_energy_density, magnetoelastic_field
+        """
+        return ScalarQuantity(_cpp.magnetoelastic_energy(self._impl))
 
     @property
     def elastic_force(self):
@@ -1210,3 +1248,44 @@ class Ferromagnet(Magnet):
         effective_body_force, elastic_damping
         """
         return FieldQuantity(_cpp.elastic_acceleration(self._impl))
+
+    @property
+    def kinetic_energy_density(self):
+        """Kinetic energy density related to the elastic velocity (J/m³).
+        
+        See Also
+        --------
+        elastic_velocity, kinetic_energy, rho
+        """
+        return FieldQuantity(_cpp.kinetic_energy_density(self._impl))
+
+    @property
+    def kinetic_energy(self):
+        """Kinetic energy related to the elastic velocity (J/m³).
+        
+        See Also
+        --------
+        elastic_velocity, kinetic_energy_density, rho
+        """
+        return ScalarQuantity(_cpp.kinetic_energy(self._impl))
+
+    @property
+    def elastic_energy_density(self):
+        """Potential energy density related to elastics (J/m³).
+        This is given by 1/2 σ:ε
+        
+        See Also
+        --------
+        elastic_energy, strain_tensor, stress_tensor
+        """
+        return FieldQuantity(_cpp.elastic_energy_density(self._impl))
+
+    @property
+    def elastic_energy(self):
+        """Potential energy related to elastics (J).
+        
+        See Also
+        --------
+        elastic_energy_density, strain_tensor, stress_tensor
+        """
+        return ScalarQuantity(_cpp.elastic_energy(self._impl))

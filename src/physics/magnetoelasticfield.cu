@@ -1,9 +1,9 @@
 // TODO: check if these includes are really all necessary
 #include "cudalaunch.hpp"
-#include "elasticforce.hpp"
 #include "energy.hpp"
 #include "ferromagnet.hpp"
 #include "field.hpp"
+#include "magnetoelasticfield.hpp"
 #include "parameter.hpp"
 #include "reduce.hpp"
 #include "straintensor.hpp"
@@ -67,7 +67,32 @@ Field evalMagnetoelasticField(const Ferromagnet* magnet) {
 }
 
 
+Field evalMagnetoelasticEnergyDensity(const Ferromagnet* magnet) {
+  if (magnetoelasticAssuredZero(magnet))
+    return Field(magnet->system(), 1, 0.0);
+  return evalEnergyDensity(magnet, evalMagnetoelasticField(magnet), 0.5);
+}
+
+real evalMagnetoelasticEnergy(const Ferromagnet* magnet) {
+  if (magnetoelasticAssuredZero(magnet))
+    return 0.0;
+
+  real edens = magnetoelasticEnergyDensityQuantity(magnet).average()[0];
+  int ncells = magnet->grid().ncells();
+  real cellVolume = magnet->world()->cellVolume();
+  return ncells * edens * cellVolume;
+}
+
 FM_FieldQuantity magnetoelasticFieldQuantity(const Ferromagnet* magnet) {
   return FM_FieldQuantity(magnet, evalMagnetoelasticField, 3,
                           "magnetoelastic_field", "T");
+}
+
+FM_FieldQuantity magnetoelasticEnergyDensityQuantity(const Ferromagnet* magnet) {
+  return FM_FieldQuantity(magnet, evalMagnetoelasticEnergyDensity, 1,
+                          "magnetoelastic_energy_density", "J/m3");
+}
+
+FM_ScalarQuantity magnetoelasticEnergyQuantity(const Ferromagnet* magnet) {
+  return FM_ScalarQuantity(magnet, evalMagnetoelasticEnergy, "magnetoelastic_energy", "J");
 }
