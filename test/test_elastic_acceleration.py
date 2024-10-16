@@ -35,8 +35,7 @@ class TestForces:
     def setup_class(self):
         """Makes a world with a magnet with random elastic parameters.
         """
-        gridsize, pbc_repetitions = [nx, ny, nz], [1, 1, 1]
-        world = World(cellsize, mastergrid=Grid(gridsize), pbc_repetitions=pbc_repetitions)
+        world = World(cellsize)
 
         self.magnet =  Ferromagnet(world, Grid((nx,ny,nz)))
         self.magnet.enable_elastodynamics = True
