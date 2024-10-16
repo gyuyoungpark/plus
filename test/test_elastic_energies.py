@@ -52,10 +52,7 @@ class TestElasticEnergies:
 
         self.magnet.elastic_displacement = displacement_func
         self.magnet.elastic_velocity = velocity_func
-        self.magnet.rho = np.random.rand(1, nz, ny, nx)
-
-        return self.magnet
-        
+        self.magnet.rho = np.random.rand(1, nz, ny, nx)        
 
     def test_elastic(self):
         strain_num = self.magnet.strain_tensor.eval()
