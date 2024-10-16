@@ -1292,10 +1292,11 @@ class Ferromagnet(Magnet):
 
     @property
     def poynting_vector(self):
-        """Poynting vector (Wm-2).
+        """Poynting vector (W/m2).
+        This is given by P = - σv
         
         See Also
         --------
         elastic_velocity, stress_tensor
         """
-        return ScalarQuantity(_cpp.poynting_vector(self._impl))
+        return FieldQuantity(_cpp.poynting_vector(self._impl))

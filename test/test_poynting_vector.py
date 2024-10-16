@@ -56,5 +56,6 @@ def test_poynting():
     poynting_anal[0,...] = stress[0,...] * v[0] + stress[3,...] * v[1] + stress[4,...] * v[2]
     poynting_anal[1,...] = stress[3,...] * v[0] + stress[1,...] * v[1] + stress[5,...] * v[2]
     poynting_anal[2,...] = stress[4,...] * v[0] + stress[5,...] * v[1] + stress[2,...] * v[2]
+    poynting_anal *= -1
 
     assert max_semirelative_error(poynting_num, poynting_anal) < RTOL

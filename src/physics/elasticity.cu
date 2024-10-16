@@ -184,46 +184,41 @@ __global__ void k_poyntingVector(CuField poyntingField,
                                  const CuField velocity) {
   const int idx = blockIdx.x * blockDim.x + threadIdx.x;
   const CuSystem system = poyntingField.system;
-  const Grid grid = system.grid;
+
   // When outside the geometry, set to zero and return early
   if (!system.inGeometry(idx)) {
-    if (grid.cellInGrid(idx)) {
+    if (system.grid.cellInGrid(idx)) {
       poyntingField.setVectorInCell(idx, real3{0, 0, 0});
     }
     return;
   }
 
-  // TODO: can this be done smarter?
-  poyntingField.setValueInCell(idx, 0,
-                               stress.valueAt(idx, 0) * velocity.valueAt(idx, 0) +
-                               stress.valueAt(idx, 3) * velocity.valueAt(idx, 1) +
-                               stress.valueAt(idx, 4) * velocity.valueAt(idx, 2));
-
-  poyntingField.setValueInCell(idx, 1,
-                               stress.valueAt(idx, 3) * velocity.valueAt(idx, 0) +
-                               stress.valueAt(idx, 1) * velocity.valueAt(idx, 1) +
-                               stress.valueAt(idx, 5) * velocity.valueAt(idx, 2));
-
-  poyntingField.setValueInCell(idx, 2,
-                               stress.valueAt(idx, 4) * velocity.valueAt(idx, 0) +
-                               stress.valueAt(idx, 5) * velocity.valueAt(idx, 1) +
-                               stress.valueAt(idx, 2) * velocity.valueAt(idx, 2));
+  real value;
+  int stressIdx;
+  for (int i=0; i<3; i++) {
+    value = 0;
+    for (int j=0; j<3; j++) {
+      stressIdx = (i == j) ? i : i+j+2;
+      value += - stress.valueAt(idx, stressIdx) * velocity.valueAt(idx, j);
+    }
+    poyntingField.setValueInCell(idx, i, value);
+  }
 }
 
 Field evalPoyntingVector(const Ferromagnet* magnet) {
   Field poyntingField(magnet->system(), 3, 0.0);
-  if (!magnet->getEnableElastodynamics()) return poyntingField;
+  if (elasticForceAssuredZero(magnet)) return poyntingField;
 
   int ncells = poyntingField.grid().ncells();
   Field stress = evalStressTensor(magnet);
-  Field velocity = magnet->elasticVelocity()->field();
+  CuField velocity = magnet->elasticVelocity()->field().cu();
 
-  cudaLaunch(ncells, k_poyntingVector, poyntingField.cu(), stress.cu(), velocity.cu());
+  cudaLaunch(ncells, k_poyntingVector, poyntingField.cu(), stress.cu(), velocity);
   return poyntingField;
 }
 
 FM_FieldQuantity poyntingVectorQuantity(const Ferromagnet* magnet) {
-  return FM_FieldQuantity(magnet, evalPoyntingVector, 3, "poynting_vector", "Wm-2");
+  return FM_FieldQuantity(magnet, evalPoyntingVector, 3, "poynting_vector", "W/m2");
 }
 
 // ========== Kinetic Energy ==========
