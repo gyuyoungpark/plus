@@ -17,8 +17,8 @@ Field evalKineticEnergyDensity(const Ferromagnet*);
 Field evalElasticEnergyDensity(const Ferromagnet*);
 Field evalStressTensor(const Ferromagnet*);
 
-real kineticEnergy(const Ferromagnet*);
-real elasticEnergy(const Ferromagnet*);
+real evalKineticEnergy(const Ferromagnet*);
+real evalElasticEnergy(const Ferromagnet*);
 
 // Elastic damping proportional to η and velocity: -ηv.
 FM_FieldQuantity elasticDampingQuantity(const Ferromagnet*);
@@ -34,14 +34,18 @@ FM_FieldQuantity elasticVelocityQuantity(const Ferromagnet*);
 // including elastic, magnetoelastic and external body forces, and elastic damping.
 FM_FieldQuantity elasticAccelerationQuantity(const Ferromagnet*);
 
-// stress tensor
+// Stress tensor quantity with 6 symmetric stress components  
+// [σxx, σyy, σzz, σxy, σxz, σyz],  
+// calculated according to σ = c ε. 
 FM_FieldQuantity stressTensorQuantity(const Ferromagnet*);
 
 // poynting vector
 FM_FieldQuantity poyntingVectorQuantity(const Ferromagnet*);
 
-// kinetic and elastic energy
+// elastic kinetic energy
 FM_FieldQuantity kineticEnergyDensityQuantity(const Ferromagnet*);
+
+// elastic potential energy
 FM_ScalarQuantity kineticEnergyQuantity(const Ferromagnet*);
 
 FM_FieldQuantity elasticEnergyDensityQuantity(const Ferromagnet*);

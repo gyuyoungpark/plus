@@ -73,7 +73,7 @@ Field evalMagnetoelasticEnergyDensity(const Ferromagnet* magnet) {
   return evalEnergyDensity(magnet, evalMagnetoelasticField(magnet), 0.5);
 }
 
-real magnetoelasticEnergy(const Ferromagnet* magnet) {
+real evalMagnetoelasticEnergy(const Ferromagnet* magnet) {
   if (magnetoelasticAssuredZero(magnet))
     return 0.0;
 
@@ -89,9 +89,10 @@ FM_FieldQuantity magnetoelasticFieldQuantity(const Ferromagnet* magnet) {
 }
 
 FM_FieldQuantity magnetoelasticEnergyDensityQuantity(const Ferromagnet* magnet) {
-  return FM_FieldQuantity(magnet, evalMagnetoelasticEnergyDensity, 1, "magnetoelastic_energy_density", "J/m3");
+  return FM_FieldQuantity(magnet, evalMagnetoelasticEnergyDensity, 1,
+                          "magnetoelastic_energy_density", "J/m3");
 }
 
 FM_ScalarQuantity magnetoelasticEnergyQuantity(const Ferromagnet* magnet) {
-  return FM_ScalarQuantity(magnet, magnetoelasticEnergy, "magnetoelastic_energy", "J");
+  return FM_ScalarQuantity(magnet, evalMagnetoelasticEnergy, "magnetoelastic_energy", "J");
 }

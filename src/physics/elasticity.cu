@@ -134,25 +134,21 @@ __global__ void k_stress(CuField stressField,
                          const CuParameter c44) {
   const int idx = blockIdx.x * blockDim.x + threadIdx.x;
   const CuSystem system = stressField.system;
-  const Grid grid = system.grid;
+
   // When outside the geometry, set to zero and return early
   if (!system.inGeometry(idx)) {
-    if (grid.cellInGrid(idx)) {
-      stressField.setVectorInCell(idx, real3{0, 0, 0});
+    if (system.grid.cellInGrid(idx)) {
+      for (int i=0; i<strain.ncomp; i++)
+        stressField.setValueInCell(idx, i, 0);
     }
     return;
   }
 
+  int ip1, ip2;
   for (int i=0; i<3; i++) {
-    int ip1 = i+1;
-    int ip2 = i+2;
-
-    if (ip1 >= 3) {
-      ip1 -= 3;
-    }
-    if (ip2 >= 3) {
-      ip2 -= 3;
-    }
+    ip1 = i+1; ip2 = i+2;
+    if (ip1 >= 3) ip1 -= 3;
+    if (ip2 >= 3) ip2 -= 3;
 
     stressField.setValueInCell(idx, i,
                                c11.valueAt(idx) * strain.valueAt(idx, i) +
@@ -168,17 +164,17 @@ Field evalStressTensor(const Ferromagnet* magnet) {
   if (elasticForceAssuredZero(magnet)) return stressField;
 
   int ncells = stressField.grid().ncells();
-  CuField strain = evalStrainTensor(magnet).cu();
+  Field strain = evalStrainTensor(magnet);
   CuParameter c11 = magnet->c11.cu();
   CuParameter c12 = magnet->c12.cu();
   CuParameter c44 = magnet->c44.cu();
 
-  cudaLaunch(ncells, k_stress, stressField.cu(), strain, c11, c12, c44);
+  cudaLaunch(ncells, k_stress, stressField.cu(), strain.cu(), c11, c12, c44);
   return stressField;
 }
 
 FM_FieldQuantity stressTensorQuantity(const Ferromagnet* magnet) {
-  return FM_FieldQuantity(magnet, evalStressTensor, 6, "stress", "N/m2");
+  return FM_FieldQuantity(magnet, evalStressTensor, 6, "stress_tensor", "N/m2");
 }
 
 // ========== Poynting Vector ==========
@@ -241,10 +237,10 @@ __global__ void k_kineticEnergy(CuField kinField,
                                 const CuParameter rho) {
   const int idx = blockIdx.x * blockDim.x + threadIdx.x;
   const CuSystem system = kinField.system;
-  const Grid grid = system.grid;
+
   // When outside the geometry, set to zero and return early
   if (!system.inGeometry(idx)) {
-    if (grid.cellInGrid(idx)) {
+    if (system.grid.cellInGrid(idx)) {
       kinField.setValueInCell(idx, 0, 0);
     }
     return;
@@ -264,13 +260,13 @@ Field evalKineticEnergyDensity(const Ferromagnet* magnet) {
   }
 
   int ncells = kinField.grid().ncells();
-  CuField velocity = magnet->elasticVelocity()->field().cu();
+  Field velocity = magnet->elasticVelocity()->field();
   CuParameter rho = magnet->rho.cu();
-  cudaLaunch(ncells, k_kineticEnergy, kinField.cu(), velocity, rho);
+  cudaLaunch(ncells, k_kineticEnergy, kinField.cu(), velocity.cu(), rho);
   return kinField;
 }
 
-real kineticEnergy(const Ferromagnet* magnet) {
+real evalKineticEnergy(const Ferromagnet* magnet) {
   if (kineticEnergyAssuredZero(magnet))
     return 0.0;
 
@@ -285,7 +281,7 @@ FM_FieldQuantity kineticEnergyDensityQuantity(const Ferromagnet* magnet) {
 }
 
 FM_ScalarQuantity kineticEnergyQuantity(const Ferromagnet* magnet) {
-  return FM_ScalarQuantity(magnet, kineticEnergy, "kinetic_energy", "J");
+  return FM_ScalarQuantity(magnet, evalKineticEnergy, "kinetic_energy", "J");
 }
 
 // ========== Elastic Energy ==========
@@ -295,10 +291,10 @@ __global__ void k_elasticEnergy(CuField elField,
                                   const CuField strain) {
   const int idx = blockIdx.x * blockDim.x + threadIdx.x;
   const CuSystem system = elField.system;
-  const Grid grid = system.grid;
+
   // When outside the geometry, set to zero and return early
   if (!system.inGeometry(idx)) {
-    if (grid.cellInGrid(idx)) {
+    if (system.grid.cellInGrid(idx)) {
       elField.setValueInCell(idx, 0, 0);
     }
     return;
@@ -315,9 +311,9 @@ __global__ void k_elasticEnergy(CuField elField,
 
 Field evalElasticEnergyDensity(const Ferromagnet* magnet) {
   Field elField(magnet->system(), 1);
-  if (!magnet->getEnableElastodynamics()) {
+  if (elasticForceAssuredZero(magnet)) {
     elField.makeZero();
-  return elField;
+    return elField;
   }
 
   int ncells = elField.grid().ncells();
@@ -327,8 +323,8 @@ Field evalElasticEnergyDensity(const Ferromagnet* magnet) {
   return elField;
 }
 
-real elasticEnergy(const Ferromagnet* magnet) {
-  if (!magnet->getEnableElastodynamics())
+real evalElasticEnergy(const Ferromagnet* magnet) {
+  if (elasticForceAssuredZero(magnet))
     return 0.0;
 
   real edens = elasticEnergyDensityQuantity(magnet).average()[0];
@@ -342,5 +338,5 @@ FM_FieldQuantity elasticEnergyDensityQuantity(const Ferromagnet* magnet) {
 }
 
 FM_ScalarQuantity elasticEnergyQuantity(const Ferromagnet* magnet) {
-  return FM_ScalarQuantity(magnet, elasticEnergy, "elastic_energy", "J");
+  return FM_ScalarQuantity(magnet, evalElasticEnergy, "elastic_energy", "J");
 }
