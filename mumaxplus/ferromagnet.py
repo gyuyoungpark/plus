@@ -1144,7 +1144,7 @@ class Ferromagnet(Magnet):
         σ = cε.
 
         This quantity has six components (σxx, σyy, σzz, σxy, σxz, σyz),
-        which forms the symmetric strain tensor::
+        which forms the symmetric stress tensor::
 
                σxx σxy σxz
                σxy σyy σyz
@@ -1152,7 +1152,7 @@ class Ferromagnet(Magnet):
 
         See Also
         --------
-        c11, c12, c44, elastic_energy, elastic_energy_density, strain_tensor
+        c11, c12, c44, strain_tensor
         """
         return FieldQuantity(_cpp.stress_tensor(self._impl))
 
@@ -1180,13 +1180,13 @@ class Ferromagnet(Magnet):
     
     @property
     def magnetoelastic_energy(self):
-        """Energy density related to magnetoelastic field (J).
+        """Energy related to magnetoelastic field (J).
 
         See Also
         --------
         magnetoelastic_energy_density, magnetoelastic_field
         """
-        return FieldQuantity(_cpp.magnetoelastic_energy(self._impl))
+        return ScalarQuantity(_cpp.magnetoelastic_energy(self._impl))
 
     @property
     def elastic_force(self):
@@ -1251,7 +1251,7 @@ class Ferromagnet(Magnet):
 
     @property
     def kinetic_energy_density(self):
-        """Energy density related to kinetics (J/m³).
+        """Kinetic energy density related to the elastic velocity (J/m³).
         
         See Also
         --------
@@ -1261,7 +1261,7 @@ class Ferromagnet(Magnet):
 
     @property
     def kinetic_energy(self):
-        """Energy related to kinetics (J).
+        """Kinetic energy related to the elastic velocity (J/m³).
         
         See Also
         --------
@@ -1271,7 +1271,8 @@ class Ferromagnet(Magnet):
 
     @property
     def elastic_energy_density(self):
-        """Energy density related to elastics (J/m³).
+        """Potential energy density related to elastics (J/m³).
+        This is given by 1/2 σ:ε
         
         See Also
         --------
@@ -1281,7 +1282,7 @@ class Ferromagnet(Magnet):
 
     @property
     def elastic_energy(self):
-        """Energy related to elastics (J).
+        """Potential energy related to elastics (J).
         
         See Also
         --------
