@@ -12,6 +12,7 @@ bool kineticEnergyAssuredZero(const Ferromagnet*);
 Field evalElasticDamping(const Ferromagnet*);
 Field evalEffectiveBodyForce(const Ferromagnet*);
 Field evalElasticAcceleration(const Ferromagnet*);
+Field evalPoyntingVector(const Ferromagnet*);
 Field evalKineticEnergyDensity(const Ferromagnet*);
 Field evalElasticEnergyDensity(const Ferromagnet*);
 Field evalStressTensor(const Ferromagnet*);
@@ -38,6 +39,8 @@ FM_FieldQuantity elasticAccelerationQuantity(const Ferromagnet*);
 // calculated according to σ = c ε. 
 FM_FieldQuantity stressTensorQuantity(const Ferromagnet*);
 
+// poynting vector
+FM_FieldQuantity poyntingVectorQuantity(const Ferromagnet*);
 
 // elastic kinetic energy
 FM_FieldQuantity kineticEnergyDensityQuantity(const Ferromagnet*);

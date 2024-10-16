@@ -1152,7 +1152,7 @@ class Ferromagnet(Magnet):
 
         See Also
         --------
-        c11, c12, c44, strain_tensor
+        c11, c12, c44
         """
         return FieldQuantity(_cpp.stress_tensor(self._impl))
 
@@ -1289,3 +1289,14 @@ class Ferromagnet(Magnet):
         elastic_energy_density, strain_tensor, stress_tensor
         """
         return ScalarQuantity(_cpp.elastic_energy(self._impl))
+
+    @property
+    def poynting_vector(self):
+        """Poynting vector (W/m2).
+        This is given by P = - σv
+        
+        See Also
+        --------
+        elastic_velocity, stress_tensor
+        """
+        return FieldQuantity(_cpp.poynting_vector(self._impl))
