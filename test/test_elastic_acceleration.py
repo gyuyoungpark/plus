@@ -33,10 +33,9 @@ def max_semirelative_error(result, wanted):
 
 class TestForces:
     def setup_class(self):
-        """Makes a world with a magnet of the appropriate size according to the
-        direction of the double derivative.
+        """Makes a world with a magnet with random elastic parameters.
         """
-        gridsize, pbc_repetitions = [nx, 0, 0], [1, 0, 0]
+        gridsize, pbc_repetitions = [nx, ny, nz], [1, 1, 1]
         world = World(cellsize, mastergrid=Grid(gridsize), pbc_repetitions=pbc_repetitions)
 
         self.magnet =  Ferromagnet(world, Grid((nx,ny,nz)))
