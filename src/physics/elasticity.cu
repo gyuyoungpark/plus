@@ -211,9 +211,9 @@ Field evalKineticEnergyDensity(const Ferromagnet* magnet) {
   }
 
   int ncells = kinField.grid().ncells();
-  Field velocity = magnet->elasticVelocity()->field();
+  CuField velocity = magnet->elasticVelocity()->field().cu();
   CuParameter rho = magnet->rho.cu();
-  cudaLaunch(ncells, k_kineticEnergy, kinField.cu(), velocity.cu(), rho);
+  cudaLaunch(ncells, k_kineticEnergy, kinField.cu(), velocity, rho);
   return kinField;
 }
 
