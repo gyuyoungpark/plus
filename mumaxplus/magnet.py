@@ -115,7 +115,7 @@ class Magnet(ABC):
         Returns
         -------
         origin: tuple[float] of size 3
-            xyz coordinate of the origin of the ferromagnet.
+            xyz coordinate of the origin of the magnet.
         """
         return self._impl.system.origin
 
@@ -126,7 +126,7 @@ class Magnet(ABC):
         Returns
         -------
         center: tuple[float] of size 3
-            xyz coordinate of the center of the ferromagnet.
+            xyz coordinate of the center of the magnet.
         """
         return self._impl.system.center
 
