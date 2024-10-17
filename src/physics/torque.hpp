@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ferromagnetquantity.hpp"
+#include "quantityevaluator.hpp"
 #include "reduce.hpp"
 
 class Ferromagnet;

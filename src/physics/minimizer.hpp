@@ -2,7 +2,7 @@
 
 #include <deque>
 
-#include "ferromagnetquantity.hpp"
+#include "quantityevaluator.hpp"
 
 class Antiferromagnet;
 class Ferromagnet;
