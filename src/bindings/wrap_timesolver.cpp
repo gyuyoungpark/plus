@@ -4,7 +4,7 @@
 
 #include "butchertableau.hpp"
 #include "dynamicequation.hpp"
-#include "ferromagnetquantity.hpp"
+#include "quantityevaluator.hpp"
 #include "field.hpp"
 #include "fieldquantity.hpp"
 #include "timesolver.hpp"
