@@ -7,8 +7,6 @@ add_library(physics STATIC
     anisotropy.hpp 
     antiferromagnet.cpp
     antiferromagnet.hpp
-    antiferromagnetquantity.cpp
-    antiferromagnetquantity.hpp
     conductivitytensor.cu
     conductivitytensor.hpp
     constants.hpp
@@ -32,8 +30,8 @@ add_library(physics STATIC
     exchange.cu 
     ferromagnet.cpp 
     ferromagnet.hpp 
-    ferromagnetquantity.cpp 
-    ferromagnetquantity.hpp
+    fullmag.cu
+    fullmag.hpp 
     magnet.cpp
     magnet.hpp 
     magnetoelasticfield.cu
@@ -68,8 +66,7 @@ add_library(physics STATIC
     thermalnoise.hpp
     torque.cu 
     torque.hpp
-    fullmag.cu
-    fullmag.hpp 
+    quantityevaluator.hpp
     zeeman.cu
     zeeman.hpp
 )

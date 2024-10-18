@@ -3,7 +3,7 @@
 #include "datatypes.hpp"
 #include "energy.hpp"
 #include "ferromagnet.hpp"
-#include "ferromagnetquantity.hpp"
+#include "quantityevaluator.hpp"
 #include "field.hpp"
 #include "fieldops.hpp"
 #include "magnet.hpp"

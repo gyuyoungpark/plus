@@ -7,7 +7,7 @@
 #include <string>
 
 #include "datatypes.hpp"
-#include "ferromagnetquantity.hpp"
+#include "quantityevaluator.hpp"
 #include "gpubuffer.hpp"
 #include "grid.hpp"
 #include "torque.hpp"
@@ -15,7 +15,6 @@
 
 class Antiferromagnet;
 class Ferromagnet;
-class FM_FieldQuantity;
 class Magnet;
 class TimeSolver;
 
