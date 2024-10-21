@@ -53,7 +53,7 @@ class Ferromagnet : public Magnet {
   // these take a lot of memory. Don't initialize unless wanted!
   std::unique_ptr<Variable> elasticDisplacement_;
   std::unique_ptr<Variable> elasticVelocity_;
-  bool enableElastodynamics_;  // TODO: or other name? enableMagnetoelastodynamics?
+  bool enableElastodynamics_;
 
   // TODO: what type of pointer?
   // TODO: Magnet or Antiferromagnet?
@@ -66,7 +66,7 @@ class Ferromagnet : public Magnet {
   bool enableZhangLiTorque;
   bool enableSlonczewskiTorque;
   bool fixedLayerOnTop;
-  bool getEnableElastodynamics() const {return enableElastodynamics_;}
+  bool enableElastodynamics() const {return enableElastodynamics_;}
   void setEnableElastodynamics(bool);
   VectorParameter anisU;
   VectorParameter anisC1;
@@ -116,10 +116,4 @@ class Ferromagnet : public Magnet {
   Parameter rho;  // Mass density
   Parameter B1;  // First magnetoelastic coupling constant
   Parameter B2;  // Second magnetoelastic coupling constant
-
-  // Members related to regions
-  std::unordered_map<uint, uint> indexMap_;
-  GpuBuffer<real> interExchange_;
-  real* interExchPtr_ = nullptr; // Device pointer to interexch GpuBuffer
-  uint* regPtr_ = nullptr; // Device pointer to GpuBuffer with unique region idxs
 };

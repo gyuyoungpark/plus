@@ -167,7 +167,7 @@ void MumaxWorld::resetTimeSolverEquations(FM_Field torque) const {
 
     // add elastodynamics if enabled
     // TODO: this might not play nice with relax()
-    if (magnet->getEnableElastodynamics()) {
+    if (magnet->enableElastodynamics()) {
 
       // change in displacement = velocity
       DynamicEquation dvEq(

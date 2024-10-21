@@ -11,7 +11,7 @@
 
 
 bool magnetoelasticAssuredZero(const Ferromagnet* magnet) {
-  return ((!magnet->getEnableElastodynamics()) ||
+  return ((!magnet->enableElastodynamics()) ||
           (magnet->msat.assuredZero()) ||
           (magnet->B1.assuredZero() && magnet->B2.assuredZero()));
 }
@@ -40,11 +40,10 @@ __global__ void k_magnetoelasticField(CuField hField,
     if (ip1 >= 3) ip1 -= 3;
     if (ip2 >= 3) ip2 -= 3;
 
-    hField.setValueInCell(idx, i,
-          - 2 / msat.valueAt(idx) *
-          (B1.valueAt(idx) * strain.valueAt(idx, i) * mField.valueAt(idx, i) + 
-           B2.valueAt(idx) * (strain.valueAt(idx, i+ip1+2) * mField.valueAt(idx, ip1) + 
-                              strain.valueAt(idx, i+ip2+2) * mField.valueAt(idx, ip2))));
+    hField.setValueInCell(idx, i, - 2 / msat.valueAt(idx) *
+      (B1.valueAt(idx) *  strain.valueAt(idx, i)       * mField.valueAt(idx, i)   + 
+       B2.valueAt(idx) * (strain.valueAt(idx, i+ip1+2) * mField.valueAt(idx, ip1) + 
+                          strain.valueAt(idx, i+ip2+2) * mField.valueAt(idx, ip2))));
   }
 }
 

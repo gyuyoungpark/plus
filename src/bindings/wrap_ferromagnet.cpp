@@ -40,7 +40,7 @@ void wrap_ferromagnet(py::module& m) {
       .def_readwrite("enable_zhang_li_torque", &Ferromagnet::enableZhangLiTorque)
       .def_readwrite("enable_slonczewski_torque", &Ferromagnet::enableSlonczewskiTorque)
       .def_property("enable_elastodynamics",
-                    &Ferromagnet::getEnableElastodynamics,
+                    &Ferromagnet::enableElastodynamics,
                     &Ferromagnet::setEnableElastodynamics)
       .def_readwrite("bias_magnetic_field", &Ferromagnet::biasMagneticField,
                      "uniform external magnetic field")

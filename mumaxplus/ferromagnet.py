@@ -259,7 +259,10 @@ class Ferromagnet(Magnet):
 
     @property
     def msat(self):
-        """Saturation magnetization (A/m)."""
+        """Saturation magnetization (A/m).
+        
+        Default = 1.0 A/m
+        """
         return Parameter(self._impl.msat)
 
     @msat.setter
@@ -640,7 +643,8 @@ class Ferromagnet(Magnet):
 
     @property
     def external_body_force(self):
-        """External body force f_ext that is added to the effective body force (N/m³).
+        """External body force density f_ext that is added to the effective body
+        force density (N/m³).
 
         See Also
         --------
@@ -707,7 +711,7 @@ class Ferromagnet(Magnet):
     def rho(self):
         """Mass density (kg/m³).
         
-        Default = 1.0
+        Default = 1.0 kg/m³
         """
         return Parameter(self._impl.rho)
 
@@ -1195,7 +1199,7 @@ class Ferromagnet(Magnet):
 
     @property
     def elastic_force(self):
-        """Elastic body force due to mechanical stress gradients (N/m³).
+        """Elastic body force density due to mechanical stress gradients (N/m³).
 
         f = ∇σ = ∇(cε)
         
@@ -1208,7 +1212,7 @@ class Ferromagnet(Magnet):
 
     @property
     def magnetoelastic_force(self):
-        """Magnetoelastic body force due to magnetostriction effect (N/m³).
+        """Magnetoelastic body force density due to magnetostriction effect (N/m³).
 
         See Also
         --------
@@ -1219,8 +1223,8 @@ class Ferromagnet(Magnet):
 
     @property
     def effective_body_force(self):
-        """Elastic effective body force is the sum of elastic, magnetoelastic
-        and external body forces (N/m³).
+        """Elastic effective body force density is the sum of elastic,
+        magnetoelastic and external body force densities (N/m³).
         Elastic damping is not included.
 
         f_eff = f_el + f_mel + f_ext
@@ -1233,7 +1237,7 @@ class Ferromagnet(Magnet):
 
     @property
     def elastic_damping(self):
-        """Elastic damping body force proportional to η and velocity: -ηv (N/m³).
+        """Elastic damping body force density proportional to η and velocity: -ηv (N/m³).
 
         See Also
         --------
@@ -1244,8 +1248,8 @@ class Ferromagnet(Magnet):
     @property
     def elastic_acceleration(self):
         """Elastic acceleration includes all effects that influence the elastic
-        velocity including elastic, magnetoelastic and external body forces,
-        and elastic damping (m/s²).
+        velocity including elastic, magnetoelastic and external body force
+        densities, and elastic damping (m/s²).
 
         See Also
         --------

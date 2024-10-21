@@ -6,7 +6,6 @@ conditions are assumed in all other directions (so no effect).
 All stiffness constants are uniform in these tests for simplicity!
 """
 
-import pytest
 import numpy as np
 import math
 
@@ -188,8 +187,8 @@ def check_mixed_derivative(d_comp_outer, d_comp_inner):
         u = [0., 0., 0.]
         outer_coord = (x, y, z)[d_comp_outer]
         inner_coord = (x, y, z)[d_comp_inner]
-        u[d_comp_outer] = A * math.sin(k_outer * outer_coord) * \
-                              math.sin(k_inner * inner_coord)
+        u[d_comp_outer] = A * (math.sin(k_outer * outer_coord) *
+                               math.sin(k_inner * inner_coord))
         return tuple(u)
 
     magnet.elastic_displacement = displacement_func

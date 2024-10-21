@@ -51,7 +51,7 @@ class TestForces:
         self.magnet.B2 = B2
 
         def displacement_func(x, y, z):
-            return (np.random.rand()*1e-15, np.random.rand()*1e-15, np.random.rand()*1e-15)
+            return tuple(np.random.rand(3) * 1e-15)
 
         def velocity_func(x, y, z):
             return (np.random.rand(), np.random.rand(), np.random.rand())

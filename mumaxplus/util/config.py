@@ -206,7 +206,7 @@ def blochskyrmion(position, radius, charge, polarization):
 # elastic displacement initial states
 
 def gaussian_spherical_OoP(position, amplitude, sigma_x, sigma_y):
-    """Return an out-of-plane gaussian distribution centered on the specified
+    """Return an out-of-xy-plane gaussian distribution centered on the specified
     position with given standard deviations.
     
     (0, 0, A exp(- (x - x0)²/2σx² * (y - y0)/2σy²))
@@ -216,7 +216,7 @@ def gaussian_spherical_OoP(position, amplitude, sigma_x, sigma_y):
     position : tuple of three floats
         The position of the Gaussian distribution.
     amplitude : float
-        The unmodified amplitude of the Gaussian distribution.
+        The amplitude of the Gaussian distribution.
     sigma_x : float
         The standard deviation in the x-direction of the Gaussian distribution.
     sigma_y : float
@@ -224,7 +224,7 @@ def gaussian_spherical_OoP(position, amplitude, sigma_x, sigma_y):
     """
     
     x0, y0, _ = position
-    denom = (4 * sigma_x*sigma_x * sigma_y*sigma_x)
+    denom = (4 * sigma_x*sigma_x * sigma_y*sigma_y)
 
     def func(x, y, z):
         uz = amplitude * _math.exp(- (x - x0)*(x - x0) * (y - y0)*(y - y0) / denom)
@@ -233,12 +233,12 @@ def gaussian_spherical_OoP(position, amplitude, sigma_x, sigma_y):
     return func
 
 def gaussian_spherical_IP(position, amplitude, angle, sigma_x, sigma_y):
-    """Return an in-plane vector field with uniform orientation with a specified
-    angle, with the amplitude modified by a gaussian distribution centered on
-    the specified position with given standard deviations.
+    """Return an in-xy-plane vector field with uniform orientation specified by
+    the given angle. The amplitude is modified by a gaussian distribution
+    centered on the specified position with given standard deviations.
     
     (A cos(θ) exp(- (x - x0)²/2σx² * (y - y0)/2σy²),
-     A cos(θ) exp(- (x - x0)²/2σx² * (y - y0)/2σy²),
+     A sin(θ) exp(- (x - x0)²/2σx² * (y - y0)/2σy²),
      0)
 
     Parameters
@@ -246,7 +246,7 @@ def gaussian_spherical_IP(position, amplitude, angle, sigma_x, sigma_y):
     position : tuple of three floats
         The position of the Gaussian distribution.
     amplitude : float
-        The unmodified amplitude of the uniform vector field.
+        The amplitude of the uniform vector field.
     angle : float
         The angle in radians of the uniform vector field direction.
     sigma_x : float
@@ -256,7 +256,7 @@ def gaussian_spherical_IP(position, amplitude, angle, sigma_x, sigma_y):
     """
     
     x0, y0, _ = position
-    denom = 4 * sigma_x*sigma_x * sigma_y*sigma_x
+    denom = 4 * sigma_x*sigma_x * sigma_y*sigma_y
     AC, AS = amplitude * _math.cos(angle), amplitude * _math.sin(angle)
 
     def func(x, y, z):
@@ -265,10 +265,11 @@ def gaussian_spherical_IP(position, amplitude, angle, sigma_x, sigma_y):
 
     return func
 
-def gaussian_uniforn_IP(amplitude, theta, gausspos, sigma, phi):
-    """Return an in-plane vector field with uniform orientation theta, with the
-    amplitude modified by a Gaussian distribution centered on gausspos along the
-    specified transverse direction phi.
+def gaussian_uniform_IP(amplitude, theta, gausspos, sigma, phi):
+    """Return an in-xy-plane vector field with uniform orientation specified by
+    the given angle theta. The amplitude is modified by a one-dimensional
+    Gaussian distribution centered on gausspos, which varies along the
+    transverse direction in the xy-plane specified by angle phi.
 
     (A cos(θ) exp(-(x'-x0)²/2σ²),
      A sin(θ) exp(-(x'-x0)²/2σ²),
@@ -278,7 +279,7 @@ def gaussian_uniforn_IP(amplitude, theta, gausspos, sigma, phi):
     Parameters
     ----------
     amplitude : float
-        The unmodified amplitude of the vector field.
+        The amplitude of the vector field.
     theta : float
         The angle in radians of the uniform vector field direction.
     gausspos : floats

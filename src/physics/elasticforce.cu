@@ -10,7 +10,7 @@
 
 
 bool elasticForceAssuredZero(const Ferromagnet* magnet) {
-  return ((!magnet->getEnableElastodynamics()) ||
+  return ((!magnet->enableElastodynamics()) ||
           (magnet->c11.assuredZero() && magnet->c12.assuredZero() &&
            magnet->c44.assuredZero()));
 }
@@ -41,9 +41,9 @@ __device__ int coord2safeIndex(int3 coo, int3 relcoo,
 __device__ int coord2safeIndex(int3 coo, int3 relcoo1, int3 relcoo2,
                                const CuSystem& system, const Grid& mastergrid) {
   const Grid grid = system.grid;
-  int3 coo_[3] = {mastergrid.wrap(coo+relcoo1+relcoo2),
-                  mastergrid.wrap(coo+relcoo1), mastergrid.wrap(coo+relcoo2)};
-  for (int i=0; i<3; i++) {
+  int3 coo_[3] = {mastergrid.wrap(coo + relcoo1 + relcoo2),
+                  mastergrid.wrap(coo + relcoo1), mastergrid.wrap(coo + relcoo2)};
+  for (int i = 0; i < 3; i++) {
     if (grid.cellInGrid(coo_[i])) {  // don't convert to index if outside grid!
       int idx_ = grid.coord2index(coo_[i]);
       if (system.inGeometry(idx_))
@@ -55,7 +55,7 @@ __device__ int coord2safeIndex(int3 coo, int3 relcoo1, int3 relcoo2,
 
 // ∂i(c ∂i(u))
 // position index due to derivative, not component index!
-// w = 1/cellsize²
+// w = 1/cellsize
 __device__ real doubleDerivative(real c_im1, real c_i, real c_ip1,
                                  real u_im1, real u_i, real u_ip1, real wi) {
   return (  harmonicMean(c_ip1, c_i) * (u_ip1 - u_i  )
@@ -65,7 +65,7 @@ __device__ real doubleDerivative(real c_im1, real c_i, real c_ip1,
 // ∂j(c ∂i(u))
 // ≈ ∂j(c)∂i(u) + c ∂j∂i(u)
 // position index due to derivative, not component index!
-// w = 1/cellsize²
+// w = 1/cellsize
 __device__ real mixedDerivative(real c_i_jm1, real c_i_j, real c_i_jp1,
                                 real u_im1_j, real u_ip1_j,
                                 real u_im1_jm1, real u_im1_jp1,
@@ -79,17 +79,9 @@ __device__ real mixedDerivative(real c_i_jm1, real c_i_j, real c_i_jp1,
 }
 
 
-// There are too many version of this code
-// https://github.com/Fredericvdv/Magnetoelasticity_MuMax3/blob/magnetoelastic/cuda/elastic_kernel.go
-// This seems to be the activated kernel version with horrible boundry conditions
-// https://github.com/Fredericvdv/Magnetoelasticity_MuMax3/blob/magnetoelastic/cuda/elas_freeBndry_nofic.cu
-// I think... I will make my own version...
-
 // I tried to adhere to openBC==true using safeCoo
 // similar to openBC in k_exchangeField (using continue)
-// TODO: but boundary conditions are probably not correct,
-// especially mixed derivative ones! especially especially for i+1 j+1!
-// (is this even physical for elastics instead of magnetics?)
+// TODO: but need friction-free boundary conditions te be correct
 __global__ void k_elasticForce(CuField fField,
                                const CuField uField,
                                const CuParameter c11,
@@ -117,18 +109,16 @@ __global__ void k_elasticForce(CuField fField,
   const int3 coo = grid.index2coord(idx);
 
 #pragma unroll  // TODO: check if faster with or without this unrolling
-  for (int i=0; i<3; i++) {  // i is a {x, y, z} component/direction
+  for (int i = 0; i < 3; i++) {  // i is a {x, y, z} component/direction
     real f_i = 0;  // force component i
 
     // =============================================
     // f_i += ∂i(c11 ∂i(u_i))    so c11 with ∂²_i u_i
     // take u component i
-    // translte all in direction i
+    // translate all in direction i
 
-    // take u component i
-    real ui = uField.valueAt(idx, i);  // take u component i
-    // take translation in i direction
-    real wi = ws[i]; 
+    real ui = uField.valueAt(idx, i);
+    real wi = ws[i];
     int3 im1 = im1_arr[i], ip1 = ip1_arr[i];  // transl in direction i
     int safeIdx_im1 = coord2safeIndex(coo, im1, system, mastergrid);
     int safeIdx_ip1 = coord2safeIndex(coo, ip1, system, mastergrid);
@@ -207,8 +197,7 @@ Field evalElasticForce(const Ferromagnet* magnet) {
   CuParameter c11 = magnet->c11.cu();
   CuParameter c12 = magnet->c12.cu();
   CuParameter c44 = magnet->c44.cu();
-  real3 c = magnet->cellsize();
-  real3 w = {1/c.x, 1/c.y, 1/c.z};
+  real3 w = 1 / magnet->cellsize();
   Grid mastergrid = magnet->world()->mastergrid();
 
   cudaLaunch(ncells, k_elasticForce, fField.cu(), uField, c11, c12, c44, w,

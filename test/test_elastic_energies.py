@@ -35,8 +35,6 @@ class TestElasticEnergies:
 
         self.magnet.msat = msat
 
-        self.magnet.enable_elastodynamics = True  # just in case
-
         self.magnet.c11 = c11
         self.magnet.c12 = c12
         self.magnet.c44 = c44
@@ -86,8 +84,8 @@ class TestElasticEnergies:
             ip1 = (i+1)%3
             ip2 = (i+2)%3
 
-            E_anal += (B1 * strain[i,...] * m[i,...] * m[i,...] + 
-                    B2 * (strain[i+ip1+2,...] * m[ip1,...] * m[i,...] + 
-                            strain[i+ip2+2,...] * m[ip2,...] * m[i,...]))
+            E_anal += (B1 *  strain[i,...] * m[i,...] * m[i,...] + 
+                       B2 * (strain[i+ip1+2,...] * m[ip1,...] * m[i,...] + 
+                             strain[i+ip2+2,...] * m[ip2,...] * m[i,...]))
 
         assert max_semirelative_error(E_num, E_anal) < RTOL

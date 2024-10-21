@@ -36,8 +36,6 @@ def check_strain(i_comp, j_comp):
     magnet =  Ferromagnet(world, Grid(gridsize_magnet))
     magnet.enable_elastodynamics = True
 
-    magnet.enable_elastodynamics = True  # just in case
-
     L = N*cellsize[i_comp]
     k = P*2*math.pi/L
 

@@ -89,9 +89,10 @@ def sine_displacement(magnet, i_comp, j_comp, B1, B2):
         ip1 = (i+1)%3
         ip2 = (i+2)%3
 
-        B_anal[i,...] = - 2  / msat * (B1 * strain_anal[i,...] * m[i,...] + 
-                        B2 * (strain_anal[i+ip1+2,...] * m[ip1,...] + 
-                              strain_anal[i+ip2+2,...] * m[ip2,...]))
+        B_anal[i,...] = - 2  / msat * (
+            B1 *  strain_anal[i,...] * m[i,...] + 
+            B2 * (strain_anal[i+ip1+2,...] * m[ip1,...] + 
+                  strain_anal[i+ip2+2,...] * m[ip2,...]))
 
     assert max_semirelative_error(B_num, B_anal) < RTOL
 
@@ -163,10 +164,9 @@ def test_random():
     magnet.enable_elastodynamics = True
 
     magnet.msat = msat
-    magnet.enable_elastodynamics = True  # just in case
-
-    magnet.B1 = B
-    magnet.B2 = 0.5*B
+    B1, B2 = B, 0.5*B
+    magnet.B1 = B1
+    magnet.B2 = B2
 
     L = N*cellsize[0]
     k = P*2*math.pi/L
@@ -185,8 +185,9 @@ def test_random():
         ip1 = (i+1)%3
         ip2 = (i+2)%3
 
-        B_anal[i,...] = - 2  / msat * (B * strain[i,...] * m[i,...] + 
-                        0.5*B * (strain[i+ip1+2,...] * m[ip1,...] + 
-                                 strain[i+ip2+2,...] * m[ip2,...]))
+        B_anal[i,...] = - 2  / msat * (
+            B1 *  strain[i,...] * m[i,...] + 
+            B2 * (strain[i+ip1+2,...] * m[ip1,...] + 
+                  strain[i+ip2+2,...] * m[ip2,...]))
 
     assert max_semirelative_error(B_num, B_anal) < RTOL

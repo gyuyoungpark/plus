@@ -14,7 +14,7 @@ __global__ void k_magnetoelasticForce(CuField fField,
                                       const CuField m,
                                       const CuParameter B1,
                                       const CuParameter B2,
-                                      const real3 w,  // w = 1/cellsize²
+                                      const real3 w,  // w = 1/cellsize
                                       const Grid mastergrid) {
   const int idx = blockIdx.x * blockDim.x + threadIdx.x;
   const CuSystem system = fField.system;
@@ -55,7 +55,7 @@ __global__ void k_magnetoelasticForce(CuField fField,
     } else if ((!system.inGeometry(coo_im2) || !system.inGeometry(coo_ip2)) &&
                 system.inGeometry(coo_im1) && system.inGeometry(coo_ip1)) {
       // -111-, 1111-, -1111 central difference,  ε ~ h^2
-      dmdi = 0.5f * (m.vectorAt(coo_ip1) - m.vectorAt(coo_im1));
+      dmdi = 0.5 * (m.vectorAt(coo_ip1) - m.vectorAt(coo_im1));
     } else if (!system.inGeometry(coo_im2) && !system.inGeometry(coo_ip1)) {
       // -11-- backward difference, ε ~ h^1
       dmdi =  (m_0 - m.vectorAt(coo_im1));
@@ -64,14 +64,14 @@ __global__ void k_magnetoelasticForce(CuField fField,
       dmdi = (-m_0 + m.vectorAt(coo_ip1));
     } else if (system.inGeometry(coo_im2) && !system.inGeometry(coo_ip1)) {
       // 111-- backward difference, ε ~ h^2
-      dmdi =  (0.5f * m.vectorAt(coo_im2) - 2.0f * m.vectorAt(coo_im1) + 1.5f * m_0);
+      dmdi =  (0.5 * m.vectorAt(coo_im2) - 2.0 * m.vectorAt(coo_im1) + 1.5 * m_0);
     } else if (!system.inGeometry(coo_im1) && system.inGeometry(coo_ip1)) {
       // --111 forward difference,  ε ~ h^2
-      dmdi = (-0.5f * m.vectorAt(coo_ip2) + 2.0f * m.vectorAt(coo_ip1) - 1.5f * m_0);
+      dmdi = (-0.5 * m.vectorAt(coo_ip2) + 2.0 * m.vectorAt(coo_ip1) - 1.5 * m_0);
     } else {
       // 11111 central difference,  ε ~ h^4
-      dmdi = ((2.0f/3.0f)*(m.vectorAt(coo_ip1) - m.vectorAt(coo_im1)) + 
-              (1.0f/12.0f)*(m.vectorAt(coo_im2) - m.vectorAt(coo_ip2)));
+      dmdi = ((2./3.)  * (m.vectorAt(coo_ip1) - m.vectorAt(coo_im1)) + 
+              (1./12.) * (m.vectorAt(coo_im2) - m.vectorAt(coo_ip2)));
     }
     dmdi *= wi;
 
@@ -107,8 +107,7 @@ Field evalMagnetoelasticForce(const Ferromagnet* magnet) {
   CuField m = magnet->magnetization()->field().cu();
   CuParameter B1 = magnet->B1.cu();
   CuParameter B2 = magnet->B2.cu();
-  real3 c = magnet->cellsize();
-  real3 w = {1/c.x, 1/c.y, 1/c.z};
+  real3 w = 1 / magnet->cellsize();
   Grid mastergrid = magnet->world()->mastergrid();
   cudaLaunch(ncells, k_magnetoelasticForce, fField.cu(), m, B1, B2, w, mastergrid);
   return fField;
