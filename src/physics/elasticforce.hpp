@@ -5,7 +5,6 @@
 class Ferromagnet;
 class Field;
 
-bool elasticForceAssuredZero(const Ferromagnet*);
 
 Field evalElasticForce(const Ferromagnet*);
 

@@ -1,5 +1,5 @@
 #include "cudalaunch.hpp"
-#include "elasticforce.hpp"
+#include "elastodynamics.hpp"
 #include "ferromagnet.hpp"
 #include "field.hpp"
 #include "magnetoelasticfield.hpp"  // magnetoelasticAssuredZero

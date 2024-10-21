@@ -18,10 +18,14 @@ add_library(physics STATIC
     dmitensor.hpp
     effectivefield.hpp 
     effectivefield.cpp
+    elasticdamping.cu
+    elasticdamping.hpp
+    elasticenergies.cu
+    elasticenergies.hpp
     elasticforce.cu
     elasticforce.hpp
-    elasticity.cu
-    elasticity.hpp
+    elastodynamics.cu
+    elastodynamics.hpp
     electricalpotential.hpp
     electricalpotential.cu
     energy.hpp 
@@ -48,10 +52,14 @@ add_library(physics STATIC
     newell.hpp
     poissonsystem.hpp
     poissonsystem.cu
+    poyntingvector.cu
+    poyntingvector.hpp
     relaxer.hpp
     relaxer.cpp
     straintensor.cu
     straintensor.hpp
+    stresstensor.cu
+    stresstensor.hpp
     strayfield.cpp
     strayfield.hpp
     strayfieldbrute.cu

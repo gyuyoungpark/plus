@@ -1,15 +1,9 @@
+#include "elastodynamics.hpp"
 #include "elasticforce.hpp"
 #include "cudalaunch.hpp"
 #include "ferromagnet.hpp"
 #include "field.hpp"
 #include "parameter.hpp"
-
-
-bool elasticForceAssuredZero(const Ferromagnet* magnet) {
-  return ((!magnet->enableElastodynamics()) ||
-          (magnet->c11.assuredZero() && magnet->c12.assuredZero() &&
-           magnet->c44.assuredZero()));
-}
 
 
 /** Returns index of coo+relcoo if that is inside the geometry.
@@ -183,7 +177,7 @@ __global__ void k_elasticForce(CuField fField,
 Field evalElasticForce(const Ferromagnet* magnet) {
 
   Field fField(magnet->system(), 3);
-  if (elasticForceAssuredZero(magnet)) {
+  if (elasticityAssuredZero(magnet)) {
     fField.makeZero();
     return fField;
   }

@@ -7,7 +7,7 @@
 #include "antiferromagnet.hpp"
 #include "datatypes.hpp"
 #include "dynamicequation.hpp"
-#include "elasticity.hpp"
+#include "elastodynamics.hpp"
 #include "ferromagnet.hpp"
 #include "gpubuffer.hpp"
 #include "grid.hpp"

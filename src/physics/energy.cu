@@ -4,8 +4,8 @@
 #include "cudalaunch.hpp"
 #include "demag.hpp"
 #include "dmi.hpp"
-#include "elasticforce.hpp"
-#include "elasticity.hpp"
+#include "elasticenergies.hpp"
+#include "elastodynamics.hpp"
 #include "energy.hpp"
 #include "exchange.hpp"
 #include "ferromagnet.hpp"
@@ -57,9 +57,11 @@ Field evalTotalEnergyDensity(const Ferromagnet* magnet) {
   if (!demagFieldAssuredZero(magnet)) {edens += evalDemagEnergyDensity(magnet);}
   if (!homoAfmExchangeAssuredZero(magnet)) {edens += evalHomoAfmExchangeEnergyDensity(magnet);}
   if (!inHomoAfmExchangeAssuredZero(magnet)) {edens += evalInHomoAfmExchangeEnergyDensity(magnet);}
-  if (!magnetoelasticAssuredZero(magnet)) {edens += evalMagnetoelasticEnergyDensity(magnet);}
-  if (!kineticEnergyAssuredZero(magnet)) {edens += evalKineticEnergyDensity(magnet);}
-  if (!elasticForceAssuredZero(magnet)) {edens += evalElasticEnergyDensity(magnet);}
+  if (magnet->enableElastodynamics()) {
+    if (!magnetoelasticAssuredZero(magnet)) {edens += evalMagnetoelasticEnergyDensity(magnet);}
+    if (!kineticEnergyAssuredZero(magnet)) {edens += evalKineticEnergyDensity(magnet);}
+    if (!elasticityAssuredZero(magnet)) {edens += evalElasticEnergyDensity(magnet);}
+  }
   return edens;
 }
 
