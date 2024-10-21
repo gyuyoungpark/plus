@@ -1,13 +1,10 @@
-// TODO: check if these includes are really all necessary
 #include "cudalaunch.hpp"
 #include "energy.hpp"
 #include "ferromagnet.hpp"
 #include "field.hpp"
 #include "magnetoelasticfield.hpp"
 #include "parameter.hpp"
-#include "reduce.hpp"
 #include "straintensor.hpp"
-#include "world.hpp"
 
 
 bool magnetoelasticAssuredZero(const Ferromagnet* magnet) {

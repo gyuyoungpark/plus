@@ -1,12 +1,8 @@
-// TODO: check if these includes are really all necessary
 #include "elasticforce.hpp"
 #include "cudalaunch.hpp"
-#include "energy.hpp"
 #include "ferromagnet.hpp"
 #include "field.hpp"
 #include "parameter.hpp"
-#include "reduce.hpp"
-#include "world.hpp"
 
 
 bool elasticForceAssuredZero(const Ferromagnet* magnet) {

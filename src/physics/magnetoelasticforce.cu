@@ -1,13 +1,10 @@
-// TODO: check if these includes are really all necessary
 #include "cudalaunch.hpp"
 #include "elasticforce.hpp"
-#include "energy.hpp"
 #include "ferromagnet.hpp"
 #include "field.hpp"
 #include "magnetoelasticfield.hpp"  // magnetoelasticAssuredZero
+#include "magnetoelasticforce.hpp"
 #include "parameter.hpp"
-#include "reduce.hpp"
-#include "world.hpp"
 
 
 __global__ void k_magnetoelasticForce(CuField fField,
