@@ -77,7 +77,7 @@ class Ferromagnet(Magnet):
         See Also
         --------
         elastic_velocity
-        enableElastodynamics
+        enable_elastodynamics
         """
         return Variable(self._impl.elastic_displacement)
 
@@ -93,7 +93,7 @@ class Ferromagnet(Magnet):
         elastodynamics are disabled.
 
         elastic_displacement
-        enableElastodynamics
+        enable_elastodynamics
         """
         return Variable(self._impl.elastic_velocity)
 
