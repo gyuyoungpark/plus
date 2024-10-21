@@ -7,6 +7,7 @@
 #include <random>
 #include <math.h>
 #include <cfloat>
+#include <stdexcept>
 
 #include "fieldquantity.hpp"
 #include "gpubuffer.hpp"
@@ -103,10 +104,18 @@ const Variable* Ferromagnet::magnetization() const {
 }
 
 const Variable* Ferromagnet::elasticDisplacement() const {
+  if (!this->enableElastodynamics()) {
+    throw std::domain_error("elasticDisplacement Variable does not exist yet. "
+                            "Enable elastodynamics first.");
+  }
   return elasticDisplacement_.get();
 }
 
 const Variable* Ferromagnet::elasticVelocity() const {
+  if (!this->enableElastodynamics()) {
+    throw std::domain_error("elasticVelocity Variable does not exist yet. "
+                            "Enable elastodynamics first.");
+  }
   return elasticVelocity_.get();
 }
 
