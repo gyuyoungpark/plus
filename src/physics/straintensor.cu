@@ -112,5 +112,5 @@ Field evalStrainTensor(const Ferromagnet* magnet) {
 
 
 FM_FieldQuantity strainTensorQuantity(const Ferromagnet* magnet) {
-  return FM_FieldQuantity(magnet, evalStrainTensor, 6, "strain", "");
+  return FM_FieldQuantity(magnet, evalStrainTensor, 6, "strain_tensor", "");
 }
