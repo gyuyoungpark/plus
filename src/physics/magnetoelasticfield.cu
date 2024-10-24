@@ -8,8 +8,15 @@
 
 
 bool magnetoelasticAssuredZero(const Ferromagnet* magnet) {
-  return ((!magnet->enableElastodynamics()) ||
-          (magnet->msat.assuredZero()) ||
+  // use elastodynamics of host if possible
+  bool enableElastodynamics;
+  if (magnet->isSublattice()) {
+    enableElastodynamics = magnet->hostMagnet()->enableElastodynamics();
+  } else {
+    enableElastodynamics = magnet->enableElastodynamics();
+  }
+
+  return (!enableElastodynamics || magnet->msat.assuredZero() ||
           (magnet->B1.assuredZero() && magnet->B2.assuredZero()));
 }
 
@@ -51,14 +58,20 @@ Field evalMagnetoelasticField(const Ferromagnet* magnet) {
     return hField;
   }
 
+  Field strain;
+  if (magnet->isSublattice()) {  // use strain from host
+    strain = evalStrainTensor(magnet->hostMagnet());
+  } else {  // independent magnet
+    strain = evalStrainTensor(magnet);
+  }
+
   int ncells = hField.grid().ncells();
   CuField mField = magnet->magnetization()->field().cu();
-  CuField strain = evalStrainTensor(magnet).cu();
   CuParameter B1 = magnet->B1.cu();
   CuParameter B2 = magnet->B2.cu();
   CuParameter msat = magnet->msat.cu();
 
-  cudaLaunch(ncells, k_magnetoelasticField, hField.cu(), mField, strain, B1, B2, msat);
+  cudaLaunch(ncells, k_magnetoelasticField, hField.cu(), mField, strain.cu(), B1, B2, msat);
   return hField;
 }
 

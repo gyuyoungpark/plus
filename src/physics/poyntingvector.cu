@@ -30,7 +30,7 @@ __global__ void k_poyntingVector(CuField poyntingField,
   }
 }
 
-Field evalPoyntingVector(const Ferromagnet* magnet) {
+Field evalPoyntingVector(const Magnet* magnet) {
   Field poyntingField(magnet->system(), 3);
   if (elasticityAssuredZero(magnet)) {
     poyntingField.makeZero();
@@ -45,6 +45,6 @@ Field evalPoyntingVector(const Ferromagnet* magnet) {
   return poyntingField;
 }
 
-FM_FieldQuantity poyntingVectorQuantity(const Ferromagnet* magnet) {
-  return FM_FieldQuantity(magnet, evalPoyntingVector, 3, "poynting_vector", "W/m2");
+M_FieldQuantity poyntingVectorQuantity(const Magnet* magnet) {
+  return M_FieldQuantity(magnet, evalPoyntingVector, 3, "poynting_vector", "W/m2");
 }

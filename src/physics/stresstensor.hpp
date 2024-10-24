@@ -2,13 +2,13 @@
 
 #include "quantityevaluator.hpp"
 
-class Ferromagnet;
+class Magnet;
 class Field;
 
 
-Field evalStressTensor(const Ferromagnet*);
+Field evalStressTensor(const Magnet*);
 
 // Stress tensor quantity with 6 symmetric stress components  
 // [σxx, σyy, σzz, σxy, σxz, σyz],  
 // calculated according to σ = c ε. 
-FM_FieldQuantity stressTensorQuantity(const Ferromagnet*);
+M_FieldQuantity stressTensorQuantity(const Magnet*);

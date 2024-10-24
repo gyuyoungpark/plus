@@ -1,11 +1,11 @@
 #include "cudalaunch.hpp"
-#include "ferromagnet.hpp"
+#include "magnet.hpp"
 #include "field.hpp"
 #include "parameter.hpp"
 #include "straintensor.hpp"
 
 
-bool strainTensorAssuredZero(const Ferromagnet* magnet) {
+bool strainTensorAssuredZero(const Magnet* magnet) {
   return !magnet->enableElastodynamics();
 }
 
@@ -96,7 +96,7 @@ __global__ void k_strainTensor(CuField strain,
 }
 
 
-Field evalStrainTensor(const Ferromagnet* magnet) {
+Field evalStrainTensor(const Magnet* magnet) {
   Field strain(magnet->system(), 6, 0.0);
 
   if (strainTensorAssuredZero(magnet)) return strain;
@@ -111,6 +111,6 @@ Field evalStrainTensor(const Ferromagnet* magnet) {
 }
 
 
-FM_FieldQuantity strainTensorQuantity(const Ferromagnet* magnet) {
-  return FM_FieldQuantity(magnet, evalStrainTensor, 6, "strain_tensor", "");
+M_FieldQuantity strainTensorQuantity(const Magnet* magnet) {
+  return M_FieldQuantity(magnet, evalStrainTensor, 6, "strain_tensor", "");
 }

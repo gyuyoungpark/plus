@@ -2,7 +2,7 @@
 #include "elasticenergies.hpp"
 #include "elastodynamics.hpp"
 #include "energy.hpp"
-#include "ferromagnet.hpp"
+#include "magnet.hpp"
 #include "field.hpp"
 #include "parameter.hpp"
 #include "straintensor.hpp"
@@ -11,7 +11,7 @@
 
 // ========== Kinetic Energy ==========
 
-bool kineticEnergyAssuredZero(const Ferromagnet* magnet) {
+bool kineticEnergyAssuredZero(const Magnet* magnet) {
   return ((!magnet->enableElastodynamics()) || magnet->rho.assuredZero());
 }
 
@@ -33,7 +33,7 @@ __global__ void k_kineticEnergyDensity(CuField kinField,
   kinField.setValueInCell(idx, 0, 0.5 * dot(v, v) * rho.valueAt(idx));
 }
 
-Field evalKineticEnergyDensity(const Ferromagnet* magnet) {
+Field evalKineticEnergyDensity(const Magnet* magnet) {
   Field kinField(magnet->system(), 1);
   if (kineticEnergyAssuredZero(magnet)) {
     kinField.makeZero();
@@ -47,7 +47,7 @@ Field evalKineticEnergyDensity(const Ferromagnet* magnet) {
   return kinField;
 }
 
-real evalKineticEnergy(const Ferromagnet* magnet) {
+real evalKineticEnergy(const Magnet* magnet) {
   if (kineticEnergyAssuredZero(magnet))
     return 0.0;
 
@@ -57,12 +57,12 @@ real evalKineticEnergy(const Ferromagnet* magnet) {
   return ncells * edens * cellVolume;
 }
 
-FM_FieldQuantity kineticEnergyDensityQuantity(const Ferromagnet* magnet) {
-  return FM_FieldQuantity(magnet, evalKineticEnergyDensity, 1, "kinetic_energy_density", "J/m3");
+M_FieldQuantity kineticEnergyDensityQuantity(const Magnet* magnet) {
+  return M_FieldQuantity(magnet, evalKineticEnergyDensity, 1, "kinetic_energy_density", "J/m3");
 }
 
-FM_ScalarQuantity kineticEnergyQuantity(const Ferromagnet* magnet) {
-  return FM_ScalarQuantity(magnet, evalKineticEnergy, "kinetic_energy", "J");
+M_ScalarQuantity kineticEnergyQuantity(const Magnet* magnet) {
+  return M_ScalarQuantity(magnet, evalKineticEnergy, "kinetic_energy", "J");
 }
 
 // ========== Elastic Energy ==========
@@ -90,7 +90,7 @@ __global__ void k_elasticEnergyDensity(CuField elField,
   elField.setValueInCell(idx, 0, value);
 }
 
-Field evalElasticEnergyDensity(const Ferromagnet* magnet) {
+Field evalElasticEnergyDensity(const Magnet* magnet) {
   Field elField(magnet->system(), 1);
   if (elasticityAssuredZero(magnet)) {
     elField.makeZero();
@@ -104,7 +104,7 @@ Field evalElasticEnergyDensity(const Ferromagnet* magnet) {
   return elField;
 }
 
-real evalElasticEnergy(const Ferromagnet* magnet) {
+real evalElasticEnergy(const Magnet* magnet) {
   if (elasticityAssuredZero(magnet))
     return 0.0;
 
@@ -114,10 +114,10 @@ real evalElasticEnergy(const Ferromagnet* magnet) {
   return ncells * edens * cellVolume;
 }
 
-FM_FieldQuantity elasticEnergyDensityQuantity(const Ferromagnet* magnet) {
-  return FM_FieldQuantity(magnet, evalElasticEnergyDensity, 1, "elastic_energy_density", "J/m3");
+M_FieldQuantity elasticEnergyDensityQuantity(const Magnet* magnet) {
+  return M_FieldQuantity(magnet, evalElasticEnergyDensity, 1, "elastic_energy_density", "J/m3");
 }
 
-FM_ScalarQuantity elasticEnergyQuantity(const Ferromagnet* magnet) {
-  return FM_ScalarQuantity(magnet, evalElasticEnergy, "elastic_energy", "J");
+M_ScalarQuantity elasticEnergyQuantity(const Magnet* magnet) {
+  return M_ScalarQuantity(magnet, evalElasticEnergy, "elastic_energy", "J");
 }

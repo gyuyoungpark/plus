@@ -2,13 +2,13 @@
 
 #include "quantityevaluator.hpp"
 
-class Ferromagnet;
+class Magnet;
 class Field;
 
 
-bool elasticDampingAssuredZero(const Ferromagnet*);
+bool elasticDampingAssuredZero(const Magnet*);
 
-Field evalElasticDamping(const Ferromagnet*);
+Field evalElasticDamping(const Magnet*);
 
 // Elastic damping proportional to η and velocity: -ηv.
-FM_FieldQuantity elasticDampingQuantity(const Ferromagnet*);
+M_FieldQuantity elasticDampingQuantity(const Magnet*);

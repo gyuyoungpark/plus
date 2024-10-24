@@ -1,11 +1,11 @@
 #include "cudalaunch.hpp"
 #include "elasticdamping.hpp"
-#include "ferromagnet.hpp"
+#include "magnet.hpp"
 #include "field.hpp"
 #include "parameter.hpp"
 
 
-bool elasticDampingAssuredZero(const Ferromagnet* magnet) {
+bool elasticDampingAssuredZero(const Magnet* magnet) {
     return ((!magnet->enableElastodynamics()) || magnet->eta.assuredZero());
 }
 
@@ -27,7 +27,7 @@ __global__ void k_elasticDamping(CuField fField,
   fField.setVectorInCell(idx, -eta.valueAt(idx) * vField.vectorAt(idx));
 }
 
-Field evalElasticDamping(const Ferromagnet* magnet) {
+Field evalElasticDamping(const Magnet* magnet) {
     Field fField(magnet->system(), 3);
     if (elasticDampingAssuredZero(magnet)) {
         fField.makeZero();
@@ -43,7 +43,7 @@ Field evalElasticDamping(const Ferromagnet* magnet) {
     return fField;
 }
 
-FM_FieldQuantity elasticDampingQuantity(const Ferromagnet* magnet) {
-  return FM_FieldQuantity(magnet, evalElasticDamping, 3,
-                          "elastic_damping", "N/m3");
+M_FieldQuantity elasticDampingQuantity(const Magnet* magnet) {
+  return M_FieldQuantity(magnet, evalElasticDamping, 3,
+                         "elastic_damping", "N/m3");
 }

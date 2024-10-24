@@ -2,11 +2,11 @@
 
 #include "quantityevaluator.hpp"
 
-class Ferromagnet;
+class Magnet;
 class Field;
 
 
-Field evalElasticForce(const Ferromagnet*);
+Field evalElasticForce(const Magnet*);
 
 // Elastic body force due to mechanical stress gradients f = ∇σ = ∇(cε)
-FM_FieldQuantity elasticForceQuantity(const Ferromagnet*);
+M_FieldQuantity elasticForceQuantity(const Magnet*);

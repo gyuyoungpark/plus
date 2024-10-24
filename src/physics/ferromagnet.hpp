@@ -37,9 +37,6 @@ class Ferromagnet : public Magnet {
   ~Ferromagnet() override;
 
   const Variable* magnetization() const;
-  // TODO: make displacement/velocity safe even if enableElastodynamics==false
-  const Variable* elasticDisplacement() const;
-  const Variable* elasticVelocity() const;
 
   bool isSublattice() const;
   const Antiferromagnet* hostMagnet() const;  // TODO: right amount of const?
@@ -49,11 +46,6 @@ class Ferromagnet : public Magnet {
 
  private:
   NormalizedVariable magnetization_;
-
-  // these take a lot of memory. Don't initialize unless wanted!
-  std::unique_ptr<Variable> elasticDisplacement_;
-  std::unique_ptr<Variable> elasticVelocity_;
-  bool enableElastodynamics_;
 
   // TODO: what type of pointer?
   // TODO: Magnet or Antiferromagnet?
@@ -66,8 +58,6 @@ class Ferromagnet : public Magnet {
   bool enableZhangLiTorque;
   bool enableSlonczewskiTorque;
   bool fixedLayerOnTop;
-  bool enableElastodynamics() const {return enableElastodynamics_;}
-  void setEnableElastodynamics(bool);
   VectorParameter anisU;
   VectorParameter anisC1;
   VectorParameter anisC2;
@@ -103,17 +93,6 @@ class Ferromagnet : public Magnet {
   DmiTensor dmiTensor;
 
   // Magnetoelasticity
-  // TODO: should these be Magnet Parameters or Ferromagnet parameters?
-  
-  VectorParameter externalBodyForce;
-
-  // stiffness constant; TODO: can this be generalized to 6x6 tensor?
-  Parameter c11;  // c11 = c22 = c33
-  Parameter c12;  // c12 = c13 = c23
-  Parameter c44;  // c44 = c55 = c66
-
-  Parameter eta;  // Phenomenological elastic damping constant
-  Parameter rho;  // Mass density
   Parameter B1;  // First magnetoelastic coupling constant
   Parameter B2;  // Second magnetoelastic coupling constant
 };

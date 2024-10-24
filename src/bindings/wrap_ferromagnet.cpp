@@ -7,10 +7,6 @@
 #include "demag.hpp"
 #include "dmi.hpp"
 #include "effectivefield.hpp"
-#include "elasticforce.hpp"
-#include "elasticdamping.hpp"
-#include "elasticenergies.hpp"
-#include "elastodynamics.hpp"
 #include "electricalpotential.hpp"
 #include "energy.hpp"
 #include "exchange.hpp"
@@ -22,9 +18,6 @@
 #include "magnetoelasticforce.hpp"
 #include "mumaxworld.hpp"
 #include "parameter.hpp"
-#include "poyntingvector.hpp"
-#include "straintensor.hpp"
-#include "stresstensor.hpp"
 #include "stt.hpp"
 #include "thermalnoise.hpp"
 #include "torque.hpp"
@@ -35,17 +28,11 @@
 void wrap_ferromagnet(py::module& m) {
   py::class_<Ferromagnet, Magnet>(m, "Ferromagnet")
       .def_property_readonly("magnetization", &Ferromagnet::magnetization)
-      .def_property_readonly("elastic_displacement",
-                             &Ferromagnet::elasticDisplacement)
-      .def_property_readonly("elastic_velocity", &Ferromagnet::elasticVelocity)
 
       .def_readwrite("enable_demag", &Ferromagnet::enableDemag)
       .def_readwrite("enable_openbc", &Ferromagnet::enableOpenBC)
       .def_readwrite("enable_zhang_li_torque", &Ferromagnet::enableZhangLiTorque)
       .def_readwrite("enable_slonczewski_torque", &Ferromagnet::enableSlonczewskiTorque)
-      .def_property("enable_elastodynamics",
-                    &Ferromagnet::enableElastodynamics,
-                    &Ferromagnet::setEnableElastodynamics)
       .def_readwrite("bias_magnetic_field", &Ferromagnet::biasMagneticField,
                      "uniform external magnetic field")
       .def_readwrite("fixed_layer_on_top", &Ferromagnet::fixedLayerOnTop)
@@ -77,13 +64,6 @@ void wrap_ferromagnet(py::module& m) {
       .def_readonly("amr_ratio", &Ferromagnet::amrRatio)
       .def_readwrite("RelaxTorqueThreshold", &Ferromagnet::RelaxTorqueThreshold)
       .def_readonly("poisson_system", &Ferromagnet::poissonSystem)
-      // magnetoelasticity
-      .def_readonly("external_body_force", &Ferromagnet::externalBodyForce)
-      .def_readonly("c11", &Ferromagnet::c11)
-      .def_readonly("c12", &Ferromagnet::c12)
-      .def_readonly("c44", &Ferromagnet::c44)
-      .def_readonly("eta", &Ferromagnet::eta)
-      .def_readonly("rho", &Ferromagnet::rho)
       .def_readonly("B1", &Ferromagnet::B1)
       .def_readonly("B2", &Ferromagnet::B2)
       
@@ -126,8 +106,10 @@ void wrap_ferromagnet(py::module& m) {
   m.def("zeeman_energy", &zeemanEnergyQuantity);
 
   m.def("effective_field", &effectiveFieldQuantity);
-  m.def("total_energy_density", &totalEnergyDensityQuantity);
-  m.def("total_energy", &totalEnergyQuantity);
+  m.def("total_energy_density",
+        py::overload_cast<const Ferromagnet*>(&totalEnergyDensityQuantity));
+  m.def("total_energy",
+        py::overload_cast<const Ferromagnet*>(&totalEnergyQuantity));
 
   m.def("conductivity_tensor", &conductivityTensorQuantity);
   m.def("electrical_potential", &electricalPotentialQuantity);
@@ -138,23 +120,9 @@ void wrap_ferromagnet(py::module& m) {
         py::overload_cast<const Ferromagnet*>(&fullMagnetizationQuantity));
 
   // Magnetoelasticity
-  m.def("strain_tensor", &strainTensorQuantity);
-  m.def("stress_tensor", &stressTensorQuantity);
-
   m.def("magnetoelastic_field", &magnetoelasticFieldQuantity);
   m.def("magnetoelastic_energy_density", &magnetoelasticEnergyDensityQuantity);
   m.def("magnetoelastic_energy", &magnetoelasticEnergyQuantity);
 
-  m.def("elastic_force", &elasticForceQuantity);
   m.def("magnetoelastic_force", &magnetoelasticForceQuantity);
-  m.def("effective_body_force", &effectiveBodyForceQuantity);
-  m.def("elastic_damping", &elasticDampingQuantity);
-  m.def("elastic_acceleration", &elasticAccelerationQuantity);
-  
-  m.def("kinetic_energy_density", &kineticEnergyDensityQuantity);
-  m.def("kinetic_energy", &kineticEnergyQuantity);
-  m.def("elastic_energy_density", &elasticEnergyDensityQuantity);
-  m.def("elastic_energy", &elasticEnergyQuantity);
-
-  m.def("poynting_vector", &poyntingVectorQuantity);
 }

@@ -1,7 +1,7 @@
 #include "elastodynamics.hpp"
 #include "elasticforce.hpp"
 #include "cudalaunch.hpp"
-#include "ferromagnet.hpp"
+#include "magnet.hpp"
 #include "field.hpp"
 #include "parameter.hpp"
 
@@ -174,7 +174,7 @@ __global__ void k_elasticForce(CuField fField,
 }
 
 
-Field evalElasticForce(const Ferromagnet* magnet) {
+Field evalElasticForce(const Magnet* magnet) {
 
   Field fField(magnet->system(), 3);
   if (elasticityAssuredZero(magnet)) {
@@ -196,6 +196,6 @@ Field evalElasticForce(const Ferromagnet* magnet) {
   return fField;
 }
 
-FM_FieldQuantity elasticForceQuantity(const Ferromagnet* magnet) {
-  return FM_FieldQuantity(magnet, evalElasticForce, 3, "elastic_force", "N/m3");
+M_FieldQuantity elasticForceQuantity(const Magnet* magnet) {
+  return M_FieldQuantity(magnet, evalElasticForce, 3, "elastic_force", "N/m3");
 }

@@ -7,7 +7,6 @@
 #include <random>
 #include <math.h>
 #include <cfloat>
-#include <stdexcept>
 
 #include "fieldquantity.hpp"
 #include "gpubuffer.hpp"
@@ -51,19 +50,12 @@ Ferromagnet::Ferromagnet(std::shared_ptr<System> system_ptr,
       enableOpenBC(false),
       enableZhangLiTorque(true),
       enableSlonczewskiTorque(true),
-      enableElastodynamics_(false),
       appliedPotential(system(), std::nanf("0"), name + ":applied_potential", "V"),
       conductivity(system(), 0.0, name + ":conductivity", "S/m"),
       amrRatio(system(), 0.0, name + ":amr_ratio", ""),
       RelaxTorqueThreshold(-1.0),
       poissonSystem(this), 
       // magnetoelasticity
-      externalBodyForce(system(), {0, 0, 0}, name + ":external_body_force", "N/m3"),
-      c11(system(), 0.0, name + ":c11", "N/m2"),
-      c12(system(), 0.0, name + ":c12", "N/m2"),
-      c44(system(), 0.0, name + ":c44", "N/m2"),
-      eta(system(), 0.0, name + ":eta", "kg/m3s"),
-      rho(system(), 1.0, name + "rho", "kg/m3"),
       B1(system(), 0.0, name + ":B1", "J/m3"),
       B2(system(), 0.0, name + ":B1", "J/m3") {
     {// Initialize random magnetization
@@ -103,22 +95,6 @@ const Variable* Ferromagnet::magnetization() const {
   return &magnetization_;
 }
 
-const Variable* Ferromagnet::elasticDisplacement() const {
-  if (!this->enableElastodynamics()) {
-    throw std::domain_error("elasticDisplacement Variable does not exist yet. "
-                            "Enable elastodynamics first.");
-  }
-  return elasticDisplacement_.get();
-}
-
-const Variable* Ferromagnet::elasticVelocity() const {
-  if (!this->enableElastodynamics()) {
-    throw std::domain_error("elasticVelocity Variable does not exist yet. "
-                            "Enable elastodynamics first.");
-  }
-  return elasticVelocity_.get();
-}
-
 bool Ferromagnet::isSublattice() const {
   return !(hostMagnet_ == nullptr);
 }
@@ -136,26 +112,4 @@ void Ferromagnet::relax(real tol) {
   real threshold = this->RelaxTorqueThreshold;
   Relaxer relaxer(this, {threshold}, tol);
   relaxer.exec();
-}
-
-void Ferromagnet::setEnableElastodynamics(bool value) {
-  if (enableElastodynamics_ != value) {
-    enableElastodynamics_ = value;
-
-    if (value) {
-      // properly initialize Variables now
-      elasticDisplacement_ = std::make_unique<Variable>(system(), 3,
-                                        name() + ":elastic_displacement", "m");
-      elasticDisplacement_->set(real3{0,0,0});
-      elasticVelocity_ = std::make_unique<Variable>(system(), 3,
-                                        name() + ":elastic_velocity", "m/s");
-      elasticVelocity_->set(real3{0,0,0});
-    } else {
-      // free memory of unnecessary Variables
-      elasticDisplacement_.reset();
-      elasticVelocity_.reset();
-    }
-
-    this->mumaxWorld()->resetTimeSolverEquations();
-  }
 }
