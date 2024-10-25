@@ -3,14 +3,17 @@ The magnet is minimized and the elastic parameters are assigned together
 with a circular area in which an external sinusoidal field is applied
 in the y-direction. This simulation runs for 0.5 ns and returns an animation
 of the y-magnetization and the amplified displacement.
+The animation might take a while.
 """
 
 import numpy as np
 import math
+from tqdm import tqdm
 import matplotlib.pyplot as plt
+import matplotlib.animation as animation
+
 from mumaxplus import World, Grid, Ferromagnet
 import mumaxplus.util.shape as shapes
-import matplotlib.animation as animation
 
 
 length, width, thickness = 1e-6, 1e-6, 20e-9
@@ -55,7 +58,7 @@ magnet.bias_magnetic_field.add_time_term(
 magnet.alpha = 0.004
 magnet.eta = 1e10  # elastic force damping
 
-def displacement_to_scatter_data(magnet, scale, skip=5):
+def displacement_to_scatter_data(magnet, scale, skip):
     """takes magnet.elastic_displacement.eval() array and turns it into an array
     of positions usable by plt.scatter().set_offsets"""
 
@@ -67,28 +70,30 @@ def displacement_to_scatter_data(magnet, scale, skip=5):
 fig, ax = plt.subplots()
 
 u_scale = 5e4  # amplification of displacement
+u_skip  = 5  # don't show every displacement
 
 world.timesolver.adaptive_timestep = False
 world.timesolver.timestep = 1e-12
 
-steps = 1000
+steps = 400
 time_max = 0.8e-9
 duration = time_max/steps
 
 # save magnetization and displacement
 m_shape = np.transpose(magnet.magnetization.eval()[1,0,:,:]).shape
-u_shape = displacement_to_scatter_data(magnet, scale=u_scale).shape
+u_shape = displacement_to_scatter_data(magnet, scale=u_scale, skip=u_skip).shape
 m = np.zeros(shape=(steps,m_shape[0],m_shape[1]))
 u = np.zeros(shape=(steps,u_shape[0],u_shape[1]))
 
 # run a simulation
-for i in range(steps):
+print("Simulating...")
+for i in tqdm(range(steps)):
     world.timesolver.run(duration)
     m[i,...] = np.transpose(magnet.magnetization.eval()[1,0,:,:])
-    u[i,...] = displacement_to_scatter_data(magnet, scale=u_scale) 
+    u[i,...] = displacement_to_scatter_data(magnet, scale=u_scale, skip=u_skip) 
 
 # scatter setup
-offsets = displacement_to_scatter_data(magnet, scale=u_scale)
+offsets = displacement_to_scatter_data(magnet, scale=u_scale, skip=u_skip)
 u_scatter = ax.scatter(offsets[:, 0], offsets[:, 1], s=10, c="black", marker=".", alpha=0.5)
 
 # imshow setup
@@ -100,13 +105,20 @@ m_im = ax.imshow(m[0,...], origin="lower", extent=im_extent, vmin=vmin, vmax=vma
 
 # colorbar setup
 cbar = plt.colorbar(m_im)
-cbar.ax.set_ylabel('y-magnetization', rotation=270)
+cbar.ax.set_ylabel(r"$<m_y>", rotation=270)
+
+# final touches
+ax.set_xlabel("$x$ (m)")
+ax.set_ylabel("$y$ (m)")
+ax.set_xlim(im_extent[0], im_extent[1])
+ax.set_ylim(im_extent[2], im_extent[3])
 
 def update(i):
-    m_im.set_data(np.transpose(m[i,...]))
+    m_im.set_data(m[i,...])
     u_scatter.set_offsets(u[i,...])
     return m_im, u_scatter
 
 # animation
-animation_fig = animation.FuncAnimation(fig, update, frames=steps, interval=20, blit=True)
+print("Animating...")
+animation_fig = animation.FuncAnimation(fig, update, frames=steps, interval=40, blit=True)
 animation_fig.save("magnetoelastic.mp4")
