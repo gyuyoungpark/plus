@@ -127,7 +127,8 @@ __global__ void k_dmiFieldAFM(CuField hField,
     return;
   }
 
-	real3 m = m1Field.vectorAt(idx);
+	real3 m1 = m1Field.vectorAt(idx);
+  real3 m2 = m2Field.vectorAt(idx);
   const int3 coo = system.grid.index2coord(idx);
 
   // Accumulate DMI field of cell at idx in h. Divide by msat at the end.
@@ -180,34 +181,39 @@ __global__ void k_dmiFieldAFM(CuField hField,
                  relative_coo.y * system.cellsize.y +
                  relative_coo.z * system.cellsize.z;
 
-    real3 m_;
+    real3 m1_, m2_;
     if (!system.inGeometry(neighbor_coo)) { // Neumann BC
       int3 n = relative_coo * relative_coo;
-      real3 Gamma1 = getGamma(dmiTensor, idx, n, m);
+      real3 Gamma1 = getGamma(dmiTensor, idx, n, m1);
+      real3 Gamma2 = getGamma(dmiTensor, idx, n, m2);
 
       real an = afmex_nn.valueAt(idx);
       real a2 = 2 * a;
       real an_a2 = an / a2;
-      if (abs(an_a2) == 1)
-        m_ = m + Gamma1 / (4*a) * delta;
+      if (abs(an_a2) == 1) {
+        m1_ = m1 + Gamma1 / (4*a) * delta;
+        m2_ = m2 + Gamma2 / (4*a) * delta;
+      }
       else {
-        real3 Gamma2 = getGamma(dmiTensor, idx, n, m2Field.vectorAt(idx));
-        m_ = m + delta / (a2 * (1 - an_a2*an_a2)) * (Gamma1 - an_a2 * Gamma2);
+        m1_ = m1 + delta / (a2 * (1 - an_a2*an_a2)) * (Gamma1 - an_a2 * Gamma2);
+        m2_ = m2 + delta / (a2 * (1 - an_a2*an_a2)) * (Gamma2 - an_a2 * Gamma1);
       }
     }
     else {
-      m_ = m1Field.vectorAt(neighbor_idx);
+      m1_ = m1Field.vectorAt(neighbor_idx);
+      m2_ = m2Field.vectorAt(neighbor_idx);
     }
 
     // Compute the effective field contribution of the DMI with the neighbor
-    h.x += (Dxy * m_.y + Dxz * m_.z) / delta;
-    h.y += (Dyx * m_.x + Dyz * m_.z) / delta;
-    h.z += (Dzx * m_.x + Dzy * m_.y) / delta;
+    h.x += (Dxy * m1_.y + Dxz * m1_.z - Dxy * m2_.y - Dxz * m2_.z) / delta;
+    h.y += (Dyx * m1_.x + Dyz * m1_.z - Dyx * m2_.x - Dyz * m2_.z) / delta;
+    h.z += (Dzx * m1_.x + Dzy * m1_.y - Dzx * m2_.x - Dzy * m2_.y) / delta;
 
   }  // end loop over neighbors
 
-  /* TO DO: implement DMI-contribution to afm-exchange at a single site
-  */
+  // TODO: DMI exchange at a single site
+  //real3 d = real3{0, 0, 1e7};
+  //h += dot(d, cross(m1, m2));
 
   h /= msat.valueAt(idx);
   hField.setVectorInCell(idx, h);
@@ -232,8 +238,6 @@ Field evalDmiField(const Ferromagnet* magnet) {
     cudaLaunch(ncells, k_dmiFieldFM, hField.cu(),
               mag, dmiTensor, msat, grid, aex, BC);
   else {
-    // In case `magnet` is a sublattice, it's sister sublattice adds to
-    // the DMI interaction and affects the Neumann BC.
     auto mag2 = magnet->hostMagnet()->getOtherSublattice(magnet)->magnetization()->field().cu();
     auto afmex_nn = magnet->hostMagnet()->afmex_nn.cu();
     cudaLaunch(ncells, k_dmiFieldAFM, hField.cu(), mag, mag2,
