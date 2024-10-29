@@ -49,6 +49,6 @@ def test_stress():
         ip2 = (i+2)%3
 
         stress_anal[i,...] = c11 * strain[i,...] + c12 * strain[ip1,...] + c12 * strain[ip2,...]
-        stress_anal[i+3,...] = c44 * strain[i+3,...]
+        stress_anal[i+3,...] = 2 * c44 * strain[i+3,...]  # using real strain
 
     assert max_semirelative_error(stress_num, stress_anal) < RTOL

@@ -1139,7 +1139,7 @@ class Ferromagnet(Magnet):
                εxz εyz εzz
 
         Note that the strain corresponds to the real strain and not the
-        engineering strain.
+        engineering strain, which would be (εxx, εyy, εzz, 2*εxy, 2*εxz, 2*εyz).
 
         See Also
         --------

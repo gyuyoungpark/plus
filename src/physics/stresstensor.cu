@@ -34,7 +34,8 @@ __global__ void k_stressTensor(CuField stressTensor,
                                c12.valueAt(idx) * strain.valueAt(idx, ip1) +
                                c12.valueAt(idx) * strain.valueAt(idx, ip2));
     
-    stressTensor.setValueInCell(idx, i+3, c44.valueAt(idx) * strain.valueAt(idx, i+3));
+    // factor two because we use real strain, not engineering strain
+    stressTensor.setValueInCell(idx, i+3, 2 * c44.valueAt(idx) * strain.valueAt(idx, i+3));
   }
 }
 
