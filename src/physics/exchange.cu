@@ -12,7 +12,10 @@
 #include "world.hpp"
 
 bool exchangeAssuredZero(const Ferromagnet* magnet) {
-  return (magnet->aex.assuredZero() || magnet->msat.assuredZero());
+  return ((magnet->aex.assuredZero()
+        && magnet->interExch.assuredZero()
+        && magnet->scaleExch.assuredZero())
+        || magnet->msat.assuredZero());
 }
 
 __global__ void k_exchangeField(CuField hField,

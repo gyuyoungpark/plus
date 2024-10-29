@@ -23,6 +23,7 @@ class InterParameter {
   std::string unit() const { return unit_; }
   int ncomp() const { return 1; }
   bool isUniform() const { return valuesBuffer_.size() == 0; }
+  bool assuredZero() const { return isUniform() && uniformValue_ == 0.0; };
 
   const std::vector<real> eval() const;
 
