@@ -40,7 +40,7 @@ def check_magnetoelastic_field(host, sublattice):
         B_anal[i,...] = - 2  / msat * (
             B1 *  strain[i,...] * m[i,...] + 
             B2 * (strain[i+ip1+2,...] * m[ip1,...] + 
-                strain[i+ip2+2,...] * m[ip2,...]))
+                  strain[i+ip2+2,...] * m[ip2,...]))
 
     assert max_semirelative_error(B_num, B_anal) < SRTOL
     
@@ -93,7 +93,7 @@ class TestMelAfm:
         check_magnetoelastic_field(self.magnet, self.magnet.sub1)
 
     def test_magnetoelastic_field_sub2(self):
-        """Check magnetoelastic field of sublattice 1."""
+        """Check magnetoelastic field of sublattice 2."""
         check_magnetoelastic_field(self.magnet, self.magnet.sub2)
 
     def test_total_energy_energy(self):
