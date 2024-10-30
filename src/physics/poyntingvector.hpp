@@ -2,11 +2,11 @@
 
 #include "quantityevaluator.hpp"
 
-class Ferromagnet;
+class Magnet;
 class Field;
 
 
-Field evalPoyntingVector(const Ferromagnet*);
+Field evalPoyntingVector(const Magnet*);
 
 // poynting vector
-FM_FieldQuantity poyntingVectorQuantity(const Ferromagnet*);
+M_FieldQuantity poyntingVectorQuantity(const Magnet*);

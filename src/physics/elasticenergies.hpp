@@ -2,24 +2,24 @@
 
 #include "quantityevaluator.hpp"
 
-class Ferromagnet;
+class Magnet;
 class Field;
 
 
-bool kineticEnergyAssuredZero(const Ferromagnet*);
+bool kineticEnergyAssuredZero(const Magnet*);
 
-Field evalKineticEnergyDensity(const Ferromagnet*);
-Field evalElasticEnergyDensity(const Ferromagnet*);
+Field evalKineticEnergyDensity(const Magnet*);
+Field evalElasticEnergyDensity(const Magnet*);
 
-real evalKineticEnergy(const Ferromagnet*);
-real evalElasticEnergy(const Ferromagnet*);
+real evalKineticEnergy(const Magnet*);
+real evalElasticEnergy(const Magnet*);
 
 // Elastic kinetic energy density
-FM_FieldQuantity kineticEnergyDensityQuantity(const Ferromagnet*);
+M_FieldQuantity kineticEnergyDensityQuantity(const Magnet*);
 // Elastic kinetic energy
-FM_ScalarQuantity kineticEnergyQuantity(const Ferromagnet*);
+M_ScalarQuantity kineticEnergyQuantity(const Magnet*);
 
 // Elastic potential energy density
-FM_FieldQuantity elasticEnergyDensityQuantity(const Ferromagnet*);
+M_FieldQuantity elasticEnergyDensityQuantity(const Magnet*);
 // Elastic potential energy
-FM_ScalarQuantity elasticEnergyQuantity(const Ferromagnet*);
+M_ScalarQuantity elasticEnergyQuantity(const Magnet*);

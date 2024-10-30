@@ -1,6 +1,6 @@
 #include "cudalaunch.hpp"
 #include "elastodynamics.hpp"
-#include "ferromagnet.hpp"
+#include "magnet.hpp"
 #include "field.hpp"
 #include "straintensor.hpp"
 #include "stresstensor.hpp"
@@ -39,7 +39,7 @@ __global__ void k_stressTensor(CuField stressTensor,
   }
 }
 
-Field evalStressTensor(const Ferromagnet* magnet) {
+Field evalStressTensor(const Magnet* magnet) {
   Field stressTensor(magnet->system(), 6);
   if (elasticityAssuredZero(magnet)) {
     stressTensor.makeZero();
@@ -56,6 +56,6 @@ Field evalStressTensor(const Ferromagnet* magnet) {
   return stressTensor;
 }
 
-FM_FieldQuantity stressTensorQuantity(const Ferromagnet* magnet) {
-  return FM_FieldQuantity(magnet, evalStressTensor, 6, "stress_tensor", "N/m2");
+M_FieldQuantity stressTensorQuantity(const Magnet* magnet) {
+  return M_FieldQuantity(magnet, evalStressTensor, 6, "stress_tensor", "N/m2");
 }

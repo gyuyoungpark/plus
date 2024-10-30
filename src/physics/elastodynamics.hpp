@@ -2,22 +2,23 @@
 
 #include "quantityevaluator.hpp"
 
-class Ferromagnet;
+class Magnet;
 class Field;
 
 
-bool elasticityAssuredZero(const Ferromagnet*);
+// Should only be checked for host-magnets: AFM or independent FM
+bool elasticityAssuredZero(const Magnet*);
 
-Field evalEffectiveBodyForce(const Ferromagnet*);
-Field evalElasticAcceleration(const Ferromagnet*);
+Field evalEffectiveBodyForce(const Magnet*);  // TODO: or overload?
+Field evalElasticAcceleration(const Magnet*);
 
 // Elastic effective body force is the sum of elastic, magnetoelastic and
 // external body forces. Elastic damping is not included.
-FM_FieldQuantity effectiveBodyForceQuantity(const Ferromagnet*);
+M_FieldQuantity effectiveBodyForceQuantity(const Magnet*);
 
 // Translate const Variable* elasticVelocity to usable FM_fieldQuantity
-FM_FieldQuantity elasticVelocityQuantity(const Ferromagnet*);
+M_FieldQuantity elasticVelocityQuantity(const Magnet*);
 
 // Elastic acceleration includes all effects that influence the elastic velocity
 // including elastic, magnetoelastic and external body forces, and elastic damping.
-FM_FieldQuantity elasticAccelerationQuantity(const Ferromagnet*);
+M_FieldQuantity elasticAccelerationQuantity(const Magnet*);

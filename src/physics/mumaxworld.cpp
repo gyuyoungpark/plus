@@ -164,9 +164,24 @@ void MumaxWorld::resetTimeSolverEquations(FM_Field torque) const {
         std::shared_ptr<FieldQuantity>(torque(magnet).clone()),
         std::shared_ptr<FieldQuantity>(thermalNoiseQuantity(magnet).clone()));
     equations.push_back(eq);
+  }
+
+  for (const auto& namedMagnet : antiferromagnets_) {
+    const Antiferromagnet* magnet = namedMagnet.second.get();
+    for (const Ferromagnet* sub : magnet->sublattices()) {
+      DynamicEquation eq(
+        sub->magnetization(),
+        std::shared_ptr<FieldQuantity>(torque(sub).clone()),
+        std::shared_ptr<FieldQuantity>(thermalNoiseQuantity(sub).clone()));
+      equations.push_back(eq);
+    }
+  }
+
+  for (const auto& namedMagnet : magnets_) {
+    const Magnet* magnet = namedMagnet.second;
 
     // add elastodynamics if enabled
-    // TODO: this might not play nice with relax()
+    // TODO: this does not play nice with relax()
     if (magnet->enableElastodynamics()) {
 
       // change in displacement = velocity
@@ -185,17 +200,6 @@ void MumaxWorld::resetTimeSolverEquations(FM_Field torque) const {
     }
   }
 
-  // TODO: elastodynamics not properly working for AFM or sub FM
-  for (const auto& namedMagnet : antiferromagnets_) {
-    const Antiferromagnet* magnet = namedMagnet.second.get();
-    for (const Ferromagnet* sub : magnet->sublattices()) {
-      DynamicEquation eq(
-        sub->magnetization(),
-        std::shared_ptr<FieldQuantity>(torque(sub).clone()),
-        std::shared_ptr<FieldQuantity>(thermalNoiseQuantity(sub).clone()));
-      equations.push_back(eq);
-    }
-  }
   timesolver_->setEquations(equations);
 }
 

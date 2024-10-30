@@ -3,6 +3,7 @@
 
 #include "afmexchange.hpp"
 #include "antiferromagnet.hpp"
+#include "energy.hpp"
 #include "fieldquantity.hpp"
 #include "magnet.hpp"
 #include "mumaxworld.hpp"
@@ -34,4 +35,9 @@ void wrap_antiferromagnet(py::module& m) {
 
   m.def("angle_field", &angleFieldQuantity);
   m.def("max_intracell_angle", &maxAngle);
+
+  m.def("total_energy_density",
+        py::overload_cast<const Antiferromagnet*>(&totalEnergyDensityQuantity));
+  m.def("total_energy",
+        py::overload_cast<const Antiferromagnet*>(&totalEnergyQuantity));
 }
