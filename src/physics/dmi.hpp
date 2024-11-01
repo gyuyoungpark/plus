@@ -18,7 +18,8 @@
 
 #pragma once
 
-#include "ferromagnetquantity.hpp"
+#include "dmitensor.hpp"
+#include "quantityevaluator.hpp"
 
 class Ferromagnet;
 class Field;

@@ -9,7 +9,7 @@
 #include "ferromagnet.hpp"
 #include "fieldops.hpp"
 #include "magnet.hpp"
-#include "ferromagnetquantity.hpp"
+#include "quantityevaluator.hpp"
 #include "field.hpp"
 #include "grid.hpp"
 #include "parameter.hpp"

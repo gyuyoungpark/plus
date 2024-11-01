@@ -1,7 +1,6 @@
 #pragma once
 
-#include "antiferromagnetquantity.hpp"
-#include "ferromagnetquantity.hpp"
+#include "quantityevaluator.hpp"
 
 class Antiferromagnet;
 class Ferromagnet;

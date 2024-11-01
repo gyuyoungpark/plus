@@ -25,6 +25,17 @@ class Shape:
         Calling shape.shape_func(x,y,z) or shape(x,y,z) is the same."""
         return self.shape_func(x, y, z)
 
+    def __contains__(self, coord):
+        """Returns true if the given coordinate is within this shape.
+        Calling shape.shape_func(x,y,z) or shape(x,y,z) is the same.
+
+        Parameters
+        ----------
+        coord : tuple[float] of size 3
+            The coordinates to check.
+        """
+        return self.shape_func(*coord)
+
     # -------------------------
     # transformations on this shape
 

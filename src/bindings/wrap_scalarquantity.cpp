@@ -1,5 +1,4 @@
-#include "antiferromagnetquantity.hpp"
-#include "ferromagnetquantity.hpp"
+#include "quantityevaluator.hpp"
 #include "scalarquantity.hpp"
 #include "wrappers.hpp"
 

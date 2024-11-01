@@ -1,7 +1,6 @@
 #include <memory>
 
-#include "antiferromagnetquantity.hpp"
-#include "ferromagnetquantity.hpp"
+#include "quantityevaluator.hpp"
 #include "field.hpp"
 #include "fieldquantity.hpp"
 #include "wrappers.hpp"

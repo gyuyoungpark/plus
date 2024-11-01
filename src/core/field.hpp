@@ -22,6 +22,7 @@ class Field : public FieldQuantity {
   Field();
   Field(std::shared_ptr<const System> system, int nComponents);
   Field(std::shared_ptr<const System> system, int nComponents, real value);
+  Field(std::shared_ptr<const System> system, int nComponents, real3 value);
   Field(const Field&);   // copies gpu field data
   Field(Field&& other);  // moves gpu field data
 

@@ -12,7 +12,9 @@
 #include "world.hpp"
 
 bool exchangeAssuredZero(const Ferromagnet* magnet) {
-  return (magnet->aex.assuredZero() || magnet->msat.assuredZero());
+  return ((magnet->aex.assuredZero() && magnet->interExch.assuredZero())
+        || magnet->scaleExch.assuredZero()
+        || magnet->msat.assuredZero());
 }
 
 __global__ void k_exchangeField(CuField hField,
@@ -84,14 +86,17 @@ __global__ void k_exchangeField(CuField hField,
         }
       }
       else { // Neumann BC
+        if (a == 0)
+          continue;
+
         real3 Gamma = getGamma(dmiTensor, idx, normal, m);
         real delta = dot(rel_coo, system.cellsize);
         m_ = m + (Gamma / (2*a)) * delta;
         a_ = a;
       }
+
       Aex = (inter != 0) ? inter : harmonicMean(a, a_);
       Aex *= scale;
-
       h += 2 * Aex * dot(normal, w) * (m_ - m);
     }
   }
@@ -144,44 +149,48 @@ __global__ void k_exchangeField(CuField hField,
     const int3 coo_ = mastergrid.wrap(coo + rel_coo);
     const int idx_ = grid.coord2index(coo_);
 
-    if(msat.valueAt(idx_) != 0) {
-      real3 m_;
-      real a_;
-      int3 normal = rel_coo * rel_coo;
+    real3 m_;
+    real a_;
+    int3 normal = rel_coo * rel_coo;
 
-      real inter = 0;
-      real scale = 1;
-      real Aex;
+    real inter = 0;
+    real scale = 1;
+    real Aex;
 
-      if(hField.cellInGeometry(coo_)) {
-        m_ = m1Field.vectorAt(idx_);
-        a_ = aex.valueAt(idx_);
+    if(hField.cellInGeometry(coo_)) {
+      if (msat.valueAt(idx_) == 0)
+        continue;
 
-        uint ridx = system.getRegionIdx(idx);
-        uint ridx_ = system.getRegionIdx(idx_);
+      m_ = m1Field.vectorAt(idx_);
+      a_ = aex.valueAt(idx_);
 
-        if (ridx != ridx_) {
-          scale = scaleEx.valueBetween(ridx, ridx_);
-          inter = interEx.valueBetween(ridx, ridx_);
-        }
+      uint ridx = system.getRegionIdx(idx);
+      uint ridx_ = system.getRegionIdx(idx_);
+
+      if (ridx != ridx_) {
+        scale = scaleEx.valueBetween(ridx, ridx_);
+        inter = interEx.valueBetween(ridx, ridx_);
       }
-      else { // Neumann BC
-        real3 Gamma1 = getGamma(dmiTensor, idx, normal, m);
-        real fac = an / (2 * a);
-        real delta = dot(rel_coo, system.cellsize);
-        if (abs(fac) == 1)
-          m_ = m + Gamma1 / (4*a) * delta;
-        else {
-          real3 Gamma2 = getGamma(dmiTensor, idx, normal, m2Field.vectorAt(idx));
-          m_ = m + delta / (a * 2 * (1 - fac*fac)) * (Gamma1 - fac * Gamma2);
-        }
-        a_ = a;
-      }
-      Aex = (inter != 0) ? inter : harmonicMean(a, a_);
-      Aex *= scale;
-
-      h += 2 * Aex * dot(normal, w) * (m_ - m);
     }
+    else { // Neumann BC
+      if (a == 0)
+        continue;
+
+      real3 Gamma1 = getGamma(dmiTensor, idx, normal, m);
+      real fac = an / (2 * a);
+      real delta = dot(rel_coo, system.cellsize);
+      if (abs(fac) == 1)
+        m_ = m + Gamma1 / (4*a) * delta;
+      else {
+        real3 Gamma2 = getGamma(dmiTensor, idx, normal, m2Field.vectorAt(idx));
+        m_ = m + delta / (a * 2 * (1 - fac*fac)) * (Gamma1 - fac * Gamma2);
+      }
+      a_ = a;
+    }
+
+    Aex = (inter != 0) ? inter : harmonicMean(a, a_);
+    Aex *= scale;
+    h += 2 * Aex * dot(normal, w) * (m_ - m);
   }
   hField.setVectorInCell(idx, h / msat.valueAt(idx));
 }

@@ -1,6 +1,7 @@
 #include "conductivitytensor.hpp"
 #include "cudalaunch.hpp"
-#include "ferromagnetquantity.hpp"
+#include "quantityevaluator.hpp"
+#include "ferromagnet.hpp"
 #include "field.hpp"
 #include "fieldops.hpp"
 #include "linsolver.hpp"
