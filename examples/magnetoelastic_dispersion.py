@@ -197,6 +197,7 @@ ax.imshow(FT_tot**2, aspect='auto', origin='lower', extent=extent,
 ax.set_xlim(xmin, xmax)
 ax.set_ylim(ymin, ymax)
 ax.set_xlabel("wavenumber (rad/µm)")
-ax.set_ylabel("wavenumber (GHz)")
+ax.set_ylabel("frequency (GHz)")
+ax.set_title("Magnetoelastic dispersion relation")
 ax.legend(loc="lower right")
 plt.show()
