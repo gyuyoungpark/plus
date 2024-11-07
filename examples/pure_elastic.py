@@ -50,7 +50,8 @@ cx, cy, cz = length/nx, width/ny, thickness/nz
 cellsize = (cx, cy, cz)
 
 grid = Grid((nx, ny, nz))
-world = World(cellsize, mastergrid=grid, pbc_repetitions=(1,1,1))
+# uncomment for PBC
+world = World(cellsize)  # , mastergrid=grid, pbc_repetitions=(1,1,1))
 magnet = Ferromagnet(world, grid)
 
 # elasticity parameters
