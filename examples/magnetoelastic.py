@@ -105,7 +105,7 @@ m_im = ax.imshow(m[0,...], origin="lower", extent=im_extent, vmin=vmin, vmax=vma
 
 # colorbar setup
 cbar = plt.colorbar(m_im)
-cbar.ax.set_ylabel(r"$<m_y>", rotation=270)
+cbar.ax.set_ylabel(r"$<m_y>$", rotation=270)
 
 # final touches
 ax.set_xlabel("$x$ (m)")
