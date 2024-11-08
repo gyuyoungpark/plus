@@ -5,6 +5,7 @@ from mumaxplus import Antiferromagnet, Grid, World
 from mumaxplus.util.constants import GAMMALL
 
 # Antiferromagnetic spinwave dispersion relation
+# based on https://doi.org/10.1063/1.5109132
 
 # Numerical parameters
 fmax = 5E13          # maximum frequency (in Hz) of the sinc pulse
