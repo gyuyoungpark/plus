@@ -78,7 +78,7 @@ def simulation(theta):
     magnet.elastic_displacement = (0, 0, 0)
 
     # damping
-    magnet.alpha = 1e-3
+    magnet.alpha = 0
     magnet.eta = 0
 
     # time stepping
@@ -89,17 +89,23 @@ def simulation(theta):
     m = np.zeros(shape=(nt, 3, nz, ny, nx))
     u = np.zeros(shape=(nt, 3, nz, ny, nx))
     
-    # add magnetic field excitation in the middle of the magnet
-    Bac = 1e-3
+    # add magnetic field and external force excitation in the middle of the magnet
+    Fac = 1e13  # force pulse strength
+    Bac = 1e-3  # magnetic pulse strength
     pulse_width = 200e-9  # TODO: make less wide?
 
-    Bshape = XRange(-pulse_width/2, pulse_width/2).translate(*magnet.center)
-    Bmask = magnet._get_mask_array(Bshape, grid, world, "mask")
-    Bac_dir = np.array([Bac*np.sin(theta), Bac*np.cos(theta), 0])
-    def time_field(t):
+    shape = XRange(-pulse_width/2, pulse_width/2).translate(*magnet.center)
+    mask = magnet._get_mask_array(shape, grid, world, "mask")
+    Fac_dir = np.array([Fac, Fac, Fac])/np.sqrt(3)
+    Bac_dir = np.array([Bac, Bac, Bac])/np.sqrt(3)
+    def time_force_field(t):
+        sinc = np.sinc(2 * fmax * (t - time_max / 2))
+        return tuple(sinc * Fac_dir)
+    def time_magnetic_field(t):
         sinc = np.sinc(2 * fmax * (t - time_max / 2))
         return tuple(sinc * Bac_dir)
-    magnet.bias_magnetic_field.add_time_term(time_field, mask=Bmask)
+    magnet.external_body_force.add_time_term(time_force_field, mask=mask)
+    magnet.bias_magnetic_field.add_time_term(time_magnetic_field, mask=mask)
 
     # run a while and save the data
     m[0,...] = magnet.magnetization.eval()
@@ -191,7 +197,7 @@ ax.plot([], [], label="magnetoelastic", color="white")  # for legend entry
 
 # plot numerical result
 ax.imshow(FT_tot**2, aspect='auto', origin='lower', extent=extent,
-           vmin=0, vmax=2, cmap="inferno")
+           vmin=0, vmax=0.6, cmap="inferno")
 
 # plot cleanup
 ax.set_xlim(xmin, xmax)
