@@ -178,16 +178,14 @@ __global__ void k_exchangeField(CuField hField,
 
       real3 m2 = m2Field.vectorAt(idx);
       real3 Gamma1 = getGamma(dmiTensor, idx, normal, m);
-      real3 Gamma2 = getGamma(dmiTensor, idx, normal, m2);
-      real3 Gxmxm = cross(cross(Gamma1, m), m);
 
       real delta = dot(rel_coo, system.cellsize);
 
       int3 other_neighbor_coo = mastergrid.wrap(coo - rel_coo);
       real3 m2__ = m2Field.vectorAt(other_neighbor_coo);
       real3 d_m2 = (m2 - m2__) / delta;
-      m_ = m + (an * cross(cross(d_m2, m), m) + Gxmxm) * delta / (2*a);
 
+      m_ = m + (an * cross(cross(d_m2, m), m) + Gamma1) * delta / (2*a);
       a_ = a;
     }
 

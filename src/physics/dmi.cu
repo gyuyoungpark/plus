@@ -188,17 +188,14 @@ __global__ void k_dmiFieldAFM(CuField hField,
       real3 Gamma1 = getGamma(dmiTensor, idx, n, m1);
       real3 Gamma2 = getGamma(dmiTensor, idx, n, m2);
 
-      real3 Gxmxm = cross(cross(Gamma1, m1), m1);
-
       real an = afmex_nn.valueAt(idx);
-      real a2 = 2 * a;
-      real an_a2 = an / a2;
 
       int3 other_neighbor_coo = mastergrid.wrap(coo - relative_coo);
       real3 m2__ = m2Field.vectorAt(other_neighbor_coo);
       real3 d_m2 = (m2 - m2__) / delta;
-      m1_ = m1 + (an * cross(cross(d_m2, m1), m1) + Gxmxm) * delta / (2*a);
-      m2_ = m2;
+
+      m1_ = m1 + (an * cross(cross(d_m2, m1), m1) + Gamma1) * delta / (2*a);
+      m2_ = m2 + (an * cross(cross((m1_ - m1)/delta, m2), m2) + Gamma2) * delta / (2*a);
     }
     else {
       m1_ = m1Field.vectorAt(neighbor_idx);
