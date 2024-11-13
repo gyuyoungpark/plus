@@ -117,7 +117,7 @@ __global__ void k_dmiFieldAFM(CuField hField,
                            bool openBC) {
   const int idx = blockIdx.x * blockDim.x + threadIdx.x;
   const auto system = hField.system;
- 
+
   if (!system.grid.cellInGrid(idx))
     return;
 
@@ -141,6 +141,7 @@ __global__ void k_dmiFieldAFM(CuField hField,
                             int3{0, 1, 0}, int3{0, 0, -1}, int3{0, 0, 1}}) {
     int3 neighbor_coo = mastergrid.wrap(coo + relative_coo);
     int neighbor_idx;
+
     if (!system.inGeometry(neighbor_coo)) { neighbor_idx = idx; }
     else { neighbor_idx = system.grid.coord2index(neighbor_coo); }
     
@@ -187,17 +188,17 @@ __global__ void k_dmiFieldAFM(CuField hField,
       real3 Gamma1 = getGamma(dmiTensor, idx, n, m1);
       real3 Gamma2 = getGamma(dmiTensor, idx, n, m2);
 
+      real3 Gxmxm = cross(cross(Gamma1, m1), m1);
+
       real an = afmex_nn.valueAt(idx);
       real a2 = 2 * a;
       real an_a2 = an / a2;
-      if (abs(an_a2) == 1) {
-        m1_ = m1 + Gamma1 / (4*a) * delta;
-        m2_ = m2 + Gamma2 / (4*a) * delta;
-      }
-      else {
-        m1_ = m1 + delta / (a2 * (1 - an_a2*an_a2)) * (Gamma1 - an_a2 * Gamma2);
-        m2_ = m2 + delta / (a2 * (1 - an_a2*an_a2)) * (Gamma2 - an_a2 * Gamma1);
-      }
+
+      int3 other_neighbor_coo = mastergrid.wrap(coo - relative_coo);
+      real3 m2__ = m2Field.vectorAt(other_neighbor_coo);
+      real3 d_m2 = (m2 - m2__) / delta;
+      m1_ = m1 + (an * cross(cross(d_m2, m1), m1) + Gxmxm) * delta / (2*a);
+      m2_ = m2;
     }
     else {
       m1_ = m1Field.vectorAt(neighbor_idx);
@@ -211,9 +212,7 @@ __global__ void k_dmiFieldAFM(CuField hField,
 
   }  // end loop over neighbors
 
-  // TODO: DMI exchange at a single site
-  //real3 d = real3{0, 0, 1e7};
-  //h += dot(d, cross(m1, m2));
+  // TODO: DMI exchange at a single site ???
 
   h /= msat.valueAt(idx);
   hField.setVectorInCell(idx, h);

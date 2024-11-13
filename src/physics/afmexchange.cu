@@ -124,15 +124,15 @@ __global__ void k_afmExchangeFieldNN(CuField hField,
         }
       }
       else { // Neumann BC
-        real3 Gamma1 = getGamma(dmiTensor, idx, normal, m1Field.vectorAt(idx));
-        real fac = ann / (2 * a);
-        if(abs(fac) == 1) {
-          m2_ = m2 + Gamma1 / (4*a) * delta;
-        }
-        else {
-          real3 Gamma2 = getGamma(dmiTensor, idx, normal, m2);
-          m2_ = m2 + delta / (a * 2 * (1 - fac*fac)) * (Gamma2 - fac * Gamma1);
-        }
+        real3 Gamma2 = getGamma(dmiTensor, idx, normal, m2);
+        real3 Gxmxm = cross(cross(Gamma2, m2), m2);
+
+        int3 other_neighbor_coo = mastergrid.wrap(coo - rel_coo);
+        real3 m1__ = m1Field.vectorAt(other_neighbor_coo);
+
+        real3 m1 = m1Field.vectorAt(idx);
+        real3 d_m1 = (m1 - m1__) / delta;
+        m2_ = m2 + (ann * cross(cross(d_m1, m2), m2) + Gxmxm) * delta / (2*a);
         ann_ = ann;
       }
       Aex = (inter != 0) ? inter : harmonicMean(ann, ann_);
