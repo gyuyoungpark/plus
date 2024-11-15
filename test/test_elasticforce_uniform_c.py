@@ -1,8 +1,8 @@
 """This file tests every term of the elastic force individually by comparing
 the calculated elastic force to the analytical solutions.
 Periodic boundry conditions are used in the direction(s) corresponding to the
-derivative direction(s) so everything stays smooth, while free boundary
-conditions are assumed in all other directions (so no effect).
+derivative direction(s) so everything stays smooth, while zero derivative is
+assumed in all other directions.
 All stiffness constants are uniform in these tests for simplicity!
 """
 
@@ -14,12 +14,12 @@ import matplotlib.pyplot as plt
 from mumaxplus import Grid, World, Ferromagnet
 
 
-SRTOL = 1e-3
-SRTOL_MIX = 5e-3  # mixed derivative tests are less precise
+SRTOL = 1e-4
+SRTOL_MIX = 1e-4
 
 cx, cy, cz = 1.5e-9, 2e-9, 2.5e-9
 cellsize = (cx, cy, cz)
-N1, N2, n1, n2 = 128, 256, 1, 4
+N1, N2 = 128, 256
 P1, P2 = 2, 3  # number of sinus periods
 A = 1e-15  # displacement amplitude
 c11 = 283e9
@@ -46,7 +46,8 @@ def make_long_magnet(d_comp):
     gridsize[d_comp], pbc_repetitions[d_comp] = N1, 1  # set for PBC grid
     world = World(cellsize, mastergrid=Grid(gridsize), pbc_repetitions=pbc_repetitions)
 
-    gridsize[(d_comp + 1)%3], gridsize[(d_comp + 2)%3] = n1, n2  # set for magnet
+    gridsize = [1, 1, 1]  # set for magnet
+    gridsize[d_comp] = N1
     magnet =  Ferromagnet(world, Grid(gridsize))
     magnet.enable_elastodynamics = True
 
@@ -170,7 +171,7 @@ def check_mixed_derivative(d_comp_outer, d_comp_inner):
     world = World(cellsize, mastergrid=Grid(gridsize), pbc_repetitions=pbc_repetitions)
 
     # make magnet
-    gridsize = [n1, n1, n1]  # other index will stay n1
+    gridsize = [1, 1, 1]  # other index will stay n1
     gridsize[d_comp_outer], gridsize[d_comp_inner] = N1, N2
     magnet =  Ferromagnet(world, Grid(gridsize))
     magnet.enable_elastodynamics = True
