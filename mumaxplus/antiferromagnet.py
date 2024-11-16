@@ -274,8 +274,7 @@ class Antiferromagnet(Magnet):
         describes intersublattice DMI exchange.
 
         Note that individual sublattices can have their own tensor
-        to describe intrasublattice DMI exchange. If these are not set
-        this dmi_tensor is used to describe all of the DMI terms.
+        to describe intrasublattice DMI exchange.
 
         See Also
         --------
@@ -290,7 +289,23 @@ class Antiferromagnet(Magnet):
 
     @property
     def dmi_tensors(self):
-        """ Returns the DMI tensor of self, self.sub1 and self.sub2."""
+        """ Returns the DMI tensor of self, self.sub1 and self.sub2.
+
+        This group can be used to set the intersublattice and both intrasublattice
+        DMI tensors at the same time.
+
+        For example, to set interfacial DMI in the whole system to the same value,
+        one could use
+        >>> magnet = Antiferromagnet(world, grid)
+        >>> magnet.dmi_tensors.set_bulk_dmi(1e-3)
+
+        Or to set an individual tensor element, one could use
+        >>> magnet.dmi_tensors.xxy = 1e-3
+
+        See Also
+        --------
+        DmiTensor
+        """
         return DmiTensorGroup([self.dmi_tensor, self.sub1.dmi_tensor, self.sub2.dmi_tensor])
 
     # ----- QUANTITIES ----------------------

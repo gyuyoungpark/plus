@@ -91,9 +91,6 @@ class DmiTensor:
         """
         self._impl = impl
 
-    def __eq__(self, other):
-        return self._impl.equals(other._impl)
-
     def make_zero(self):
         """Set all DMI parameters to zero."""
         self.xxy = 0.0
