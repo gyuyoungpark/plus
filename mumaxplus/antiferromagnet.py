@@ -5,7 +5,7 @@ import warnings
 
 import _mumaxpluscpp as _cpp
 
-from .dmitensor import DmiTensor
+from .dmitensor import DmiTensor, DmiTensorGroup
 from .magnet import Magnet
 from .fieldquantity import FieldQuantity
 from .ferromagnet import Ferromagnet
@@ -287,6 +287,11 @@ class Antiferromagnet(Magnet):
             The DMI tensor of this Antiferromagnet.
         """
         return DmiTensor(self._impl.dmi_tensor)
+
+    @property
+    def dmi_tensors(self):
+        """ Returns the DMI tensor of self, self.sub1 and self.sub2."""
+        return DmiTensorGroup([self.dmi_tensor, self.sub1.dmi_tensor, self.sub2.dmi_tensor])
 
     # ----- QUANTITIES ----------------------
 

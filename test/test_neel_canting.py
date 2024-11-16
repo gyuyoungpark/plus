@@ -53,9 +53,7 @@ def test_neel_canting():
     D = np.linspace(Dc / 10, Dc, 5)
 
     for d in D:
-        magnet.sub1.dmi_tensor.set_bulk_dmi(d)
-        magnet.sub2.dmi_tensor.set_bulk_dmi(d)
-
+        magnet.dmi_tensors.set_bulk_dmi(d)
         magnet.relax()
 
         cant = canting(magnet)[N//2, N//2,:]
