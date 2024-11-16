@@ -5,6 +5,7 @@ import warnings
 
 import _mumaxpluscpp as _cpp
 
+from .dmitensor import DmiTensor
 from .magnet import Magnet
 from .fieldquantity import FieldQuantity
 from .ferromagnet import Ferromagnet
@@ -265,6 +266,27 @@ class Antiferromagnet(Magnet):
     @latcon.setter
     def latcon(self, value):
         self.latcon.set(value)
+
+    @property
+    def dmi_tensor(self):
+        """
+        Get the DMI tensor of this Antiferromagnet. This tensor
+        describes intersublattice DMI exchange.
+
+        Note that individual sublattices can have their own tensor
+        to describe intrasublattice DMI exchange. If these are not set
+        this dmi_tensor is used to describe all of the DMI terms.
+
+        See Also
+        --------
+        DmiTensor
+
+        Returns
+        -------
+        DmiTensor
+            The DMI tensor of this Antiferromagnet.
+        """
+        return DmiTensor(self._impl.dmi_tensor)
 
     # ----- QUANTITIES ----------------------
 

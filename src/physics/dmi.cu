@@ -110,6 +110,7 @@ __global__ void k_dmiFieldAFM(CuField hField,
                            const CuField m1Field,
                            const CuField m2Field,
                            const CuDmiTensor dmiTensor,
+                           const CuDmiTensor interDmiTensor,
                            const CuParameter msat,
                            Grid mastergrid,
                            const CuParameter aex,
@@ -158,24 +159,37 @@ __global__ void k_dmiFieldAFM(CuField hField,
     // Get the dmi strengths between the center cell and the neighbor, which are
     // the harmonic means of the dmi strengths of both cells.
     real Dxz, Dxy, Dyz, Dzx, Dyx, Dzy;
+    real Dixz, Dixy, Diyz, Dizx, Diyx, Dizy;
     
     if (relative_coo.x) {  // derivative along x
       Dxz = dmiTensor.xxz.harmonicMean(idx, neighbor_idx);
       Dxy = dmiTensor.xxy.harmonicMean(idx, neighbor_idx);
       Dyz = dmiTensor.xyz.harmonicMean(idx, neighbor_idx);
+      Dixz = interDmiTensor.xxz.harmonicMean(idx, neighbor_idx);
+      Dixy = interDmiTensor.xxy.harmonicMean(idx, neighbor_idx);
+      Diyz = interDmiTensor.xyz.harmonicMean(idx, neighbor_idx);
     } else if (relative_coo.y) {  // derivative along y
       Dxz = dmiTensor.yxz.harmonicMean(idx, neighbor_idx);
       Dxy = dmiTensor.yxy.harmonicMean(idx, neighbor_idx);
       Dyz = dmiTensor.yyz.harmonicMean(idx, neighbor_idx);
+      Dixz = interDmiTensor.yxz.harmonicMean(idx, neighbor_idx);
+      Dixy = interDmiTensor.yxy.harmonicMean(idx, neighbor_idx);
+      Diyz = interDmiTensor.yyz.harmonicMean(idx, neighbor_idx);
     } else if (relative_coo.z) {  // derivative along z
       Dxz = dmiTensor.zxz.harmonicMean(idx, neighbor_idx);
       Dxy = dmiTensor.zxy.harmonicMean(idx, neighbor_idx);
       Dyz = dmiTensor.zyz.harmonicMean(idx, neighbor_idx);
+      Dixz = interDmiTensor.zxz.harmonicMean(idx, neighbor_idx);
+      Dixy = interDmiTensor.zxy.harmonicMean(idx, neighbor_idx);
+      Diyz = interDmiTensor.zyz.harmonicMean(idx, neighbor_idx);
     }
 
     Dzx = -Dxz;  // dmi tensor is assymetric
     Dyx = -Dxy;
     Dzy = -Dyz;
+    Dizx = -Dixz;
+    Diyx = -Dixy;
+    Dizy = -Diyz;
 
     // Distance between neighbors (the finite difference)
     real delta = relative_coo.x * system.cellsize.x +
@@ -203,9 +217,9 @@ __global__ void k_dmiFieldAFM(CuField hField,
     }
 
     // Compute the effective field contribution of the DMI with the neighbor
-    h.x += (Dxy * m1_.y + Dxz * m1_.z - Dxy * m2_.y - Dxz * m2_.z) / delta;
-    h.y += (Dyx * m1_.x + Dyz * m1_.z - Dyx * m2_.x - Dyz * m2_.z) / delta;
-    h.z += (Dzx * m1_.x + Dzy * m1_.y - Dzx * m2_.x - Dzy * m2_.y) / delta;
+    h.x += (Dxy * m1_.y + Dxz * m1_.z - Dixy * m2_.y - Dixz * m2_.z) / delta;
+    h.y += (Dyx * m1_.x + Dyz * m1_.z - Diyx * m2_.x - Diyz * m2_.z) / delta;
+    h.z += (Dzx * m1_.x + Dzy * m1_.y - Dizx * m2_.x - Dizy * m2_.y) / delta;
 
   }  // end loop over neighbors
 
@@ -236,8 +250,9 @@ Field evalDmiField(const Ferromagnet* magnet) {
   else {
     auto mag2 = magnet->hostMagnet()->getOtherSublattice(magnet)->magnetization()->field().cu();
     auto afmex_nn = magnet->hostMagnet()->afmex_nn.cu();
+    auto interDmiTensor = magnet->hostMagnet()->dmiTensor.cu();
     cudaLaunch(ncells, k_dmiFieldAFM, hField.cu(), mag, mag2,
-              dmiTensor, msat, grid, aex, afmex_nn, BC);
+              dmiTensor, interDmiTensor, msat, grid, aex, afmex_nn, BC);
   }
   return hField;
 }
