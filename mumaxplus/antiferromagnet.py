@@ -297,7 +297,7 @@ class Antiferromagnet(Magnet):
         For example, to set interfacial DMI in the whole system to the same value,
         one could use
         >>> magnet = Antiferromagnet(world, grid)
-        >>> magnet.dmi_tensors.set_bulk_dmi(1e-3)
+        >>> magnet.dmi_tensors.set_interfacial_dmi(1e-3)
 
         Or to set an individual tensor element, one could use
         >>> magnet.dmi_tensors.xxy = 1e-3
