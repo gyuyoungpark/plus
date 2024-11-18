@@ -29,7 +29,7 @@ z = np.linspace(-ny*cy, ny*cy, nz)  # Sample range when fitting
 def max_relative_error(result, wanted):
     err = np.abs(result - wanted)
     relerr = err / np.abs(wanted)
-    return np.max(relerr)
+    return relerr
 
 def compute_domain_wall_width(magnet):
     """Computes the domain wall width"""
@@ -58,12 +58,12 @@ def fit_domain_wall(magnet):
     """Fit Walker ansatz to domain wall profile"""
     mz = magnet.sub1.magnetization()[0,]
     profile = mz[:, int(ny/2), 0]  # middle row of the grid
-    popt, pcov = curve_fit(DW_profile, z, profile, p0=(0, 5e-9))
+    popt, pcov = curve_fit(DW_profile, z, profile, p0=(1e-9, 5e-9))
     return popt
 
 def get_domain_wall_speed(self):
     """Find stationary value of the velocity"""
-    t = 1e-11
+    t = 2e-11
     self.world.timesolver.run(t/2)
     q1 = fit_domain_wall(self.magnet)[0]
     self.world.timesolver.run(t/2)
@@ -72,30 +72,17 @@ def get_domain_wall_speed(self):
 
 def initialize(self):
     """Create a two-domain state"""
+    nz2 = nz // 2
+    dw2 = dw//2
 
-    """
     m = np.zeros(self.magnet.sub1.magnetization.shape)
-    m[0,0:int(nz/2)-int(dw/2),:,:] = -1
-    m[2,int(nz/2)-int(dw/2):int(nz/2)+int(dw/2),:,:] = 1  # Domain wall has a width of 4 nm.
-    m[0,int(nz/2)+int(dw/2):,:,:] = 1
+    m[0,         0:nz2 - dw2, :, :] = -1
+    m[2, nz2 - dw2:nz2 + dw2, :, :] = 1  # Domain wall has a width of 4 nm.
+    m[0, nz2 + dw2:         , :, :] = 1
     
     self.magnet.sub1.magnetization = m
     self.magnet.sub2.magnetization = -m
-    """
-
-    twodomain_m1 = twodomain((-1,0,0), (0,0,1), (1,0,0), nz*cz/2, dw*cz)  # Domain for first sublatice
-    twodomain_m2 = twodomain((1,0,0), (0,0,-1), (-1,0,0), nz*cz/2, dw*cz)  # Domain for second sublatice
-
-    # Switch x and z to get the domain wall perpendicular to the z-axis
-    def rotated_twodomain_m1(x, y ,z):
-        return twodomain_m1(z, y, x)
-    def rotated_twodomain_m2(x, y, z):
-        return twodomain_m2(z, y, x)
-    
-    self.magnet.sub1.magnetization = rotated_twodomain_m1
-    self.magnet.sub2.magnetization = rotated_twodomain_m2
     self.world.timesolver.run(1e-11)  # instead of minimize for better performance
-
 
 @pytest.mark.slow
 class TestStaticDomainWall:
