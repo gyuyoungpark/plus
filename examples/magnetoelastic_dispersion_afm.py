@@ -142,7 +142,6 @@ if os.path.isfile(m_filename):
 else:
     m, u = simulation(theta)
 
-print(m[-1,...])
 # plotting ranges
 xmin, xmax = -0.6, 0.6  # rad/nm
 ymin, ymax = 0.2/(2*np.pi), 2.5/(2*np.pi)  # THz
