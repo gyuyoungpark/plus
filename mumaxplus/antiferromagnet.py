@@ -5,6 +5,7 @@ import warnings
 
 import _mumaxpluscpp as _cpp
 
+from .dmitensor import DmiTensor, DmiTensorGroup
 from .magnet import Magnet
 from .fieldquantity import FieldQuantity
 from .ferromagnet import Ferromagnet
@@ -265,6 +266,47 @@ class Antiferromagnet(Magnet):
     @latcon.setter
     def latcon(self, value):
         self.latcon.set(value)
+
+    @property
+    def dmi_tensor(self):
+        """
+        Get the DMI tensor of this Antiferromagnet. This tensor
+        describes intersublattice DMI exchange.
+
+        Note that individual sublattices can have their own tensor
+        to describe intrasublattice DMI exchange.
+
+        Returns
+        -------
+        DmiTensor
+            The DMI tensor of this Antiferromagnet.
+        
+        See Also
+        --------
+        DmiTensor, dmi_tensors
+        """
+        return DmiTensor(self._impl.dmi_tensor)
+
+    @property
+    def dmi_tensors(self):
+        """ Returns the DMI tensor of self, self.sub1 and self.sub2.
+
+        This group can be used to set the intersublattice and both intrasublattice
+        DMI tensors at the same time.
+
+        For example, to set interfacial DMI in the whole system to the same value,
+        one could use
+        >>> magnet = Antiferromagnet(world, grid)
+        >>> magnet.dmi_tensors.set_interfacial_dmi(1e-3)
+
+        Or to set an individual tensor element, one could use
+        >>> magnet.dmi_tensors.xxy = 1e-3
+
+        See Also
+        --------
+        DmiTensor, dmi_tensor
+        """
+        return DmiTensorGroup([self.dmi_tensor, self.sub1.dmi_tensor, self.sub2.dmi_tensor])
 
     # ----- QUANTITIES ----------------------
 

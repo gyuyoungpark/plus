@@ -2,6 +2,31 @@
 
 from .parameter import Parameter
 
+class DmiTensorGroup:
+    """Proxy class for managing multiple DmiTensor instances."""
+
+    def __init__(self, tensors):
+        self.tensors = tensors
+
+    def __getattr__(self, name):
+
+        if any(hasattr(tensor, name) for tensor in self.tensors):
+            def method(*args, **kwargs):
+                for tensor in self.tensors:
+                    if hasattr(tensor, name):
+                        getattr(tensor, name)(*args, **kwargs)
+            return method
+
+        raise AttributeError(f"'DmiTensor' object has no attribute '{name}'")
+
+    def __setattr__(self, name, value):
+        if name == "tensors":
+            super().__setattr__(name, value)
+        elif name in DmiTensor.__dict__:
+            for tensor in self.tensors:
+                setattr(tensor, name, value)
+        else:
+            raise AttributeError(f"'DmiTensor' object has no attribute '{name}'")
 
 class DmiTensor:
     r"""Contains the DMI parameters of a ferromagnet.
