@@ -61,28 +61,28 @@ def fit_domain_wall(magnet):
     popt, pcov = curve_fit(DW_profile, z, profile, p0=(1e-9, 5e-9))
     return popt
 
-def get_domain_wall_speed(self):
+def get_domain_wall_speed(world, magnet):
     """Find stationary value of the velocity"""
     t = 2e-11
-    self.world.timesolver.run(t/2)
-    q1 = fit_domain_wall(self.magnet)[0]
-    self.world.timesolver.run(t/2)
-    q2 = fit_domain_wall(self.magnet)[0]
+    world.timesolver.run(t/2)
+    q1 = fit_domain_wall(magnet)[0]
+    world.timesolver.run(t/2)
+    q2 = fit_domain_wall(magnet)[0]
     return 2 * np.abs(q1-q2) / t
 
-def initialize(self):
+def initialize(world, magnet):
     """Create a two-domain state"""
     nz2 = nz // 2
     dw2 = dw//2
 
-    m = np.zeros(self.magnet.sub1.magnetization.shape)
+    m = np.zeros(magnet.sub1.magnetization.shape)
     m[0,         0:nz2 - dw2, :, :] = -1
     m[2, nz2 - dw2:nz2 + dw2, :, :] = 1  # Domain wall has a width of 4 nm.
     m[0, nz2 + dw2:         , :, :] = 1
     
-    self.magnet.sub1.magnetization = m
-    self.magnet.sub2.magnetization = -m
-    self.world.timesolver.run(1e-11)  # instead of minimize for better performance
+    magnet.sub1.magnetization = m
+    magnet.sub2.magnetization = -m
+    world.timesolver.run(1e-11)  # instead of minimize for better performance
 
 @pytest.mark.slow
 class TestStaticDomainWall:
@@ -91,6 +91,7 @@ class TestStaticDomainWall:
     def setup_class(self):
         self.world = World(cellsize=(cx, cy, cz))
         self.magnet = Antiferromagnet(self.world, Grid((nx, ny, nz)))
+        self.magnet.enable_demag = False
         self.magnet.msat = 0.4e6
         self.magnet.alpha = 0.1
         self.magnet.ku1 = 64e3
@@ -101,7 +102,7 @@ class TestStaticDomainWall:
         self.magnet.sub1.dmi_tensor.set_interfacial_dmi(0.11e-3)
         self.magnet.sub2.dmi_tensor.set_interfacial_dmi(0.11e-3)
 
-        initialize(self)
+        initialize(self.world, self.magnet)
 
     def test_domain_wall_width(self):
         result = fit_domain_wall(self.magnet)[-1]
@@ -116,6 +117,7 @@ class TestDynamicDomainWall:
     def setup_class(self):
         self.world = World(cellsize=(cx, cy, cz))
         self.magnet = Antiferromagnet(self.world, Grid((nx, ny, nz)))
+        self.magnet.enable_demag = False
         self.magnet.msat = 0.4e6
         self.magnet.alpha = 0.1
         self.magnet.ku1 = 64e3
@@ -126,7 +128,7 @@ class TestDynamicDomainWall:
         self.magnet.sub1.dmi_tensor.set_interfacial_dmi(0.11e-3)
         self.magnet.sub2.dmi_tensor.set_interfacial_dmi(0.11e-3)
 
-        initialize(self)
+        initialize(self.world, self.magnet)
 
         # Slonczewski parameters
         self.magnet.pol = 0.044
@@ -136,6 +138,6 @@ class TestDynamicDomainWall:
         self.magnet.jcur = (0, 0, 1e12)
 
     def test_domain_wall_speed(self):
-        result = get_domain_wall_speed(self)
+        result = get_domain_wall_speed(self.world, self.magnet)
         wanted = compute_domain_wall_speed(self.magnet)
         assert max_relative_error(result, wanted) < RTOL
