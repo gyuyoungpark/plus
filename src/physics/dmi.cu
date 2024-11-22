@@ -210,7 +210,7 @@ __global__ void k_dmiFieldAFM(CuField hField,
         // Approximate normal derivative of sister sublattice by taking
         // the bulk derivative closest to the edge.
         real3 m2__ = m2Field.vectorAt(other_neighbor_coo);
-        real3 d_m2 = (m2 - m2__) / delta;
+        d_m2 = (m2 - m2__) / delta;
       }
 
       m1_ = m1 + (an * cross(cross(d_m2, m1), m1) + Gamma1) * delta / (2*a);

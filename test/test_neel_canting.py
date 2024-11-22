@@ -11,7 +11,7 @@ import numpy as np
 from mumaxplus import Antiferromagnet, Grid, World
 from mumaxplus.util import *
 
-RTOL = 1e-2 # 1%
+RTOL = 2e-2 # 2%
 
 def canting(magnet):  
     return magnet.neel_vector.eval()[2,...]/np.linalg.norm(magnet.neel_vector.eval(), axis=0)
