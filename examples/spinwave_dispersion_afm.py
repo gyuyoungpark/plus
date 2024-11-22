@@ -29,7 +29,7 @@ K = 1e3
 grid_size = (nx, 1, 1)
 cell_size = (dx, dx, dx)
 
-m_filename = "FM_disp.npy"
+m_filename = "AFM_disp.npy"
 
 world = World(cell_size)
 world.bias_magnetic_field = (0, 0, Bz)
@@ -73,7 +73,7 @@ else:
     m = simulate()
 
 # extent of k values and frequencies, compensated for cell-width
-xmin, xmax = -np.pi/dx, np.pi/dx  # rad/m
+xmin, xmax = -1.25*1e9, 1.25*1e9  # rad/m
 ymin, ymax = 0, fmax  # Hz
 
 extent = [-(2 * np.pi) / (2 * dx) * (nx+1)/nx,
