@@ -276,14 +276,14 @@ class Antiferromagnet(Magnet):
         Note that individual sublattices can have their own tensor
         to describe intrasublattice DMI exchange.
 
-        See Also
-        --------
-        DmiTensor
-
         Returns
         -------
         DmiTensor
             The DMI tensor of this Antiferromagnet.
+        
+        See Also
+        --------
+        DmiTensor, dmi_tensors
         """
         return DmiTensor(self._impl.dmi_tensor)
 
@@ -304,7 +304,7 @@ class Antiferromagnet(Magnet):
 
         See Also
         --------
-        DmiTensor
+        DmiTensor, dmi_tensor
         """
         return DmiTensorGroup([self.dmi_tensor, self.sub1.dmi_tensor, self.sub2.dmi_tensor])
 

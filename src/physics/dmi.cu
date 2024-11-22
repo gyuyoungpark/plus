@@ -128,7 +128,7 @@ __global__ void k_dmiFieldAFM(CuField hField,
     return;
   }
 
-	real3 m1 = m1Field.vectorAt(idx);
+  real3 m1 = m1Field.vectorAt(idx);
   real3 m2 = m2Field.vectorAt(idx);
   const int3 coo = system.grid.index2coord(idx);
 
@@ -204,9 +204,14 @@ __global__ void k_dmiFieldAFM(CuField hField,
 
       real an = afmex_nn.valueAt(idx);
 
+      real3 d_m2{0, 0, 0};
       int3 other_neighbor_coo = mastergrid.wrap(coo - relative_coo);
-      real3 m2__ = m2Field.vectorAt(other_neighbor_coo);
-      real3 d_m2 = (m2 - m2__) / delta;
+      if(hField.cellInGeometry(other_neighbor_coo)) {
+        // Approximate normal derivative of sister sublattice by taking
+        // the bulk derivative closest to the edge.
+        real3 m2__ = m2Field.vectorAt(other_neighbor_coo);
+        real3 d_m2 = (m2 - m2__) / delta;
+      }
 
       m1_ = m1 + (an * cross(cross(d_m2, m1), m1) + Gamma1) * delta / (2*a);
       m2_ = m2 + (an * cross(cross((m1_ - m1)/delta, m2), m2) + Gamma2) * delta / (2*a);
