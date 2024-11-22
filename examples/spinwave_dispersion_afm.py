@@ -16,14 +16,14 @@ dx = 0.5E-9            # cellsize
 nx = 512*5             # number of cells
 
 # Material/system parameters
-a = dx              # lattice constant
-Bdc = 2             # bias field along the z direction
+a = 0.35e-9              # lattice constant
+Bz = 2             # bias field along the z direction
 A = 10E-12          # exchange constant
 A_nn = -5E-12
 A_c = -400E-12
 Ms = 400e3          # saturation magnetization
 alpha = 1e-3        # damping parameter
-K = 611e3
+K = 1e3
 
 # Create the world
 grid_size = (nx, 1, 1)
@@ -32,17 +32,16 @@ cell_size = (dx, dx, dx)
 m_filename = "FM_disp.npy"
 
 world = World(cell_size)
-world.bias_magnetic_field = (0, 0, Bdc)
+world.bias_magnetic_field = (0, 0, Bz)
 
 def simulate():
     # Create a ferromagnet
     magnet = Antiferromagnet(world, Grid(size=grid_size))
-    for sub in magnet.sublattices:
-        sub.msat = Ms
-        sub.aex = A
-        sub.alpha = alpha
-        sub.ku1 = K
-        sub.anisU = (0, 0, 1)
+    magnet.msat = Ms
+    magnet.aex = A
+    magnet.alpha = alpha
+    magnet.ku1 = K
+    magnet.anisU = (0, 0, 1)
 
     magnet.afmex_nn = A_nn
     magnet.afmex_cell = A_c
@@ -100,7 +99,7 @@ linewidth = 2
 
 # Plot the analytical derived dispersion relation
 k = np.linspace(xmin, xmax, 2500)
-wext = Bdc
+wext = Bz
 wani = 2 * K / Ms
 wex = 2*A/Ms * k**2
 wc = 4*A_c/(a*a*Ms)
@@ -111,19 +110,25 @@ w2 = GAMMALL * (wmagnon - wext)
 w3 = GAMMALL * (-wmagnon + wext)
 w4 = GAMMALL * (-wmagnon - wext)
 
-ax.plot(k, w1/(2*np.pi), '--', lw=1)
-ax.plot(k, w2/(2*np.pi), '--', lw=1)
-ax.plot(k, w3/(2*np.pi), '--', lw=1)
-ax.plot(k, w4/(2*np.pi), '--', lw=1)
+ax.plot(k, w1/(2*np.pi), '--', lw=1, color="green", label="Theory")
+ax.plot(k, w2/(2*np.pi), '--', lw=1, color="green")
+ax.plot(k, w3/(2*np.pi), '--', lw=1, color="green")
+ax.plot(k, w4/(2*np.pi), '--', lw=1, color="green")
 
 # plot numerical result
 ax.imshow(FT_tot, aspect='auto', origin='lower', extent=extent, cmap="inferno")
 
-ax.axhline(GAMMALL * Bdc / (2 * np.pi), c='g', ls='--', lw=1)
+# Shows how much the dispersion relation has shifted up due to an external field
+ax.axhline(GAMMALL * Bz / (2 * np.pi), c='g', ls='--', lw=1)
+
+
+# Shows where mumax⁺ breaks down due to waves being smaller than cell size
+ax.vlines([-1/dx, 1/dx], 0, fmax, 'r', '--', lw=1)
+
 ax.set_xlim([xmin, xmax])
 ax.set_ylim([ymin, ymax])
-ax.vlines([-1/dx, 1/dx], 0, fmax, 'r', '--', lw=1)
 ax.set_ylabel("$f$ (Hz)")
 ax.set_xlabel("$k$ (1/m)")
 ax.set_title('Antiferromagnetic Spinwave Dispersion Relation')
+plt.legend()
 plt.show()
