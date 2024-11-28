@@ -352,3 +352,29 @@ class Antiferromagnet(Magnet):
         Ferromagnet.max_angle
         """
         return ScalarQuantity(_cpp.max_intracell_angle(self._impl))
+
+    @property
+    def total_energy_density(self):
+        """Total energy density of both sublattices combined (J/m³). Kinetic and
+        elastic energy densities of the antiferromagnet are also included if
+        elastodynamics is enabled.
+        
+        See Also
+        --------
+        total_energy
+        enable_elastodynamics, elastic_energy_density, kinetic_energy_density
+        """
+        return FieldQuantity(_cpp.total_energy_density(self._impl))
+
+    @property
+    def total_energy(self):
+        """Total energy of both sublattices combined (J). Kinetic and elastic
+        energies of the antiferromagnet are also included if elastodynamics is
+        enabled.
+        
+        See Also
+        --------
+        total_energy_density
+        enable_elastodynamics, elastic_energy, kinetic_energy
+        """
+        return ScalarQuantity(_cpp.total_energy(self._impl))
