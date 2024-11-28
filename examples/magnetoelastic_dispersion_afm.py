@@ -142,13 +142,14 @@ if os.path.isfile(m_filename):
 else:
     m, u = simulation(theta)
 
-# plotting ranges
-xmin, xmax = -0.6, 0.6  # rad/nm
-ymin, ymax = 0.2/(2*np.pi), 2.5/(2*np.pi)  # THz
-extent = [-(2 * np.pi) / (2 * cx) * (nx+1)/nx * 1e-9,
-          (2 * np.pi) / (2 * cx) * (nx-1)/nx * 1e-9,
-          -1 / (2 * dt) * nt/(nt-1) * 1e-12,
-          1 / (2 * dt) * nt/(nt-1) * 1e-12]
+# x- and y-coordinates of FT cell centers
+ks = np.fft.fftshift(np.fft.fftfreq(nx, cx) * 2*np.pi) * 1e-9  # rad/nm
+fs = np.fft.fftshift(np.fft.fftfreq(nt, dt)) * 1e-12  # THz
+# FT cell widths
+dk = ks[1] - ks[0]
+df = fs[1] - fs[0]
+# image extent of k-values and frequencies, compensated for cell-width
+extent = [ks[0] - dk/2, ks[-1] + dk/2, fs[0] - df/2, fs[-1] + df/2]
 
 # Fourier in time and x-direction of displacement and magnetization
 u_FT = np.zeros((nt, nx))
@@ -157,6 +158,9 @@ for i in range(3):
     u_FT += np.abs(np.fft.fftshift(np.fft.fft2(u[:,i,0,0,:])))
     m_FT += np.abs(np.fft.fftshift(np.fft.fft2(m[:,i,0,0,:])))
 
+# plotting ranges
+xmin, xmax = -0.6, 0.6  # rad/nm
+ymin, ymax = 0.2/(2*np.pi), 2.5/(2*np.pi)  # THz
 # normalize them in the relevant area, so they are visible in the plot
 x_start = int((xmin - extent[0]) / (extent[1] - extent[0]) * nx)
 x_end = int((xmax - extent[0]) / (extent[1] - extent[0]) * nx)
