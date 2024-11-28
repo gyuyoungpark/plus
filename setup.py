@@ -76,6 +76,8 @@ setup(
     version="0.0.0",
     author="Jeroen Mulkers",
     author_email="jeroen.mulkers@gmail.com",
+    maintainer="Diego De Gusem, Ian Lateur, Lars Moreels",
+    maintainer_email="diego.degusem@ugent.be, ian.lateur@ugent.be, lars.moreels@ugent.be",
     description="Finite difference micromagnetic solver",
     long_description="",
     packages=find_packages(include=["mumaxplus", "mumaxplus.*"]),
