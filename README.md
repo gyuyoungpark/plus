@@ -1,4 +1,4 @@
-# MuMax+
+# mumax⁺
 More versatile and extensible GPU-accelerated micromagnetic simulator.
 
 # Dependencies
@@ -28,21 +28,21 @@ export LD_LIBRARY_PATH="/usr/local/cuda/lib64:$LD_LIBRARY_PATH"
 ```
 The paths might differ if CUDA Toolkit has been installed in a different location. If successful, a command such as `nvcc --version` should work.
 
-Clone the mumaxplus git repository. The `--recursive` flag is used here to get the pybind11 submodule which is needed to build mumaxplus.
+Clone the mumax⁺ git repository. The `--recursive` flag is used here to get the pybind11 submodule which is needed to build mumax⁺.
 ```
 git clone --recursive https://github.com/mumax/plus.git mumaxplus && cd mumaxplus
 ```
-Build and install mumaxplus using pip
+Build and install mumax⁺ using pip
 ```
 pip install .
 ```
-or, if you are planning to contribute to the development of mumaxplus, then we recommend to install miniconda or anaconda to install mumaxplus in a clean conda environment, and to put the pre-commit hooks in place as follows
+or, if you are planning to contribute to the development of mumax⁺, then we recommend to install miniconda or anaconda to install mumax⁺ in a clean conda environment, and to put the pre-commit hooks in place as follows
 ```
 conda env create -f environment.yml
 conda activate mumaxplus
 pip install -e .
 ```
-If changes are made to the c++ code, then `pip install -ve .` can be used to rebuild mumaxplus.
+If changes are made to the c++ code, then `pip install -ve .` can be used to rebuild mumax⁺.
 
 # Installation from Source (Windows)
 
@@ -85,11 +85,11 @@ To start debugging session:
 
 # Testing
 
-Several automated tests are located inside the `test/` directory. Type `pytest` inside the terminal to run them. Some are marked as `slow`, such as `test_mumax3_standardproblem5.py`. You can deselect those by running `pytest -m "not slow"`. Tests inside the `test/mumax3/` directory require external installation of MuMax3. They are marked by `mumax3` and can be deselected in the same way.
+Several automated tests are located inside the `test/` directory. Type `pytest` inside the terminal to run them. Some are marked as `slow`, such as `test_mumax3_standardproblem5.py`. You can deselect those by running `pytest -m "not slow"`. Tests inside the `test/mumax3/` directory require external installation of mumax³. They are marked by `mumax3` and can be deselected in the same way.
 
 # Building the documentation
 
-Documentation for mumaxplus follows the [NumPy style guide](https://numpydoc.readthedocs.io/en/latest/format.html) and can be generated using [Sphinx](https://www.sphinx-doc.org). Run the following command in the docs directory to let Sphinx build the HTML documentation pages:
+Documentation for mumax⁺ follows the [NumPy style guide](https://numpydoc.readthedocs.io/en/latest/format.html) and can be generated using [Sphinx](https://www.sphinx-doc.org). Run the following command in the docs directory to let Sphinx build the HTML documentation pages:
 ```
 make html
 ```
