@@ -1,7 +1,7 @@
-"""This script creates the magnetoelastic dispersion relation when the 
+"""This script creates the magnetoelastic dispersion relation in AFM when the 
 wave propagation and the magnetization form an angle theta as described in
-Magnetoelastic Waves in Thin Films.
-https://arxiv.org/abs/2003.12099
+mumax+: extensible GPU-accelerated micromagnetics and beyond.
+https://arxiv.org/abs/2411.18194
 
 This script will take a few minutes, then save the data.
 """
@@ -174,25 +174,26 @@ k = np.linspace(xmin*1e9, xmax*1e9, 2000)
 
 fig, ax = plt.subplots()
 linewidth = 2
+fig_im, ax_im = plt.subplots()  # also show without lines
 
 # elastic waves
 vt = np.sqrt(c44/rho)
 vl = np.sqrt(c11/rho)
 w_t = np.abs(vt*k)
 w_l = np.abs(vl*k)
-ax.plot(k*1e-9, w_t/(2*np.pi)*1e-12, color="red", lw=linewidth, label="elastic")
+ax.plot(k*1e-9, w_t/(2*np.pi)*1e-12, color="red", lw=linewidth, label="elastic trans.")
 ax.plot(k*1e-9, w_l/(2*np.pi)*1e-12, color="red", lw=linewidth)
-ax.plot(k*1e-9, -w_t/(2*np.pi)*1e-12, color="red", lw=linewidth)
-ax.plot(k*1e-9, -w_l/(2*np.pi)*1e-12, color="red", lw=linewidth)
+ax.plot(k*1e-9, -w_t/(2*np.pi)*1e-12, color="darkorange", lw=linewidth, label="elastic long.")
+ax.plot(k*1e-9, -w_l/(2*np.pi)*1e-12, color="darkorange", lw=linewidth)
 
-# spin waves
+# spin wave frequencies
 w_ext = GAMMALL * Bdc
 w_ani = GAMMALL * 2*K / msat
 w_ex = GAMMALL * 2*aex/msat * k**2
 w_c = GAMMALL * 4*A_c/(a**2 * msat)
 w_nn = GAMMALL * A_nn/msat * k**2
 
-# Magnon waves
+# spin waves
 w_mag = np.sqrt((w_ani + w_ex - w_nn)*(w_ani + w_ex - 2*w_c + w_nn))
 omega_magn1 = w_mag + w_ext
 omega_magn2 = w_mag - w_ext
@@ -203,7 +204,7 @@ ax.plot(k*1e-9, omega_magn2/(2*np.pi)*1e-12, color="green", lw=linewidth)
 ax.plot(k*1e-9, omega_magn3/(2*np.pi)*1e-12, color="green", lw=linewidth)
 ax.plot(k*1e-9, omega_magn4/(2*np.pi)*1e-12, color="green", lw=linewidth)
 
-# Magnon-Phonon waves
+# Magnetoelastic waves
 J = GAMMALL * B**2 / (rho*msat)
 w = np.linspace(ymin*(2*np.pi)*1e12, ymax*(2*np.pi)*1e12, 2000)
 k, w = np.meshgrid(k,w)
@@ -223,14 +224,17 @@ contour = ax.contour(k*1e-9, w/(2*np.pi)*1e-12, omega_mp, [0], colors="white",
 ax.plot([], [], label="magnetoelastic", color="white")  # for legend entry
 
 # plot numerical result
-ax.imshow(FT_tot**2, aspect='auto', origin='lower', extent=extent,
-           vmin=0, vmax=0.6, cmap="inferno")
+for ax_ in [ax, ax_im]:
+    ax_.imshow(FT_tot**2, aspect='auto', origin='lower', extent=extent,
+            vmin=0, vmax=0.6, cmap="inferno")
 
 # plot cleanup
-ax.set_xlim(xmin, xmax)
-ax.set_ylim(ymin, ymax)
-ax.set_xlabel("wavenumber (rad/nm)")
-ax.set_ylabel("frequency (THz)")
-ax.set_title("Antiferromagnetoelastic dispersion relation")
+for ax_ in [ax, ax_im]:
+    ax_.set_xlim(xmin, xmax)
+    ax_.set_ylim(ymin, ymax)
+    ax_.set_xlabel("wavenumber (rad/nm)")
+    ax_.set_ylabel("frequency (THz)")
+    ax_.set_title("AFM magnetoelastic dispersion relation")
 ax.legend(loc="lower right")
+
 plt.show()
