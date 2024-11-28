@@ -31,7 +31,7 @@ class DmiTensorGroup:
 class DmiTensor:
     r"""Contains the DMI parameters of a ferromagnet.
 
-    In mumaxplus, the Dzyaloshinskii-Moriya interaction is defined by the energy density
+    In mumax⁺, the Dzyaloshinskii-Moriya interaction is defined by the energy density
 
     .. math:: \varepsilon_{\text{DMI}} = \frac{1}{2} D_{ijk}
               \left[ m_j \partial_i m_k - m_k \partial_i m_j \right]

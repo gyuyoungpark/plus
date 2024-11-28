@@ -1,4 +1,4 @@
-"""Utilities for mumaxplus."""
+"""Utilities for mumax⁺."""
 
 from .constants import GAMMALL, MU0, KB, QE, MUB, HBAR
 from .config import twodomain, antivortex, blochskyrmion, neelskyrmion, vortex

@@ -1,5 +1,5 @@
 """
-This script compares results of mumaxplus to those from the paper of
+This script compares results of mumax⁺ to those from the paper of
 Sánchez-Tejerina et al. (https://doi.org/10.1103/PhysRevB.101.014433)
 They describe an analytical model of antiferromagnetic domain wall
 motion driven by a current and give theoretical results for it's
