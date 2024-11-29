@@ -18,7 +18,7 @@ version: 1.0.0
 date-released: 2024-11-29
 url: "https://github.com/mumax/plus"
 preferred-citation:
-  type: article
+  type: generic
   authors:
     - family-names: Moreels
       given-names: Lars
