@@ -62,7 +62,7 @@ void Antiferromagnet::relax(real tol) {
     if (threshold[0] > 0.0 && threshold[1] <= 0.0)
       threshold[1] = threshold[0];
     else if (threshold[0] <= 0.0 && threshold[1] > 0.0)
-      threshold[0] == threshold[1];
+      threshold[0] = threshold[1];
 
     Relaxer relaxer(this, threshold, tol);
     relaxer.exec();
