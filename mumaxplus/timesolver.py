@@ -24,7 +24,8 @@ class TimeSolverOutput:
         self._keys = list(self._data.keys())  # keep list of keys to maintain order
         self._file_name = file_name
         if self._file_name is not None:
-            _os.makedirs(_os.path.dirname(self._file_name), exist_ok=True)
+            if directory := _os.path.dirname(self._file_name):
+                _os.makedirs(directory, exist_ok=True)
             with open(self._file_name, 'w') as file:  # make new file
                 print("# " + "\t".join(self._keys), file=file)
 
