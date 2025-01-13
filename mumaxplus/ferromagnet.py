@@ -608,6 +608,17 @@ class Ferromagnet(Magnet):
     def B1(self, value):
         self.B1.set(value)
 
+        warn = False
+        if self.B1.is_uniform:
+            warn = self.B1.uniform_value > 0
+        elif _np.any(self.B1.eval() > 0):
+            warn = True
+        
+        if warn:
+            warnings.warn("The first magnetoelastic coupling constant B1"
+                          + " is set to a positive value, instead of negative (or zero)."
+                          + " Make sure this is intentional!", UserWarning)
+
     @property
     def B2(self):
         """Second magnetoelastic coupling constant (J/m³).
@@ -621,6 +632,17 @@ class Ferromagnet(Magnet):
     @B2.setter
     def B2(self, value):
         self.B2.set(value)
+
+        warn = False
+        if self.B2.is_uniform:
+            warn = self.B2.uniform_value > 0
+        elif _np.any(self.B2.eval() > 0):
+            warn = True
+        
+        if warn:
+            warnings.warn("The second magnetoelastic coupling constant B2"
+                          + " is set to a positive value, instead of negative (or zero)."
+                          + " Make sure this is intentional!", UserWarning)
 
     # ----- POISSON SYSTEM ----------------------
 
