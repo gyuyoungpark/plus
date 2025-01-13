@@ -170,11 +170,18 @@ class Antiferromagnet(Magnet):
 
     @afmex_cell.setter
     def afmex_cell(self, value):
-        if value > 0:
+        self.afmex_cell.set(value)
+
+        warn = False
+        if self.afmex_cell.is_uniform:
+            warn = self.afmex_cell.uniform_value > 0
+        elif _np.any(self.afmex_cell.eval() > 0):
+            warn = True
+        
+        if warn:
             warnings.warn("The antiferromagnetic exchange constant afmex_cell"
                           + " is set to a positive value, instead of negative (or zero)."
                           + " Make sure this is intentional!", UserWarning)
-        self.afmex_cell.set(value)
 
     @property
     def afmex_nn(self):
@@ -191,11 +198,18 @@ class Antiferromagnet(Magnet):
 
     @afmex_nn.setter
     def afmex_nn(self, value):
-        if value > 0:
+        self.afmex_nn.set(value)
+
+        warn = False
+        if self.afmex_nn.is_uniform:
+            warn = self.afmex_nn.uniform_value > 0
+        elif _np.any(self.afmex_nn.eval() > 0):
+            warn = True
+        
+        if warn:
             warnings.warn("The antiferromagnetic exchange constant afmex_nn"
                           + " is set to a positive value, instead of negative (or zero)."
                           + " Make sure this is intentional!", UserWarning)
-        self.afmex_nn.set(value)
 
     @property
     def inter_afmex_nn(self):
