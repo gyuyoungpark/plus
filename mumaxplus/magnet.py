@@ -222,10 +222,11 @@ class Magnet(ABC):
     @enable_elastodynamics.setter
     def enable_elastodynamics(self, value):
         self._impl.enable_elastodynamics = value
-        if _np.any(self.rigid_norm_strain.eval() != 0):
-            raise Exception("You can not use normalized strain with elastodynamics.")
-        elif _np.any(self.rigid_shear_strain.eval() != 0):
-            raise Exception("You can not use shear strain with elastodynamics.")
+        if value:
+            if _np.any(self.rigid_norm_strain.eval() != 0):
+                raise Exception("You can not use normalized strain with elastodynamics.")
+            elif _np.any(self.rigid_shear_strain.eval() != 0):
+                raise Exception("You can not use shear strain with elastodynamics.")
 
     # ----- ELASTIC PARAMETERS -------
 
