@@ -12,7 +12,7 @@ from .scalarquantity import ScalarQuantity
 from .strayfield import StrayField
 from .variable import Variable
 
-
+import warnings
 class Magnet(ABC):
     """A Magnet should never be initialized by the user. It contains no physics.
     Use ``Ferromagnet`` or ``Antiferromagnet`` instead.
@@ -222,6 +222,10 @@ class Magnet(ABC):
     @enable_elastodynamics.setter
     def enable_elastodynamics(self, value):
         self._impl.enable_elastodynamics = value
+        if _np.any(self.rigid_norm_strain.eval() != 0):
+            raise Exception("You can not use normalized strain with elastodynamics.")
+        elif _np.any(self.rigid_shear_strain.eval() != 0):
+            raise Exception("You can not use shear strain with elastodynamics.")
 
     # ----- ELASTIC PARAMETERS -------
 
@@ -322,6 +326,8 @@ class Magnet(ABC):
     
     @rigid_norm_strain.setter
     def rigid_norm_strain(self, value):
+        if self.enable_elastodynamics:
+            raise Exception("You can not use elastodynamics with normal strain.")
         self.rigid_norm_strain.set(value)
     
     @property
@@ -343,6 +349,8 @@ class Magnet(ABC):
 
     @rigid_shear_strain.setter
     def rigid_shear_strain(self, value):
+        if self.enable_elastodynamics:
+            raise Exception("You can not use elastodynamics with shear strain.")
         self.rigid_shear_strain.set(value)
 
     # ----- ELASTIC QUANTITIES -------
