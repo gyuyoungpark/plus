@@ -29,7 +29,9 @@ Magnet::Magnet(std::shared_ptr<System> system_ptr,
       C12(system(), 0.0, name + ":C12", "N/m2"),
       C44(system(), 0.0, name + ":C44", "N/m2"),
       eta(system(), 0.0, name + ":eta", "kg/m3s"),
-      rho(system(), 1.0, name + ":rho", "kg/m3") {
+      rho(system(), 1.0, name + ":rho", "kg/m3"),
+      rigidNormStrain(system(), {0.0, 0.0, 0.0}, name + ":rigid_norm_strain", ""),
+      rigidShearStrain(system(), {0.0, 0.0, 0.0}, name + ":rigid_shear_strain", "") {
   // Check that the system has at least size 1
   int3 size = system_->grid().size();
   if (size.x < 1 || size.y < 1 || size.z < 1)
@@ -51,7 +53,8 @@ Magnet::Magnet(Magnet&& other) noexcept
       
       externalBodyForce(other.externalBodyForce),
       C11(other.C11), C12(other.C12), C44(other.C44),
-      eta(other.eta), rho(other.rho) {
+      eta(other.eta), rho(other.rho), rigidNormStrain(other.rigidNormStrain),
+      rigidShearStrain(other.rigidShearStrain) {
   other.system_ = nullptr;
   other.name_ = "";
 }

@@ -303,6 +303,48 @@ class Magnet(ABC):
     def rho(self, value):
         self.rho.set(value)
 
+    @property
+    def rigid_norm_strain(self):
+        """The applied normal strain (m/m).
+
+        This quantity has three components (εxx, εyy, εzz),
+        which forms the diagonal of the symmetric strain tensor::
+
+               εxx  0   0
+                0  εyy  0
+                0   0  εzz
+
+        See Also
+        --------
+        elastic_energy, elastic_energy_density, elastic_displacement, stress_tensor
+        """
+        return Parameter(self._impl.rigid_norm_strain)
+    
+    @rigid_norm_strain.setter
+    def rigid_norm_strain(self, value):
+        self.rigid_norm_strain.set(value)
+    
+    @property
+    def rigid_shear_strain(self):
+        """The applied shear strain (m/m).
+
+        This quantity has three components (εxy, εxz, εyz),
+        which forms the off-diagonal of the symmetric strain tensor::
+
+                 0  εxy εxz
+                εxy  0  εyz
+                εxz εyz  0
+
+        See Also
+        --------
+        elastic_energy, elastic_energy_density, elastic_displacement, stress_tensor
+        """
+        return Parameter(self._impl.rigid_shear_strain)
+
+    @rigid_shear_strain.setter
+    def rigid_shear_strain(self, value):
+        self.rigid_shear_strain.set(value)
+
     # ----- ELASTIC QUANTITIES -------
 
     @property
