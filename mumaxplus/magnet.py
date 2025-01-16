@@ -141,6 +141,18 @@ class Magnet(ABC):
         return World._from_impl(self._impl.world)
 
     @property
+    def meshgrid(self):
+        """Return a numpy meshgrid with the x, y, and z coordinate of each cell."""
+        nx, ny, nz = self.grid.size
+        mgrid_idx = _np.flip(_np.mgrid[0:nz, 0:ny, 0:nx], axis=0)
+
+        mgrid = _np.zeros(mgrid_idx.shape, dtype=_np.float32)
+        for c in [0, 1, 2]:
+            mgrid[c] = self.origin[c] + mgrid_idx[c] * self.cellsize[c]
+
+        return mgrid
+
+    @property
     def enable_as_stray_field_source(self):
         """Enable/disable this magnet (self) as the source of stray fields felt
         by other magnets. This does not influence demagnetization.
