@@ -83,11 +83,12 @@ class Parameter(FieldQuantity):
         term : callable
             Time-dependent function that will be added to the static parameter values.
             Possible signatures are (float)->float and (float)->tuple(float).
-        mask : numpy.ndarray
-            An numpy array defining how the magnitude of the time-dependent function
-            should be weighted depending on the cell coordinates. In example, it can
-            be an array of 0s and 1s. The number of components of the Parameter
-            instance and the shape of mask should conform. Default value is None.
+        mask : ndarray or callable, optional
+            A numpy array, or a callable function taking coordinates x, y and
+            z as arguments, defining how the magnitude of the time-dependent
+            function should be weighted depending on the cell coordinates. For
+            example, it can be an array of 0s and 1s. The number of components
+            of the Parameter instance and the shape of mask should conform.
         """
         if isinstance(self._impl, _cpp.VectorParameter):
             # The VectorParameter value should be a sequence of size 3
@@ -98,37 +99,49 @@ class Parameter(FieldQuantity):
                 return _np.array(original_term(t), dtype=float)
 
             term = new_term
-            # change mask dimensions to include components dimension
-            mask = self._check_mask_shape(mask, ncomp=3)
-        elif isinstance(self._impl, _cpp.Parameter):
-            # change mask dimensions to include components dimension
-            mask = self._check_mask_shape(mask, ncomp=1)
 
         if mask is None:
             self._impl.add_time_term(term)
         else:
+            if callable(mask):
+                mask = self._eval_mask(mask)
+
+            # change mask dimensions to include components dimension
+            if isinstance(mask, _np.ndarray):
+                mask = self._check_mask_shape(mask)
+
             self._impl.add_time_term(term, mask)
 
-    def _check_mask_shape(self, mask, ncomp):
+    def _eval_mask(self, mask):
+        """Evaluate the mask as a function."""
+        try:
+            return_ncomp = len(mask(0,0,0))
+        except:  # can not take len(), so must be scalar mask
+            return_ncomp = 1
+
+        X, Y, Z = self.meshgrid
+        return _np.array(_np.vectorize(mask, otypes=[float]*return_ncomp)(X, Y, Z))
+
+    def _check_mask_shape(self, mask):
         """Change mask shape to have 4 dimensions and correct components."""
         ndim = 4
-        if mask is not None:
-            if len(mask.shape) != ndim:
-                expected_mask_shape = (ncomp, *mask.shape)
-            elif mask.shape[0] != ncomp:
-                expected_mask_shape = (ncomp, *mask.shape[1:])
-            else:
-                expected_mask_shape = mask.shape
 
-            if expected_mask_shape != mask.shape:
-                new_mask = _np.zeros(shape=expected_mask_shape)
+        if len(mask.shape) != ndim:
+            expected_mask_shape = (self.ncomp, *mask.shape)
+        elif mask.shape[0] != self.ncomp:
+            expected_mask_shape = (self.ncomp, *mask.shape[1:])
+        else:
+            expected_mask_shape = mask.shape
 
-                for i in range(ncomp):
-                    new_mask[i] = mask
-            else:
-                new_mask = mask
+        if expected_mask_shape != mask.shape:
+            new_mask = _np.zeros(shape=expected_mask_shape)
 
-            return new_mask
+            for i in range(self.ncomp):
+                new_mask[i] = mask
+        else:
+            new_mask = mask
+
+        return new_mask
 
     def remove_time_terms(self):
         """Remove all time dependent terms."""
