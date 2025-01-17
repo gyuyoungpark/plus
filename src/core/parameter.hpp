@@ -194,7 +194,7 @@ __device__ inline bool CuVectorParameter::isUniform() const {
 __device__ inline real3 CuVectorParameter::vectorAt(int idx) const {
   if (isUniform()) {
     if (xDynamicValuesPtr && yDynamicValuesPtr && zDynamicValuesPtr) {
-      real3 dynamic_value{xValuesPtr[idx], yValuesPtr[idx], zValuesPtr[idx]};
+      real3 dynamic_value{xDynamicValuesPtr[idx], yDynamicValuesPtr[idx], zDynamicValuesPtr[idx]};
 
       return uniformValue + dynamic_value;
     }
@@ -203,7 +203,7 @@ __device__ inline real3 CuVectorParameter::vectorAt(int idx) const {
   } else {
     real3 static_value{xValuesPtr[idx], yValuesPtr[idx], zValuesPtr[idx]};
     if (xDynamicValuesPtr && yDynamicValuesPtr && zDynamicValuesPtr) {
-      real3 dynamic_value{xValuesPtr[idx], yValuesPtr[idx], zValuesPtr[idx]};
+      real3 dynamic_value{xDynamicValuesPtr[idx], yDynamicValuesPtr[idx], zDynamicValuesPtr[idx]};
 
       return static_value + dynamic_value;
     }
