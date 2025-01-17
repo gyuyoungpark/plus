@@ -19,7 +19,7 @@ Field evalEffectiveField(const Ferromagnet* magnet) {
   if (!externalFieldAssuredZero(magnet)) {h += evalExternalField(magnet);}
   if (!dmiAssuredZero(magnet)) {h += evalDmiField(magnet);}
   if (!demagFieldAssuredZero(magnet)) {h += evalDemagField(magnet);}
-  if (!magnetoelasticAssuredZero(magnet) || appliedStrain(magnet)) {
+  if (!magnetoelasticAssuredZero(magnet)) {
       h += evalMagnetoelasticField(magnet);}
   if (magnet->isSublattice())
       if (!inHomoAfmExchangeAssuredZero(magnet)) {h += evalInHomogeneousAfmExchangeField(magnet);}

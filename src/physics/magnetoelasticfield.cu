@@ -9,6 +9,12 @@
 
 bool magnetoelasticAssuredZero(const Ferromagnet* magnet) {
   // use elastodynamics of host if possible
+  return (dynamicMagnetoelasticAssuredZero(magnet) &&
+          rigidMagnetoelasticAssuredZero(magnet));
+}
+
+bool dynamicMagnetoelasticAssuredZero(const Ferromagnet* magnet) {
+  // use elastodynamics of host if possible
   bool enableElastodynamics;
   if (magnet->isSublattice()) {
     enableElastodynamics = magnet->hostMagnet()->enableElastodynamics();
@@ -20,16 +26,27 @@ bool magnetoelasticAssuredZero(const Ferromagnet* magnet) {
           (magnet->B1.assuredZero() && magnet->B2.assuredZero()));
 }
 
-bool appliedStrain(const Magnet* magnet) {
-  return (!magnet->rigidNormStrain.assuredZero() || !magnet->rigidShearStrain.assuredZero());
+bool rigidMagnetoelasticAssuredZero(const Ferromagnet* magnet) {
+  // use rigid strain of host if possible
+  bool appliedStrain;
+  if (magnet->isSublattice()) {
+    appliedStrain = (!magnet->hostMagnet()->rigidNormStrain.assuredZero() ||
+                     !magnet->hostMagnet()->rigidShearStrain.assuredZero());
+  } else {
+    appliedStrain = (!magnet->rigidNormStrain.assuredZero() ||
+                     !magnet->rigidShearStrain.assuredZero());
+  }
+
+  return (!appliedStrain || magnet->msat.assuredZero() ||
+          (magnet->B1.assuredZero() && magnet->B2.assuredZero()));
 }
 
-__global__ void k_magnetoelasticField(CuField hField,
-                                      const CuField mField,
-                                      const CuField strain,
-                                      const CuParameter B1,
-                                      const CuParameter B2,
-                                      const CuParameter msat) {
+__global__ void k_dynamicMagnetoelasticField(CuField hField,
+                                             const CuField mField,
+                                             const CuField strain,
+                                             const CuParameter B1,
+                                             const CuParameter B2,
+                                             const CuParameter msat) {
   const int idx = blockIdx.x * blockDim.x + threadIdx.x;
   const CuSystem system = hField.system;
   const Grid grid = system.grid;
@@ -57,8 +74,8 @@ __global__ void k_magnetoelasticField(CuField hField,
 
 __global__ void k_rigidMagnetoelasticField(CuField hField,
                                            const CuField mField,
-                                           const CuField normStrain,
-                                           const CuField shearStrain,
+                                           const CuVectorParameter normStrain,
+                                           const CuVectorParameter shearStrain,
                                            const CuParameter B1,
                                            const CuParameter B2,
                                            const CuParameter msat) {
@@ -89,7 +106,7 @@ __global__ void k_rigidMagnetoelasticField(CuField hField,
 
 Field evalMagnetoelasticField(const Ferromagnet* magnet) {
   Field hField(magnet->system(), 3);
-  if (magnetoelasticAssuredZero(magnet) && !appliedStrain(magnet)) {
+  if (magnetoelasticAssuredZero(magnet)) {
     hField.makeZero();
     return hField;
   }
@@ -100,13 +117,25 @@ Field evalMagnetoelasticField(const Ferromagnet* magnet) {
   CuParameter B2 = magnet->B2.cu();
   CuParameter msat = magnet->msat.cu();
 
-  if (appliedStrain(magnet)) {
-    Field normStrain = magnet->rigidNormStrain.eval();
-    Field shearStrain = magnet->rigidShearStrain.eval();
-    cudaLaunch(ncells, k_rigidMagnetoelasticField, hField.cu(), mField, normStrain.cu(), shearStrain.cu(), B1, B2, msat);
+  if (!rigidMagnetoelasticAssuredZero(magnet)) {  // maybe use rigid strain
+    if (magnet->isSublattice()) {  // use strain from host
+      CuVectorParameter normStrain = magnet->hostMagnet()->rigidNormStrain.cu();
+      CuVectorParameter shearStrain = magnet->hostMagnet()->rigidShearStrain.cu();
+
+      cudaLaunch(ncells, k_rigidMagnetoelasticField, hField.cu(), mField,
+                normStrain, shearStrain, B1, B2, msat);
+    } else {  // independent magnet
+      CuVectorParameter normStrain = magnet->rigidNormStrain.cu();
+      CuVectorParameter shearStrain = magnet->rigidShearStrain.cu();
+
+      cudaLaunch(ncells, k_rigidMagnetoelasticField, hField.cu(), mField,
+                normStrain, shearStrain, B1, B2, msat);
+    }
+
     return hField;
   }
 
+  // otherwise use dynamic strain
   Field strain;
   if (magnet->isSublattice()) {  // use strain from host
     strain = evalStrainTensor(magnet->hostMagnet());
@@ -114,7 +143,8 @@ Field evalMagnetoelasticField(const Ferromagnet* magnet) {
     strain = evalStrainTensor(magnet);
   }
 
-  cudaLaunch(ncells, k_magnetoelasticField, hField.cu(), mField, strain.cu(), B1, B2, msat);
+  cudaLaunch(ncells, k_dynamicMagnetoelasticField, hField.cu(), mField,
+            strain.cu(), B1, B2, msat);
   return hField;
 }
 
