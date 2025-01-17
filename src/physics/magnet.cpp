@@ -184,6 +184,13 @@ void Magnet::setEnableElastodynamics(bool value) {
     }
   }
 
+  // should not use elastodynamics together with rigid strain!
+  if (value && (!this->rigidNormStrain.assuredZero() ||
+                !this->rigidShearStrain.assuredZero())) {
+    throw std::invalid_argument(
+      "Cannot enable elastodynamics when rigid strain is set.");
+  }
+
   if (enableElastodynamics_ != value) {
     enableElastodynamics_ = value;
 
