@@ -12,7 +12,6 @@ from .scalarquantity import ScalarQuantity
 from .strayfield import StrayField
 from .variable import Variable
 
-
 class Magnet(ABC):
     """A Magnet should never be initialized by the user. It contains no physics.
     Use ``Ferromagnet`` or ``Antiferromagnet`` instead.
@@ -228,6 +227,13 @@ class Magnet(ABC):
 
         If elastodynamics are disabled (default), the elastic displacement and
         velocity are uninitialized to save memory.
+
+        Elastodynamics can not be used together with rigid normal and shear
+        strain, where strain is set by the user instead.
+
+        See Also
+        --------
+        rigid_norm_strain, rigid_shear_strain
         """
         return self._impl.enable_elastodynamics
 
@@ -315,6 +321,62 @@ class Magnet(ABC):
     def rho(self, value):
         self.rho.set(value)
 
+    @property
+    def rigid_norm_strain(self):
+        """The applied normal strain (m/m).
+
+        This quantity has three components (εxx, εyy, εzz),
+        which forms the diagonal of the symmetric strain tensor::
+
+               εxx  0   0
+                0  εyy  0
+                0   0  εzz
+
+        The rigid strain can not be used together with elastodynamics.
+        Here the strain is set by the user as a parameter for the magnetoelastic
+        field, instead of calculated dynamically (strain_tensor).
+
+        See Also
+        --------
+        rigid_shear_strain
+        enable_elastodynamics, strain_tensor
+        """
+        return Parameter(self._impl.rigid_norm_strain)
+    
+    @rigid_norm_strain.setter
+    def rigid_norm_strain(self, value):
+        if self.enable_elastodynamics:
+            raise Exception("Can not use normal strain with elastodynamics enabled.")
+        self.rigid_norm_strain.set(value)
+    
+    @property
+    def rigid_shear_strain(self):
+        """The applied shear strain (m/m).
+
+        This quantity has three components (εxy, εxz, εyz),
+        which forms the off-diagonal of the symmetric strain tensor::
+
+                 0  εxy εxz
+                εxy  0  εyz
+                εxz εyz  0
+
+        The rigid strain can not be used together with elastodynamics.
+        Here the strain is set by the user as a parameter for the magnetoelastic
+        field, instead of calculated dynamically (strain_tensor).
+
+        See Also
+        --------
+        rigid_norm_strain
+        enable_elastodynamics, strain_tensor
+        """
+        return Parameter(self._impl.rigid_shear_strain)
+
+    @rigid_shear_strain.setter
+    def rigid_shear_strain(self, value):
+        if self.enable_elastodynamics:
+            raise Exception("Can not use shear strain with elastodynamics enabled.")
+        self.rigid_shear_strain.set(value)
+
     # ----- ELASTIC QUANTITIES -------
 
     @property
@@ -332,9 +394,13 @@ class Magnet(ABC):
         Note that the strain corresponds to the real strain and not the
         engineering strain, which would be (εxx, εyy, εzz, 2*εxy, 2*εxz, 2*εyz).
 
+        If you want to set the strain as a parameter yourself, use rigid normal
+        and shear strain.
+
         See Also
         --------
         elastic_energy, elastic_energy_density, elastic_displacement, stress_tensor
+        rigid_norm_strain, rigid_shear_strain
         """
         return FieldQuantity(_cpp.strain_tensor(self._impl))
     

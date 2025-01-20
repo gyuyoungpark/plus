@@ -39,6 +39,8 @@ void wrap_magnet(py::module& m) {
       .def_readonly("C44", &Magnet::C44)
       .def_readonly("eta", &Magnet::eta)
       .def_readonly("rho", &Magnet::rho)
+      .def_readonly("rigid_norm_strain", &Magnet::rigidNormStrain)
+      .def_readonly("rigid_shear_strain", &Magnet::rigidShearStrain)
 
       .def("stray_field_from_magnet",
           [](const Magnet* m, Magnet* magnet) {

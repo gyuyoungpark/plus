@@ -1033,6 +1033,7 @@ class Ferromagnet(Magnet):
         See Also
         --------
         B1, B2
+        strain_tensor, rigid_norm_strain, rigid_shear_strain
         magnetoelastic_force
         """
         return FieldQuantity(_cpp.magnetoelastic_field(self._impl))

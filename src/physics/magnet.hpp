@@ -73,6 +73,8 @@ class Magnet {
   const Variable* elasticVelocity() const;
 
   VectorParameter externalBodyForce;  // Externally applied force density
+  VectorParameter rigidNormStrain;
+  VectorParameter rigidShearStrain;
 
   // stiffness constants; TODO: can this be generalized to a 6x6 tensor?
   Parameter C11;  // C11 = c22 = c33
