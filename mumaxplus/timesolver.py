@@ -1,6 +1,7 @@
 """Classes for solving differential equations in the time domain."""
 
 from typing import Callable
+import os as _os
 
 class TimeSolverOutput:
     """Collect values of a list of quantities on specified timepoints.
@@ -9,19 +10,35 @@ class TimeSolverOutput:
     ----------
     quantity_dict : dict
         Quantities to collect.
+    file_name : str, optional
+        Optional name of an output file, in which the data is also written as
+        tab-separated values.
     """
 
-    def __init__(self, quantity_dict):
+    def __init__(self, quantity_dict, file_name=None):
         self._quantities = quantity_dict
         self._data = {"time": []}
         for key in self._quantities.keys():
             self._data[key] = []
+
+        self._keys = list(self._data.keys())  # keep list of keys to maintain order
+        self._file_name = file_name
+        if self._file_name is not None:
+            if directory := _os.path.dirname(self._file_name):
+                _os.makedirs(directory, exist_ok=True)
+            with open(self._file_name, 'w') as file:  # make new file
+                print("# " + "\t".join(self._keys), file=file)
 
     def write_line(self, time):
         """Compute all the specified quantities for the current state."""
         self._data["time"].append(time)
         for key, func in self._quantities.items():
             self._data[key].append(func())
+
+        # write all latest data to a new line in file
+        if self._file_name is not None:
+            with open(self._file_name, 'a') as file:
+                print(*[self._data[key][-1] for key in self._keys], sep="\t", file=file)
 
     def __getitem__(self, key):
         """Return the computed values of a quantity."""
@@ -93,7 +110,7 @@ class TimeSolver:
         self._assure_sensible_timestep()
         self._impl.run(duration)
 
-    def solve(self, timepoints, quantity_dict) -> "TimeSolverOutput":
+    def solve(self, timepoints, quantity_dict, file_name=None) -> "TimeSolverOutput":
         """Solve the differential equation.
 
         The functions collects values of a list of specified quantities
@@ -105,6 +122,9 @@ class TimeSolver:
             Specified timepoints.
         quantity_dict : dict
             Specified quantities to collect.
+        file_name : str, optional
+            Optional name of an output file, in which the data is also written
+            as tab-separated values during the simulation.
 
         Returns
         -------
@@ -116,7 +136,7 @@ class TimeSolver:
         assert self.time <= timepoints[0], "The list of timepoints should lie in the future."
 
         self._assure_sensible_timestep()
-        output = TimeSolverOutput(quantity_dict)
+        output = TimeSolverOutput(quantity_dict, file_name)
 
         for tp in timepoints:
             # we only need to assure a sensible timestep at the beginning,
@@ -124,7 +144,7 @@ class TimeSolver:
             duration = tp - self.time
             self._impl.run(duration)
 
-            output.write_line(tp)
+            output.write_line(self.time)
         return output
 
     @property
