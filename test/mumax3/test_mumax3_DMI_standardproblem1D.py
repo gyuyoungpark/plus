@@ -31,6 +31,7 @@ def simulations(request):
     gridsize = (100, 1, 1)
     magnetization = (0,0,1)
 
+    # mumax⁺ simulation
     world = World(cellsize=cellsize)
     magnet = Ferromagnet(world, Grid(gridsize))
     magnet.enable_demag = False
@@ -48,6 +49,10 @@ def simulations(request):
     else:
         DMI = "Dbulk"
         magnet.dmi_tensor.set_bulk_dmi(D)
+    
+    magnet.magnetization = magnetization
+    magnet.minimize()
+    
     # simulation mumax³
     mumax3sim = Mumax3Simulation(
         f"""
@@ -66,9 +71,6 @@ def simulations(request):
             saveas(m, "m.ovf")
         """
     )
-
-    magnet.magnetization = magnetization
-    magnet.minimize()
 
     return  magnet, mumax3sim
 
