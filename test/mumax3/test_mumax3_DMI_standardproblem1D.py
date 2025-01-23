@@ -53,7 +53,7 @@ def simulations(request):
     magnet.magnetization = magnetization
     magnet.minimize()
     
-    # simulation mumax³
+    # mumax³ simulation
     mumax3sim = Mumax3Simulation(
         f"""
             setcellsize{cellsize}

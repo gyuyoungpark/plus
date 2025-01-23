@@ -24,12 +24,16 @@ def simulations():
     Ms = 0.384e6
     Bz = 0.4
 
+    # diameter and thickness of the skyrmion
     diam, thickness = 183e-9, 21e-9
+
+    # charge and polarization of the skyrmion
     charge, pol = 1, -1
 
     gridsize = (183, 183, 21)
     cellsize = (1e-9, 1e-9, 1e-9)
 
+    # mumax⁺ simulation
     world = World(cellsize=cellsize)
     geo = Cylinder(diam, thickness).translate(91.5e-9 - 0.5e-9, 91.5e-9 - 0.5e-9, 10.5e-9 - 0.5e-9)
     magnet = Ferromagnet(world, Grid(gridsize), geometry=geo)
@@ -46,7 +50,7 @@ def simulations():
     tolerance = 1e-6
     magnet.minimize(tolerance)
 
-    # simulation mumax³
+    # mumax³ simulation
     mumax3sim = Mumax3Simulation(
         f"""
             nx := 183

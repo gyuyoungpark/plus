@@ -25,14 +25,17 @@ def simulations():
     anisU = (0,0,1)
     Ms = 0.86e6
 
+    # charge and polarization of the skyrmion
     charge, pol = -1, 1
 
+    # diameter and thickness of the skyrmion
     diam = 100e-9
     thickness = 2e-9
 
     cellsize = (2e-9, 2e-9, 2e-9)
     gridsize = (50, 50, 1)
 
+    # mumax⁺ simulation
     world = World(cellsize=cellsize)
     geo = Cylinder(diam, thickness).translate(50e-9 - 1e-9, 50e-9 - 1e-9, 0)
     magnet = Ferromagnet(world, Grid(gridsize), geometry=geo)
@@ -48,7 +51,7 @@ def simulations():
     magnet.magnetization = neelskyrmion(magnet.center, 50e-9, charge, pol)
     magnet.minimize()
 
-    # simulation mumax³
+    # mumax³ simulation
     mumax3sim = Mumax3Simulation(
         f"""
             // Disk radius
