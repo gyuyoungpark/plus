@@ -5,8 +5,8 @@ import pytest
 import numpy as np
 from mumaxplus import Ferromagnet, Grid, World
 from mumax3 import Mumax3Simulation
-from mumaxplus.util.shape import *
-from mumaxplus.util.config import *
+from mumaxplus.util.shape import Cylinder
+from mumaxplus.util.config import neelskyrmion
 
 
 ATOL = 1e-3
