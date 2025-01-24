@@ -10,7 +10,7 @@ from mumaxplus.util.config import neelskyrmion
 
 
 ATOL = 1e-3
-def max_relative_error(result, wanted):
+def max_absolute_error(result, wanted):
     err = np.linalg.norm(result - wanted, axis=0)
     return np.max(err)
 
