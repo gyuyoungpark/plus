@@ -31,6 +31,7 @@ def simulations():
     # diameter and thickness of the skyrmion
     diam = 100e-9
     thickness = 2e-9
+    skyrmion_radius = 25e-9
 
     nx, ny, nz = 50, 50, 1
     dx, dy, dz = 2e-9, 2e-9, 2e-9
@@ -51,7 +52,7 @@ def simulations():
     magnet.anisU = anisU
 
     magnet.dmi_tensor.set_interfacial_dmi(D)
-    magnet.magnetization = neelskyrmion(magnet.center, diam/2, charge, pol)
+    magnet.magnetization = neelskyrmion(magnet.center, skyrmion_radius, charge, pol)
     magnet.minimize()
 
     # mumax³ simulation

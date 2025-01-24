@@ -26,6 +26,7 @@ def simulations():
 
     # diameter and thickness of the skyrmion
     diam, thickness = 183e-9, 21e-9
+    skyrmion_radius = 36e-9
 
     # charge and polarization of the skyrmion
     charge, pol = 1, -1
@@ -48,7 +49,7 @@ def simulations():
 
     magnet.bias_magnetic_field = (0,0,Bz)
 
-    magnet.magnetization = blochskyrmion(magnet.center, diam/2, charge, pol)
+    magnet.magnetization = blochskyrmion(magnet.center, skyrmion_radius, charge, pol)
 
     magnet.minimize()
 
