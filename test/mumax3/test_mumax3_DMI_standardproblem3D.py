@@ -20,7 +20,7 @@ def simulations():
     
     # constants
     A = 8.78e-12
-    D = 1.5e-3
+    D = 1.58e-3
     Ms = 0.384e6
     Bz = 0.4
 
@@ -30,12 +30,15 @@ def simulations():
     # charge and polarization of the skyrmion
     charge, pol = 1, -1
 
-    gridsize = (183, 183, 21)
-    cellsize = (1e-9, 1e-9, 1e-9)
+    nx, ny, nz = 183, 183, 21
+    dx, dy, dz = 1e-9, 1e-9, 1e-9
+
+    gridsize = (nx, ny, nz)
+    cellsize = (dx, dy, dz)
 
     # mumax⁺ simulation
     world = World(cellsize=cellsize)
-    geo = Cylinder(diam, thickness).translate(91.5e-9 - 0.5e-9, 91.5e-9 - 0.5e-9, 10.5e-9 - 0.5e-9)
+    geo = Cylinder(diam, thickness).translate((nx*dx-dx)/2, (ny*dy-dy)/2, (nz*dz-dz)/2)
     magnet = Ferromagnet(world, Grid(gridsize), geometry=geo)
 
     magnet.enable_demag = False
@@ -45,31 +48,22 @@ def simulations():
 
     magnet.bias_magnetic_field = (0,0,Bz)
 
-    magnet.magnetization = blochskyrmion(magnet.center, 91.5e-9, charge, pol)
+    magnet.magnetization = blochskyrmion(magnet.center, diam/2, charge, pol)
 
-    tolerance = 1e-6
-    magnet.minimize(tolerance)
+    magnet.minimize()
 
     # mumax³ simulation
     mumax3sim = Mumax3Simulation(
         f"""
-            nx := 183
-            ny := 183
-            nz := 21
-
             lx := 183e-9
             ly := 183e-9
             lz := 21e-9
 
-            dx := lx / nx
-            dy := ly / ny
-            dz := lz / nz
-
-            SetGridSize(nx, ny, nz)
-            SetCellSize(dx, dy, dz)
+            SetGridSize{tuple(gridsize)}
+            SetCellSize{tuple(cellsize)}
 
             // Define the cylinder
-            SetGeom(Circle(lx))
+            SetGeom(Circle({diam}))
 
             Msat         = {Ms}
             Aex          = {A}
@@ -79,14 +73,11 @@ def simulations():
             B_ext = vector(0, 0, {Bz})
 
             // No Demag
-            NoDemagSpins = 1
+            EnableDemag = false
 
-            m = BlochSkyrmion(1, -1)
-
-            OutputFormat = OVF2_TEXT
+            m = BlochSkyrmion({charge}, {pol})
 
             // Relax with conjugate gradient:
-            MinimizerStop = {tolerance}
             minimize();
             SaveAs(m, "m")
         """
@@ -103,5 +94,5 @@ class TestDMI3D:
 
     def test(self):
         magnet, mumax3sim = simulations()
-        err = max_relative_error(magnet.magnetization.eval(), mumax3sim.get_field("m"))
+        err = max_absolute_error(magnet.magnetization.eval(), mumax3sim.get_field("m"))
         assert err < ATOL

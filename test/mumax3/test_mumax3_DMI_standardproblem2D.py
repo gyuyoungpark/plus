@@ -32,12 +32,15 @@ def simulations():
     diam = 100e-9
     thickness = 2e-9
 
-    cellsize = (2e-9, 2e-9, 2e-9)
-    gridsize = (50, 50, 1)
+    nx, ny, nz = 50, 50, 1
+    dx, dy, dz = 2e-9, 2e-9, 2e-9
+
+    gridsize = (nx, ny, nz)
+    cellsize = (dx, dy, dz)
 
     # mumax⁺ simulation
     world = World(cellsize=cellsize)
-    geo = Cylinder(diam, thickness).translate(50e-9 - 1e-9, 50e-9 - 1e-9, 0)
+    geo = Cylinder(diam, thickness).translate((nx*dx-dx)/2, (ny*dy-dy)/2, 0)
     magnet = Ferromagnet(world, Grid(gridsize), geometry=geo)
 
     magnet.enable_demag = False
@@ -48,29 +51,16 @@ def simulations():
     magnet.anisU = anisU
 
     magnet.dmi_tensor.set_interfacial_dmi(D)
-    magnet.magnetization = neelskyrmion(magnet.center, 50e-9, charge, pol)
+    magnet.magnetization = neelskyrmion(magnet.center, diam/2, charge, pol)
     magnet.minimize()
 
     # mumax³ simulation
     mumax3sim = Mumax3Simulation(
         f"""
-            // Disk radius
-            R  := 50e-9
-
-            // Number of cells
-            nx := 50
-            ny := 50
-            nz := 1
-
-            // Mesh discretisation
-            dx := 2e-9
-            dy := 2e-9
-            dz := 2e-9
-
             // Set mesh and disk geometry
-            SetGridSize(nx, ny, nz)
-            SetCellSize(dx, dy, dz)
-            SetGeom(Circle(2 * R))
+            SetGridSize{tuple(gridsize)}
+            SetCellSize{tuple(cellsize)}
+            SetGeom(Circle({diam}))
 
             Msat        = {Ms}
             Aex         = {A}
@@ -78,12 +68,10 @@ def simulations():
             anisU       = vector{tuple(anisU)}
             Dind        = {D}
             // No Demag:
-            NoDemagSpins = 1
+            EnableDemag = false
 
             // Initial state
             m = Neelskyrmion({charge}, {pol})
-
-            OutputFormat = OVF2_TEXT
 
             minimize()
             SaveAs(m, "m.ovf")
@@ -100,5 +88,5 @@ class TestDMI2D:
 
     def test(self):
         magnet, mumax3sim = simulations()
-        err = max_relative_error(magnet.magnetization.eval(), mumax3sim.get_field("m"))
+        err = max_absolute_error(magnet.magnetization.eval(), mumax3sim.get_field("m"))
         assert err < ATOL
