@@ -14,7 +14,7 @@ def max_absolute_error(result, wanted):
     err = np.linalg.norm(result - wanted, axis=0)
     return np.max(err)
 
-def simulations():
+def simulations(openBC):
     """This simulates a 2D circle with interfacial DMI and a Neél skyrmion
        in both mumax³ and mumax⁺."""
     
@@ -45,6 +45,7 @@ def simulations():
     magnet = Ferromagnet(world, Grid(gridsize), geometry=geo)
 
     magnet.enable_demag = False
+    magnet.enable_openbc = openBC
 
     magnet.msat = Ms
     magnet.aex = A
@@ -71,6 +72,8 @@ def simulations():
             // No Demag:
             EnableDemag = false
 
+            openBC = {openBC}
+
             // Initial state
             m = Neelskyrmion({charge}, {pol})
 
@@ -87,7 +90,12 @@ class TestDMI2D:
     """Compare the results of the simulations by comparing the magnetizations.
     """
 
-    def test(self):
-        magnet, mumax3sim = simulations()
+    def test_closed(self):
+        magnet, mumax3sim = simulations(False)
+        err = max_absolute_error(magnet.magnetization.eval(), mumax3sim.get_field("m"))
+        assert err < ATOL
+
+    def test_open(self):
+        magnet, mumax3sim = simulations(True)
         err = max_absolute_error(magnet.magnetization.eval(), mumax3sim.get_field("m"))
         assert err < ATOL
