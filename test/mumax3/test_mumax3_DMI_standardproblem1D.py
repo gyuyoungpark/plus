@@ -1,5 +1,8 @@
 """This test is based on the 1D case in
-   https://iopscience.iop.org/article/10.1088/1367-2630/aaea1c"""
+   https://iopscience.iop.org/article/10.1088/1367-2630/aaea1c
+   The magnet lies along the z-direction, because mumax³ is not correct. They ignore
+   the z-component.
+   """
 
 import pytest
 import numpy as np
@@ -12,30 +15,26 @@ def max_relative_error(result, wanted):
     relerr = err / np.linalg.norm(wanted, axis=0)
     return np.max(relerr)
 
-@pytest.fixture(scope="class", params=[True, False])
-def simulations(request):
+def simulations(openbc, interfacial):
     """This simulates a 1D wire with bulk or interfacial DMI in both
-       mumax³ and mumax⁺ with open boundary conditions."""
-    
-    # test the interfacial and bulk DMI
-    interfacial = request.param
+       mumax³ and mumax⁺."""
 
     # constants
     A = 13e-12
     D = 3e-3
     Ku = 0.4e6
-    anisU = (0,0,1)
+    anisU = (1,0,0)
     Ms = 0.86e6
 
     cellsize = (1e-9, 1e-9, 1e-9)
-    gridsize = (100, 1, 1)
-    magnetization = (0,0,1)
+    gridsize = (1, 1, 100)
+    magnetization = (1,0,0)
 
     # mumax⁺ simulation
     world = World(cellsize=cellsize)
     magnet = Ferromagnet(world, Grid(gridsize))
     magnet.enable_demag = False
-    magnet.enable_openbc = True
+    magnet.enable_openbc = openbc
 
     magnet.msat = Ms
     magnet.aex = A
@@ -44,7 +43,6 @@ def simulations(request):
 
     if interfacial:
         DMI = "Dind"
-        D = -D
         magnet.dmi_tensor.set_interfacial_dmi(D)
     else:
         DMI = "Dbulk"
@@ -64,7 +62,7 @@ def simulations(request):
             anisU = vector{anisU}
             {DMI} = {D}
             enabledemag = False
-            SetPBC(0,2,0)
+            openBC = {openbc}
 
             m = Uniform{tuple(magnetization)}
             minimize()
@@ -80,7 +78,22 @@ class TestDMI1D:
     """Compare the results of the simulations by comparing the magnetizations.
     """
 
-    def test(self, simulations):
-        magnet, mumax3sim = simulations
+    def test_closed_inter(self):
+        magnet, mumax3sim = simulations(False, True)
+        err = max_relative_error(magnet.magnetization.eval(), mumax3sim.get_field("m"))
+        assert err < RTOL
+
+    def test_closed_bulk(self):
+        magnet, mumax3sim = simulations(False, False)
+        err = max_relative_error(magnet.magnetization.eval(), mumax3sim.get_field("m"))
+        assert err < RTOL
+
+    def test_open_inter(self):
+        magnet, mumax3sim = simulations(True, True)
+        err = max_relative_error(magnet.magnetization.eval(), mumax3sim.get_field("m"))
+        assert err < RTOL
+
+    def test_open_bulk(self):
+        magnet, mumax3sim = simulations(True, False)
         err = max_relative_error(magnet.magnetization.eval(), mumax3sim.get_field("m"))
         assert err < RTOL
