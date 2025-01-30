@@ -10,7 +10,10 @@
 #include "world.hpp"
 
 bool dmiAssuredZero(const Ferromagnet* magnet) {
-  return (magnet->dmiTensor.assuredZero() || magnet->msat.assuredZero());
+  if (magnet->msat.assuredZero()) { return true; }
+  if (magnet->isSublattice())
+    return magnet->dmiTensor.assuredZero() && magnet->hostMagnet()->dmiTensor.assuredZero();
+  return magnet->dmiTensor.assuredZero();
 }
 
 __global__ void k_dmiFieldFM(CuField hField,
