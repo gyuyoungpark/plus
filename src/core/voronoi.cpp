@@ -24,7 +24,7 @@ GpuBuffer<unsigned int> VoronoiTessellator::generate() {
             real3 coo = real3{nx * cellsize_.x,
                               ny * cellsize_.y,
                               0};
-            data[nx * grid.size().y + ny] = regionOf(coo);
+            data[nx + grid.size().x * ny] = regionOf(coo);
         }
     }
     return GpuBuffer<unsigned int>(data);
@@ -94,4 +94,3 @@ Tile VoronoiTessellator::tileOfCell(real3 coo) {
                      0}
             };
 }
-
