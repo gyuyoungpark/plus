@@ -75,7 +75,7 @@ for d in tqdm(d_array):
             rHmag_prev = rHmag
             m_prev = m_cur
 
-            rHmag += rH_step  # raise field magnitude
+            rHmag += rH_step  # raise ield magnitude
             world.bias_magnetic_field = MU0 * rHmag * msat * H_direction
             magnet.minimize()
 
@@ -95,7 +95,7 @@ mx_ax.plot(d_array, mx_list, marker="s", c="g")
 my_ax.plot(d_array, my_list, marker="s", c="r")
 mx_ax.set_ylabel("$m_x$")
 my_ax.set_ylabel("$m_y$")
-my_ax.set_xlabel("$d/l_ex$")
+my_ax.set_xlabel("$d/l_{ex}$")
 
 # coercivity
 if calculate_coercivity:
