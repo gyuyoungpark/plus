@@ -75,7 +75,7 @@ for d in tqdm(d_array):
             rHmag_prev = rHmag
             m_prev = m_cur
 
-            rHmag += rH_step  # raise ield magnitude
+            rHmag += rH_step  # raise field magnitude
             world.bias_magnetic_field = MU0 * rHmag * msat * H_direction
             magnet.minimize()
 
