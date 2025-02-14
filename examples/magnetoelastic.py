@@ -80,7 +80,7 @@ time_max = 0.8e-9
 duration = time_max/steps
 
 # save magnetization and displacement
-m_shape = np.transpose(magnet.magnetization.eval()[1,0,:,:]).shape
+m_shape = magnet.magnetization.eval()[1,0,:,:].shape
 u_shape = displacement_to_scatter_data(magnet, scale=u_scale, skip=u_skip).shape
 m = np.zeros(shape=(steps,m_shape[0],m_shape[1]))
 u = np.zeros(shape=(steps,u_shape[0],u_shape[1]))
@@ -89,7 +89,7 @@ u = np.zeros(shape=(steps,u_shape[0],u_shape[1]))
 print("Simulating...")
 for i in tqdm(range(steps)):
     world.timesolver.run(duration)
-    m[i,...] = np.transpose(magnet.magnetization.eval()[1,0,:,:])
+    m[i,...] = magnet.magnetization.eval()[1,0,:,:]
     u[i,...] = displacement_to_scatter_data(magnet, scale=u_scale, skip=u_skip) 
 
 # scatter setup
@@ -122,3 +122,4 @@ def update(i):
 print("Animating...")
 animation_fig = animation.FuncAnimation(fig, update, frames=steps, interval=40, blit=True)
 animation_fig.save("magnetoelastic.mp4")
+print("Done!")
