@@ -1,4 +1,4 @@
-"""This test is based on the 3D case in
+"""This test is based on the 1D case in
    https://iopscience.iop.org/article/10.1088/1367-2630/aaea1c
    It compares the final magnetization of both sublattices in an antiferromagnet
    with that of a ferromagnet. All AFM exchanges are set to 0 for this test."""
@@ -60,15 +60,13 @@ def simulations(openbc, interfacial):
     magnet_AFM.ku1 = Ku
     magnet_AFM.anisU = anisU
 
-    if interfacial:
-        for sub in magnet_AFM.sublattices:
+    for sub in magnet_AFM.sublattices:
+        if interfacial:
             sub.dmi_tensor.set_interfacial_dmi(D)
-    else:
-        for sub in magnet_AFM.sublattices:
+        else:
             sub.dmi_tensor.set_bulk_dmi(D)
     
-    magnet_AFM.sub1.magnetization = magnetization
-    magnet_AFM.sub2.magnetization = magnetization
+    magnet_AFM.magnetization = magnetization
 
     magnet_AFM.minimize()
 

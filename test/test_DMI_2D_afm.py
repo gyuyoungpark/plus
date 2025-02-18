@@ -1,4 +1,4 @@
-"""This test is based on the 3D case in
+"""This test is based on the 2D case in
    https://iopscience.iop.org/article/10.1088/1367-2630/aaea1c
    It compares the final magnetization of both sublattices in an antiferromagnet
    with that of a ferromagnet. All AFM exchanges are set to 0 for this test."""
@@ -17,7 +17,7 @@ def max_absolute_error(result, wanted):
 
 def simulations(openBC):
     """This simulates a 2D circle with interfacial DMI and a Neél skyrmion
-       a ferromagnet and an antiferromagnet."""
+       in a ferromagnet and an antiferromagnet."""
     
     # constants
     A = 13e-12
@@ -74,8 +74,7 @@ def simulations(openBC):
 
     for sub in magnet_AFM.sublattices:
         sub.dmi_tensor.set_interfacial_dmi(D)
-    magnet_AFM.sub1.magnetization = neelskyrmion(magnet.center, skyrmion_radius, charge, pol)
-    magnet_AFM.sub2.magnetization = neelskyrmion(magnet.center, skyrmion_radius, charge, pol)
+    magnet_AFM.magnetization = neelskyrmion(magnet.center, skyrmion_radius, charge, pol)
     magnet_AFM.minimize()
 
     return  magnet, magnet_AFM

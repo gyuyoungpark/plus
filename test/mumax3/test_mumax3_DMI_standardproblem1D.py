@@ -1,7 +1,8 @@
 """This test is based on the 1D case in
    https://iopscience.iop.org/article/10.1088/1367-2630/aaea1c
-   The magnet lies along the z-direction, because mumax³ is not correct. They ignore
-   the z-component.
+   The magnet lies along the z-direction, because mumax³ ignores derivatives in
+   the z-direction when there are no cells in that direction. See issue #352 on
+   the mumax³ github repository https://github.com/mumax/3/issues/352.
    """
 
 import pytest

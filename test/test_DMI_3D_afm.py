@@ -17,7 +17,7 @@ def max_absolute_error(result, wanted):
 
 def simulations(openBC):
     """This simulates a 3D cylinder with bulk DMI and a bloch skyrmion
-       a ferromagnet and an antiferromagnet."""
+       in a ferromagnet and an antiferromagnet."""
     
     # constants
     A = 8.78e-12
@@ -72,8 +72,7 @@ def simulations(openBC):
 
     magnet_AFM.bias_magnetic_field = (0,0,Bz)
 
-    magnet_AFM.sub1.magnetization = blochskyrmion(magnet.center, skyrmion_radius, charge, pol)
-    magnet_AFM.sub2.magnetization = blochskyrmion(magnet.center, skyrmion_radius, charge, pol)
+    magnet_AFM.magnetization = blochskyrmion(magnet.center, skyrmion_radius, charge, pol)
 
     magnet_AFM.minimize()
 
