@@ -29,7 +29,7 @@ struct Int3Hash {
 
 class VoronoiTessellator {
  public:
-  VoronoiTessellator(Grid grid, real grainsize, real3 cellsize);
+  VoronoiTessellator(Grid grid, real grainsize, real3 cellsize, int seed=1234567);
   ~VoronoiTessellator() = default;
 
   // * Generate a Voronoi tessellation
@@ -55,6 +55,7 @@ private:
   real grainsize_;
   real3 cellsize_;
   real tilesize_;
+  int seed_;
   unsigned int centerIdx_ = 0;
   std::unordered_map<int3, Tile, Int3Hash> tileCache_;
 

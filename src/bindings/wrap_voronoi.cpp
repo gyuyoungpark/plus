@@ -11,7 +11,11 @@
 void wrap_voronoi(py::module& m) {
     py::class_<VoronoiTessellator>(m, "VoronoiTessellator")
 
-        .def(py::init<Grid, real, real3>(), py::arg("grid"), py::arg("grainsize"), py::arg("cellsize"))
+        .def(py::init<Grid, real, real3, int>(),
+                py::arg("grid"),
+                py::arg("grainsize"),
+                py::arg("cellsize"),
+                py::arg("seed"))
         // TODO: create template function (wrap_system.cpp)
         .def_property_readonly("tessellation", [](VoronoiTessellator t) {
             unsigned int* tess = t.generate().getHostCopy();

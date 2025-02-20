@@ -3,8 +3,8 @@ import numpy as _np
 import _mumaxpluscpp as _cpp
 class VoronoiTessellator:
 
-    def __init__(self, world, grid, grainsize):
-        self._impl = _cpp.VoronoiTessellator(grid._impl, grainsize, world.cellsize)
+    def __init__(self, world, grid, grainsize, seed=1234567):
+        self._impl = _cpp.VoronoiTessellator(grid._impl, grainsize, world.cellsize, seed)
         
     @property
     def tessellation(self):

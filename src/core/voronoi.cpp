@@ -5,10 +5,11 @@
 #include "gpubuffer.hpp"
 #include "voronoi.hpp"
 
-VoronoiTessellator::VoronoiTessellator(Grid grid, real grainsize, real3 cellsize)
+VoronoiTessellator::VoronoiTessellator(Grid grid, real grainsize, real3 cellsize, int seed)
     : grid(grid),
       grainsize_(grainsize),
       cellsize_(cellsize),
+      seed_(seed),
       distReal_(0.0, 1.0) {
         real tilesize_in_grains = 2; // tile size in unit grains
         tilesize_ = tilesize_in_grains * grainsize;
@@ -60,7 +61,7 @@ std::vector<Center> VoronoiTessellator::centersInTile(int3 pos) {
 
     int64_t seed = (int64_t(pos.y) + (1<<24)) * (1<<24)
                  + (int64_t(pos.x) + (1<<24));
-    engine_.seed (seed ^ 1234567);
+    engine_.seed (seed ^ seed_);
 
     int N = Poisson(lambda_);
 
