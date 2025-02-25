@@ -1,5 +1,6 @@
 #include <math.h>
 #include <random>
+#include <cmath>
 
 #include "field.hpp"
 #include "gpubuffer.hpp"
@@ -10,31 +11,35 @@ VoronoiTessellator::VoronoiTessellator(real grainsize, unsigned int maxIdx, int 
       seed_(seed),
       distReal_(0.0, 1.0),
       distInt_(0, maxIdx) {
-        real tilesize_in_grains = 2; // tile size in unit grains
-        tilesize_ = tilesize_in_grains * grainsize;
-        lambda_ = tilesize_in_grains * tilesize_in_grains;
+        pbc_ = false;
+      }
+
+    real3 VoronoiTessellator::getTileSize(real3 griddims) {
+        if (pbc_)
+            return real3{2 * grainsize_, 2 * grainsize_ , 0};
+
+        int3 N = int3{
+            std::max(1, static_cast<int>(std::ceil(griddims.x / (2 * grainsize_)))),
+            std::max(1, static_cast<int>(std::ceil(griddims.y / (2 * grainsize_)))),
+            0};
+
+        return real3{griddims.x / static_cast<real>(N.x),
+                     griddims.y / static_cast<real>(N.y),
+                     0};
     }
 
-    real VoronoiTessellator::findTileSize(real grid_size, real grainsize) {
-        real min_tile_size = 2 * grainsize;
-        unsigned int N = std::max(1u, static_cast<unsigned int>(std::ceil(grid_size / min_tile_size)));
-        return grid_size / N;  // Adjusted tile size to fit the grid evenly
-    }
+GpuBuffer<unsigned int> VoronoiTessellator::generate(Grid grid, real3 cellsize, const bool pbc) {
 
+   pbc_ = pbc;
+   grid_dims_ = real3{grid.size().x * cellsize.x, grid.size().y * cellsize.y, 0};
 
-GpuBuffer<unsigned int> VoronoiTessellator::generate(Grid grid, real3 cellsize) {
+   tilesize_ = getTileSize(grid_dims_);
 
-    gridsize_ = grid.size();
-    cellsize_ = cellsize;
+   numTiles_x = static_cast<int>(std::ceil(grid_dims_.x / tilesize_.x));
+   numTiles_y = static_cast<int>(std::ceil(grid_dims_.y / tilesize_.y));
 
-    tilesize_x = findTileSize(grid.size().x*cellsize.x, grainsize_);
-    tilesize_y = findTileSize(grid.size().y*cellsize.y, grainsize_);
-
-    numTiles_x = static_cast<int>(std::ceil(grid.size().x * cellsize.x / tilesize_x));
-    numTiles_y = static_cast<int>(std::ceil(grid.size().y * cellsize.y / tilesize_y));
-
-    lambda_x = (tilesize_x / grainsize_) * (tilesize_x / grainsize_);
-    lambda_y = (tilesize_y / grainsize_) * (tilesize_y / grainsize_);
+   real lambda_x = (tilesize_.x / grainsize_) * (tilesize_.x / grainsize_);
+   real lambda_y = (tilesize_.y / grainsize_) * (tilesize_.y / grainsize_);
 
    lambda_ = std::max(lambda_x, lambda_y);
 
@@ -58,15 +63,16 @@ unsigned int VoronoiTessellator::regionOf(real3 coo) {
     for (int tx = t.pos.x-1; tx <= t.pos.x+1; tx++) {
         for (int ty = t.pos.y-1; ty <= t.pos.y+1; ty++) {
 
-            int wrapped_tx = (tx + numTiles_x) % numTiles_x;
-            int wrapped_ty = (ty + numTiles_y) % numTiles_y;
+            int wrapped_tx = pbc_ ? (tx + numTiles_x) % numTiles_x : tx;
+            int wrapped_ty = pbc_ ? (ty + numTiles_y) % numTiles_y : ty;
 
             std::vector<Center> centers = centersInTile(int3{wrapped_tx, wrapped_ty, 0});
 
             for (auto c : centers) {
-                real3 shifted_center = periodicShift(coo, c.pos, gridsize_.x*cellsize_.x, gridsize_.y*cellsize_.y);
-                real dist = (coo.x - shifted_center.x) * (coo.x - shifted_center.x)
-                        + (coo.y - shifted_center.y) * (coo.y - shifted_center.y);
+                real3 center = pbc_ ? (periodicShift(coo, c.pos, grid_dims_)) : c.pos;
+
+                real dist = (coo.x - center.x) * (coo.x - center.x)
+                          + (coo.y - center.y) * (coo.y - center.y);
 
                 if (dist < mindist) {
                     nearest = c;
@@ -78,18 +84,13 @@ unsigned int VoronoiTessellator::regionOf(real3 coo) {
     return nearest.ridx;
 }
 
-real3 VoronoiTessellator::periodicShift(real3 coo, real3 center, real grid_size_x, real grid_size_y) {
-    real dx = center.x - coo.x;
-    real dy = center.y - coo.y;
-
-    // Apply periodic boundary corrections
-    if (dx > grid_size_x * 0.5) dx -= grid_size_x;
-    if (dx < -grid_size_x * 0.5) dx += grid_size_x;
-    if (dy > grid_size_y * 0.5) dy -= grid_size_y;
-    if (dy < -grid_size_y * 0.5) dy += grid_size_y;
-
-    return real3{coo.x + dx, coo.y + dy, 0};
+real3 VoronoiTessellator::periodicShift(real3 coo, real3 center) {
+    real3 d = center - coo;
+    d.x -= grid_dims_.x * (std::abs(d.x) > 0.5 * grid_dims_.x ? std::copysign(1.0, d.x) : 0);
+    d.y -= grid_dims_.y * (std::abs(d.y) > 0.5 * grid_dims_.y ? std::copysign(1.0, d.y) : 0);
+    return coo + d;
 }
+
 
 std::vector<Center> VoronoiTessellator::centersInTile(int3 pos) {
 
@@ -108,8 +109,8 @@ std::vector<Center> VoronoiTessellator::centersInTile(int3 pos) {
     std::vector<Center> centers(N);
 
     for (int n = 0; n < N; n++) {
-        real cx = (pos.x + distReal_(engine_)) * tilesize_x;
-        real cy = (pos.y + distReal_(engine_)) * tilesize_y;
+        real cx = (pos.x + distReal_(engine_)) * tilesize_.x;
+        real cy = (pos.y + distReal_(engine_)) * tilesize_.y;
 
         centers[n] = Center(real3{cx, cy, 0}, distInt_(engine_));
     }
@@ -129,8 +130,8 @@ int VoronoiTessellator::Poisson(real lambda) {
 }
 
 Tile VoronoiTessellator::tileOfCell(real3 coo) {
-    return Tile{int3{static_cast<int>(std::floor(coo.x / tilesize_x)), // This cannot be the best way...
-                     static_cast<int>(std::floor(coo.y / tilesize_y)),
+    return Tile{int3{static_cast<int>(std::floor(coo.x / tilesize_.x)), // This cannot be the best way...
+                     static_cast<int>(std::floor(coo.y / tilesize_.y)),
                      0}
             };
 }

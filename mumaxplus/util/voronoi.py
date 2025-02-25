@@ -1,6 +1,8 @@
 import numpy as _np
 
 import _mumaxpluscpp as _cpp
+from mumaxplus.world import World
+from mumaxplus.grid import Grid
 class VoronoiTessellator:
 
     def __init__(self, grainsize, max_idx=256, seed=1234567):
@@ -32,7 +34,12 @@ class VoronoiTessellator:
 
         Returns an ndarray of shape (nz, ny, nx) which is filled
         with region indices."""
-        self.tessellation = self._impl.generate(grid._impl, world.cellsize)
+
+        # is this the cleanest way to check PBC?
+        # do we need this check in the C++ module?
+        has_pbc = world.mastergrid != Grid((0,0,0)) and world.pbc_repetitions != (0,0,0)
+
+        self.tessellation = self._impl.generate(grid._impl, world.cellsize, has_pbc)
 
         return self.tessellation
     
