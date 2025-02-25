@@ -37,7 +37,7 @@ class VoronoiTessellator:
 
         # is this the cleanest way to check PBC?
         # do we need this check in the C++ module?
-        has_pbc = world.mastergrid != Grid((0,0,0)) and world.pbc_repetitions != (0,0,0)
+        has_pbc = world.pbc_repetitions != (0,0,0)
 
         self.tessellation = self._impl.generate(grid._impl, world.cellsize, has_pbc)
 
@@ -45,7 +45,13 @@ class VoronoiTessellator:
     
     def coo_to_idx(self, x, y, z):
         """Returns the region index (int) of the given coordinate within the
-        Voronoi tessellation."""
+        Voronoi tessellation.
+
+        **Important:** This method has no information about the used world and
+        grid. E.g. this means that periodic boundary conditions will not apply.
+        This can be overriden by calling `generate` before assinging this function
+        to the `Magnet`'s regions parameter.
+        """
         return self._impl.coo_to_idx((x,y,z))
 
     @property
