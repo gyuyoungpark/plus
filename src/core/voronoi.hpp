@@ -35,8 +35,12 @@ class VoronoiTessellator {
   // * Generate a Voronoi tessellation
   GpuBuffer<unsigned int> generate(Grid grid, real3 cellsize);
 
+  real findTileSize(real gridsize, real grainsize);
+
   // * Calc nearest center and assign center index to coo
   unsigned int regionOf(real3 coo);
+
+real3 periodicShift(real3 coo, real3 center, real gridx, real gridy);
 
   private:
   // * Calculate position and index of centers in tile
@@ -52,12 +56,20 @@ public:
   GpuBuffer<unsigned int> tessellation;
 private:
   real grainsize_;
+  int3 gridsize_;
+  real3 cellsize_;
   real tilesize_;
   int seed_;
+  real tilesize_x;
+  real tilesize_y;
+  int numTiles_x;
+  int numTiles_y;
   std::unordered_map<int3, Tile, Int3Hash> tileCache_;
 
  // RNG related members
   real lambda_; // Poisson parameter
+  real lambda_x;
+  real lambda_y;
   std::default_random_engine engine_;
   std::uniform_real_distribution<> distReal_;
   std::uniform_int_distribution<> distInt_;
