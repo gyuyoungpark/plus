@@ -15,6 +15,7 @@ VoronoiTessellator::VoronoiTessellator(real grainsize, unsigned int maxIdx, int 
       }
 
     real3 VoronoiTessellator::getTileSize(real3 griddims) {
+
         if (pbc_)
             return real3{2 * grainsize_, 2 * grainsize_ , 0};
 
@@ -23,9 +24,7 @@ VoronoiTessellator::VoronoiTessellator(real grainsize, unsigned int maxIdx, int 
             std::max(1, static_cast<int>(std::ceil(griddims.y / (2 * grainsize_)))),
             0};
 
-        return real3{griddims.x / static_cast<real>(N.x),
-                     griddims.y / static_cast<real>(N.y),
-                     0};
+        return griddims / real3{static_cast<real>(N.x), static_cast<real>(N.y), 0};
     }
 
 GpuBuffer<unsigned int> VoronoiTessellator::generate(Grid grid, real3 cellsize, const bool pbc) {
@@ -35,13 +34,12 @@ GpuBuffer<unsigned int> VoronoiTessellator::generate(Grid grid, real3 cellsize, 
 
    tilesize_ = getTileSize(grid_dims_);
 
-   numTiles_x = static_cast<int>(std::ceil(grid_dims_.x / tilesize_.x));
-   numTiles_y = static_cast<int>(std::ceil(grid_dims_.y / tilesize_.y));
+   lambda_ = (tilesize_.x / grainsize_) * (tilesize_.y / grainsize_);
 
-   real lambda_x = (tilesize_.x / grainsize_) * (tilesize_.x / grainsize_);
-   real lambda_y = (tilesize_.y / grainsize_) * (tilesize_.y / grainsize_);
-
-   lambda_ = std::max(lambda_x, lambda_y);
+   if (pbc) {
+    numTiles_x = static_cast<int>(std::ceil(grid_dims_.x / tilesize_.x));
+    numTiles_y = static_cast<int>(std::ceil(grid_dims_.y / tilesize_.y));
+   }
 
    std::vector<unsigned int> data(grid.ncells());
 
@@ -69,7 +67,7 @@ unsigned int VoronoiTessellator::regionOf(real3 coo) {
             std::vector<Center> centers = centersInTile(int3{wrapped_tx, wrapped_ty, 0});
 
             for (auto c : centers) {
-                real3 center = pbc_ ? (periodicShift(coo, c.pos, grid_dims_)) : c.pos;
+                real3 center = pbc_ ? (periodicShift(coo, c.pos)) : c.pos;
 
                 real dist = (coo.x - center.x) * (coo.x - center.x)
                           + (coo.y - center.y) * (coo.y - center.y);

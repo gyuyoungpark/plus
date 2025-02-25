@@ -40,7 +40,7 @@ class VoronoiTessellator {
   // * Calc nearest center and assign center index to coo
   unsigned int regionOf(real3 coo);
 
-real3 periodicShift(real3 coo, real3 center, real3 gridsize);
+real3 periodicShift(real3 coo, real3 center);
 
   private:
   // * Calculate position and index of centers in tile
@@ -57,11 +57,13 @@ public:
 private:
   real grainsize_;
   real3 grid_dims_;
-  real3 tilesize_;
   bool pbc_;
-  int seed_;
+
+  real3 tilesize_;
   int numTiles_x;
   int numTiles_y;
+
+  int seed_;
   std::unordered_map<int3, Tile, Int3Hash> tileCache_;
 
  // RNG related members
