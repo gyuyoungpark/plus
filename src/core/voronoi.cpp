@@ -14,18 +14,15 @@ VoronoiTessellator::VoronoiTessellator(real grainsize, unsigned int maxIdx, int 
         pbc_ = false;
       }
 
-    real3 VoronoiTessellator::getTileSize(real3 griddims) {
+real3 VoronoiTessellator::getTileSize(real3 griddims) {
 
-        if (pbc_)
-            return real3{2 * grainsize_, 2 * grainsize_ , 0};
+    if (pbc_)
+        return real3{2 * grainsize_, 2 * grainsize_ , 0};
 
-        int3 N = int3{
-            std::max(1, static_cast<int>(std::ceil(griddims.x / (2 * grainsize_)))),
-            std::max(1, static_cast<int>(std::ceil(griddims.y / (2 * grainsize_)))),
-            0};
-
-        return griddims / real3{static_cast<real>(N.x), static_cast<real>(N.y), 0};
-    }
+    return griddims / real3{std::max(1.0f, std::ceil(griddims.x / (2 * grainsize_))),
+                            std::max(1.0f, std::ceil(griddims.y / (2 * grainsize_))),
+                            0};
+}
 
 GpuBuffer<unsigned int> VoronoiTessellator::generate(Grid grid, real3 cellsize, const bool pbc) {
 
@@ -88,7 +85,6 @@ real3 VoronoiTessellator::periodicShift(real3 coo, real3 center) {
     d.y -= grid_dims_.y * (std::abs(d.y) > 0.5 * grid_dims_.y ? std::copysign(1.0, d.y) : 0);
     return coo + d;
 }
-
 
 std::vector<Center> VoronoiTessellator::centersInTile(int3 pos) {
 
