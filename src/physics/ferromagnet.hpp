@@ -22,12 +22,17 @@
 #include "system.hpp"
 
 class Antiferromagnet;
+class NCAFM;
 
 class Ferromagnet : public Magnet {
  public:
   Ferromagnet(std::shared_ptr<System> system_ptr,
               std::string name,
-              Antiferromagnet* hostMagnet_ = nullptr);
+              Magnet* hostMagnet_ = nullptr);
+
+  //Ferromagnet(std::shared_ptr<System> system_ptr,
+  //            std::string name,
+  //            NCAFM* hostMagnet_ = nullptr);
 
   Ferromagnet(MumaxWorld* world,
               Grid grid,
@@ -39,7 +44,10 @@ class Ferromagnet : public Magnet {
   const Variable* magnetization() const;
 
   bool isSublattice() const;
-  const Antiferromagnet* hostMagnet() const;  // TODO: right amount of const?
+  const Antiferromagnet* hosttMagnet() const;  // TODO: right amount of const?
+
+  template <typename T>
+  const T* hostMagnet() const;
 
   void minimize(real tol = 1e-6, int nSamples = 10);
   void relax(real tol);
@@ -49,7 +57,7 @@ class Ferromagnet : public Magnet {
 
   // TODO: what type of pointer?
   // TODO: Magnet or Antiferromagnet?
-  Antiferromagnet* hostMagnet_;
+  Magnet* hostMagnet_;
 
  public:
   mutable PoissonSystem poissonSystem;
@@ -96,3 +104,8 @@ class Ferromagnet : public Magnet {
   Parameter B1;  // First magnetoelastic coupling constant
   Parameter B2;  // Second magnetoelastic coupling constant
 };
+
+template <typename T>
+const T* Ferromagnet::hostMagnet() const {
+    return dynamic_cast<const T*>(hostMagnet_);
+}

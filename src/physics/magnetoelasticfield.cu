@@ -17,7 +17,7 @@ bool dynamicMagnetoelasticAssuredZero(const Ferromagnet* magnet) {
   // use elastodynamics of host if possible
   bool enableElastodynamics;
   if (magnet->isSublattice()) {
-    enableElastodynamics = magnet->hostMagnet()->enableElastodynamics();
+    enableElastodynamics = magnet->hosttMagnet()->enableElastodynamics();
   } else {
     enableElastodynamics = magnet->enableElastodynamics();
   }
@@ -30,8 +30,8 @@ bool rigidMagnetoelasticAssuredZero(const Ferromagnet* magnet) {
   // use rigid strain of host if possible
   bool appliedStrain;
   if (magnet->isSublattice()) {
-    appliedStrain = (!magnet->hostMagnet()->rigidNormStrain.assuredZero() ||
-                     !magnet->hostMagnet()->rigidShearStrain.assuredZero());
+    appliedStrain = (!magnet->hosttMagnet()->rigidNormStrain.assuredZero() ||
+                     !magnet->hosttMagnet()->rigidShearStrain.assuredZero());
   } else {
     appliedStrain = (!magnet->rigidNormStrain.assuredZero() ||
                      !magnet->rigidShearStrain.assuredZero());
@@ -119,8 +119,8 @@ Field evalMagnetoelasticField(const Ferromagnet* magnet) {
 
   if (!rigidMagnetoelasticAssuredZero(magnet)) {  // maybe use rigid strain
     if (magnet->isSublattice()) {  // use strain from host
-      CuVectorParameter normStrain = magnet->hostMagnet()->rigidNormStrain.cu();
-      CuVectorParameter shearStrain = magnet->hostMagnet()->rigidShearStrain.cu();
+      CuVectorParameter normStrain = magnet->hosttMagnet()->rigidNormStrain.cu();
+      CuVectorParameter shearStrain = magnet->hosttMagnet()->rigidShearStrain.cu();
 
       cudaLaunch(ncells, k_rigidMagnetoelasticField, hField.cu(), mField,
                 normStrain, shearStrain, B1, B2, msat);
@@ -138,7 +138,7 @@ Field evalMagnetoelasticField(const Ferromagnet* magnet) {
   // otherwise use dynamic strain
   Field strain;
   if (magnet->isSublattice()) {  // use strain from host
-    strain = evalStrainTensor(magnet->hostMagnet());
+    strain = evalStrainTensor(magnet->hosttMagnet());
   } else {  // independent magnet
     strain = evalStrainTensor(magnet);
   }

@@ -46,6 +46,8 @@ add_library(physics STATIC
     minimizer.hpp
     mumaxworld.cpp
     mumaxworld.hpp
+    nc_antiferromagnet.cpp
+    nc_antiferromagnet.hpp
     neel.cu
     neel.hpp
     newell.cu

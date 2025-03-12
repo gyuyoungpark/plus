@@ -13,7 +13,7 @@
 bool strayFieldsAssuredZero(const Ferromagnet* ferromagnet) {
   const Magnet* magnet;
   if (ferromagnet->isSublattice()) {
-    magnet = ferromagnet->hostMagnet();
+    magnet = ferromagnet->hostMagnet<Magnet>();
   } else {
     magnet = ferromagnet;
   }
@@ -70,7 +70,7 @@ Field evalExternalField(const Ferromagnet* magnet) {
   // stray fields
   const Magnet* dstMagnet;  // destination magnet of strayfields
   if (magnet->isSublattice()) {
-    dstMagnet = magnet->hostMagnet();
+    dstMagnet = magnet->hostMagnet<Magnet>();
   } else {
     dstMagnet = magnet;
   }

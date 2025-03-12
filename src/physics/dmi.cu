@@ -12,7 +12,7 @@
 bool dmiAssuredZero(const Ferromagnet* magnet) {
   if (magnet->msat.assuredZero()) { return true; }
   if (magnet->isSublattice())
-    return magnet->dmiTensor.assuredZero() && magnet->hostMagnet()->dmiTensor.assuredZero();
+    return magnet->dmiTensor.assuredZero() && magnet->hosttMagnet()->dmiTensor.assuredZero();
   return magnet->dmiTensor.assuredZero();
 }
 
@@ -256,9 +256,9 @@ Field evalDmiField(const Ferromagnet* magnet) {
     cudaLaunch(ncells, k_dmiFieldFM, hField.cu(),
               mag, dmiTensor, msat, grid, aex, BC);
   else {
-    auto mag2 = magnet->hostMagnet()->getOtherSublattice(magnet)->magnetization()->field().cu();
-    auto afmex_nn = magnet->hostMagnet()->afmex_nn.cu();
-    auto interDmiTensor = magnet->hostMagnet()->dmiTensor.cu();
+    auto mag2 = magnet->hosttMagnet()->getOtherSublattice(magnet)->magnetization()->field().cu();
+    auto afmex_nn = magnet->hosttMagnet()->afmex_nn.cu();
+    auto interDmiTensor = magnet->hosttMagnet()->dmiTensor.cu();
     cudaLaunch(ncells, k_dmiFieldAFM, hField.cu(), mag, mag2,
               dmiTensor, interDmiTensor, msat, grid, aex, afmex_nn, BC);
   }

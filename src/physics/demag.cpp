@@ -14,7 +14,7 @@ Field evalDemagField(const Ferromagnet* magnet) {
   if (demagFieldAssuredZero(magnet))
     return Field(magnet->system(), 3, 0.0);
   if (magnet->isSublattice())
-    return magnet->hostMagnet()->getStrayField(magnet->hostMagnet())->eval();
+    return magnet->hosttMagnet()->getStrayField(magnet->hosttMagnet())->eval();
   return magnet->getStrayField(magnet)->eval();
 }
 

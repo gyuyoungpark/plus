@@ -17,7 +17,7 @@
 
 Ferromagnet::Ferromagnet(std::shared_ptr<System> system_ptr, 
                          std::string name,
-                         Antiferromagnet* hostMagnet)
+                         Magnet* hostMagnet)
     : Magnet(system_ptr, name),
       hostMagnet_(hostMagnet),
       magnetization_(system(), 3, name + ":magnetization", ""),
@@ -99,8 +99,8 @@ bool Ferromagnet::isSublattice() const {
   return !(hostMagnet_ == nullptr);
 }
 
-const Antiferromagnet* Ferromagnet::hostMagnet() const {
-  return hostMagnet_;
+const Antiferromagnet* Ferromagnet::hosttMagnet() const {
+  return dynamic_cast<const Antiferromagnet*>(hostMagnet_);
 }
 
 void Ferromagnet::minimize(real tol, int nSamples) {

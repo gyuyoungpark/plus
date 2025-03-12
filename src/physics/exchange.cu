@@ -229,8 +229,8 @@ Field evalExchangeField(const Ferromagnet* magnet) {
   else {
     // In case `magnet` is a sublattice, it's sister sublattice affects
     // the Neumann BC. There are no open boundaries when in this scope.
-    auto mag2 = magnet->hostMagnet()->getOtherSublattice(magnet)->magnetization()->field().cu();
-    auto afmex_nn = magnet->hostMagnet()->afmex_nn.cu();
+    auto mag2 = magnet->hosttMagnet()->getOtherSublattice(magnet)->magnetization()->field().cu();
+    auto afmex_nn = magnet->hosttMagnet()->afmex_nn.cu();
     cudaLaunch(ncells, k_exchangeField, hField.cu(), mag,
               mag2, aex, afmex_nn, msat, w, grid, dmiTensor,
               interEx, scaleEx);
