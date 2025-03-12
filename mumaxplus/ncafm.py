@@ -14,7 +14,7 @@ from .parameter import Parameter
 from .scalarquantity import ScalarQuantity
 
 
-class NC_Antiferromagnet(Magnet):
+class NCAFM(Magnet):
     """Create a non-collinear antiferromagnet instance.
 
     Parameters
@@ -43,7 +43,7 @@ class NC_Antiferromagnet(Magnet):
     """
 
     def __init__(self, world, grid, name="", geometry=None, regions=None):
-        super().__init__(world._impl.add_nc_antiferromagnet,
+        super().__init__(world._impl.add_ncafm,
                          world, grid, name, geometry, regions)
 
     def __repr__(self):
@@ -62,7 +62,7 @@ class NC_Antiferromagnet(Magnet):
                 nc_antiferromagnet.sub1.msat = 800e3
                 nc_antiferromagnet.sub2.msat = 800e3
         """
-        if hasattr(NC_Antiferromagnet, name) or name == "_impl":
+        if hasattr(NCAFM, name) or name == "_impl":
             # set attribute of yourself, without causing recursion
             object.__setattr__(self, name, value)
         elif hasattr(Ferromagnet, name):

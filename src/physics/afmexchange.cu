@@ -13,12 +13,15 @@
 bool inHomoAfmExchangeAssuredZero(const Ferromagnet* magnet) {
   if (!magnet->isSublattice()) { return true; }
 
+  if (!magnet->hostMagnet<Antiferromagnet>()) { return true; }
+
   return ( magnet->hosttMagnet()->afmex_nn.assuredZero() ||
            magnet->hosttMagnet()->getOtherSublattice(magnet)->msat.assuredZero());
 }
 
 bool homoAfmExchangeAssuredZero(const Ferromagnet* magnet) {
   if (!magnet->isSublattice()) { return true; }
+  if (!magnet->hostMagnet<Antiferromagnet>()) { return true; }
 
   return (magnet->hosttMagnet()->afmex_cell.assuredZero() ||
           magnet->hosttMagnet()->getOtherSublattice(magnet)->msat.assuredZero());

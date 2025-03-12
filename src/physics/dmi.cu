@@ -11,6 +11,7 @@
 
 bool dmiAssuredZero(const Ferromagnet* magnet) {
   if (magnet->msat.assuredZero()) { return true; }
+  if (!magnet->hostMagnet<Antiferromagnet>()) { return true; }
   if (magnet->isSublattice())
     return magnet->dmiTensor.assuredZero() && magnet->hosttMagnet()->dmiTensor.assuredZero();
   return magnet->dmiTensor.assuredZero();

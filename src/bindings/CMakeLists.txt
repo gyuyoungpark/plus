@@ -13,7 +13,7 @@ pybind11_add_module(_mumaxpluscpp
     wrap_fieldquantity.cpp
     wrap_grid.cpp
     wrap_magnet.cpp
-    wrap_ncantiferromagnet.cpp
+    wrap_ncafm.cpp
     wrap_parameter.cpp
     wrap_scalarquantity.cpp
     wrap_strayfield.cpp

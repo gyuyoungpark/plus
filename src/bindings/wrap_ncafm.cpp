@@ -2,7 +2,7 @@
 #include <stdexcept>
 
 #include "afmexchange.hpp"
-#include "nc_antiferromagnet.hpp"
+#include "ncafm.hpp"
 #include "dmi.hpp"
 #include "energy.hpp"
 #include "fieldquantity.hpp"
@@ -12,7 +12,7 @@
 #include "world.hpp"
 #include "wrappers.hpp"
 
-void wrap_ncantiferromagnet(py::module& m) {
+void wrap_ncafm(py::module& m) {
   py::class_<NCAFM, Magnet>(m, "NC_Antiferromagnet")
       .def("sub1", &NCAFM::sub1, py::return_value_policy::reference)
       .def("sub2", &NCAFM::sub2, py::return_value_policy::reference)

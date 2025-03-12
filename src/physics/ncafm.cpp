@@ -1,4 +1,4 @@
-#include "nc_antiferromagnet.hpp"
+#include "ncafm.hpp"
 
 #include <algorithm>
 #include <memory>
@@ -11,7 +11,7 @@
 #include "mumaxworld.hpp"
 
 NCAFM::NCAFM(std::shared_ptr<System> system_ptr,
-                                 std::string name)
+             std::string name)
     : Magnet(system_ptr, name),
       ncafmex_cell(system(), 0.0, name + ":ncafmex_cell", "J/m"),
       ncafmex_nn(system(), 0.0, name + ":ncafmex_nn", "J/m"),
@@ -24,10 +24,10 @@ NCAFM::NCAFM(std::shared_ptr<System> system_ptr,
       sub3_(Ferromagnet(system_ptr, name + ":sublattice_3", this)) {}
       
 NCAFM::NCAFM(MumaxWorld* world,
-                         Grid grid,
-                         std::string name,
-                         GpuBuffer<bool> geometry,
-                         GpuBuffer<unsigned int> regions)
+             Grid grid,
+             std::string name,
+             GpuBuffer<bool> geometry,
+             GpuBuffer<unsigned int> regions)
     : NCAFM(std::make_shared<System>(world, grid, geometry, regions), name) {}
 
 const Ferromagnet* NCAFM::sub1() const {
