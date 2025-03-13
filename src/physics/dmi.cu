@@ -6,14 +6,15 @@
 #include "energy.hpp"
 #include "ferromagnet.hpp"
 #include "field.hpp"
+#include "ncafm.hpp"
 #include "parameter.hpp"
 #include "world.hpp"
 
 bool dmiAssuredZero(const Ferromagnet* magnet) {
   if (magnet->msat.assuredZero()) { return true; }
-  if (!magnet->hostMagnet<Antiferromagnet>()) { return true; }
-  if (magnet->isSublattice())
-    return magnet->dmiTensor.assuredZero() && magnet->hosttMagnet()->dmiTensor.assuredZero();
+  if (magnet->hostMagnet<NCAFM>()) { return true; }
+  if (magnet->hostMagnet<Antiferromagnet>())
+    return magnet->dmiTensor.assuredZero() && magnet->hostMagnet<Antiferromagnet>()->dmiTensor.assuredZero();
   return magnet->dmiTensor.assuredZero();
 }
 
@@ -257,9 +258,9 @@ Field evalDmiField(const Ferromagnet* magnet) {
     cudaLaunch(ncells, k_dmiFieldFM, hField.cu(),
               mag, dmiTensor, msat, grid, aex, BC);
   else {
-    auto mag2 = magnet->hosttMagnet()->getOtherSublattice(magnet)->magnetization()->field().cu();
-    auto afmex_nn = magnet->hosttMagnet()->afmex_nn.cu();
-    auto interDmiTensor = magnet->hosttMagnet()->dmiTensor.cu();
+    auto mag2 = magnet->hostMagnet<Antiferromagnet>()->getOtherSublattice(magnet)->magnetization()->field().cu();
+    auto afmex_nn = magnet->hostMagnet<Antiferromagnet>()->afmex_nn.cu();
+    auto interDmiTensor = magnet->hostMagnet<Antiferromagnet>()->dmiTensor.cu();
     cudaLaunch(ncells, k_dmiFieldAFM, hField.cu(), mag, mag2,
               dmiTensor, interDmiTensor, msat, grid, aex, afmex_nn, BC);
   }

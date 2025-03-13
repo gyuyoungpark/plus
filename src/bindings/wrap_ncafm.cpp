@@ -1,10 +1,7 @@
 #include <memory>
 #include <stdexcept>
 
-#include "afmexchange.hpp"
 #include "ncafm.hpp"
-#include "dmi.hpp"
-#include "energy.hpp"
 #include "fieldquantity.hpp"
 #include "magnet.hpp"
 #include "mumaxworld.hpp"
@@ -25,6 +22,4 @@ void wrap_ncafm(py::module& m) {
       .def_readonly("scale_ncafmex_nn", &NCAFM::scaleNCAfmExchNN)
       .def_readonly("latcon", &NCAFM::latcon)
       .def_readonly("dmi_tensor", &NCAFM::dmiTensor);
-
-
 }

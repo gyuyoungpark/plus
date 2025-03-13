@@ -48,6 +48,8 @@ add_library(physics STATIC
     mumaxworld.hpp
     ncafm.cpp
     ncafm.hpp
+    ncafmexchange.cu
+    ncafmexchange.hpp
     neel.cu
     neel.hpp
     newell.cu

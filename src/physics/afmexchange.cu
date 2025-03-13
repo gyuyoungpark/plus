@@ -11,20 +11,17 @@
 #include "world.hpp"
 
 bool inHomoAfmExchangeAssuredZero(const Ferromagnet* magnet) {
-  if (!magnet->isSublattice()) { return true; }
-
   if (!magnet->hostMagnet<Antiferromagnet>()) { return true; }
 
-  return ( magnet->hosttMagnet()->afmex_nn.assuredZero() ||
-           magnet->hosttMagnet()->getOtherSublattice(magnet)->msat.assuredZero());
+  return ( magnet->hostMagnet<Antiferromagnet>()->afmex_nn.assuredZero() ||
+           magnet->hostMagnet<Antiferromagnet>()->getOtherSublattice(magnet)->msat.assuredZero());
 }
 
 bool homoAfmExchangeAssuredZero(const Ferromagnet* magnet) {
-  if (!magnet->isSublattice()) { return true; }
   if (!magnet->hostMagnet<Antiferromagnet>()) { return true; }
 
-  return (magnet->hosttMagnet()->afmex_cell.assuredZero() ||
-          magnet->hosttMagnet()->getOtherSublattice(magnet)->msat.assuredZero());
+  return (magnet->hostMagnet<Antiferromagnet>()->afmex_cell.assuredZero() ||
+          magnet->hostMagnet<Antiferromagnet>()->getOtherSublattice(magnet)->msat.assuredZero());
 }
 
 // AFM exchange at a single site
@@ -159,11 +156,11 @@ Field evalHomogeneousAfmExchangeField(const Ferromagnet* magnet) {
     return hField;
   }
 
-  auto otherSub = magnet->hosttMagnet()->getOtherSublattice(magnet);
+  auto otherSub = magnet->hostMagnet<Antiferromagnet>()->getOtherSublattice(magnet);
   auto otherMag = otherSub->magnetization()->field().cu();
   auto msat2 = otherSub->msat.cu();
-  auto afmex_cell = magnet->hosttMagnet()->afmex_cell.cu();
-  auto latcon = magnet->hosttMagnet()->latcon.cu();
+  auto afmex_cell = magnet->hostMagnet<Antiferromagnet>()->afmex_cell.cu();
+  auto latcon = magnet->hostMagnet<Antiferromagnet>()->latcon.cu();
 
   cudaLaunch(hField.grid().ncells(), k_afmExchangeFieldSite, hField.cu(),
             otherMag, msat2, afmex_cell, latcon);
@@ -179,16 +176,16 @@ Field evalInHomogeneousAfmExchangeField(const Ferromagnet* magnet) {
     return hField;
   }
   
-  auto otherSub = magnet->hosttMagnet()->getOtherSublattice(magnet);
+  auto otherSub = magnet->hostMagnet<Antiferromagnet>()->getOtherSublattice(magnet);
   auto mag = magnet->magnetization()->field().cu();
   auto otherMag = otherSub->magnetization()->field().cu();
   auto msat2 = otherSub->msat.cu();
   auto aex = magnet->aex.cu();
-  auto afmex_nn = magnet->hosttMagnet()->afmex_nn.cu();
+  auto afmex_nn = magnet->hostMagnet<Antiferromagnet>()->afmex_nn.cu();
   auto BC = magnet->enableOpenBC;
   auto dmiTensor = magnet->dmiTensor.cu();
-  auto inter = magnet->hosttMagnet()->interAfmExchNN.cu();
-  auto scale = magnet->hosttMagnet()->scaleAfmExchNN.cu();
+  auto inter = magnet->hostMagnet<Antiferromagnet>()->interAfmExchNN.cu();
+  auto scale = magnet->hostMagnet<Antiferromagnet>()->scaleAfmExchNN.cu();
 
   cudaLaunch(hField.grid().ncells(), k_afmExchangeFieldNN, hField.cu(),
             mag, otherMag, aex, afmex_nn, inter, scale, msat2,

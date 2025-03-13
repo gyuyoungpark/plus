@@ -44,10 +44,9 @@ class Ferromagnet : public Magnet {
   const Variable* magnetization() const;
 
   bool isSublattice() const;
-  const Antiferromagnet* hosttMagnet() const;  // TODO: right amount of const?
 
   template <typename T>
-  const T* hostMagnet() const;
+  const T* hostMagnet() const;  // TODO: right amount of const?
 
   void minimize(real tol = 1e-6, int nSamples = 10);
   void relax(real tol);

@@ -42,6 +42,17 @@ const Ferromagnet* NCAFM::sub3() const {
   return &sub3_;
 }
 
+std::vector<const Ferromagnet*> NCAFM::getOtherSublattices(const Ferromagnet* sub) const {
+  if (std::find(sublattices_.begin(), sublattices_.end(), sub) == sublattices_.end())
+    throw std::out_of_range("Sublattice not found in NCAFM.");
+  std::vector<const Ferromagnet*> result;
+  for (const auto* s : sublattices_) {
+      if (s != sub)
+          result.push_back(s);
+  }
+  return result;
+}
+
 std::vector<const Ferromagnet*> NCAFM::sublattices() const {
   return sublattices_;
 }

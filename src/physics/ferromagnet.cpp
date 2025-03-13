@@ -99,10 +99,6 @@ bool Ferromagnet::isSublattice() const {
   return !(hostMagnet_ == nullptr);
 }
 
-const Antiferromagnet* Ferromagnet::hosttMagnet() const {
-  return dynamic_cast<const Antiferromagnet*>(hostMagnet_);
-}
-
 void Ferromagnet::minimize(real tol, int nSamples) {
   Minimizer minimizer(this, tol, nSamples);
   minimizer.exec();
