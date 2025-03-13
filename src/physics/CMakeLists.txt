@@ -35,7 +35,8 @@ add_library(physics STATIC
     ferromagnet.cpp 
     ferromagnet.hpp 
     fullmag.cu
-    fullmag.hpp 
+    fullmag.hpp
+    hostexchange.hpp
     magnet.cpp
     magnet.hpp 
     magnetoelasticfield.cu

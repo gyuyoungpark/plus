@@ -13,10 +13,12 @@
 #include "ferromagnet.hpp"
 #include "fieldquantity.hpp"
 #include "fullmag.hpp"
+#include "hostexchange.hpp"
 #include "magnet.hpp"
 #include "magnetoelasticfield.hpp"
 #include "magnetoelasticforce.hpp"
 #include "mumaxworld.hpp"
+#include "ncafmexchange.hpp"
 #include "parameter.hpp"
 #include "stt.hpp"
 #include "thermalnoise.hpp"
@@ -90,12 +92,30 @@ void wrap_ferromagnet(py::module& m) {
   m.def("exchange_energy", &exchangeEnergyQuantity);  
   m.def("max_angle", py::overload_cast<const Ferromagnet*>(&maxAngle));
   // ferromagnetic sublattice
-  m.def("inhomogeneous_exchange_field", &inHomoAfmExchangeFieldQuantity);
-  m.def("homogeneous_exchange_field", &homoAfmExchangeFieldQuantity);
-  m.def("inhomogeneous_exchange_energy_density", &inHomoAfmExchangeEnergyDensityQuantity);
-  m.def("homogeneous_exchange_energy_density", &homoAfmExchangeEnergyDensityQuantity);
-  m.def("inhomogeneous_exchange_energy", &inHomoAfmExchangeEnergyQuantity);
-  m.def("homogeneous_exchange_energy", &homoAfmExchangeEnergyQuantity);
+  m.def("homogeneous_exchange_field", [](const Ferromagnet* magnet) {
+      return hostExchangeFieldQuantity(magnet,
+                                       homoAfmExchangeFieldQuantity,
+                                       homoNCAfmExchangeFieldQuantity);});
+  m.def("inhomogeneous_exchange_field", [](const Ferromagnet* magnet) {
+      return hostExchangeFieldQuantity(magnet,
+                                       inHomoAfmExchangeFieldQuantity,
+                                       inHomoNCAfmExchangeFieldQuantity);});
+  m.def("homogeneous_exchange_energy_density", [](const Ferromagnet* magnet) {
+      return hostExchangeFieldQuantity(magnet,
+                                       homoAfmExchangeEnergyDensityQuantity,
+                                       homoNCAfmExchangeEnergyDensityQuantity);});
+  m.def("inhomogeneous_exchange_energy_density", [](const Ferromagnet* magnet) {
+      return hostExchangeFieldQuantity(magnet,
+                                       inHomoAfmExchangeEnergyDensityQuantity,
+                                       inHomoNCAfmExchangeEnergyDensityQuantity);});
+  m.def("homogeneous_exchange_energy", [](const Ferromagnet* magnet) {
+      return hostExchangeScalarQuantity(magnet,
+                                        homoAfmExchangeEnergyQuantity,
+                                        homoNCAfmExchangeEnergyQuantity);});
+  m.def("inhomogeneous_exchange_energy", [](const Ferromagnet* magnet) {
+      return hostExchangeScalarQuantity(magnet,
+                                        inHomoAfmExchangeEnergyQuantity,
+                                        inHomoNCAfmExchangeEnergyQuantity);});
   //
   m.def("dmi_field", &dmiFieldQuantity);
   m.def("dmi_energy_density", &dmiEnergyDensityQuantity);
