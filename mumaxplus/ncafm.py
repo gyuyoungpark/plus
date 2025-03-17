@@ -298,26 +298,25 @@ class NCAFM(Magnet):
         return DmiTensorGroup([
             self.dmi_tensor, self.sub1.dmi_tensor, self.sub2.dmi_tensor, self.sub3.dmi_tensor
             ])
-'''
+
     # ----- QUANTITIES ----------------------
 
     @property
-    def neel_vector(self):
-        """Weighted dimensionless Neel vector of an antiferromagnet/ferrimagnet.
-        (msat1*m1 - msat2*m2) / (msat1 + msat2)
-        """
-        return FieldQuantity(_cpp.neel_vector(self._impl))
-    
-    @property
     def full_magnetization(self):
-        """Full antiferromagnetic magnetization M1 + M2 (A/m).
+        """Full non-collinear antiferromagnetic magnetization M1 + M2 + M3 (A/m).
         
         See Also
         --------
         Ferromagnet.full_magnetization
         """
         return FieldQuantity(_cpp.full_magnetization(self._impl))
-    
+'''
+    @property
+    def neel_vector(self):
+        """Weighted dimensionless Neel vector of an antiferromagnet/ferrimagnet.
+        (msat1*m1 - msat2*m2) / (msat1 + msat2)
+        """
+        return FieldQuantity(_cpp.neel_vector(self._impl))
     @property
     def angle_field(self):
         """Returns the deviation from the optimal angle (180°) between
