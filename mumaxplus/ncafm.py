@@ -124,7 +124,30 @@ class NCAFM(Magnet):
         return 0
 
     def relax(self, tol=1e-9):
-        return 0
+        """Relax the state to an energy minimum.
+
+        The system evolves in time without precession (pure damping) until
+        the total energy (i.e. the sum of sublattices) hits the noise floor.
+        Hereafter, relaxation keeps on going until the maximum torque is
+        minimized.
+
+        Compared to `minimize`, this function takes a longer time to execute,
+        but is more robust when starting from a high energy state (i.e. random).
+
+        Parameters
+        ----------
+        tol : float, default=1e-9
+            The lowest maximum error of the timesolver.
+
+        See Also
+        --------
+        minimize
+        """
+        if tol >= 1e-5:
+            warnings.warn("The set tolerance is greater than or equal to the default value"
+                          + " used for the timesolver (1e-5). Using this value results"
+                          + " in no torque minimization, only energy minimization.", UserWarning)
+        self._impl.relax(tol)
 
 
     # ----- MATERIAL PARAMETERS -----------

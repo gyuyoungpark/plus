@@ -23,7 +23,9 @@ void wrap_ncafm(py::module& m) {
       .def_readonly("inter_ncafmex_nn", &NCAFM::interNCAfmExchNN)
       .def_readonly("scale_ncafmex_nn", &NCAFM::scaleNCAfmExchNN)
       .def_readonly("latcon", &NCAFM::latcon)
-      .def_readonly("dmi_tensor", &NCAFM::dmiTensor);
+      .def_readonly("dmi_tensor", &NCAFM::dmiTensor)
+
+      .def("relax", &NCAFM::relax, py::arg("tol"));
 
   m.def("full_magnetization",
         py::overload_cast<const NCAFM*>(&fullMagnetizationQuantity));

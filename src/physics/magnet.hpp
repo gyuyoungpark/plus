@@ -18,6 +18,7 @@ class Antiferromagnet;
 class Ferromagnet;
 class FieldQuantity;
 class MumaxWorld;
+class NCAFM;
 class System;
 
 class Magnet {
@@ -43,6 +44,7 @@ class Magnet {
   // Cast Magnet instance to child instances
   const Ferromagnet* asFM() const;
   const Antiferromagnet* asAFM() const;
+  const NCAFM* asNCAFM() const;
 
   const StrayField* getStrayField(const Magnet*) const;
   std::vector<const StrayField*> getStrayFields() const;

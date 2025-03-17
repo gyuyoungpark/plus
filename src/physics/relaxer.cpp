@@ -51,6 +51,15 @@ std::vector<DynamicEquation> Relaxer::getEquation(const Magnet* magnet) {
         eqs.push_back(eq);
       }
     }
+    else if (const NCAFM* mag = magnet->asNCAFM()) {
+      for (const Ferromagnet* sub : mag->sublattices()) {
+        DynamicEquation eq(
+          sub->magnetization(),
+          std::shared_ptr<FieldQuantity>(relaxTorqueQuantity(sub).clone()),
+          std::shared_ptr<FieldQuantity>(thermalNoiseQuantity(sub).clone()));
+        eqs.push_back(eq);
+      }
+    }
     return eqs;
 }
 
@@ -63,9 +72,15 @@ std::vector<FM_FieldQuantity> Relaxer::getTorque() {
       torque.push_back(relaxTorqueQuantity(mag->sub1()));
       torque.push_back(relaxTorqueQuantity(mag->sub2()));
     }
+    else if (const NCAFM* mag = magnet->asNCAFM()) {
+      torque.push_back(relaxTorqueQuantity(mag->sub1()));
+      torque.push_back(relaxTorqueQuantity(mag->sub2()));
+      torque.push_back(relaxTorqueQuantity(mag->sub3()));
+    }
     else
-      throw std::invalid_argument("Cannot relax quantity which is"
-                                  "no Ferromagnet or Antiferromagnet.");
+      throw std::invalid_argument("Cannot relax quantity which is "
+                                  "no Ferromagnet, Antiferromagnet/ "
+                                  "Ferrimagnet or NCAFM." );
   }
   return torque;
 }

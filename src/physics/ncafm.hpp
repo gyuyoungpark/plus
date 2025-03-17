@@ -39,6 +39,8 @@ class NCAFM : public Magnet {
  const Ferromagnet* sub3() const;
  std::vector<const Ferromagnet*> getOtherSublattices(const Ferromagnet* sub) const;
 
+ void relax(real tol);
+
  public:
   Parameter ncafmex_cell;
   Parameter ncafmex_nn;

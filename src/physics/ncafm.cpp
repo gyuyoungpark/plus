@@ -9,6 +9,7 @@
 #include "fieldquantity.hpp"
 #include "gpubuffer.hpp"
 #include "mumaxworld.hpp"
+#include "relaxer.hpp"
 
 NCAFM::NCAFM(std::shared_ptr<System> system_ptr,
              std::string name)
@@ -55,4 +56,34 @@ std::vector<const Ferromagnet*> NCAFM::getOtherSublattices(const Ferromagnet* su
 
 std::vector<const Ferromagnet*> NCAFM::sublattices() const {
   return sublattices_;
+}
+
+void NCAFM::relax(real tol) { // TODO: this code has gotten nasty and doesn't look
+                              // much extensible anymore...
+  std::vector<real> threshold = {sub1()->RelaxTorqueThreshold,
+                                 sub2()->RelaxTorqueThreshold,
+                                 sub3()->RelaxTorqueThreshold};
+    // If only one sublattice has a user-set threshold, then all
+    // sublattices are relaxed using the same threshold.
+    if (threshold[0] > 0.0 && (threshold[1] <= 0.0 && threshold[2] <= 0)) {
+      threshold[1] = threshold[0];
+      threshold[2] = threshold[0];
+    }
+    else if (threshold[1] > 0.0 && (threshold[0] <= 0.0 && threshold[2] <= 0.0)) {
+      threshold[0] = threshold[1];
+      threshold[2] = threshold[1];
+    }
+    else if (threshold[2] > 0.0 && (threshold[0] <= 0.0 && threshold[1] <= 0.0)) {
+      threshold[0] = threshold[2];
+      threshold[1] = threshold[2];
+    }
+    // If two thresholds are set, propagate the smallest to the remaining one
+    else if (threshold[0] > 0.0 && threshold[1] > 0.0 && threshold[2] <= 0.0)
+      threshold[2] = std::min(threshold[0], threshold[1]);
+    else if (threshold[0] > 0.0 && threshold[2] > 0.0 && threshold[1] <= 0.0)
+        threshold[1] = std::min(threshold[0], threshold[2]);
+    else if (threshold[1] > 0.0 && threshold[2] > 0.0 && threshold[0] <= 0.0)
+        threshold[0] = std::min(threshold[1], threshold[2]);
+    Relaxer relaxer(this, threshold, tol);
+    relaxer.exec();
 }

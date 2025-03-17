@@ -13,6 +13,7 @@
 #include "fieldquantity.hpp"
 #include "gpubuffer.hpp"
 #include "mumaxworld.hpp"
+#include "ncafm.hpp"
 #include "relaxer.hpp"
 #include "strayfield.hpp"
 
@@ -114,6 +115,10 @@ const Ferromagnet* Magnet::asFM() const {
 
 const Antiferromagnet* Magnet::asAFM() const {
   return dynamic_cast<const Antiferromagnet*>(this);
+}
+
+const NCAFM* Magnet::asNCAFM() const {
+  return dynamic_cast<const NCAFM*>(this);
 }
 
 const StrayField* Magnet::getStrayField(const Magnet* magnet) const {
