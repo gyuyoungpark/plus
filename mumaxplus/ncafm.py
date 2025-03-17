@@ -354,6 +354,36 @@ class NCAFM(Magnet):
         return FieldQuantity(_cpp.full_magnetization(self._impl))
 
     @property
+    def angle_field(self):
+        """Returns the deviation from the optimal angle (120°) between
+        magnetization vectors in the same cell which are coupled by the
+        intracell exchange interaction (rad).
+        The first component respresents the angle deviation for sub1 and sub2.
+        The second component respresents the angle deviation for sub1 and sub3.
+        The third component respresents the angle deviation for sub2 and sub3.
+
+
+        See Also
+        --------
+        max_intracell_angle
+        ncafmex_cell
+        """
+        return FieldQuantity(_cpp.angle_field(self._impl))
+
+    @property
+    def max_intracell_angle(self):
+        """The maximal deviation from 120° between NCAFM-exchange coupled magnetization
+        vectors in the same simulation cell (rad).
+
+        See Also
+        --------
+        angle_field
+        ncafmex_cell
+        Ferromagnet.max_angle
+        """
+        return ScalarQuantity(_cpp.max_intracell_angle(self._impl))
+
+    @property
     def total_energy_density(self):
         """Total energy density of all sublattices combined (J/m³). Kinetic and
         elastic energy densities of the NCAFM are also included if
@@ -385,31 +415,7 @@ class NCAFM(Magnet):
         (msat1*m1 - msat2*m2) / (msat1 + msat2)
         """
         return FieldQuantity(_cpp.neel_vector(self._impl))
-    @property
-    def angle_field(self):
-        """Returns the deviation from the optimal angle (180°) between
-        magnetization vectors in the same cell which are coupled by the
-        intracell exchange interaction (rad).
 
-        See Also
-        --------
-        max_intracell_angle
-        afmex_cell
-        """
-        return FieldQuantity(_cpp.angle_field(self._impl))
-    
-    @property
-    def max_intracell_angle(self):
-        """The maximal deviation from 180° between AFM-exchange coupled magnetization
-        vectors in the same simulation cell (rad).
-
-        See Also
-        --------
-        angle_field
-        afmex_cell
-        Ferromagnet.max_angle
-        """
-        return ScalarQuantity(_cpp.max_intracell_angle(self._impl))
 
 
 '''

@@ -7,6 +7,7 @@
 #include "fullmag.hpp"
 #include "magnet.hpp"
 #include "mumaxworld.hpp"
+#include "ncafmexchange.hpp"
 #include "parameter.hpp"
 #include "world.hpp"
 #include "wrappers.hpp"
@@ -30,6 +31,10 @@ void wrap_ncafm(py::module& m) {
 
   m.def("full_magnetization",
         py::overload_cast<const NCAFM*>(&fullMagnetizationQuantity));
+
+  m.def("angle_field", &angleFieldQuantity);
+  m.def("max_intracell_angle", &maxAngle);
+
   m.def("total_energy_density",
         py::overload_cast<const NCAFM*>(&totalEnergyDensityQuantity));
   m.def("total_energy",
