@@ -9,6 +9,7 @@
 #include "ferromagnet.hpp"
 #include "fieldops.hpp"
 #include "magnet.hpp"
+#include "ncafm.hpp"
 #include "quantityevaluator.hpp"
 #include "field.hpp"
 #include "grid.hpp"
@@ -48,7 +49,15 @@ __CUDAOP__ complex prod(complex a, complex b) {
 #endif
 }
 
-__global__ void k_pad(CuField out, CuField in1, CuParameter msat1, CuField in2, CuParameter msat2, real fac) {
+__global__ void k_pad(CuField out,
+                      CuField in1,
+                      CuParameter msat1,
+                      CuField in2,
+                      CuParameter msat2,
+                      CuField in3,
+                      CuParameter msat3,
+                      real fac,
+                      real scale) {
   int outIdx = blockIdx.x * blockDim.x + threadIdx.x;
   
   Grid outgrid = out.system.grid;
@@ -64,8 +73,11 @@ __global__ void k_pad(CuField out, CuField in1, CuParameter msat1, CuField in2, 
   if (in1.cellInGeometry(inCoo)) {
     real Ms1 = msat1.valueAt(inIdx);
     real Ms2 = msat2.valueAt(inIdx);
+    real Ms3 = msat3.valueAt(inIdx);
     for (int c = 0; c < out.ncomp; c++)
-      out.setValueInCell(outIdx, c, (Ms1 * in1.valueAt(inIdx, c) + Ms2 * in2.valueAt(inIdx, c)) / fac);
+      out.setValueInCell(outIdx, c, (Ms1 * in1.valueAt(inIdx, c)
+                                   + Ms2 * in2.valueAt(inIdx, c)
+                                   + scale * Ms3 * in3.valueAt(inIdx, c)) / fac);
   } else {
     for (int c = 0; c < out.ncomp; c++)
       out.setValueInCell(outIdx, c, 0.0);
@@ -197,19 +209,33 @@ Field StrayFieldFFTExecutor::exec() const {
 
   // Launch kernel function in different scopes to avoid unnecessary copies
   real fac;
+  real scale;
   if (const Ferromagnet* mag = dynamic_cast<const Ferromagnet*>(magnet_)) {
     auto m = mag->magnetization()->field().cu();
     auto ms = mag->msat.cu();
-    fac = 2.0;
-    cudaLaunch(mpad->grid().ncells(), k_pad, mpad->cu(), m, ms, m, ms, fac);
+    fac = 3.0;
+    scale = 1.0;
+    cudaLaunch(mpad->grid().ncells(), k_pad, mpad->cu(), m, ms, m, ms, m, ms, fac, scale);
   }
   else if (const Antiferromagnet* mag = dynamic_cast<const Antiferromagnet*>(magnet_)) {
     auto m1 = mag->sub1()->magnetization()->field().cu();
     auto m2 = mag->sub2()->magnetization()->field().cu();
     auto ms1 = mag->sub1()->msat.cu();
     auto ms2 = mag->sub2()->msat.cu();
+    fac = 2.0;
+    scale = 2.0;
+    cudaLaunch(mpad->grid().ncells(), k_pad, mpad->cu(), m1, ms1, m1, ms1, m2, ms2, fac, scale);
+  }
+  else if (const NCAFM* mag = dynamic_cast<const NCAFM*>(magnet_)) {
+    auto m1 = mag->sub1()->magnetization()->field().cu();
+    auto m2 = mag->sub2()->magnetization()->field().cu();
+    auto m3 = mag->sub3()->magnetization()->field().cu();
+    auto ms1 = mag->sub1()->msat.cu();
+    auto ms2 = mag->sub2()->msat.cu();
+    auto ms3 = mag->sub3()->msat.cu();
     fac = 1.0;
-    cudaLaunch(mpad->grid().ncells(), k_pad, mpad->cu(), m1, ms1, m2, ms2, fac);
+    scale = 1.0;
+    cudaLaunch(mpad->grid().ncells(), k_pad, mpad->cu(), m1, ms1, m2, ms2, m3, ms3, fac, scale);
   }
 
   // Forward fourier transforms
