@@ -8,6 +8,7 @@
 
 #include "fieldquantity.hpp"
 #include "gpubuffer.hpp"
+#include "minimizer.hpp"
 #include "mumaxworld.hpp"
 #include "relaxer.hpp"
 
@@ -56,6 +57,11 @@ std::vector<const Ferromagnet*> NCAFM::getOtherSublattices(const Ferromagnet* su
 
 std::vector<const Ferromagnet*> NCAFM::sublattices() const {
   return sublattices_;
+}
+
+void NCAFM::minimize(real tol, int nSamples) {
+  Minimizer minimizer(this, tol, nSamples);
+  minimizer.exec();
 }
 
 void NCAFM::relax(real tol) { // TODO: this code has gotten nasty and doesn't look

@@ -120,8 +120,27 @@ class NCAFM(Magnet):
         self.sub2.enable_demag = value
         self.sub3.enable_demag = value
 
-    def minimize(self, tol=1e-6, nsamples=20):
-        return 0
+    def minimize(self, tol=1e-6, nsamples=30):
+        """Minimize the total energy.
+
+        Fast energy minimization, but less robust than `relax`
+        when starting from a high energy state.
+
+        Parameters
+        ----------
+        tol : int / float (default=1e-6)
+            The maximum allowed difference between consecutive magnetization
+            evaluations when advancing toward an energy minimum.
+
+        nsamples : int (default=30)
+            The number of consecutive magnetization evaluations that must not
+            differ by more than the tolerance "tol".
+
+        See Also
+        --------
+        relax
+        """
+        self._impl.minimize(tol, nsamples)
 
     def relax(self, tol=1e-9):
         """Relax the state to an energy minimum.

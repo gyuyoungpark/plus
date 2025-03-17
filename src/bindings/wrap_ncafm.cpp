@@ -25,6 +25,7 @@ void wrap_ncafm(py::module& m) {
       .def_readonly("latcon", &NCAFM::latcon)
       .def_readonly("dmi_tensor", &NCAFM::dmiTensor)
 
+      .def("minimize", &NCAFM::minimize, py::arg("tol"), py::arg("nsamples"))
       .def("relax", &NCAFM::relax, py::arg("tol"));
 
   m.def("full_magnetization",

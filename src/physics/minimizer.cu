@@ -5,6 +5,7 @@
 #include "fieldops.hpp"
 #include "minimizer.hpp"
 #include "mumaxworld.hpp"
+#include "ncafm.hpp"
 #include "reduce.hpp"
 #include "torque.hpp"
 
@@ -40,6 +41,23 @@ Minimizer::Minimizer(const Antiferromagnet* magnet,
   // TODO: check if input arguments are sane
 }
 
+Minimizer::Minimizer(const NCAFM* magnet,
+                     real stopMaxMagDiff,
+                     int nMagDiffSamples)
+    : magnets_(magnet->sublattices()),
+      nMagDiffSamples_(nMagDiffSamples),
+      stopMaxMagDiff_(stopMaxMagDiff),
+      t0(magnets_.size()),
+      t1(magnets_.size()),
+      m0(magnets_.size()),
+      m1(magnets_.size()) {
+  stepsizes_ = {1e-14, 1e-14};
+  for (size_t i = 0; i < magnet->sublattices().size(); i++) {
+    torques_.push_back(relaxTorqueQuantity(magnet->sublattices()[i]));
+  }
+// TODO: check if input arguments are sane
+}
+
 Minimizer::Minimizer(const MumaxWorld* world,
                      real stopMaxMagDiff,
                      int nMagDiffSamples)
@@ -61,6 +79,11 @@ Minimizer::Minimizer(const MumaxWorld* world,
     }
     else if (const Ferromagnet* mag = pair.second->asFM())
       magnets_.push_back(mag);
+    else if (const NCAFM* mag = pair.second->asNCAFM()) {
+      magnets_.push_back(mag->sub1());
+      magnets_.push_back(mag->sub2());
+      magnets_.push_back(mag->sub3());
+    }
   }
 
   for (auto magnet : magnets_)
