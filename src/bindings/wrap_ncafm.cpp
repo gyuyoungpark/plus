@@ -2,6 +2,7 @@
 #include <stdexcept>
 
 #include "ncafm.hpp"
+#include "energy.hpp"
 #include "fieldquantity.hpp"
 #include "fullmag.hpp"
 #include "magnet.hpp"
@@ -26,4 +27,8 @@ void wrap_ncafm(py::module& m) {
 
   m.def("full_magnetization",
         py::overload_cast<const NCAFM*>(&fullMagnetizationQuantity));
+  m.def("total_energy_density",
+        py::overload_cast<const NCAFM*>(&totalEnergyDensityQuantity));
+  m.def("total_energy",
+        py::overload_cast<const NCAFM*>(&totalEnergyQuantity));
 }

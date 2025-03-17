@@ -12,6 +12,7 @@
 #include "field.hpp"
 #include "fieldops.hpp"
 #include "magnetoelasticfield.hpp"
+#include "ncafm.hpp"
 #include "world.hpp"
 #include "zeeman.hpp"
 
@@ -75,14 +76,25 @@ Field evalTotalEnergyDensity(const Antiferromagnet* magnet) {
   return edens;
 }
 
+Field evalTotalEnergyDensity(const NCAFM* magnet) {
+  Field edens = evalTotalEnergyDensity(magnet->sub1()) +
+                evalTotalEnergyDensity(magnet->sub2()) +
+                evalTotalEnergyDensity(magnet->sub3());
+  if (!kineticEnergyAssuredZero(magnet)) {edens += evalKineticEnergyDensity(magnet);}
+  if (!elasticityAssuredZero(magnet)) {edens += evalElasticEnergyDensity(magnet);}
+  return edens;
+}
+
 real evalTotalEnergy(const Magnet* magnet) {
   int ncells = magnet->grid().ncells();
   real cellVolume = magnet->world()->cellVolume();
   real edensAverage;
   
-  if (const Ferromagnet* mag = magnet->asFM())
+  if (const Ferromagnet* mag = dynamic_cast<const Ferromagnet*>(magnet))
     edensAverage = totalEnergyDensityQuantity(mag).average()[0];
-  else if (const Antiferromagnet* mag = magnet->asAFM())
+  else if (const Antiferromagnet* mag = dynamic_cast<const Antiferromagnet*>(magnet))
+    edensAverage = totalEnergyDensityQuantity(mag).average()[0];
+  else if (const NCAFM* mag = dynamic_cast<const NCAFM*>(magnet))
     edensAverage = totalEnergyDensityQuantity(mag).average()[0];
   else
     throw std::invalid_argument("Cannot calculate energy of instance which"
@@ -109,4 +121,14 @@ AFM_FieldQuantity totalEnergyDensityQuantity(const Antiferromagnet* magnet) {
 
 AFM_ScalarQuantity totalEnergyQuantity(const Antiferromagnet* magnet) {
   return AFM_ScalarQuantity(magnet, evalTotalEnergy, "total_energy", "J");
+}
+
+NCAFM_FieldQuantity totalEnergyDensityQuantity(const NCAFM* magnet) {
+  return NCAFM_FieldQuantity(magnet,
+    static_cast<Field(*)(const NCAFM*)>(evalTotalEnergyDensity),
+    1, "total_energy_density", "J/m3");
+}
+
+NCAFM_ScalarQuantity totalEnergyQuantity(const NCAFM* magnet) {
+  return NCAFM_ScalarQuantity(magnet, evalTotalEnergy, "total_energy", "J");
 }
