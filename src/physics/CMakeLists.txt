@@ -55,6 +55,8 @@ add_library(physics STATIC
     neel.hpp
     newell.cu
     newell.hpp
+    octupole.cu
+    octupole.hpp
     poissonsystem.hpp
     poissonsystem.cu
     poyntingvector.cu

@@ -8,6 +8,7 @@
 #include "magnet.hpp"
 #include "mumaxworld.hpp"
 #include "ncafmexchange.hpp"
+#include "octupole.hpp"
 #include "parameter.hpp"
 #include "world.hpp"
 #include "wrappers.hpp"
@@ -29,6 +30,7 @@ void wrap_ncafm(py::module& m) {
       .def("minimize", &NCAFM::minimize, py::arg("tol"), py::arg("nsamples"))
       .def("relax", &NCAFM::relax, py::arg("tol"));
 
+  m.def("octupole_vector", &octupoleVectorQuantity);
   m.def("full_magnetization",
         py::overload_cast<const NCAFM*>(&fullMagnetizationQuantity));
 

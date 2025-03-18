@@ -342,6 +342,13 @@ class NCAFM(Magnet):
             ])
 
     # ----- QUANTITIES ----------------------
+    @property
+    def octupole_vector(self):
+        """Weighted dimensionless octupole vector of a non-collinear
+        antiferromagnet/ferrimagnet as defined in
+        https://doi.org/10.1038/s41563-023-01620-2.
+        """
+        return FieldQuantity(_cpp.octupole_vector(self._impl))
 
     @property
     def full_magnetization(self):
@@ -408,14 +415,3 @@ class NCAFM(Magnet):
         enable_elastodynamics, elastic_energy, kinetic_energy
         """
         return ScalarQuantity(_cpp.total_energy(self._impl))
-'''
-    @property
-    def neel_vector(self):
-        """Weighted dimensionless Neel vector of an antiferromagnet/ferrimagnet.
-        (msat1*m1 - msat2*m2) / (msat1 + msat2)
-        """
-        return FieldQuantity(_cpp.neel_vector(self._impl))
-
-
-
-'''
