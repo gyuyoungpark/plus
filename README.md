@@ -18,7 +18,7 @@ You should install these yourself
 * On Windows (good luck): MSVC 2019
 
 These will be installed automatically within the conda environment
-* cmake 3.31.1
+* cmake 4.0.0
 * Python 3.13
 * pybind11 v2.13.6
 * NumPy
