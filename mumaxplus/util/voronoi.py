@@ -1,4 +1,5 @@
 import numpy as _np
+import warnings as _w
 
 import _mumaxpluscpp as _cpp
 class VoronoiTessellator:
@@ -22,7 +23,7 @@ class VoronoiTessellator:
             the values of the generated region indices and the number and
             positions of the Voronoi centers.
         max_idx : int (default=256)
-            The maximum region index within the tessellation. This value
+            The (inclusive) maximum region index within the tessellation. This value
             has no upper bound.
         """
         self.seed = seed if seed else _np.random.randint(1234567)
@@ -46,6 +47,14 @@ class VoronoiTessellator:
     def indexDictionary(self):
         """Create a dictionary where each region (key) is linked
         to a list of grid coordinates (value)."""
+
+        if not hasattr(self, 'tessellation'):
+            _w.warn(
+            "The tessellation has not been generated yet."
+             " Call `generate(world, grid)` before accessing `indexDictionary`.", UserWarning
+            )
+            return None
+
         from collections import defaultdict
         tessellation = self.tessellation
         _, nz, ny, nx = tessellation.shape
@@ -65,11 +74,24 @@ class VoronoiTessellator:
     @property
     def indices(self):
         """Returns list of unique region indices."""
+
+        if not hasattr(self, 'tessellation'):
+            _w.warn(
+            "The tessellation has not been generated yet."
+             " Call `generate(world, grid)` before accessing `indices`.", UserWarning
+            )
+            return None
         return _np.unique(_np.ravel(self.tessellation)).astype(int)
 
     @property
     def number_of_regions(self):
         """Returns number of unique region indices."""
+        if not hasattr(self, 'tessellation'):
+            _w.warn(
+            "The tessellation has not been generated yet."
+             " Call `generate(world, grid)` before accessing `number_of_regions`.", UserWarning
+            )
+            return None
         return _np.unique(_np.ravel(self.tessellation)).size
 
     # TODO: implement (C++) function which returns neighbouring regions of a certain idx
