@@ -5,11 +5,20 @@
 #include "gpubuffer.hpp"
 #include "voronoi.hpp"
 
-VoronoiTessellator::VoronoiTessellator(real grainsize, int seed, unsigned int maxIdx)
+VoronoiTessellator::VoronoiTessellator(real grainsize,
+                                       int seed,
+                                       unsigned int maxIdx,
+                                       const std::function<unsigned int(real3)>& centerIdx)
     : grainsize_(grainsize),
       seed_(seed),
       distReal_(0.0, 1.0),
       distInt_(0, maxIdx) {
+        if (centerIdx) { centerIdx_ = centerIdx; }
+        else {
+            centerIdx_ = [this](real3 coo) -> unsigned int {
+                return distInt_(engine_);
+            };
+        }
         real tilesize_in_grains = 2; // tile size in unit grains
         tilesize_ = tilesize_in_grains * grainsize;
         lambda_ = tilesize_in_grains * tilesize_in_grains;
@@ -69,7 +78,7 @@ std::vector<Center> VoronoiTessellator::centersInTile(int3 pos) {
         real cx = (pos.x + distReal_(engine_)) * tilesize_;
         real cy = (pos.y + distReal_(engine_)) * tilesize_;
 
-        centers[n] = Center(real3{cx, cy, 0}, distInt_(engine_));
+        centers[n] = Center(real3{cx, cy, 0}, centerIdx_(real3{cx, cy, 0}));
     }
     
     // Cache centers belonging to this tile

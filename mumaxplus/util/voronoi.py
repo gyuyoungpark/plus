@@ -4,7 +4,7 @@ import warnings as _w
 import _mumaxpluscpp as _cpp
 class VoronoiTessellator:
 
-    def __init__(self, grainsize, seed=None, max_idx=256):
+    def __init__(self, grainsize, seed=None, max_idx=256, region_of_center=None):
         """Create a Voronoi tessellator instance.
         
         This class is used to generate a Voronoi tessellation, which can
@@ -25,9 +25,14 @@ class VoronoiTessellator:
         max_idx : int (default=256)
             The (inclusive) maximum region index within the tessellation. This value
             has no upper bound.
+
+        region_of_center : callable, optional
+            A function with signature tuple(float)->int which assigns region indices to
+            generated Voronoi centers. If not specified, a random integer will be generated.
+
         """
         self.seed = seed if seed else _np.random.randint(1234567)
-        self._impl = _cpp.VoronoiTessellator(grainsize, self.seed, max_idx)
+        self._impl = _cpp.VoronoiTessellator(grainsize, self.seed, max_idx, region_of_center)
 
     def generate(self, world, grid):
         """Generates a Voronoi tessellation.

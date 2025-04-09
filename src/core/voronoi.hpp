@@ -1,3 +1,4 @@
+#include <functional>
 #include <random>
 #include <vector>
 #include <unordered_map>
@@ -29,7 +30,10 @@ struct Int3Hash {
 
 class VoronoiTessellator {
  public:
-  VoronoiTessellator(real grainsize, int seed, unsigned int maxIdx=256);
+  VoronoiTessellator(real grainsize,
+                     int seed,
+                     unsigned int maxIdx=256,
+                     const std::function<unsigned int(real3)>& centerIdx = nullptr);
   ~VoronoiTessellator() = default;
 
   // * Generate a Voronoi tessellation
@@ -61,4 +65,5 @@ private:
   std::default_random_engine engine_;
   std::uniform_real_distribution<> distReal_;
   std::uniform_int_distribution<> distInt_;
+  std::function<unsigned int(real3)> centerIdx_;
 };
