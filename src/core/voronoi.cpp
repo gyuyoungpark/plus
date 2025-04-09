@@ -5,7 +5,7 @@
 #include "gpubuffer.hpp"
 #include "voronoi.hpp"
 
-VoronoiTessellator::VoronoiTessellator(real grainsize, unsigned int maxIdx, int seed)
+VoronoiTessellator::VoronoiTessellator(real grainsize, int seed, unsigned int maxIdx)
     : grainsize_(grainsize),
       seed_(seed),
       distReal_(0.0, 1.0),

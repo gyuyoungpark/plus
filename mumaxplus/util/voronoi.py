@@ -3,7 +3,7 @@ import numpy as _np
 import _mumaxpluscpp as _cpp
 class VoronoiTessellator:
 
-    def __init__(self, grainsize, max_idx=256, seed=1234567):
+    def __init__(self, grainsize, seed=None, max_idx=256):
         """Create a Voronoi tessellator instance.
         
         This class is used to generate a Voronoi tessellation, which can
@@ -17,15 +17,16 @@ class VoronoiTessellator:
         ----------
         grainsize : float
             The average grain diameter.
+        seed : int (default=None)
+            The seed of the used random number generators. This seed affects
+            the values of the generated region indices and the number and
+            positions of the Voronoi centers.
         max_idx : int (default=256)
             The maximum region index within the tessellation. This value
             has no upper bound.
-        seed : int (default=1234567)
-            The seed of the used random number generators. This seed affects
-            the values of the generated region indices and the number and
-            positions of the Voronoi centers
         """
-        self._impl = _cpp.VoronoiTessellator(grainsize, max_idx, seed)
+        self.seed = seed if seed else _np.random.randint(1234567)
+        self._impl = _cpp.VoronoiTessellator(grainsize, self.seed, max_idx)
 
     def generate(self, world, grid):
         """Generates a Voronoi tessellation.

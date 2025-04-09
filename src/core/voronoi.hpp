@@ -29,7 +29,7 @@ struct Int3Hash {
 
 class VoronoiTessellator {
  public:
-  VoronoiTessellator(real grainsize, unsigned int maxIdx=256, int seed=1234567);
+  VoronoiTessellator(real grainsize, int seed, unsigned int maxIdx=256);
   ~VoronoiTessellator() = default;
 
   // * Generate a Voronoi tessellation
