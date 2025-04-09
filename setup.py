@@ -66,10 +66,9 @@ class CMakeBuild(build_ext):
             ["cmake", ext.sourcedir] + cmake_args, cwd=self.build_temp, env=env
         )
         subprocess.check_call(
-            ["cmake", "--build", ".", "--target", "_mumaxpluscpp"] + build_args,
+            ["cmake", "--build", ".", "--target", "_mumaxpluscpp", "install"] + build_args,
             cwd=self.build_temp,
         )
-
 
 setup(
     name="mumaxplus",
