@@ -12,7 +12,6 @@
 
 bool dmiAssuredZero(const Ferromagnet* magnet) {
   if (magnet->msat.assuredZero()) { return true; }
-  if (magnet->hostMagnet<NCAFM>()) { return true; }
   if (magnet->hostMagnet<Antiferromagnet>())
     return magnet->dmiTensor.assuredZero() && magnet->hostMagnet<Antiferromagnet>()->dmiTensor.assuredZero();
   return magnet->dmiTensor.assuredZero();
@@ -239,6 +238,108 @@ __global__ void k_dmiFieldAFM(CuField hField,
   hField.setVectorInCell(idx, h);
 }
 
+__global__ void k_dmiFieldNCAFM(CuField hField,
+                                const CuField m1Field,
+                                const CuField m2Field,
+                                const CuField m3Field,
+                                const CuDmiTensor dmiTensor,
+                                const CuDmiTensor interDmiTensor,
+                                const CuParameter msat,
+                                Grid mastergrid) {
+  const int idx = blockIdx.x * blockDim.x + threadIdx.x;
+  const auto system = hField.system;
+
+  if (!system.grid.cellInGrid(idx))
+  return;
+
+  // When outside the geometry or msat=0, set to zero and return early
+  if (!system.inGeometry(idx) || (msat.valueAt(idx) == 0)) {
+  hField.setVectorInCell(idx, real3{0, 0, 0});
+  return;
+  }
+
+  real3 m1 = m1Field.vectorAt(idx);
+  real3 m2 = m2Field.vectorAt(idx);
+  real3 m3 = m3Field.vectorAt(idx);
+  const int3 coo = system.grid.index2coord(idx);
+
+  // Accumulate DMI field of cell at idx in h. Divide by msat at the end.
+  real3 h{0, 0, 0};
+
+  // Loop over the 6 nearest neighbors using the neighbor's relative coordinate.
+  // Compute for each neighbor the DMI effective field term.
+  #pragma unroll
+  for (int3 relative_coo : {int3{-1, 0, 0}, int3{1, 0, 0}, int3{0, -1, 0},
+    int3{0, 1, 0}, int3{0, 0, -1}, int3{0, 0, 1}}) {
+
+    int3 neighbor_coo = mastergrid.wrap(coo + relative_coo);
+    int neighbor_idx;
+
+    if (!system.inGeometry(neighbor_coo)) { neighbor_idx = idx; }
+    else { neighbor_idx = system.grid.coord2index(neighbor_coo); }
+
+    // If we assume open boundary conditions and if there is no neighbor,
+    // then simply continue without adding to the effective field.
+    if (!system.inGeometry(neighbor_coo) || msat.valueAt(neighbor_idx) == 0)
+      continue;
+
+    // Get the dmi strengths between the center cell and the neighbor, which are
+    // the harmonic means of the dmi strengths of both cells.
+    real Dxz, Dxy, Dyz, Dzx, Dyx, Dzy;
+    real Dixz, Dixy, Diyz, Dizx, Diyx, Dizy;
+
+    if (relative_coo.x) {  // derivative along x
+      Dxz = dmiTensor.xxz.harmonicMean(idx, neighbor_idx);
+      Dxy = dmiTensor.xxy.harmonicMean(idx, neighbor_idx);
+      Dyz = dmiTensor.xyz.harmonicMean(idx, neighbor_idx);
+      Dixz = interDmiTensor.xxz.harmonicMean(idx, neighbor_idx);
+      Dixy = interDmiTensor.xxy.harmonicMean(idx, neighbor_idx);
+      Diyz = interDmiTensor.xyz.harmonicMean(idx, neighbor_idx);
+    } else if (relative_coo.y) {  // derivative along y
+      Dxz = dmiTensor.yxz.harmonicMean(idx, neighbor_idx);
+      Dxy = dmiTensor.yxy.harmonicMean(idx, neighbor_idx);
+      Dyz = dmiTensor.yyz.harmonicMean(idx, neighbor_idx);
+      Dixz = interDmiTensor.yxz.harmonicMean(idx, neighbor_idx);
+      Dixy = interDmiTensor.yxy.harmonicMean(idx, neighbor_idx);
+      Diyz = interDmiTensor.yyz.harmonicMean(idx, neighbor_idx);
+    } else if (relative_coo.z) {  // derivative along z
+      Dxz = dmiTensor.zxz.harmonicMean(idx, neighbor_idx);
+      Dxy = dmiTensor.zxy.harmonicMean(idx, neighbor_idx);
+      Dyz = dmiTensor.zyz.harmonicMean(idx, neighbor_idx);
+      Dixz = interDmiTensor.zxz.harmonicMean(idx, neighbor_idx);
+      Dixy = interDmiTensor.zxy.harmonicMean(idx, neighbor_idx);
+      Diyz = interDmiTensor.zyz.harmonicMean(idx, neighbor_idx);
+    }
+
+    Dzx = -Dxz;  // dmi tensor is assymetric
+    Dyx = -Dxy;
+    Dzy = -Dyz;
+    Dizx = -Dixz;
+    Diyx = -Dixy;
+    Dizy = -Diyz;
+
+    // Distance between neighbors (the finite difference)
+    real delta = relative_coo.x * system.cellsize.x +
+                 relative_coo.y * system.cellsize.y +
+                 relative_coo.z * system.cellsize.z;
+
+    real3 m1_, m2_, m3_;
+    m1_ = m1Field.vectorAt(neighbor_idx);
+    m2_ = m2Field.vectorAt(neighbor_idx);
+    m3_ = m3Field.vectorAt(neighbor_idx);
+
+    // Compute the effective field contribution of the DMI with the neighbor
+    h.x += (Dxy * m1_.y + Dxz * m1_.z - Dixy * m2_.y - Dixz * m2_.z - Dixy * m3_.y - Dixz * m3_.z) / delta;
+    h.y += (Dyx * m1_.x + Dyz * m1_.z - Diyx * m2_.x - Diyz * m2_.z - Diyx * m3_.x - Diyz * m3_.z) / delta;
+    h.z += (Dzx * m1_.x + Dzy * m1_.y - Dizx * m2_.x - Dizy * m2_.y - Dizx * m3_.x - Dizy * m3_.y) / delta;
+
+  }  // end loop over neighbors
+
+  // TODO: DMI exchange at a single site ???
+  h /= msat.valueAt(idx);
+  hField.setVectorInCell(idx, h);
+}
+
 Field evalDmiField(const Ferromagnet* magnet) {
   Field hField(magnet->system(), 3);
   if (dmiAssuredZero(magnet)) {
@@ -255,14 +356,24 @@ Field evalDmiField(const Ferromagnet* magnet) {
   auto BC = magnet->enableOpenBC;
   
   if (!magnet->isSublattice())
+    // magnet is stand-alone FM
     cudaLaunch(ncells, k_dmiFieldFM, hField.cu(),
               mag, dmiTensor, msat, grid, aex, BC);
-  else {
+  else if (magnet->hostMagnet<Antiferromagnet>()){
+    // magnet is sublattice in AFM
     auto mag2 = magnet->hostMagnet<Antiferromagnet>()->getOtherSublattice(magnet)->magnetization()->field().cu();
     auto afmex_nn = magnet->hostMagnet<Antiferromagnet>()->afmex_nn.cu();
     auto interDmiTensor = magnet->hostMagnet<Antiferromagnet>()->dmiTensor.cu();
     cudaLaunch(ncells, k_dmiFieldAFM, hField.cu(), mag, mag2,
               dmiTensor, interDmiTensor, msat, grid, aex, afmex_nn, BC);
+  }
+  else {
+    // magnet is sublatice in NCAFM
+    auto mag2 = magnet->hostMagnet<NCAFM>()->getOtherSublattices(magnet)[0]->magnetization()->field().cu();
+    auto mag3 = magnet->hostMagnet<NCAFM>()->getOtherSublattices(magnet)[1]->magnetization()->field().cu();
+    auto interDmiTensor = magnet->hostMagnet<NCAFM>()->dmiTensor.cu();
+    cudaLaunch(ncells, k_dmiFieldNCAFM, hField.cu(), mag, mag2, mag3, dmiTensor,
+               interDmiTensor, msat, grid);
   }
   return hField;
 }
