@@ -33,7 +33,7 @@ class VoronoiTessellator {
   ~VoronoiTessellator() = default;
 
   // * Generate a Voronoi tessellation
-  GpuBuffer<unsigned int> generate(Grid grid, real3 cellsize);
+  std::vector<unsigned int> generate(Grid grid, real3 cellsize);
 
   // * Calc nearest center and assign center index to coo
   unsigned int regionOf(real3 coo);

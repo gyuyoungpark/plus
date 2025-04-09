@@ -15,7 +15,7 @@ VoronoiTessellator::VoronoiTessellator(real grainsize, int seed, unsigned int ma
         lambda_ = tilesize_in_grains * tilesize_in_grains;
     }
 
-GpuBuffer<unsigned int> VoronoiTessellator::generate(Grid grid, real3 cellsize) {
+std::vector<unsigned int> VoronoiTessellator::generate(Grid grid, real3 cellsize) {
 
    std::vector<unsigned int> data(grid.ncells());
    for (int nx = 0; nx < grid.size().x; nx++) {
@@ -26,7 +26,7 @@ GpuBuffer<unsigned int> VoronoiTessellator::generate(Grid grid, real3 cellsize) 
             data[nx + grid.size().x * ny] = regionOf(coo);
         }
     }
-    return GpuBuffer<unsigned int>(data);
+    return data;
 }
 
 unsigned int VoronoiTessellator::regionOf(real3 coo) {

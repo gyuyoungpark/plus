@@ -18,21 +18,24 @@ void wrap_voronoi(py::module& m) {
         .def("coo_to_idx", &VoronoiTessellator::regionOf)
         // TODO: create template function (wrap_system.cpp)
         .def("generate", [](VoronoiTessellator& t, Grid grid, real3 cellsize) {
-            unsigned int* tess = t.generate(grid, cellsize).getHostCopy();
+            std::vector<unsigned int> tess = t.generate(grid, cellsize);
+
+            size_t n = tess.size();
+            unsigned int* raw = new unsigned int[n];
+            std::memcpy(raw, tess.data(), n * sizeof(unsigned int));
 
             // Create python capsule which will free tess
-            py::capsule free_when_done(tess, [](void* p) {
-            unsigned int* tess = reinterpret_cast<unsigned int*>(p);
-            delete[] tess;
+            py::capsule free_when_done(raw, [](void* p) {
+                delete[] reinterpret_cast<unsigned int*>(p);
             });
 
             int3 size = grid.size();
-            int shape[3] = {size.z, size.y, size.x};
-            int strides[3];
-            strides[0] = sizeof(unsigned int) * size.x * size.y;
-            strides[1] = sizeof(unsigned int) * size.x;
-            strides[2] = sizeof(unsigned int);
-
-            return py::array_t<unsigned int>(shape, strides, tess, free_when_done);
-            });
+            ssize_t shape[3] = {size.z, size.y, size.x};
+            ssize_t strides[3] = {
+                static_cast<ssize_t>(sizeof(unsigned int)) * size.x * size.y,
+                static_cast<ssize_t>(sizeof(unsigned int)) * size.x,
+                static_cast<ssize_t>(sizeof(unsigned int))
+            };
+            return py::array_t<unsigned int>(shape, strides, raw, free_when_done);
+        });
 }
