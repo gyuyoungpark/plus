@@ -68,6 +68,11 @@ class Ferromagnet(Magnet):
         self.magnetization.set(value)
 
     @property
+    def is_sublattice(self):
+        """Returns True if the ferromagnet is a sublattice of a host magnet."""
+        return self._impl.is_sublattice
+
+    @property
     def enable_demag(self):
         """Enable/disable demagnetization switch.
         

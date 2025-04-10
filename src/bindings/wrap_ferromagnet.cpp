@@ -29,6 +29,7 @@ void wrap_ferromagnet(py::module& m) {
   py::class_<Ferromagnet, Magnet>(m, "Ferromagnet")
       .def_property_readonly("magnetization", &Ferromagnet::magnetization)
 
+      .def_property_readonly("is_sublattice", &Ferromagnet::isSublattice)
       .def_readwrite("enable_demag", &Ferromagnet::enableDemag)
       .def_readwrite("enable_openbc", &Ferromagnet::enableOpenBC)
       .def_readwrite("enable_zhang_li_torque", &Ferromagnet::enableZhangLiTorque)
