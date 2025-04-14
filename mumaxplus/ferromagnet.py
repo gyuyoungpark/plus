@@ -1021,6 +1021,10 @@ class Ferromagnet(Magnet):
         """
         return ScalarQuantity(_cpp.homogeneous_exchange_energy(self._impl))
 
+    @property
+    def homogeneous_dmi_field(self):
+        """BLA BLA DOC"""
+        return FieldQuantity(_cpp.homogeneous_dmi_field(self._impl))
 
     # --- magnetoelasticity ---
     # all elasticity is found in the Magnet parent

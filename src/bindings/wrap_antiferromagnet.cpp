@@ -28,6 +28,7 @@ void wrap_antiferromagnet(py::module& m) {
       .def_readonly("scale_afmex_nn", &Antiferromagnet::scaleAfmExchNN)
       .def_readonly("latcon", &Antiferromagnet::latcon)
       .def_readonly("dmi_tensor", &Antiferromagnet::dmiTensor)
+      .def_readonly("dmi_vector", &Antiferromagnet::dmiVector)
 
       .def("minimize", &Antiferromagnet::minimize, py::arg("tol"), py::arg("nsamples"))
       .def("relax", &Antiferromagnet::relax, py::arg("tol"));

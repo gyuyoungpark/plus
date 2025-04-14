@@ -21,6 +21,7 @@ Antiferromagnet::Antiferromagnet(std::shared_ptr<System> system_ptr,
       dmiTensor(system()),
       interAfmExchNN(system(), 0.0, name + ":inter_afmex_nn", "J/m"),
       scaleAfmExchNN(system(), 1.0, name + ":scale_afmex_nn", ""),
+      dmiVector(system(), real3{0,0,0}, name + ":dmi_vector", "J/m³"),
       sub1_(Ferromagnet(system_ptr, name + ":sublattice_1", this)),
       sub2_(Ferromagnet(system_ptr, name + ":sublattice_2", this)) {}
       

@@ -9,6 +9,7 @@
 #include "ferromagnet.hpp"
 #include "field.hpp"
 #include "fieldops.hpp"
+#include "local_dmi.hpp"
 #include "magnetoelasticfield.hpp"
 #include "ncafmexchange.hpp"
 #include "zeeman.hpp"
@@ -23,10 +24,13 @@ Field evalEffectiveField(const Ferromagnet* magnet) {
   if (!magnetoelasticAssuredZero(magnet)) {
       h += evalMagnetoelasticField(magnet);}
   if (magnet->isSublattice())
+      // AFM exchange terms
       if (!inHomoAfmExchangeAssuredZero(magnet)) {h += evalInHomogeneousAfmExchangeField(magnet);}
       if (!homoAfmExchangeAssuredZero(magnet)) {h += evalHomogeneousAfmExchangeField(magnet);}
       if (!inHomoNCAfmExchangeAssuredZero(magnet)) {h += evalInHomogeneousNCAfmExchangeField(magnet);}
       if (!homoNCAfmExchangeAssuredZero(magnet)) {h += evalHomogeneousNCAfmExchangeField(magnet);}
+      // Homogeneous (local) DMI term
+      if (!homoDmiAssuredZero(magnet)) {h += evalHomoDmiField(magnet);}
   return h;
 }
 

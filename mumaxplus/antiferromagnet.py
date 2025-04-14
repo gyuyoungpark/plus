@@ -335,6 +335,15 @@ class Antiferromagnet(Magnet):
         """
         return DmiTensorGroup([self.dmi_tensor, self.sub1.dmi_tensor, self.sub2.dmi_tensor])
 
+    @property
+    def dmi_vector(self):
+        """ BLA BLA DOC """
+        return Parameter(self._impl.dmi_vector)
+
+    @dmi_vector.setter
+    def dmi_vector(self, value):
+        self.dmi_vector.set(value)
+
     # ----- QUANTITIES ----------------------
 
     @property

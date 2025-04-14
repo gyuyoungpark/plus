@@ -47,6 +47,7 @@ class Antiferromagnet : public Magnet {
   InterParameter interAfmExchNN;
   InterParameter scaleAfmExchNN;
   Parameter latcon;
+  VectorParameter dmiVector;
   Ferromagnet sub1_;
   Ferromagnet sub2_;
 

@@ -37,6 +37,8 @@ add_library(physics STATIC
     fullmag.cu
     fullmag.hpp
     hostexchange.hpp
+    local_dmi.cu
+    local_dmi.hpp
     magnet.cpp
     magnet.hpp 
     magnetoelasticfield.cu

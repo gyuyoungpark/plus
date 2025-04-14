@@ -14,6 +14,7 @@
 #include "fieldquantity.hpp"
 #include "fullmag.hpp"
 #include "hostexchange.hpp"
+#include "local_dmi.hpp"
 #include "magnet.hpp"
 #include "magnetoelasticfield.hpp"
 #include "magnetoelasticforce.hpp"
@@ -116,6 +117,7 @@ void wrap_ferromagnet(py::module& m) {
       return hostExchangeScalarQuantity(magnet,
                                         inHomoAfmExchangeEnergyQuantity,
                                         inHomoNCAfmExchangeEnergyQuantity);});
+  m.def("homogeneous_dmi_field", &homoDmiFieldQuantity);
   //
   m.def("dmi_field", &dmiFieldQuantity);
   m.def("dmi_energy_density", &dmiEnergyDensityQuantity);
