@@ -14,6 +14,8 @@ bool dmiAssuredZero(const Ferromagnet* magnet) {
   if (magnet->msat.assuredZero()) { return true; }
   if (magnet->hostMagnet<Antiferromagnet>())
     return magnet->dmiTensor.assuredZero() && magnet->hostMagnet<Antiferromagnet>()->dmiTensor.assuredZero();
+  if (magnet->hostMagnet<NCAFM>())
+    return magnet->dmiTensor.assuredZero() && magnet->hostMagnet<NCAFM>()->dmiTensor.assuredZero();
   return magnet->dmiTensor.assuredZero();
 }
 
