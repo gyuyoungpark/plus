@@ -35,8 +35,6 @@ class VoronoiTessellator:
         Returns an ndarray of shape (nz, ny, nx) which is filled
         with region indices."""
 
-        # is this the cleanest way to check PBC?
-        # do we need this check in the C++ module?
         has_pbc = world.pbc_repetitions != (0,0,0)
 
         self.tessellation = self._impl.generate(grid._impl, world.cellsize, has_pbc)
