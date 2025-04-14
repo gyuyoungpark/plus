@@ -32,7 +32,7 @@ class VoronoiTessellator {
  public:
   VoronoiTessellator(real grainsize,
                      int seed,
-                     unsigned int maxIdx=256,
+                     unsigned int maxIdx=255,
                      const std::function<unsigned int(real3)>& centerIdx = nullptr);
   ~VoronoiTessellator() = default;
 

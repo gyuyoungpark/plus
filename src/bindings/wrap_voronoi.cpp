@@ -15,7 +15,7 @@ void wrap_voronoi(py::module& m) {
                 py::arg("grainsize"),
                 py::arg("seed"),
                 py::arg("max_idx"),
-                py::arg("centerIdx"))
+                py::arg("region_of_center"))
         .def("coo_to_idx", &VoronoiTessellator::regionOf)
         // TODO: create template function (wrap_system.cpp)
         .def("generate", [](VoronoiTessellator& t, Grid grid, real3 cellsize) {
