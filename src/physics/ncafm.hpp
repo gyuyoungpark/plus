@@ -48,6 +48,7 @@ class NCAFM : public Magnet {
   InterParameter interNCAfmExchNN;
   InterParameter scaleNCAfmExchNN;
   Parameter latcon;
+  VectorParameter dmiVector;
   Ferromagnet sub1_;
   Ferromagnet sub2_;
   Ferromagnet sub3_;

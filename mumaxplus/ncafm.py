@@ -341,6 +341,22 @@ class NCAFM(Magnet):
             self.dmi_tensor, self.sub1.dmi_tensor, self.sub2.dmi_tensor, self.sub3.dmi_tensor
             ])
 
+    @property
+    def dmi_vector(self):
+        """ DMI vector associated with the homogeneous DMI (in a single simulation cell),
+         defined by the energy density ε = D . (m1 x m2 + m2 x m3 + m3 x m1) with m1, m2
+         and m3 being the sublattice magnetizations.
+
+        See Also
+        --------
+        DmiTensor, dmi_tensor, dmi_tensors
+         """
+        return Parameter(self._impl.dmi_vector)
+
+    @dmi_vector.setter
+    def dmi_vector(self, value):
+        self.dmi_vector.set(value)
+
     # ----- QUANTITIES ----------------------
     @property
     def octupole_vector(self):
