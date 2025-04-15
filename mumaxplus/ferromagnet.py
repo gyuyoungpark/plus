@@ -1023,7 +1023,7 @@ class Ferromagnet(Magnet):
 
     @property
     def homogeneous_dmi_field(self):
-        """BLA BLA DOC"""
+        """Effective field of the homogeneous DMI (T)."""
         return FieldQuantity(_cpp.homogeneous_dmi_field(self._impl))
 
     # --- magnetoelasticity ---
