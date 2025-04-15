@@ -10,7 +10,8 @@
 #include "world.hpp"
 
 bool homoDmiAssuredZero(const Ferromagnet* magnet) {
-  bool dmiVectorIsZero;
+  // Functions returns true if magnet is no sublattice
+  bool dmiVectorIsZero = true;
   if (magnet->hostMagnet<Antiferromagnet>())
     dmiVectorIsZero = magnet->hostMagnet<Antiferromagnet>()->dmiVector.assuredZero();
   else if (magnet->hostMagnet<NCAFM>())
@@ -97,6 +98,33 @@ Field evalHomoDmiField(const Ferromagnet* magnet) {
   return hField;
 }
 
+Field evalHomoDmiEnergyDensity(const Ferromagnet* magnet) {
+  if (homoDmiAssuredZero(magnet))
+    return Field(magnet->system(), 1, 0.0);
+
+  return evalEnergyDensity(magnet, evalHomoDmiField(magnet), 0.5);
+}
+
+real evalHomoDmiEnergy(const Ferromagnet* magnet) {
+  if (homoDmiAssuredZero(magnet))
+    return 0;
+
+  real edens = homoDmiEnergyDensityQuantity(magnet).average()[0];
+
+  int ncells = magnet->grid().ncells();
+  real cellVolume = magnet->world()->cellVolume();
+  return ncells * edens * cellVolume;
+}
+
 FM_FieldQuantity homoDmiFieldQuantity(const Ferromagnet* magnet) {
   return FM_FieldQuantity(magnet, evalHomoDmiField, 3, "homogeneous_dmi_field", "T");
+}
+
+FM_FieldQuantity homoDmiEnergyDensityQuantity(const Ferromagnet* magnet) {
+  return FM_FieldQuantity(magnet, evalHomoDmiEnergyDensity, 1,
+                          "homogeneous_dmi_emergy_density", "J/m3");
+}
+
+FM_ScalarQuantity homoDmiEnergyQuantity(const Ferromagnet* magnet) {
+  return FM_ScalarQuantity(magnet, evalHomoDmiEnergy, "homogeneous_dmi_energy", "J");
 }

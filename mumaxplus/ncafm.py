@@ -343,7 +343,7 @@ class NCAFM(Magnet):
 
     @property
     def dmi_vector(self):
-        """ DMI vector associated with the homogeneous DMI (in a single simulation cell),
+        """ DMI vector D associated with the homogeneous DMI (in a single simulation cell),
          defined by the energy density ε = D . (m1 x m2 + m2 x m3 + m3 x m1) with m1, m2
          and m3 being the sublattice magnetizations.
 

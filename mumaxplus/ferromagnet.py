@@ -1026,6 +1026,16 @@ class Ferromagnet(Magnet):
         """Effective field of the homogeneous DMI (T)."""
         return FieldQuantity(_cpp.homogeneous_dmi_field(self._impl))
 
+    @property
+    def homogeneous_dmi_energy_density(self):
+        """Energy density related to the homogeneous DMI (J/m³)."""
+        return FieldQuantity(_cpp.homogeneous_dmi_energy_density(self._impl))
+
+    @property
+    def homogeneous_dmi_energy(self):
+        """Energy related to the homogeneous DMI (J)."""
+        return FieldQuantity(_cpp.homogeneous_dmi_energy(self._impl))
+
     # --- magnetoelasticity ---
     # all elasticity is found in the Magnet parent
 
