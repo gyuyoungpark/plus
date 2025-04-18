@@ -6,12 +6,23 @@
 #include "gpubuffer.hpp"
 #include "voronoi.hpp"
 
-VoronoiTessellator::VoronoiTessellator(real grainsize, unsigned int maxIdx, int seed)
+VoronoiTessellator::VoronoiTessellator(real grainsize,
+                                       int seed,
+                                       unsigned int maxIdx,
+                                       const std::function<unsigned int(real3)>& centerIdx)
     : grainsize_(grainsize),
       seed_(seed),
       distReal_(0.0, 1.0),
-      distInt_(0, maxIdx) { pbc_ = false; }
-
+      distInt_(0, maxIdx) {
+        pbc_ = false;
+        if (centerIdx) { centerIdx_ = centerIdx; }
+        else {
+            centerIdx_ = [this](real3 coo) -> unsigned int {
+                return distInt_(engine_);
+            };
+        }
+    }
+    
 real3 VoronoiTessellator::getTileSize(real3 griddims) {
     if (!pbc_)
         return real3{2 * grainsize_, 2 * grainsize_ , 0};
@@ -20,12 +31,11 @@ real3 VoronoiTessellator::getTileSize(real3 griddims) {
                             0};
 }
 
-GpuBuffer<unsigned int> VoronoiTessellator::generate(Grid grid, real3 cellsize, const bool pbc) {
+std::vector<unsigned int> VoronoiTessellator::generate(Grid grid, real3 cellsize, const bool pbc) {
     pbc_ = pbc;
     grid_dims_ = real3{grid.size().x * cellsize.x, grid.size().y * cellsize.y, 0};
 
     tilesize_ = getTileSize(grid_dims_);
-
     lambda_ = (tilesize_.x / grainsize_) * (tilesize_.y / grainsize_);
 
     if (pbc) {
@@ -34,7 +44,6 @@ GpuBuffer<unsigned int> VoronoiTessellator::generate(Grid grid, real3 cellsize, 
     }
 
     std::vector<unsigned int> data(grid.ncells());
-
     for (int nx = 0; nx < grid.size().x; nx++) {
         for (int ny = 0; ny < grid.size().y; ny++) {
             real3 coo = real3{nx * cellsize.x,
@@ -43,7 +52,7 @@ GpuBuffer<unsigned int> VoronoiTessellator::generate(Grid grid, real3 cellsize, 
             data[nx + grid.size().x * ny] = regionOf(coo);
         }
     }
-    return GpuBuffer<unsigned int>(data);
+    return data;
 }
 
 unsigned int VoronoiTessellator::regionOf(real3 coo) {
@@ -101,7 +110,7 @@ std::vector<Center> VoronoiTessellator::centersInTile(int3 pos) {
         real cx = (pos.x + distReal_(engine_)) * tilesize_.x;
         real cy = (pos.y + distReal_(engine_)) * tilesize_.y;
 
-        centers[n] = Center(real3{cx, cy, 0}, distInt_(engine_));
+        centers[n] = Center(real3{cx, cy, 0}, centerIdx_(real3{cx, cy, 0}));
     }
     
     // Cache centers belonging to this tile
