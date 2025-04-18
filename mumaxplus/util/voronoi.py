@@ -2,7 +2,10 @@ import numpy as _np
 import warnings as _w
 
 import _mumaxpluscpp as _cpp
+from mumaxplus.world import World
+from mumaxplus.grid import Grid
 class VoronoiTessellator:
+
 
     def __init__(self, grainsize, seed=None, max_idx=255, region_of_center=None):
         """Create a Voronoi tessellator instance.
@@ -38,13 +41,20 @@ class VoronoiTessellator:
 
         Returns an ndarray of shape (nz, ny, nx) which is filled
         with region indices."""
-        self.tessellation = self._impl.generate(grid._impl, world.cellsize)
 
+        has_pbc = world.pbc_repetitions != (0,0,0)
+        self.tessellation = self._impl.generate(grid._impl, world.cellsize, has_pbc)
         return self.tessellation
     
     def coo_to_idx(self, x, y, z):
         """Returns the region index (int) of the given coordinate within the
-        Voronoi tessellation."""
+        Voronoi tessellation.
+
+        **Important:** This method has no information about the used world and
+        grid. E.g. this means that periodic boundary conditions will not apply.
+        This can be overriden by calling `generate` before assinging this function
+        to the `Magnet`'s regions parameter.
+        """
         return self._impl.coo_to_idx((x,y,z))
 
     @property
@@ -78,7 +88,6 @@ class VoronoiTessellator:
     @property
     def indices(self):
         """Returns list of unique region indices."""
-
         if not hasattr(self, 'tessellation'):
             _w.warn(
             "The full tessellation has not been generated yet."
