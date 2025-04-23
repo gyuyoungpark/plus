@@ -225,7 +225,7 @@ __global__ void k_dmiFieldAFM(CuField hField,
       m2_ = m2Field.vectorAt(neighbor_idx);
     }
     bool ms1 = (msat.valueAt(neighbor_idx) != 0);
-    bool ms2 = (msat.valueAt(neighbor_idx) != 0);
+    bool ms2 = (msat2.valueAt(neighbor_idx) != 0);
     // Compute the effective field contribution of the DMI with the neighbor
     h.x += (ms1 * (Dxy * m1_.y + Dxz * m1_.z) - ms2 * (Dixy * m2_.y - Dixz * m2_.z)) / delta;
     h.y += (ms1 * (Dyx * m1_.x + Dyz * m1_.z) - ms2 * (Diyx * m2_.x - Diyz * m2_.z)) / delta;
