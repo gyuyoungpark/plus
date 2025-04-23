@@ -1,5 +1,6 @@
 #include "ncafm.hpp"
 #include "cudalaunch.hpp"
+#include "dmi.hpp" // used for Neumann BC
 #include "energy.hpp"
 #include "ncafmexchange.hpp"
 #include "ferromagnet.hpp"
@@ -52,17 +53,20 @@ __global__ void k_NCafmExchangeFieldSite(CuField hField,
   hField.setVectorInCell(idx, h);
   }
 
-// NC-AFM exchange between NN cells
+// NCAFM exchange between NN cells
 __global__ void k_NCafmExchangeFieldNN(CuField hField,
                                 const CuField m1Field,
                                 const CuField m2Field,
                                 const CuField m3Field,
+                                const CuParameter aex,
                                 const CuParameter ncafmex_nn,
                                 const CuInterParameter interExch,
                                 const CuInterParameter scaleExch,
                                 const CuParameter msat2,
                                 const CuParameter msat3,
-                                const Grid mastergrid) {
+                                const Grid mastergrid,
+                                const CuDmiTensor dmiTensor,
+                                bool openBC) {
   const int idx = blockIdx.x * blockDim.x + threadIdx.x;
   const auto system = hField.system;
 
@@ -86,67 +90,110 @@ __global__ void k_NCafmExchangeFieldNN(CuField hField,
   const int3 coo = grid.index2coord(idx);
   const real3 m2 = m2Field.vectorAt(idx);
   const real3 m3 = m3Field.vectorAt(idx);
+  const real a = aex.valueAt(idx);
   const real ann = ncafmex_nn.valueAt(idx);
+
+  // If there is no FM-exchange at the boundary, open BC are assumed
+  openBC = (a == 0) ? true : openBC;
 
   // accumulate exchange field in h for cell at idx, divide by msat at the end
   real3 h2{0, 0, 0};
   real3 h3{0, 0, 0};
   
-  // NC-AFM exchange in NN cells
+  // NCAFM exchange in NN cells
 #pragma unroll
   for (int3 rel_coo : {int3{-1, 0, 0}, int3{1, 0, 0}, int3{0, -1, 0},
                             int3{0, 1, 0}, int3{0, 0, -1}, int3{0, 0, 1}}) {
     int3 coo_ = mastergrid.wrap(coo + rel_coo);
 
-    if(!hField.cellInGeometry(coo_))
+    if(!hField.cellInGeometry(coo_) && openBC)
       continue;
     
     const int idx_ = grid.coord2index(coo_);
     real delta = dot(rel_coo, system.cellsize);
     
-    // TODO: is this gain in performance (2 ifs instead of
+    // TODO: is this gain in performance (2 if-scopes instead of
     // 2 kernel functions) worth the ugliness?
-    if(msat2.valueAt(idx_) != 0) {
+    if(msat2.valueAt(idx_) != 0 || !openBC) {
+      real3 m2_;
+      real ann_;
+      int3 normal = rel_coo * rel_coo;
+
       real inter = 0;
       real scale = 1;
       real Aex;
 
-      real3 m2_ = m2Field.vectorAt(idx_);
-      real ann_ = ncafmex_nn.valueAt(idx_);
+      if (hField.cellInGeometry(coo_)) {
+        real3 m2_ = m2Field.vectorAt(idx_);
+        real ann_ = ncafmex_nn.valueAt(idx_);
 
-      unsigned int ridx = system.getRegionIdx(idx);
-      unsigned int ridx_ = system.getRegionIdx(idx_);
+        unsigned int ridx = system.getRegionIdx(idx);
+        unsigned int ridx_ = system.getRegionIdx(idx_);
 
-      if (ridx != ridx_) {
-        scale = scaleExch.valueBetween(ridx, ridx_);
-        inter = interExch.valueBetween(ridx, ridx_);
+        if (ridx != ridx_) {
+          scale = scaleExch.valueBetween(ridx, ridx_);
+          inter = interExch.valueBetween(ridx, ridx_);
+        }
       }
-      
+      else { // Neumann BC
+        real3 Gamma2 = getGamma(dmiTensor, idx, normal, m2);
+
+        real3 d_m1{0, 0, 0};
+        int3 other_neighbor_coo = mastergrid.wrap(coo - rel_coo);
+        if(hField.cellInGeometry(other_neighbor_coo)){
+          // Approximate normal derivative of sister sublattice by taking
+          // the bulk derivative closest to the edge.
+          real3 m1__ = m1Field.vectorAt(other_neighbor_coo);
+          real3 m1 = m1Field.vectorAt(idx);
+          d_m1 = (m1 - m1__) / delta;
+        }
+
+        m2_ = m2 + (ann * cross(cross(d_m1, m2), m2) + Gamma2) * delta / (2*a);
+        ann_ = ann;
+      }
       Aex = (inter != 0) ? inter : harmonicMean(ann, ann_);
       Aex *= scale;
-
       h2 += Aex * (m2_ - m2) / (delta * delta);
     }
 
-    if(msat3.valueAt(idx_) != 0) {
+    if(msat3.valueAt(idx_) != 0 || !openBC) {
+      real3 m3_;
+      real ann_;
+      int3 normal = rel_coo * rel_coo;
+
       real inter = 0;
       real scale = 1;
       real Aex;
+      if (hField.cellInGeometry(coo_)) {
+        real3 m3_ = m3Field.vectorAt(idx_);
+        real ann_ = ncafmex_nn.valueAt(idx_);
 
-      real3 m3_ = m3Field.vectorAt(idx_);
-      real ann_ = ncafmex_nn.valueAt(idx_);
+        unsigned int ridx = system.getRegionIdx(idx);
+        unsigned int ridx_ = system.getRegionIdx(idx_);
 
-      unsigned int ridx = system.getRegionIdx(idx);
-      unsigned int ridx_ = system.getRegionIdx(idx_);
-
-      if (ridx != ridx_) {
-        scale = scaleExch.valueBetween(ridx, ridx_);
-        inter = interExch.valueBetween(ridx, ridx_);
+        if (ridx != ridx_) {
+          scale = scaleExch.valueBetween(ridx, ridx_);
+          inter = interExch.valueBetween(ridx, ridx_);
+        }
       }
-      
+      else { // Neumann BC
+        real3 Gamma3 = getGamma(dmiTensor, idx, normal, m3);
+
+        real3 d_m1{0, 0, 0};
+        int3 other_neighbor_coo = mastergrid.wrap(coo - rel_coo);
+        if(hField.cellInGeometry(other_neighbor_coo)){
+          // Approximate normal derivative of sister sublattice by taking
+          // the bulk derivative closest to the edge.
+          real3 m1__ = m1Field.vectorAt(other_neighbor_coo);
+          real3 m1 = m1Field.vectorAt(idx);
+          d_m1 = (m1 - m1__) / delta;
+        }
+
+        m3_ = m3 + (ann * cross(cross(d_m1, m3), m3) + Gamma3) * delta / (2*a);
+        ann_ = ann;
+      }
       Aex = (inter != 0) ? inter : harmonicMean(ann, ann_);
       Aex *= scale;
-
       h3 += Aex * (m3_ - m3) / (delta * delta);
     }
   }
@@ -193,13 +240,16 @@ Field evalInHomogeneousNCAfmExchangeField(const Ferromagnet* magnet) {
   auto otherMag3 = sub3->magnetization()->field().cu();
   auto msat2 = sub2->msat.cu();
   auto msat3 = sub3->msat.cu();
+  auto aex = magnet->aex.cu();
   auto ncafmex_nn = magnet->hostMagnet<NCAFM>()->ncafmex_nn.cu();
+  auto BC = magnet->enableOpenBC;
+  auto dmiTensor = magnet->dmiTensor.cu();
   auto inter = magnet->hostMagnet<NCAFM>()->interNCAfmExchNN.cu();
   auto scale = magnet->hostMagnet<NCAFM>()->scaleNCAfmExchNN.cu();
 
   cudaLaunch(hField.grid().ncells(), k_NCafmExchangeFieldNN, hField.cu(),
-            mag, otherMag2, otherMag3, ncafmex_nn, inter, scale, msat2, msat3,
-            magnet->world()->mastergrid());
+            mag, otherMag2, otherMag3, aex, ncafmex_nn, inter, scale, msat2, msat3,
+            magnet->world()->mastergrid(), dmiTensor, BC);
   return hField;
 }
 
