@@ -26,7 +26,7 @@ bool homoNCAfmExchangeAssuredZero(const Ferromagnet* magnet) {
            magnet->hostMagnet<NCAFM>()->getOtherSublattices(magnet)[1]->msat.assuredZero()));
 }
 
-// NC-AFM exchange at a single site
+// NCAFM exchange at a single site
 __global__ void k_NCafmExchangeFieldSite(CuField hField,
                                 const CuField m2Field,
                                 const CuField m3Field,

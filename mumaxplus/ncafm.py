@@ -57,10 +57,11 @@ class NCAFM(Magnet):
             attributes of all sublattices are set.
             e.g. to set the saturation magnetization of all sublattices to the
             same value, one could use:
-                nc_antiferromagnet.msat = 800e3
+                NCAFM.msat = 800e3
             which is equal to
-                nc_antiferromagnet.sub1.msat = 800e3
-                nc_antiferromagnet.sub2.msat = 800e3
+                NCAFM.sub1.msat = 800e3
+                NCAFM.sub2.msat = 800e3
+                NCAFM.sub3.msat = 800e3
         """
         if hasattr(NCAFM, name) or name == "_impl":
             # set attribute of yourself, without causing recursion
@@ -71,7 +72,7 @@ class NCAFM(Magnet):
             setattr(self.sub3, name, value)
         else:
             raise AttributeError(
-                r'Both NC_Antiferromagnet and Ferromagnet have no attribute "{}".'.format(name))
+                r'Both NCAFM and Ferromagnet have no attribute "{}".'.format(name))
 
     @property
     def sub1(self):
@@ -94,7 +95,7 @@ class NCAFM(Magnet):
 
     @property
     def bias_magnetic_field(self):
-        """Uniform bias magnetic field which will affect an nc_antiferromagnet.
+        """Uniform bias magnetic field which will affect an NCAFM.
 
         The value should be specifed in Teslas.
         """
@@ -173,9 +174,9 @@ class NCAFM(Magnet):
 
     @property
     def ncafmex_cell(self):
-        """Intracell nc_antiferromagnetic exchange constant (J/m).
+        """Intracell NCAFM exchange constant (J/m).
         This parameter plays the role of exchange constant of
-        the nc_antiferromagnetic homogeneous exchange interaction
+        the NCAFM homogeneous exchange interaction
         in a single simulation cell.
         
         See Also
@@ -196,15 +197,15 @@ class NCAFM(Magnet):
             warn = True
         
         if warn:
-            warnings.warn("The nc_antiferromagnetic exchange constant ncafmex_cell"
+            warnings.warn("The NCAFM exchange constant ncafmex_cell"
                           + " is set to a positive value, instead of negative (or zero)."
                           + " Make sure this is intentional!", UserWarning)
 
     @property
     def ncafmex_nn(self):
-        """Intercell nc_antiferromagnetic exchange constant (J/m).
+        """Intercell NCAFM exchange constant (J/m).
         This parameter plays the role of exchange constant of
-        the nc_antiferromagnetic inhomogeneous exchange interaction
+        the NCAFM inhomogeneous exchange interaction
         between neighbouring simulation cells.
         
         See Also
@@ -224,13 +225,13 @@ class NCAFM(Magnet):
             warn = True
         
         if warn:
-            warnings.warn("The nc_antiferromagnetic exchange constant ncafmex_nn"
+            warnings.warn("The NCAFM exchange constant ncafmex_nn"
                           + " is set to a positive value, instead of negative (or zero)."
                           + " Make sure this is intentional!", UserWarning)
 
     @property
     def inter_ncafmex_nn(self):
-        """Interregional nc_antiferromagnetic exchange constant (J/m).
+        """Interregional NCAFM exchange constant (J/m).
         If set to zero (default), then the harmonic mean of
         the exchange constants of the two regions are used.
 
@@ -249,14 +250,14 @@ class NCAFM(Magnet):
     @inter_ncafmex_nn.setter
     def inter_ncafmex_nn(self, value):
         if value > 0:
-            warnings.warn("The nc_antiferromagnetic exchange constant inter_ncafmex_nn"
+            warnings.warn("The NCAFM exchange constant inter_ncafmex_nn"
                           + " is set to a positive value, instead of negative (or zero)."
                           + " Make sure this is intentional!", UserWarning)
         self.inter_ncafmex_nn.set(value)
 
     @property
     def scale_ncafmex_nn(self):
-        """Scaling of the nc_antiferromagnetic exchange constant between
+        """Scaling of the NCAFM exchange constant between
         different regions. This factor is multiplied by the harmonic
         mean of the exchange constants of the two regions.
 
@@ -281,9 +282,9 @@ class NCAFM(Magnet):
     def latcon(self):
         """Lattice constant (m).
 
-        Physical lattice constant of the NC_Antiferromagnet. This doesn't break the
+        Physical lattice constant of the NCAFM. This doesn't break the
         micromagnetic character of the simulation package, but is only used to
-        calculate the homogeneous exchange field, i.e. the nc_antiferromagnetic
+        calculate the homogeneous exchange field, i.e. the NCAFM
         exchange interaction between spins at the same site.
 
         Default = 0.35 nm.
@@ -301,7 +302,7 @@ class NCAFM(Magnet):
     @property
     def dmi_tensor(self):
         """
-        Get the DMI tensor of this NC_Antiferromagnet. This tensor
+        Get the DMI tensor of this NCAFM. This tensor
         describes intersublattice DMI exchange.
 
         Note that individual sublattices can have their own tensor
@@ -310,7 +311,7 @@ class NCAFM(Magnet):
         Returns
         -------
         DmiTensor
-            The DMI tensor of this NC_Antiferromagnet.
+            The DMI tensor of this NCAFM.
         
         See Also
         --------
@@ -327,7 +328,7 @@ class NCAFM(Magnet):
 
         For example, to set interfacial DMI in the whole system to the same value,
         one could use
-        >>> magnet = NC_Antiferromagnet(world, grid)
+        >>> magnet = NCAFM(world, grid)
         >>> magnet.dmi_tensors.set_interfacial_dmi(1e-3)
 
         Or to set an individual tensor element, one could use
