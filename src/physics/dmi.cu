@@ -234,8 +234,6 @@ __global__ void k_dmiFieldAFM(CuField hField,
 
   }  // end loop over neighbors
 
-  // TODO: DMI exchange at a single site ???
-
   h /= msat.valueAt(idx);
   hField.setVectorInCell(idx, h);
 }
@@ -247,17 +245,19 @@ __global__ void k_dmiFieldNCAFM(CuField hField,
                                 const CuDmiTensor dmiTensor,
                                 const CuDmiTensor interDmiTensor,
                                 const CuParameter msat,
+                                const CuParameter msat2,
+                                const CuParameter msat3,
                                 Grid mastergrid) {
   const int idx = blockIdx.x * blockDim.x + threadIdx.x;
   const auto system = hField.system;
 
   if (!system.grid.cellInGrid(idx))
-  return;
+    return;
 
   // When outside the geometry or msat=0, set to zero and return early
   if (!system.inGeometry(idx) || (msat.valueAt(idx) == 0)) {
-  hField.setVectorInCell(idx, real3{0, 0, 0});
-  return;
+    hField.setVectorInCell(idx, real3{0, 0, 0});
+    return;
   }
 
   real3 m1 = m1Field.vectorAt(idx);
@@ -282,7 +282,10 @@ __global__ void k_dmiFieldNCAFM(CuField hField,
 
     // If we assume open boundary conditions and if there is no neighbor,
     // then simply continue without adding to the effective field.
-    if (!system.inGeometry(neighbor_coo) || msat.valueAt(neighbor_idx) == 0)
+    if (!system.inGeometry(neighbor_coo) ||
+        (msat.valueAt(neighbor_idx) == 0  &&
+         msat2.valueAt(neighbor_idx) == 0 &&
+         msat3.valueAt(neighbor_idx) == 0))
       continue;
 
     // Get the dmi strengths between the center cell and the neighbor, which are
@@ -330,14 +333,17 @@ __global__ void k_dmiFieldNCAFM(CuField hField,
     m2_ = m2Field.vectorAt(neighbor_idx);
     m3_ = m3Field.vectorAt(neighbor_idx);
 
+    bool ms1 = (msat.valueAt(neighbor_idx) != 0);
+    bool ms2 = (msat2.valueAt(neighbor_idx) != 0);
+    bool ms3 = (msat3.valueAt(neighbor_idx) != 0);
+
     // Compute the effective field contribution of the DMI with the neighbor
-    h.x += (Dxy * m1_.y + Dxz * m1_.z - Dixy * m2_.y - Dixz * m2_.z - Dixy * m3_.y - Dixz * m3_.z) / delta;
-    h.y += (Dyx * m1_.x + Dyz * m1_.z - Diyx * m2_.x - Diyz * m2_.z - Diyx * m3_.x - Diyz * m3_.z) / delta;
-    h.z += (Dzx * m1_.x + Dzy * m1_.y - Dizx * m2_.x - Dizy * m2_.y - Dizx * m3_.x - Dizy * m3_.y) / delta;
+    h.x += (ms1 * (Dxy * m1_.y + Dxz * m1_.z) - ms2 * (Dixy * m2_.y - Dixz * m2_.z) - ms3 * (Dixy * m3_.y - Dixz * m3_.z)) / delta;
+    h.y += (ms1 * (Dyx * m1_.x + Dyz * m1_.z) - ms2 * (Diyx * m2_.x - Diyz * m2_.z) - ms3 * (Diyx * m3_.x - Diyz * m3_.z)) / delta;
+    h.z += (ms1 * (Dzx * m1_.x + Dzy * m1_.y) - ms2 * (Dizx * m2_.x - Dizy * m2_.y) - ms3 * (Dizx * m3_.x - Dizy * m3_.y)) / delta;
 
   }  // end loop over neighbors
 
-  // TODO: DMI exchange at a single site ???
   h /= msat.valueAt(idx);
   hField.setVectorInCell(idx, h);
 }
@@ -371,11 +377,15 @@ Field evalDmiField(const Ferromagnet* magnet) {
   }
   else {
     // magnet is sublatice in NCAFM
-    auto mag2 = magnet->hostMagnet<NCAFM>()->getOtherSublattices(magnet)[0]->magnetization()->field().cu();
-    auto mag3 = magnet->hostMagnet<NCAFM>()->getOtherSublattices(magnet)[1]->magnetization()->field().cu();
+    auto m2 = magnet->hostMagnet<NCAFM>()->getOtherSublattices(magnet)[0];
+    auto m3 = magnet->hostMagnet<NCAFM>()->getOtherSublattices(magnet)[1];
+    auto mag2 = m2->magnetization()->field().cu();
+    auto mag3 = m3->magnetization()->field().cu();
+    auto msat2 = m2->msat.cu();
+    auto msat3 = m3->msat.cu();
     auto interDmiTensor = magnet->hostMagnet<NCAFM>()->dmiTensor.cu();
     cudaLaunch(ncells, k_dmiFieldNCAFM, hField.cu(), mag, mag2, mag3, dmiTensor,
-               interDmiTensor, msat, grid);
+               interDmiTensor, msat, msat2, msat3, grid);
   }
   return hField;
 }
