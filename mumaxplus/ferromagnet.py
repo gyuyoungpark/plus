@@ -966,7 +966,7 @@ class Ferromagnet(Magnet):
 
     @property
     def inhomogeneous_exchange_field(self):
-        """Effective field of the inhomogeneous exchange interaction (J).
+        """Effective field of the inhomogeneous exchange interaction (T).
         This field is related to the antiferromagnetic exchange interaction
         between neighbouring cells.
         
@@ -978,7 +978,7 @@ class Ferromagnet(Magnet):
     
     @property
     def homogeneous_exchange_field(self):
-        """Effective field of the homogeneous exchange interaction (J).
+        """Effective field of the homogeneous exchange interaction (T).
         This field is related to the antiferromagnetic exchange interaction
         between spins in a single simulation cell.
         
@@ -990,7 +990,7 @@ class Ferromagnet(Magnet):
     
     @property
     def inhomogeneous_exchange_energy_density(self):
-        """Energy density related to the inhomogeneous exchange interaction (J).
+        """Energy density related to the inhomogeneous exchange interaction (J/m³).
         This energy density is related to the antiferromagnetic exchange interaction
         between neighbouring cells.
         
@@ -1002,7 +1002,7 @@ class Ferromagnet(Magnet):
     
     @property
     def homogeneous_exchange_energy_density(self):
-        """Energy density related to the homogeneous exchange interaction (J).
+        """Energy density related to the homogeneous exchange interaction (J/m³).
         This energy density is related to the antiferromagnetic exchange interaction
         between spins in a single simulation cell.
         
