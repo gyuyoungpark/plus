@@ -330,7 +330,7 @@ Field evalExchangeField(const Ferromagnet* magnet) {
   auto interEx = magnet->interExch.cu();
   auto scaleEx = magnet->scaleExch.cu();
 
-  if (!magnet->isSublattice() || magnet->enableOpenBC || magnet->hostMagnet<NCAFM>())
+  if (!magnet->isSublattice() || magnet->enableOpenBC)
     cudaLaunch(ncells, k_exchangeField, hField.cu(), mag,
               aex, msat, w, grid, magnet->enableOpenBC, dmiTensor,
               interEx, scaleEx);

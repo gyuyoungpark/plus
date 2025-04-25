@@ -30,6 +30,7 @@ bool homoNCAfmExchangeAssuredZero(const Ferromagnet* magnet) {
 __global__ void k_NCafmExchangeFieldSite(CuField hField,
                                 const CuField m2Field,
                                 const CuField m3Field,
+                                const CuParameter msat,
                                 const CuParameter msat2,
                                 const CuParameter msat3,
                                 const CuParameter ncafmex_cell,
@@ -48,9 +49,8 @@ __global__ void k_NCafmExchangeFieldSite(CuField hField,
 
   const real l = latcon.valueAt(idx);
   const real A = ncafmex_cell.valueAt(idx);
-  real3 h = 4 * A * m2Field.vectorAt(idx) / (l * l * msat2.valueAt(idx));
-  h += 4 * A * m3Field.vectorAt(idx) / (l * l * msat3.valueAt(idx));
-  hField.setVectorInCell(idx, h);
+  real3 h = 4 * A * (m3Field.vectorAt(idx) + m2Field.vectorAt(idx)) / (l * l);
+  hField.setVectorInCell(idx, h / msat.valueAt(idx));
   }
 
 // NCAFM exchange between NN cells
@@ -62,6 +62,7 @@ __global__ void k_NCafmExchangeFieldNN(CuField hField,
                                 const CuParameter ncafmex_nn,
                                 const CuInterParameter interExch,
                                 const CuInterParameter scaleExch,
+                                const CuParameter msat,
                                 const CuParameter msat2,
                                 const CuParameter msat3,
                                 const Grid mastergrid,
@@ -197,7 +198,7 @@ __global__ void k_NCafmExchangeFieldNN(CuField hField,
       h3 += Aex * (m3_ - m3) / (delta * delta);
     }
   }
-  hField.setVectorInCell(idx, h2 / msat2.valueAt(idx) + h3 / msat3.valueAt(idx));
+  hField.setVectorInCell(idx, (h2 + h3) / msat.valueAt(idx));
 }
 
 Field evalHomogeneousNCAfmExchangeField(const Ferromagnet* magnet) {
@@ -213,6 +214,7 @@ Field evalHomogeneousNCAfmExchangeField(const Ferromagnet* magnet) {
   auto sub3 = magnet->hostMagnet<NCAFM>()->getOtherSublattices(magnet)[1];
   auto otherMag2 = sub2->magnetization()->field().cu();
   auto otherMag3 = sub3->magnetization()->field().cu();
+  auto msat = magnet->msat.cu();
   auto msat2 = sub2->msat.cu();
   auto msat3 = sub3->msat.cu();
 
@@ -220,7 +222,7 @@ Field evalHomogeneousNCAfmExchangeField(const Ferromagnet* magnet) {
   auto latcon = magnet->hostMagnet<NCAFM>()->latcon.cu();
 
   cudaLaunch(hField.grid().ncells(), k_NCafmExchangeFieldSite, hField.cu(),
-            otherMag2, otherMag3, msat2, msat3, ncafmex_cell, latcon);
+            otherMag2, otherMag3, msat, msat2, msat3, ncafmex_cell, latcon);
   return hField;
 }
 
@@ -238,6 +240,7 @@ Field evalInHomogeneousNCAfmExchangeField(const Ferromagnet* magnet) {
   auto mag = magnet->magnetization()->field().cu();
   auto otherMag2 = sub2->magnetization()->field().cu();
   auto otherMag3 = sub3->magnetization()->field().cu();
+  auto msat = magnet->msat.cu();
   auto msat2 = sub2->msat.cu();
   auto msat3 = sub3->msat.cu();
   auto aex = magnet->aex.cu();
@@ -248,7 +251,7 @@ Field evalInHomogeneousNCAfmExchangeField(const Ferromagnet* magnet) {
   auto scale = magnet->hostMagnet<NCAFM>()->scaleNCAfmExchNN.cu();
 
   cudaLaunch(hField.grid().ncells(), k_NCafmExchangeFieldNN, hField.cu(),
-            mag, otherMag2, otherMag3, aex, ncafmex_nn, inter, scale, msat2, msat3,
+            mag, otherMag2, otherMag3, aex, ncafmex_nn, inter, scale, msat, msat2, msat3,
             magnet->world()->mastergrid(), dmiTensor, BC);
   return hField;
 }
