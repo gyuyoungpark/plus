@@ -297,8 +297,7 @@ __global__ void k_exchangeField(CuField hField,
         d_m3 = (m3 - m3__) / delta;
       }
 
-      m_ = m + (an * cross(cross(d_m2, m), m) + Gamma1) * delta / (2*a)
-             + (an * cross(cross(d_m3, m), m) + Gamma1) * delta / (2*a);
+      m_ = m + (an * (cross(cross(d_m2, m), m) + cross(cross(d_m3, m), m)) + Gamma1) * delta / (2*a);
       a_ = a;
     }
 

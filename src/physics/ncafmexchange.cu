@@ -125,8 +125,8 @@ __global__ void k_NCafmExchangeFieldNN(CuField hField,
       real Aex;
 
       if (hField.cellInGeometry(coo_)) {
-        real3 m2_ = m2Field.vectorAt(idx_);
-        real ann_ = ncafmex_nn.valueAt(idx_);
+        m2_ = m2Field.vectorAt(idx_);
+        ann_ = ncafmex_nn.valueAt(idx_);
 
         unsigned int ridx = system.getRegionIdx(idx);
         unsigned int ridx_ = system.getRegionIdx(idx_);
@@ -166,8 +166,8 @@ __global__ void k_NCafmExchangeFieldNN(CuField hField,
       real scale = 1;
       real Aex;
       if (hField.cellInGeometry(coo_)) {
-        real3 m3_ = m3Field.vectorAt(idx_);
-        real ann_ = ncafmex_nn.valueAt(idx_);
+        m3_ = m3Field.vectorAt(idx_);
+        ann_ = ncafmex_nn.valueAt(idx_);
 
         unsigned int ridx = system.getRegionIdx(idx);
         unsigned int ridx_ = system.getRegionIdx(idx_);

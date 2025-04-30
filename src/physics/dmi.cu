@@ -356,12 +356,9 @@ __global__ void k_dmiFieldNCAFM(CuField hField,
         d_m3 = (m3 - m3__) / delta;
       }
 
-      m1_ = m1 + (an * cross(cross(d_m2, m1), m1) + Gamma1) * delta / (2*a)
-               + (an * cross(cross(d_m3, m1), m1) + Gamma1) * delta / (2*a);
-      m2_ = m2 + (an * cross(cross((m1_ - m1)/delta, m2), m2) + Gamma2) * delta / (2*a)
-               + (an * cross(cross(d_m3, m2), m2) + Gamma2) * delta / (2*a);
-      m3_ = m3 + (an * cross(cross((m1_ - m1)/delta, m3), m3) + Gamma3) * delta / (2*a)
-               + (an * cross(cross(d_m2, m3), m3) + Gamma3) * delta / (2*a);
+      m1_ = m1 + (an * (cross(cross(d_m2, m1), m1) + cross(cross(d_m3, m1), m1)) + Gamma1) * delta / (2*a);
+      m2_ = m2 + (an * (cross(cross((m1_ - m1)/delta, m2), m2) + cross(cross(d_m3, m2), m2)) + Gamma2) * delta / (2*a);
+      m3_ = m3 + (an * (cross(cross((m1_ - m1)/delta, m3), m3) + cross(cross(d_m2, m3), m3)) + Gamma3) * delta / (2*a);
     }
     else {
       m1_ = m1Field.vectorAt(neighbor_idx);

@@ -9,6 +9,7 @@
 #include "magnet.hpp"
 #include "magnetoelasticfield.hpp"
 #include "magnetoelasticforce.hpp"
+#include "ncafm.hpp"
 #include "parameter.hpp"
 
 
@@ -31,6 +32,12 @@ Field evalEffectiveBodyForce(const Magnet* magnet) {
   if (const Antiferromagnet* afm = magnet->asAFM()) {
     // add magnetoelastic force of both sublattices
     for (const Ferromagnet* sub : afm->sublattices()) {
+      if (!magnetoelasticAssuredZero(sub))
+        fField += evalMagnetoelasticForce(sub);
+    }
+  } else if (const NCAFM* ncafm = magnet->asNCAFM()) {
+    // add magnetoelastic force of all sublattices
+    for (const Ferromagnet* sub : ncafm->sublattices()) {
       if (!magnetoelasticAssuredZero(sub))
         fField += evalMagnetoelasticForce(sub);
     }
