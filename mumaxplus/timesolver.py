@@ -2,6 +2,7 @@
 
 from typing import Callable
 import os as _os
+from tqdm import tqdm as _tqdm
 
 class TimeSolverOutput:
     """Collect values of a list of quantities on specified timepoints.
@@ -110,7 +111,7 @@ class TimeSolver:
         self._assure_sensible_timestep()
         self._impl.run(duration)
 
-    def solve(self, timepoints, quantity_dict, file_name=None) -> "TimeSolverOutput":
+    def solve(self, timepoints, quantity_dict, file_name=None, tqdm=False) -> "TimeSolverOutput":
         """Solve the differential equation.
 
         The functions collects values of a list of specified quantities
@@ -125,6 +126,8 @@ class TimeSolver:
         file_name : str, optional
             Optional name of an output file, in which the data is also written
             as tab-separated values during the simulation.
+        tqdm : bool (default=False)
+            Prints tqdm progress bar if set to True.
 
         Returns
         -------
@@ -138,6 +141,7 @@ class TimeSolver:
         self._assure_sensible_timestep()
         output = TimeSolverOutput(quantity_dict, file_name)
 
+        if tqdm: timepoints = _tqdm(timepoints)
         for tp in timepoints:
             # we only need to assure a sensible timestep at the beginning,
             # hence we use here self._impl.run instead of self.run
