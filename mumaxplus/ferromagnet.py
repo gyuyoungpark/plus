@@ -11,7 +11,6 @@ from .interparameter import InterParameter
 from .parameter import Parameter
 from .poissonsystem import PoissonSystem
 from .scalarquantity import ScalarQuantity
-from .strayfield import StrayField
 from .variable import Variable
 
 import warnings
@@ -706,16 +705,6 @@ class Ferromagnet(Magnet):
         """The maximum value of the torque over all cells (rad/s)."""
         return ScalarQuantity(_cpp.max_torque(self._impl))
     
-    @property
-    def demag_field(self):
-        """Demagnetization field (T).
-        
-        See Also
-        --------
-        demag_energy_density, demage_energy
-        """
-        return StrayField._from_impl(self._impl.stray_field_from_magnet(self._impl))
-
     @property
     def demag_energy_density(self):
         """Energy density related to the demag field (J/m³).
