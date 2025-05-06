@@ -34,11 +34,13 @@ void wrap_magnet(py::module& m) {
 
       // elasticity parameters
       .def_readonly("external_body_force", &Magnet::externalBodyForce)
-      .def_readonly("c11", &Magnet::c11)
-      .def_readonly("c12", &Magnet::c12)
-      .def_readonly("c44", &Magnet::c44)
+      .def_readonly("C11", &Magnet::C11)
+      .def_readonly("C12", &Magnet::C12)
+      .def_readonly("C44", &Magnet::C44)
       .def_readonly("eta", &Magnet::eta)
       .def_readonly("rho", &Magnet::rho)
+      .def_readonly("rigid_norm_strain", &Magnet::rigidNormStrain)
+      .def_readonly("rigid_shear_strain", &Magnet::rigidShearStrain)
 
       .def("stray_field_from_magnet",
           [](const Magnet* m, Magnet* magnet) {

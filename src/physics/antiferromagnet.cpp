@@ -28,7 +28,7 @@ Antiferromagnet::Antiferromagnet(MumaxWorld* world,
                          Grid grid,
                          std::string name,
                          GpuBuffer<bool> geometry,
-                         GpuBuffer<uint> regions)
+                         GpuBuffer<unsigned int> regions)
     : Antiferromagnet(std::make_shared<System>(world, grid, geometry, regions), name) {}
 
 const Ferromagnet* Antiferromagnet::sub1() const {
@@ -62,7 +62,7 @@ void Antiferromagnet::relax(real tol) {
     if (threshold[0] > 0.0 && threshold[1] <= 0.0)
       threshold[1] = threshold[0];
     else if (threshold[0] <= 0.0 && threshold[1] > 0.0)
-      threshold[0] == threshold[1];
+      threshold[0] = threshold[1];
 
     Relaxer relaxer(this, threshold, tol);
     relaxer.exec();

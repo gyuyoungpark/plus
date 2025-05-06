@@ -12,7 +12,6 @@ from .scalarquantity import ScalarQuantity
 from .strayfield import StrayField
 from .variable import Variable
 
-
 class Magnet(ABC):
     """A Magnet should never be initialized by the user. It contains no physics.
     Use ``Ferromagnet`` or ``Antiferromagnet`` instead.
@@ -141,6 +140,18 @@ class Magnet(ABC):
         return World._from_impl(self._impl.world)
 
     @property
+    def meshgrid(self):
+        """Return a numpy meshgrid with the x, y, and z coordinate of each cell."""
+        nx, ny, nz = self.grid.size
+        mgrid_idx = _np.flip(_np.mgrid[0:nz, 0:ny, 0:nx], axis=0)
+
+        mgrid = _np.zeros(mgrid_idx.shape, dtype=_np.float32)
+        for c in [0, 1, 2]:
+            mgrid[c] = self.origin[c] + mgrid_idx[c] * self.cellsize[c]
+
+        return mgrid
+
+    @property
     def enable_as_stray_field_source(self):
         """Enable/disable this magnet (self) as the source of stray fields felt
         by other magnets. This does not influence demagnetization.
@@ -216,6 +227,13 @@ class Magnet(ABC):
 
         If elastodynamics are disabled (default), the elastic displacement and
         velocity are uninitialized to save memory.
+
+        Elastodynamics can not be used together with rigid normal and shear
+        strain, where strain is set by the user instead.
+
+        See Also
+        --------
+        rigid_norm_strain, rigid_shear_strain
         """
         return self._impl.enable_elastodynamics
 
@@ -241,46 +259,46 @@ class Magnet(ABC):
         self.external_body_force.set(value)
 
     @property
-    def c11(self):
-        """Stiffness constant c11 = c22 = c33 of the stiffness tensor (N/m²).
+    def C11(self):
+        """Stiffness constant C11 = c22 = c33 of the stiffness tensor (N/m²).
         
         See Also
         --------
-        c12, c44, stress_tensor
+        C12, C44, stress_tensor
         """
-        return Parameter(self._impl.c11)
+        return Parameter(self._impl.C11)
 
-    @c11.setter
-    def c11(self, value):
-        self.c11.set(value)
+    @C11.setter
+    def C11(self, value):
+        self.C11.set(value)
 
     @property
-    def c12(self):
-        """Stiffness constant c12 = c13 = c23 of the stiffness tensor (N/m²).
+    def C12(self):
+        """Stiffness constant C12 = c13 = c23 of the stiffness tensor (N/m²).
         
         See Also
         --------
-        c11, c44, stress_tensor
+        C11, C44, stress_tensor
         """
-        return Parameter(self._impl.c12)
+        return Parameter(self._impl.C12)
 
-    @c12.setter
-    def c12(self, value):
-        self.c12.set(value)
+    @C12.setter
+    def C12(self, value):
+        self.C12.set(value)
 
     @property
-    def c44(self):
-        """Stiffness constant c44 = c55 = c66 of the stiffness tensor (N/m²).
+    def C44(self):
+        """Stiffness constant C44 = c55 = c66 of the stiffness tensor (N/m²).
         
         See Also
         --------
-        c11, c12, stress_tensor
+        C11, C12, stress_tensor
         """
-        return Parameter(self._impl.c44)
+        return Parameter(self._impl.C44)
 
-    @c44.setter
-    def c44(self, value):
-        self.c44.set(value)
+    @C44.setter
+    def C44(self, value):
+        self.C44.set(value)
 
     @property
     def eta(self):
@@ -303,6 +321,62 @@ class Magnet(ABC):
     def rho(self, value):
         self.rho.set(value)
 
+    @property
+    def rigid_norm_strain(self):
+        """The applied normal strain (m/m).
+
+        This quantity has three components (εxx, εyy, εzz),
+        which forms the diagonal of the symmetric strain tensor::
+
+               εxx  0   0
+                0  εyy  0
+                0   0  εzz
+
+        The rigid strain can not be used together with elastodynamics.
+        Here the strain is set by the user as a parameter for the magnetoelastic
+        field, instead of calculated dynamically (strain_tensor).
+
+        See Also
+        --------
+        rigid_shear_strain
+        enable_elastodynamics, strain_tensor
+        """
+        return Parameter(self._impl.rigid_norm_strain)
+    
+    @rigid_norm_strain.setter
+    def rigid_norm_strain(self, value):
+        if self.enable_elastodynamics:
+            raise Exception("Can not use normal strain with elastodynamics enabled.")
+        self.rigid_norm_strain.set(value)
+    
+    @property
+    def rigid_shear_strain(self):
+        """The applied shear strain (m/m).
+
+        This quantity has three components (εxy, εxz, εyz),
+        which forms the off-diagonal of the symmetric strain tensor::
+
+                 0  εxy εxz
+                εxy  0  εyz
+                εxz εyz  0
+
+        The rigid strain can not be used together with elastodynamics.
+        Here the strain is set by the user as a parameter for the magnetoelastic
+        field, instead of calculated dynamically (strain_tensor).
+
+        See Also
+        --------
+        rigid_norm_strain
+        enable_elastodynamics, strain_tensor
+        """
+        return Parameter(self._impl.rigid_shear_strain)
+
+    @rigid_shear_strain.setter
+    def rigid_shear_strain(self, value):
+        if self.enable_elastodynamics:
+            raise Exception("Can not use shear strain with elastodynamics enabled.")
+        self.rigid_shear_strain.set(value)
+
     # ----- ELASTIC QUANTITIES -------
 
     @property
@@ -320,9 +394,13 @@ class Magnet(ABC):
         Note that the strain corresponds to the real strain and not the
         engineering strain, which would be (εxx, εyy, εzz, 2*εxy, 2*εxz, 2*εyz).
 
+        If you want to set the strain as a parameter yourself, use rigid normal
+        and shear strain.
+
         See Also
         --------
         elastic_energy, elastic_energy_density, elastic_displacement, stress_tensor
+        rigid_norm_strain, rigid_shear_strain
         """
         return FieldQuantity(_cpp.strain_tensor(self._impl))
     
@@ -340,7 +418,7 @@ class Magnet(ABC):
 
         See Also
         --------
-        c11, c12, c44
+        C11, C12, C44
         """
         return FieldQuantity(_cpp.stress_tensor(self._impl))
 
@@ -352,7 +430,7 @@ class Magnet(ABC):
         
         See Also
         --------
-        c11, c12, c44
+        C11, C12, C44
         effective_body_force
         """
         return FieldQuantity(_cpp.elastic_force(self._impl))
@@ -473,3 +551,16 @@ class Magnet(ABC):
         """
         return StrayField._from_impl(
                         self._impl.stray_field_from_magnet(source_magnet._impl))
+
+    @property
+    def demag_field(self):
+        """Demagnetization field (T).
+
+        Ferromagnetic sublattices of other host magnets don't have a demag field.
+        
+        See Also
+        --------
+        stray_field_from_magnet
+        StrayField
+        """
+        return self.stray_field_from_magnet(self)

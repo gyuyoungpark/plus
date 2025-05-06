@@ -25,11 +25,13 @@ Magnet::Magnet(std::shared_ptr<System> system_ptr,
       // elasticity
       enableElastodynamics_(false),
       externalBodyForce(system(), {0, 0, 0}, name + ":external_body_force", "N/m3"),
-      c11(system(), 0.0, name + ":c11", "N/m2"),
-      c12(system(), 0.0, name + ":c12", "N/m2"),
-      c44(system(), 0.0, name + ":c44", "N/m2"),
+      C11(system(), 0.0, name + ":C11", "N/m2"),
+      C12(system(), 0.0, name + ":C12", "N/m2"),
+      C44(system(), 0.0, name + ":C44", "N/m2"),
       eta(system(), 0.0, name + ":eta", "kg/m3s"),
-      rho(system(), 1.0, name + ":rho", "kg/m3") {
+      rho(system(), 1.0, name + ":rho", "kg/m3"),
+      rigidNormStrain(system(), {0.0, 0.0, 0.0}, name + ":rigid_norm_strain", ""),
+      rigidShearStrain(system(), {0.0, 0.0, 0.0}, name + ":rigid_shear_strain", "") {
   // Check that the system has at least size 1
   int3 size = system_->grid().size();
   if (size.x < 1 || size.y < 1 || size.z < 1)
@@ -50,8 +52,9 @@ Magnet::Magnet(Magnet&& other) noexcept
       name_(other.name_),
       
       externalBodyForce(other.externalBodyForce),
-      c11(other.c11), c12(other.c12), c44(other.c44),
-      eta(other.eta), rho(other.rho) {
+      C11(other.C11), C12(other.C12), C44(other.C44),
+      eta(other.eta), rho(other.rho), rigidNormStrain(other.rigidNormStrain),
+      rigidShearStrain(other.rigidShearStrain) {
   other.system_ = nullptr;
   other.name_ = "";
 }
@@ -67,9 +70,9 @@ Magnet& Magnet::operator=(Magnet&& other) noexcept {
 
         // TODO: add reset to `other` of some kind? idk
         externalBodyForce = other.externalBodyForce;
-        c11 = other.c11;
-        c12 = other.c12;
-        c44 = other.c44;
+        C11 = other.C11;
+        C12 = other.C12;
+        C44 = other.C44;
         eta = other.eta;
         rho = other.rho;
       }
@@ -179,6 +182,13 @@ void Magnet::setEnableElastodynamics(bool value) {
       throw std::invalid_argument(
         "Cannot enable/disable elastodynamics for a sublattice.");
     }
+  }
+
+  // should not use elastodynamics together with rigid strain!
+  if (value && (!this->rigidNormStrain.assuredZero() ||
+                !this->rigidShearStrain.assuredZero())) {
+    throw std::invalid_argument(
+      "Cannot enable elastodynamics when rigid strain is set.");
   }
 
   if (enableElastodynamics_ != value) {
