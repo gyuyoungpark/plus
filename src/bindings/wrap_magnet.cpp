@@ -4,7 +4,7 @@
 #include "elasticdamping.hpp"
 #include "elasticenergies.hpp"
 #include "elastodynamics.hpp"
-#include "elasticforce.hpp"
+#include "internalbodyforce.hpp"
 #include "magnet.hpp"
 #include "mumaxworld.hpp"
 #include "poyntingvector.hpp"
@@ -38,6 +38,8 @@ void wrap_magnet(py::module& m) {
       .def_readonly("C12", &Magnet::C12)
       .def_readonly("C44", &Magnet::C44)
       .def_readonly("eta", &Magnet::eta)
+      .def_readonly("bulk_viscosity", &Magnet::bulkViscosity)
+      .def_readonly("shear_viscosity", &Magnet::shearViscosity)
       .def_readonly("rho", &Magnet::rho)
       .def_readonly("rigid_norm_strain", &Magnet::rigidNormStrain)
       .def_readonly("rigid_shear_strain", &Magnet::rigidShearStrain)
@@ -61,9 +63,12 @@ void wrap_magnet(py::module& m) {
   // Elasticity
   m.def("strain_tensor", &strainTensorQuantity);
   m.def("strain_rate", &strainRateQuantity);
+  
+  m.def("elastic_stress", &elasticStressQuantity);
+  m.def("viscous_stress", &viscousStressQuantity);
   m.def("stress_tensor", &stressTensorQuantity);
 
-  m.def("elastic_force", &elasticForceQuantity);
+  m.def("internal_body_force", &internalBodyForceQuantity);
   m.def("effective_body_force", &effectiveBodyForceQuantity);
   m.def("elastic_damping", &elasticDampingQuantity);
   m.def("elastic_acceleration", &elasticAccelerationQuantity);

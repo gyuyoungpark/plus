@@ -1,7 +1,7 @@
 #include "antiferromagnet.hpp"
 #include "cudalaunch.hpp"
 #include "elasticdamping.hpp"
-#include "elasticforce.hpp"
+#include "internalbodyforce.hpp"
 #include "elastodynamics.hpp"
 #include "ferromagnet.hpp"
 #include "field.hpp"
@@ -24,7 +24,7 @@ Field evalEffectiveBodyForce(const Magnet* magnet) {
   Field fField(magnet->system(), 3, 0.0);
 
   if (!elasticityAssuredZero(magnet))
-    fField += evalElasticForce(magnet);
+    fField += evalInternalBodyForce(magnet);
   if (!magnet->externalBodyForce.assuredZero())
     fField += magnet->externalBodyForce;
 

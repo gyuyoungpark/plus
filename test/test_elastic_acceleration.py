@@ -63,7 +63,7 @@ class TestForces:
 
     def test_effective_force(self):
         """Check if the effective body force is the sum of the other forces."""
-        force = self.magnet.elastic_force.eval() + self.magnet.external_body_force.eval() + self.magnet.magnetoelastic_force.eval()
+        force = self.magnet.internal_body_force.eval() + self.magnet.external_body_force.eval() + self.magnet.magnetoelastic_force.eval()
         assert max_semirelative_error(self.magnet.effective_body_force.eval(), force) < SRTOL
 
     def test_damping_calc(self):

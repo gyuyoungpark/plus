@@ -72,7 +72,7 @@ def set_and_check_sine_force(magnet, d_comp, u_comp, C):
 
     magnet.elastic_displacement = displacement_func
     
-    force_num = magnet.elastic_force.eval()
+    force_num = magnet.internal_body_force.eval()
     force_anal = - k**2 * C * magnet.elastic_displacement.eval()
 
     assert max_semirelative_error(force_num, force_anal) < SRTOL
@@ -195,10 +195,10 @@ def check_mixed_derivative(d_comp_outer, d_comp_inner):
     magnet.elastic_displacement = displacement_func
 
     # compare forces
-    force_num = magnet.elastic_force.eval()
+    force_num = magnet.internal_body_force.eval()
     force_anal = analytical_mixed_force(k_outer, k_inner,
                                         d_comp_outer, d_comp_inner,
-                                        mgrid=magnet.elastic_force.meshgrid)
+                                        mgrid=magnet.internal_body_force.meshgrid)
 
     assert max_semirelative_error(force_num, force_anal) < SRTOL_MIX
 

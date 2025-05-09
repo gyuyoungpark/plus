@@ -310,6 +310,34 @@ class Magnet(ABC):
         self.eta.set(value)
 
     @property
+    def bulk_viscosity(self):
+        """Bulk viscosity (Pa s).
+        
+        See Also
+        --------
+        eta, shear_viscosity, strain_rate, viscous_stress
+        """
+        return Parameter(self._impl.bulk_viscosity)
+
+    @bulk_viscosity.setter
+    def bulk_viscosity(self, value):
+        self.bulk_viscosity.set(value)
+
+    @property
+    def shear_viscosity(self):
+        """Shear viscosity (Pa s).
+        
+        See Also
+        --------
+        bulk_viscosity, eta, strain_rate, viscous_stress
+        """
+        return Parameter(self._impl.shear_viscosity)
+
+    @shear_viscosity.setter
+    def shear_viscosity(self, value):
+        self.shear_viscosity.set(value)
+
+    @property
     def rho(self):
         """Mass density (kg/m³).
         
@@ -417,10 +445,41 @@ class Magnet(ABC):
         return FieldQuantity(_cpp.strain_rate(self._impl))
     
     @property
-    def stress_tensor(self):
-        """Stress tensor (N/m²), calculated according to Hooke's law
-        σ = cε.
+    def elastic_stress(self):
+        """Elastic stress tensor (N/m²), calculated according to Hooke's law
+        σ = c:ε.
 
+        See Also
+        --------
+        C11, C12, C44
+        strain_tensor
+        stress_tensor
+        """
+        return FieldQuantity(_cpp.elastic_stress(self._impl))
+
+    @property
+    def viscous_stress(self):
+        """Viscous stress tensor (N/m²) due to isotropic viscous damping,
+        calculated according to
+
+        σ = η_b vol(dε/dt) + η_ν dev(dε/dt)
+
+        with vol(dε/dt) and dev(dε/dt) the volumetric and deviatoric parts of
+        the strain rate tensor, and with η_b and η_ν the bulk and shear
+        viscosity respectively.
+
+        See Also
+        --------
+        bulk_viscosity, shear_viscosity
+        strain_rate
+        stress_tensor
+        """
+        return FieldQuantity(_cpp.viscous_stress(self._impl))
+
+    @property
+    def stress_tensor(self):
+        """Total stress tensor (N/m²), including elastic stress and viscous stress.
+        
         This quantity has six components (σxx, σyy, σzz, σxy, σxz, σyz),
         which forms the symmetric stress tensor::
 
@@ -430,22 +489,23 @@ class Magnet(ABC):
 
         See Also
         --------
-        C11, C12, C44
+        elastic_stress, viscous_stress
+        internal_body_force
         """
         return FieldQuantity(_cpp.stress_tensor(self._impl))
 
     @property
-    def elastic_force(self):
-        """Elastic body force density due to mechanical stress gradients (N/m³).
+    def internal_body_force(self):
+        """Internal body force density due to stress divergence (N/m³).
 
-        f = ∇σ = ∇(cε)
+        f = ∇·σ
         
         See Also
         --------
-        C11, C12, C44
+        stress_tensor
         effective_body_force
         """
-        return FieldQuantity(_cpp.elastic_force(self._impl))
+        return FieldQuantity(_cpp.internal_body_force(self._impl))
 
     @property
     def effective_body_force(self):
@@ -453,14 +513,14 @@ class Magnet(ABC):
         magnetoelastic and external body force densities (N/m³).
         Elastic damping is not included.
 
-        f_eff = f_el + f_mel + f_ext
+        f_eff = f_int + f_mel + f_ext
 
         In the case of this Magnet being a host (antiferromagnet),
         f_mel is the sum of all magnetoelastic body forces of all sublattices.
 
         See Also
         --------
-        elastic_force, external_body_force, magnetoelastic_force
+        external_body_force, internal_body_force, magnetoelastic_force
         """
         return FieldQuantity(_cpp.effective_body_force(self._impl))
 
