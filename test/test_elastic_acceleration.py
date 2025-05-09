@@ -41,6 +41,8 @@ class TestForces:
         self.magnet.enable_elastodynamics = True
 
         self.magnet.eta = np.random.rand(1, nz,ny,nx)
+        self.magnet.bulk_viscosity = np.random.rand(1, nz,ny,nx)
+        self.magnet.shear_viscosity = np.random.rand(1, nz,ny,nx)
         self.magnet.rho = np.random.rand(1, nz,ny,nx)
 
         self.magnet.C11 = C11
@@ -50,16 +52,36 @@ class TestForces:
         self.magnet.B1 = B1
         self.magnet.B2 = B2
 
-        def displacement_func(x, y, z):
-            return tuple(np.random.rand(3) * 1e-15)
-
-        def velocity_func(x, y, z):
-            return (np.random.rand(), np.random.rand(), np.random.rand())
-        
-        self.magnet.elastic_displacement = displacement_func
-        self.magnet.elastic_velocity = velocity_func
+        self.magnet.elastic_displacement = 1e-15 * np.random.rand(3, nz,ny,nx)
+        self.magnet.elastic_velocity = 1e-2 * np.random.rand(3, nz,ny,nx)
 
         self.magnet.external_body_force = np.random.rand(3, nz,ny,nx)
+
+    def test_viscous_stress_calc(self):
+        """Check if viscous stress is correctly calculated."""
+        strain_rate = self.magnet.strain_rate.eval()
+        
+        # volumetric strain rate tensor
+        vol_strain_rate = np.zeros_like(strain_rate)
+        trace_3 = (strain_rate[0] + strain_rate[1] + strain_rate[2]) / 3
+        for i in range(3): vol_strain_rate[i,...] = trace_3
+
+        # deviatoric part
+        dev_strain_rate = strain_rate - vol_strain_rate
+
+        # stress calculation
+        viscous_stress = np.empty_like(strain_rate)
+        nuB = self.magnet.bulk_viscosity.eval()
+        nuS = self.magnet.shear_viscosity.eval()
+        for i in range(6):
+            viscous_stress[i] = nuB * vol_strain_rate[i] + nuS * dev_strain_rate[i]
+        
+        assert max_semirelative_error(self.magnet.viscous_stress.eval(), viscous_stress) < SRTOL
+
+    def test_stress_tensor(self):
+        """Check if the stress tensor is the sum of the other stresses."""
+        stress = self.magnet.elastic_stress.eval() + self.magnet.viscous_stress.eval()
+        assert max_semirelative_error(self.magnet.stress_tensor.eval(), stress) < SRTOL
 
     def test_effective_force(self):
         """Check if the effective body force is the sum of the other forces."""
