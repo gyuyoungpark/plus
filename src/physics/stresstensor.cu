@@ -87,21 +87,14 @@ __global__ void k_viscousStress(CuField stressTensor,
     return;
   }
 
-  real nuB = nuBulk.valueAt(idx);
-  real nuS2 = 2 * nuShear.valueAt(idx);  // *2 because real strain, not engineering strain
-  real nuDiff = nuB - nuS2;  // isotropic
+  real nuS = nuShear.valueAt(idx);
+  real nuDiff = nuBulk.valueAt(idx) - nuS;  // isotropic
 
-  int ip1, ip2;
+  real trace_3 = (strainRate.valueAt(idx, 0) + strainRate.valueAt(idx, 1) + strainRate.valueAt(idx, 2)) / 3;
+
   for (int i=0; i<3; i++) {
-    ip1 = i+1; ip2 = i+2;
-    if (ip1 >= 3) ip1 -= 3;
-    if (ip2 >= 3) ip2 -= 3;
-
-    stressTensor.setValueInCell(idx, i,
-                               nuB * strainRate.valueAt(idx, i) +
-                               nuDiff * strainRate.valueAt(idx, ip1) +
-                               nuDiff * strainRate.valueAt(idx, ip2));
-    stressTensor.setValueInCell(idx, i+3, nuS2 * strainRate.valueAt(idx, i+3));
+    stressTensor.setValueInCell(idx, i, nuDiff * trace_3 + nuS * strainRate.valueAt(idx, i));
+    stressTensor.setValueInCell(idx, i+3, nuS * strainRate.valueAt(idx, i+3));
   }
 }
 
