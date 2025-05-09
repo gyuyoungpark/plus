@@ -60,6 +60,7 @@ void wrap_magnet(py::module& m) {
 
   // Elasticity
   m.def("strain_tensor", &strainTensorQuantity);
+  m.def("strain_rate", &strainRateQuantity);
   m.def("stress_tensor", &stressTensorQuantity);
 
   m.def("elastic_force", &elasticForceQuantity);

@@ -403,6 +403,18 @@ class Magnet(ABC):
         rigid_norm_strain, rigid_shear_strain
         """
         return FieldQuantity(_cpp.strain_tensor(self._impl))
+
+    @property
+    def strain_rate(self):
+        """Time derivative of the strain tensor (m/m/s), calculated according to
+        dε/dt = 1/2 (∇v + (∇v)^T), with v the elastic velocity.
+
+        See Also
+        --------
+        strain_tensor
+        elastic_velocity
+        """
+        return FieldQuantity(_cpp.strain_rate(self._impl))
     
     @property
     def stress_tensor(self):
