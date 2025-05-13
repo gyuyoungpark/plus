@@ -178,22 +178,6 @@ def bulk_modulus(C11, C44):
     """
     return C11 - 4/3 * C44
 
-def shear_modulus(C44):
-    """For isotropic materials, the shear modulus is equal to the stiffness
-    constant C44 = c1212.
-    
-    Parameters
-    ----------
-    C44 : float
-        Stiffness constant C44 (Pa).
-    
-    Returns
-    -------
-    float
-        Shear modulus (Pa).
-    """
-    return C44
-
 
 def Rayleigh_damping_mass_coefficient(frequency_1, damping_ratio_1, frequency_2, damping_ratio_2):
     """Rayleigh damping mass coefficient calculated by providing damping ratios

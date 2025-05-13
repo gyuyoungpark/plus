@@ -289,7 +289,9 @@ class Magnet(ABC):
     @property
     def C44(self):
         """Stiffness constant C44 = C55 = C66 of the stiffness tensor (N/m²).
-        
+
+        For isotropic materials, this is equal to the shear modulus.
+
         See Also
         --------
         C11, C12, stress_tensor
@@ -348,6 +350,8 @@ class Magnet(ABC):
         """Viscosity constant eta44 = eta55 = eta66 of the viscosity tensor (Pa s)
         in Voigt notation, which connects strain rate to viscous stress
         σ = η : dε/dt.
+
+        For isotropic materials, this is equal to the shear viscosity.
         
         See Also
         --------

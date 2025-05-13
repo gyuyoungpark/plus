@@ -17,7 +17,7 @@ __all__ = [
     # formulary
     "magnetostatic_energy_density", "Km", "exchange_length", "l_ex",
     "wall_width", "helical_length", "magnetic_hardness",
-    "bulk_modulus", "shear_modulus",
+    "bulk_modulus",
     "Rayleigh_damping_mass_coefficient", "Rayleigh_damping_stiffness_coefficient",
     # show
     "show_field",
