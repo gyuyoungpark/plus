@@ -118,6 +118,7 @@ __global__ void k_dmiFieldAFM(CuField hField,
                            const CuDmiTensor dmiTensor,
                            const CuDmiTensor interDmiTensor,
                            const CuParameter msat,
+                           const CuParameter msat2,
                            Grid mastergrid,
                            const CuParameter aex,
                            const CuParameter afmex_nn,
@@ -159,7 +160,7 @@ __global__ void k_dmiFieldAFM(CuField hField,
     // If we assume open boundary conditions and if there is no neighbor,
     // then simply continue without adding to the effective field.
     if (openBC && (!system.inGeometry(neighbor_coo)
-               || msat.valueAt(neighbor_idx) == 0))
+               || (msat.valueAt(neighbor_idx) == 0 && msat2.valueAt(neighbor_idx) == 0)))
       continue;
 
     // Get the dmi strengths between the center cell and the neighbor, which are
@@ -226,11 +227,12 @@ __global__ void k_dmiFieldAFM(CuField hField,
       m1_ = m1Field.vectorAt(neighbor_idx);
       m2_ = m2Field.vectorAt(neighbor_idx);
     }
-
+    bool ms1 = (msat.valueAt(neighbor_idx) != 0);
+    bool ms2 = (msat2.valueAt(neighbor_idx) != 0);
     // Compute the effective field contribution of the DMI with the neighbor
-    h.x += (Dxy * m1_.y + Dxz * m1_.z - Dixy * m2_.y - Dixz * m2_.z) / delta;
-    h.y += (Dyx * m1_.x + Dyz * m1_.z - Diyx * m2_.x - Diyz * m2_.z) / delta;
-    h.z += (Dzx * m1_.x + Dzy * m1_.y - Dizx * m2_.x - Dizy * m2_.y) / delta;
+    h.x += (ms1 * (Dxy * m1_.y + Dxz * m1_.z) - ms2 * (Dixy * m2_.y - Dixz * m2_.z)) / delta;
+    h.y += (ms1 * (Dyx * m1_.x + Dyz * m1_.z) - ms2 * (Diyx * m2_.x - Diyz * m2_.z)) / delta;
+    h.z += (ms1 * (Dzx * m1_.x + Dzy * m1_.y) - ms2 * (Dizx * m2_.x - Dizy * m2_.y)) / delta;
 
   }  // end loop over neighbors
 
@@ -411,8 +413,9 @@ Field evalDmiField(const Ferromagnet* magnet) {
     auto mag2 = magnet->hostMagnet<Antiferromagnet>()->getOtherSublattice(magnet)->magnetization()->field().cu();
     auto afmex_nn = magnet->hostMagnet<Antiferromagnet>()->afmex_nn.cu();
     auto interDmiTensor = magnet->hostMagnet<Antiferromagnet>()->dmiTensor.cu();
+    auto msat2 = magnet->hostMagnet<Antiferromagnet>()->getOtherSublattice(magnet)->msat.cu();
     cudaLaunch(ncells, k_dmiFieldAFM, hField.cu(), mag, mag2,
-              dmiTensor, interDmiTensor, msat, grid, aex, afmex_nn, BC);
+              dmiTensor, interDmiTensor, msat, msat2, grid, aex, afmex_nn, BC);
   }
   else {
     // magnet is sublatice in NCAFM

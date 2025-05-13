@@ -93,6 +93,7 @@ class Ferromagnet : public Magnet {
   Parameter appliedPotential;
   Parameter conductivity;
   Parameter amrRatio;
+  Parameter frozenSpins;
   real RelaxTorqueThreshold;
   
   curandGenerator_t randomGenerator;
