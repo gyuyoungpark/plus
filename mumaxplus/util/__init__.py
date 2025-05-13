@@ -19,7 +19,6 @@ __all__ = [
     "wall_width", "helical_length", "magnetic_hardness",
     "bulk_modulus", "shear_modulus",
     "Rayleigh_damping_mass_coefficient", "Rayleigh_damping_stiffness_coefficient",
-    "Rayleigh_mass_coef_to_damping_const", "Rayleigh_stiffness_coef_to_viscosity"
     # show
     "show_field",
     "show_layer",

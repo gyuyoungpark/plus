@@ -260,7 +260,7 @@ class Magnet(ABC):
 
     @property
     def C11(self):
-        """Stiffness constant C11 = c22 = c33 of the stiffness tensor (N/m²).
+        """Stiffness constant C11 = C22 = C33 of the stiffness tensor (N/m²).
         
         See Also
         --------
@@ -274,7 +274,7 @@ class Magnet(ABC):
 
     @property
     def C12(self):
-        """Stiffness constant C12 = c13 = c23 of the stiffness tensor (N/m²).
+        """Stiffness constant C12 = C13 = C23 of the stiffness tensor (N/m²).
         
         See Also
         --------
@@ -288,7 +288,7 @@ class Magnet(ABC):
 
     @property
     def C44(self):
-        """Stiffness constant C44 = c55 = c66 of the stiffness tensor (N/m²).
+        """Stiffness constant C44 = C55 = C66 of the stiffness tensor (N/m²).
         
         See Also
         --------
@@ -310,32 +310,55 @@ class Magnet(ABC):
         self.eta.set(value)
 
     @property
-    def bulk_viscosity(self):
-        """Bulk viscosity (Pa s).
+    def eta11(self):
+        """Viscosity constant eta11 = eta22 = eta33 of the viscosity tensor (Pa s)
+        in Voigt notation, which connects strain rate to viscous stress
+        σ = η : dε/dt.
         
         See Also
         --------
-        eta, shear_viscosity, strain_rate, viscous_stress
+        eta12, eta44
+        strain_rate, viscous_stress
         """
-        return Parameter(self._impl.bulk_viscosity)
+        return Parameter(self._impl.eta11)
 
-    @bulk_viscosity.setter
-    def bulk_viscosity(self, value):
-        self.bulk_viscosity.set(value)
+    @eta11.setter
+    def eta11(self, value):
+        self.eta11.set(value)
 
     @property
-    def shear_viscosity(self):
-        """Shear viscosity (Pa s).
+    def eta12(self):
+        """Viscosity constant eta12 = eta13 = eta23 of the viscosity tensor (Pa s)
+        in Voigt notation, which connects strain rate to viscous stress
+        σ = η : dε/dt.
         
         See Also
         --------
-        bulk_viscosity, eta, strain_rate, viscous_stress
+        eta11, eta44
+        strain_rate, viscous_stress
         """
-        return Parameter(self._impl.shear_viscosity)
+        return Parameter(self._impl.eta12)
 
-    @shear_viscosity.setter
-    def shear_viscosity(self, value):
-        self.shear_viscosity.set(value)
+    @eta12.setter
+    def eta12(self, value):
+        self.eta12.set(value)
+
+    @property
+    def eta44(self):
+        """Viscosity constant eta44 = eta55 = eta66 of the viscosity tensor (Pa s)
+        in Voigt notation, which connects strain rate to viscous stress
+        σ = η : dε/dt.
+        
+        See Also
+        --------
+        eta11, eta12
+        strain_rate, visocus_stress
+        """
+        return Parameter(self._impl.eta44)
+
+    @eta44.setter
+    def eta44(self, value):
+        self.eta44.set(value)
 
     @property
     def rho(self):

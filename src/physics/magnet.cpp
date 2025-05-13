@@ -29,8 +29,9 @@ Magnet::Magnet(std::shared_ptr<System> system_ptr,
       C12(system(), 0.0, name + ":C12", "N/m2"),
       C44(system(), 0.0, name + ":C44", "N/m2"),
       eta(system(), 0.0, name + ":eta", "kg/m3s"),
-      bulkViscosity(system(), 0.0, name + ":bulk_viscosity", "Pa s"),
-      shearViscosity(system(), 0.0, name + ":shear_viscosity", "Pa s"),
+      eta11(system(), 0.0, name + ":eta11", "Pa s"),
+      eta12(system(), 0.0, name + ":eta12", "Pa s"),
+      eta44(system(), 0.0, name + ":eta44", "Pa s"),
       rho(system(), 1.0, name + ":rho", "kg/m3"),
       rigidNormStrain(system(), {0.0, 0.0, 0.0}, name + ":rigid_norm_strain", ""),
       rigidShearStrain(system(), {0.0, 0.0, 0.0}, name + ":rigid_shear_strain", "") {
@@ -55,8 +56,8 @@ Magnet::Magnet(Magnet&& other) noexcept
       
       externalBodyForce(other.externalBodyForce),
       C11(other.C11), C12(other.C12), C44(other.C44),
-      eta(other.eta), bulkViscosity(other.bulkViscosity),
-      shearViscosity(other.shearViscosity), rho(other.rho),
+      eta(other.eta), eta11(other.eta11), eta12(other.eta12), eta44(other.eta44),
+      rho(other.rho),
       rigidNormStrain(other.rigidNormStrain),
       rigidShearStrain(other.rigidShearStrain) {
   other.system_ = nullptr;
@@ -78,8 +79,9 @@ Magnet& Magnet::operator=(Magnet&& other) noexcept {
         C12 = other.C12;
         C44 = other.C44;
         eta = other.eta;
-        bulkViscosity = other.bulkViscosity;
-        shearViscosity = other.shearViscosity;
+        eta11 = other.eta11;
+        eta12 = other.eta12;
+        eta44 = other.eta44;
         rho = other.rho;
       }
       return *this;

@@ -15,7 +15,7 @@ Field evalStressTensor(const Magnet*);
 // calculated according to σ = c:ε. 
 M_FieldQuantity elasticStressQuantity(const Magnet*);
 // Viscous stress tensor quantity with 6 symmetric stress components  
-// calculated according to σ = η_b vol(dε/dt) + η_ν dev(dε/dt).
+// calculated according to σ = η : dε/dt.
 M_FieldQuantity viscousStressQuantity(const Magnet*);
 // Total stress tensor quantity with 6 symmetric stress components  
 // [σxx, σyy, σzz, σxy, σxz, σyz]

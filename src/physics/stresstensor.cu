@@ -68,34 +68,8 @@ M_FieldQuantity elasticStressQuantity(const Magnet* magnet) {
 
 bool viscousDampingAssuredZero(const Magnet* magnet) {
   return ((!magnet->enableElastodynamics()) ||
-          (magnet->bulkViscosity.assuredZero() && magnet->shearViscosity.assuredZero()));
-}
-
-__global__ void k_viscousStress(CuField stressTensor,
-                                const CuField strainRate,
-                                const CuParameter nuBulk,
-                                const CuParameter nuShear) {
-  const int idx = blockIdx.x * blockDim.x + threadIdx.x;
-  const CuSystem system = stressTensor.system;
-
-  // When outside the geometry, set to zero and return early
-  if (!system.inGeometry(idx)) {
-    if (system.grid.cellInGrid(idx)) {
-      for (int i = 0; i < stressTensor.ncomp; i++)
-        stressTensor.setValueInCell(idx, i, 0);
-    }
-    return;
-  }
-
-  real nuS = nuShear.valueAt(idx);
-  real nuDiff = nuBulk.valueAt(idx) - nuS;  // isotropic
-
-  real trace_3 = (strainRate.valueAt(idx, 0) + strainRate.valueAt(idx, 1) + strainRate.valueAt(idx, 2)) / 3;
-
-  for (int i=0; i<3; i++) {
-    stressTensor.setValueInCell(idx, i, nuDiff * trace_3 + nuS * strainRate.valueAt(idx, i));
-    stressTensor.setValueInCell(idx, i+3, nuS * strainRate.valueAt(idx, i+3));
-  }
+          (magnet->eta11.assuredZero() && magnet->eta12.assuredZero() &&
+           magnet->eta44.assuredZero()));
 }
 
 Field evalViscousStress(const Magnet* magnet) {
@@ -107,10 +81,12 @@ Field evalViscousStress(const Magnet* magnet) {
 
   int ncells = stressTensor.grid().ncells();
   Field strainRate = evalStrainRate(magnet);
-  CuParameter nuB = magnet->bulkViscosity.cu();
-  CuParameter nuS = magnet->shearViscosity.cu();
+  CuParameter eta11 = magnet->eta11.cu();
+  CuParameter eta12 = magnet->eta12.cu();
+  CuParameter eta44 = magnet->eta44.cu();
 
-  cudaLaunch(ncells, k_viscousStress, stressTensor.cu(), strainRate.cu(), nuB, nuS);
+  // same mathematics
+  cudaLaunch(ncells, k_elasticStress, stressTensor.cu(), strainRate.cu(), eta11, eta12, eta44);
   return stressTensor;
 }
 

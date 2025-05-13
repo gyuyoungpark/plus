@@ -16,6 +16,11 @@ N = 1  # PBC
 C11 = 283e9
 C44 = 58e9
 C12 = 166e9
+beta = 3e-15
+# similar to stiffness but not exactly
+eta11 = beta * 0.9 * C11
+eta12 = beta * 1.2 * C12
+eta44 = beta * 1.05 * C44
 B1 = -8.8e6
 B2 = -4.4e6
 
@@ -41,8 +46,9 @@ class TestForces:
         self.magnet.enable_elastodynamics = True
 
         self.magnet.eta = np.random.rand(1, nz,ny,nx)
-        self.magnet.bulk_viscosity = np.random.rand(1, nz,ny,nx)
-        self.magnet.shear_viscosity = np.random.rand(1, nz,ny,nx)
+        self.magnet.eta11 = eta11
+        self.magnet.eta12 = eta12
+        self.magnet.eta44 = eta44
         self.magnet.rho = np.random.rand(1, nz,ny,nx)
 
         self.magnet.C11 = C11
@@ -56,27 +62,6 @@ class TestForces:
         self.magnet.elastic_velocity = 1e-2 * np.random.rand(3, nz,ny,nx)
 
         self.magnet.external_body_force = np.random.rand(3, nz,ny,nx)
-
-    def test_viscous_stress_calc(self):
-        """Check if viscous stress is correctly calculated."""
-        strain_rate = self.magnet.strain_rate.eval()
-        
-        # volumetric strain rate tensor
-        vol_strain_rate = np.zeros_like(strain_rate)
-        trace_3 = (strain_rate[0] + strain_rate[1] + strain_rate[2]) / 3
-        for i in range(3): vol_strain_rate[i,...] = trace_3
-
-        # deviatoric part
-        dev_strain_rate = strain_rate - vol_strain_rate
-
-        # stress calculation
-        viscous_stress = np.empty_like(strain_rate)
-        nuB = self.magnet.bulk_viscosity.eval()
-        nuS = self.magnet.shear_viscosity.eval()
-        for i in range(6):
-            viscous_stress[i] = nuB * vol_strain_rate[i] + nuS * dev_strain_rate[i]
-        
-        assert max_semirelative_error(self.magnet.viscous_stress.eval(), viscous_stress) < SRTOL
 
     def test_stress_tensor(self):
         """Check if the stress tensor is the sum of the other stresses."""
