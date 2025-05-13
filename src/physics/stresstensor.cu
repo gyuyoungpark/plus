@@ -97,6 +97,10 @@ M_FieldQuantity viscousStressQuantity(const Magnet* magnet) {
 // --------------------------------------------------
 // Total Stress Tensor
 
+bool stressTensorAssuredZero(const Magnet* magnet) {
+  return elasticityAssuredZero(magnet) && viscousDampingAssuredZero(magnet);
+}
+
 Field evalStressTensor(const Magnet* magnet) {
   Field stressTensor = evalElasticStress(magnet);  // elastic stress or safely 0
   if (!viscousDampingAssuredZero(magnet)) stressTensor += evalViscousStress(magnet);

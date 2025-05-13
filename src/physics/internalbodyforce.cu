@@ -104,7 +104,7 @@ __global__ void k_internalBodyForce(CuField fField,
 Field evalInternalBodyForce(const Magnet* magnet) {
 
   Field fField(magnet->system(), 3);
-  if (elasticityAssuredZero(magnet)) {
+  if (stressTensorAssuredZero(magnet)) {
     fField.makeZero();
     return fField;
   }
