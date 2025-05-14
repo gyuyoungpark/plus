@@ -138,5 +138,5 @@ Field evalStrainRate(const Magnet* magnet) {
 }
 
 M_FieldQuantity strainRateQuantity(const Magnet* magnet) {
-  return M_FieldQuantity(magnet, evalStrainRate, 6, "strain_rate", "m/m/s");
+  return M_FieldQuantity(magnet, evalStrainRate, 6, "strain_rate", "1/s");
 }

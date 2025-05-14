@@ -461,7 +461,7 @@ class Magnet(ABC):
 
     @property
     def strain_rate(self):
-        """Time derivative of the strain tensor (m/m/s), calculated according to
+        """Time derivative of the strain tensor (1/s), calculated according to
         dε/dt = 1/2 (∇v + (∇v)^T), with v the elastic velocity.
 
         See Also
@@ -488,16 +488,12 @@ class Magnet(ABC):
     def viscous_stress(self):
         """Viscous stress tensor (N/m²) due to isotropic viscous damping,
         calculated according to
-
-        σ = η_b vol(dε/dt) + η_ν dev(dε/dt)
-
-        with vol(dε/dt) and dev(dε/dt) the volumetric and deviatoric parts of
-        the strain rate tensor, and with η_b and η_ν the bulk and shear
-        viscosity respectively.
+        σ = η : dε/dt
+        with η the viscosity tensor and dε/dt the strain rate tensor.
 
         See Also
         --------
-        bulk_viscosity, shear_viscosity
+        eta11, eta12, eta44
         strain_rate
         stress_tensor
         """

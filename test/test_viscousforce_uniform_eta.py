@@ -75,9 +75,6 @@ def set_and_check_sine_force(magnet, d_comp, v_comp, eta):
     force_num = magnet.internal_body_force.eval()
     force_anal = - k**2 * eta * magnet.elastic_velocity.eval()
 
-    print(force_anal)
-    print(force_num)
-
     assert max_semirelative_error(force_num, force_anal) < SRTOL
 
 
@@ -145,7 +142,7 @@ def test_dy_dy_vz():
 
 # ==================================================
 # Tests for mixed derivates
-# f_i += eta12 ∂j(∂i(u_j))
+# f_i += eta12 ∂j(∂i(v_j))
 # eta12 is constant TODO: vary eta12 as well (no eta44 so no double derivative!)
 
 def analytical_mixed_force(k_outer, k_inner, d_comp_outer, d_comp_inner, mgrid):
