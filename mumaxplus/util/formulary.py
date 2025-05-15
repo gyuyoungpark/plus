@@ -227,3 +227,35 @@ def Rayleigh_damping_coefficients(frequency_1, damping_ratio_1, frequency_2, dam
         / denom
 
     return (mass_coef, stiffness_coef)
+
+def Rayleigh_damping_stiffness_coefficient(frequency, damping_ratio):
+    """Rayleigh damping stiffness coefficient β, assuming a mass coefficient of
+    zero, calculated by providing a damping ratio ζ at a specified frequency f.
+
+    β = ζ/(πf)
+
+    This is useful to obtain a damping that increases linearly with frequency,
+    by only setting the viscosity tensor, but not the phenomenological elastic
+    damping constant.
+
+    Based on https://doc.comsol.com/6.3/doc/com.comsol.help.sme/sme_ug_modeling.05.126.html.
+    
+    Parameters
+    ----------
+    frequency : float
+        Frequency f (Hz) at which the damping_ratio is expected.
+    damping_ratio : float
+        Positive damping ratio ζ (dimensionless) expected at the frequency.
+
+    Returns
+    -------
+    float
+        Rayleigh damping stiffness coefficient β (s).
+
+    See Also
+    --------
+    Rayleigh_damping_coefficients
+    """
+    assert damping_ratio >= 0 and frequency >= 0
+
+    return damping_ratio / (_np.pi * frequency)
