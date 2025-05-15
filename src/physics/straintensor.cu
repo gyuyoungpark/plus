@@ -119,22 +119,22 @@ M_FieldQuantity strainTensorQuantity(const Magnet* magnet) {
 // Strain Rate
 
 Field evalStrainRate(const Magnet* magnet) {
-  Field srField(magnet->system(), 6);  // symmetric 3x3 tensor
+  Field strainRate(magnet->system(), 6);  // symmetric 3x3 tensor
   if (strainTensorAssuredZero(magnet)) {  // same condition
-    srField.makeZero();
-    return srField;
+    strainRate.makeZero();
+    return strainRate;
   }
 
-  int ncells = srField.grid().ncells();
+  int ncells = strainRate.grid().ncells();
   CuField v = magnet->elasticVelocity()->field().cu();
   real3 w = 1/ magnet->cellsize();
   Grid mastergrid = magnet->world()->mastergrid();
 
   // The math for strain rate is exactly the same as for strain tensor,
   // but applied to velocity instead of displacement.
-  cudaLaunch(ncells, k_strainTensor, srField.cu(), v, w, mastergrid);
+  cudaLaunch(ncells, k_strainTensor, strainRate.cu(), v, w, mastergrid);
 
-  return srField;
+  return strainRate;
 }
 
 M_FieldQuantity strainRateQuantity(const Magnet* magnet) {

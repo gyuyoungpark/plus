@@ -20,7 +20,7 @@ SRTOL_MIX = 1e-4
 cx, cy, cz = 1.5e-9, 2e-9, 2.5e-9
 cellsize = (cx, cy, cz)
 N1, N2 = 128, 256
-P1, P2 = 2, 3  # number of sinus periods
+P1, P2 = 2, 3  # number of sine periods
 A = 1e-15  # displacement amplitude
 C11 = 283e9
 C44 = 58e9
@@ -60,7 +60,6 @@ def set_and_check_sine_force(magnet, d_comp, u_comp, C):
     Then checks if the simulated force corresponds to the expected analytical force.
     You need to set C yourself.
     """
-    magnet.enable_elastodynamics = True  # just in case
 
     L = N1*cellsize[d_comp]
     k = P1 * 2*math.pi/L
@@ -79,7 +78,7 @@ def set_and_check_sine_force(magnet, d_comp, u_comp, C):
 
 
 # ==================================================
-# Tests for double derivate along the corresponding direction
+# Tests for double derivative along the corresponding direction
 # C11 is constant TODO: vary C11 as well
 
 def test_dx_dx_ux():
@@ -98,50 +97,50 @@ def test_dz_dz_uz():
     set_and_check_sine_force(magnet, d_comp=2, u_comp=2, C=C11)
 
 # ==================================================
-# Tests for double derivate along the different direction
+# Tests for double derivative along the different direction
 # C44 is constant TODO: vary C44 as well (careful of mixed derivatives!)
 
 def test_dy_dy_ux():
     magnet = make_long_magnet(d_comp=1)
     magnet.C44 = C44
-    magnet.C12 = -C44  # to remove mixed derivate
+    magnet.C12 = -C44  # to remove mixed derivative
     set_and_check_sine_force(magnet, d_comp=1, u_comp=0, C=C44)
 
 def test_dz_dz_ux():
     magnet = make_long_magnet(d_comp=2)
     magnet.C44 = C44
-    magnet.C12 = -C44  # to remove mixed derivate
+    magnet.C12 = -C44  # to remove mixed derivative
     set_and_check_sine_force(magnet, d_comp=2, u_comp=0, C=C44)
 
 
 def test_dx_dx_uy():
     magnet = make_long_magnet(d_comp=0)
     magnet.C44 = C44
-    magnet.C12 = -C44  # to remove mixed derivate
+    magnet.C12 = -C44  # to remove mixed derivative
     set_and_check_sine_force(magnet, d_comp=0, u_comp=1, C=C44)
 
 def test_dz_dz_uy():
     magnet = make_long_magnet(d_comp=2)
     magnet.C44 = C44
-    magnet.C12 = -C44  # to remove mixed derivate
+    magnet.C12 = -C44  # to remove mixed derivative
     set_and_check_sine_force(magnet, d_comp=2, u_comp=1, C=C44)
 
 
 def test_dx_dx_uz():
     magnet = make_long_magnet(d_comp=0)
     magnet.C44 = C44
-    magnet.C12 = -C44  # to remove mixed derivate
+    magnet.C12 = -C44  # to remove mixed derivative
     set_and_check_sine_force(magnet, d_comp=0, u_comp=2, C=C44)
 
 def test_dy_dy_uz():
     magnet = make_long_magnet(d_comp=1)
     magnet.C44 = C44
-    magnet.C12 = -C44  # to remove mixed derivate
+    magnet.C12 = -C44  # to remove mixed derivative
     set_and_check_sine_force(magnet, d_comp=1, u_comp=2, C=C44)
 
 
 # ==================================================
-# Tests for mixed derivates
+# Tests for mixed derivatives
 # f_i += C12 ∂j(∂i(u_j))
 # C12 is constant TODO: vary C12 as well (no C44 so no double derivative!)
 
@@ -171,7 +170,7 @@ def check_mixed_derivative(d_comp_outer, d_comp_inner):
     world = World(cellsize, mastergrid=Grid(gridsize), pbc_repetitions=pbc_repetitions)
 
     # make magnet
-    gridsize = [1, 1, 1]  # other index will stay n1
+    gridsize = [1, 1, 1]
     gridsize[d_comp_outer], gridsize[d_comp_inner] = N1, N2
     magnet =  Ferromagnet(world, Grid(gridsize))
     magnet.enable_elastodynamics = True

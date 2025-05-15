@@ -179,74 +179,51 @@ def bulk_modulus(C11, C44):
     return C11 - 4/3 * C44
 
 
-def Rayleigh_damping_mass_coefficient(frequency_1, damping_ratio_1, frequency_2, damping_ratio_2):
-    """Rayleigh damping mass coefficient calculated by providing damping ratios
-    at specified frequencies.
+def Rayleigh_damping_coefficients(frequency_1, damping_ratio_1, frequency_2, damping_ratio_2):
+    """Rayleigh damping mass coefficient α and stiffness coefficient β
+    calculated by providing damping ratios ζ₁,₂ at specified frequencies f₁,₂.
 
-    4π f₁ f₂ * (ζ₁f₂ - ζ₂f₁) / (f₂² - f₁²)
-    with f₁/f₂ < ζ₂/ζ₁ < f₂/f₁
+    α = 4π f₁ f₂ * (ζ₁f₂ - ζ₂f₁) / (f₂² - f₁²)
+    β = 1/π * (ζ₂f₂ - ζ₁f₁) / (f₂² - f₁²)
+    with f₁/f₂ <= ζ₂/ζ₁ <= f₂/f₁
 
-    Based on https://www.comsol.com/blogs/how-to-model-different-types-of-damping-in-comsol-multiphysics.
+    Based on https://www.comsol.com/blogs/how-to-model-different-types-of-damping-in-comsol-multiphysics
+    and https://doc.comsol.com/6.3/doc/com.comsol.help.sme/sme_ug_modeling.05.126.html.
     
     Parameters
     ----------
     frequency_1 : float
-        Low frequency at which damping_ratio_1 is expected.
+        Low frequency f₁ (Hz) at which damping_ratio_1 is expected.
         This should be smaller than frequency_2.
     damping_ratio_1 : float
-        Positive damping ratio expected at frequency_1.
+        Positive damping ratio ζ₁ (dimensionless) expected at frequency_1.
     frequency_2 : float
-        High frequency at which damping_ratio_2 is expected.
+        High frequency f₂ (Hz) at which damping_ratio_2 is expected.
         This should be larger than frequency_1.
     damping_ratio_2 : float
-        Positive damping ratio expected at frequency_2.
+        Positive damping ratio ζ₂ (dimensionless) expected at frequency_2.
 
     Returns
     -------
-    float
-        Rayleigh damping mass coefficient (1/s).
+    tuple[float] of size 2
+        Rayleigh damping mass coefficient α (1/s) and stiffness coefficient β (s).
+
+    See Also
+    --------
+    Rayleigh_damping_stiffness_coefficient
     """
     assert damping_ratio_1 >= 0 and damping_ratio_2 >= 0
     assert frequency_1 >= 0 and frequency_2 >= 0 and frequency_2 > frequency_1
-    assert frequency_1 / frequency_2 < damping_ratio_2 / damping_ratio_1 and \
-           damping_ratio_2 / damping_ratio_1 < frequency_2 / frequency_1
+    assert frequency_1 / frequency_2 <= damping_ratio_2 / damping_ratio_1 and \
+           damping_ratio_2 / damping_ratio_1 <= frequency_2 / frequency_1
 
-    return 4 * _np.pi * frequency_1 * frequency_2 \
+    denom = (frequency_2*frequency_2 - frequency_1*frequency_1)
+
+    mass_coef =  4 * _np.pi * frequency_1 * frequency_2 \
         * (damping_ratio_1 * frequency_2 - damping_ratio_2 * frequency_1) \
-        / (frequency_2*frequency_2 - frequency_1*frequency_1)
-
-def Rayleigh_damping_stiffness_coefficient(frequency_1, damping_ratio_1, frequency_2, damping_ratio_2):
-    """Rayleigh damping stiffness coefficient calculated by providing damping
-    ratios at specified frequencies.
-
-    1/π * (ζ₂f₂ - ζ₁f₁) / (f₂² - f₁²)
-    with f₁/f₂ < ζ₂/ζ₁ < f₂/f₁
-
-    Based on https://www.comsol.com/blogs/how-to-model-different-types-of-damping-in-comsol-multiphysics.
-
-    Parameters
-    ----------
-    frequency_1 : float
-        Low frequency at which damping_ratio_1 is expected.
-        This should be smaller than frequency_2.
-    damping_ratio_1 : float
-        Positive damping ratio expected at frequency_1.
-    frequency_2 : float
-        High frequency at which damping_ratio_2 is expected.
-        This should be larger than frequency_1.
-    damping_ratio_2 : float
-        Positive damping ratio expected at frequency_2.
-
-    Returns
-    -------
-    float
-        Rayleigh damping stiffness coefficient (s).
-    """
-    assert damping_ratio_1 >= 0 and damping_ratio_2 >= 0
-    assert frequency_1 >= 0 and frequency_2 >= 0 and frequency_2 > frequency_1
-    assert frequency_1 / frequency_2 < damping_ratio_2 / damping_ratio_1 and \
-           damping_ratio_2 / damping_ratio_1 < frequency_2 / frequency_1
-
-    return 1 / _np.pi \
+        / denom
+    stiffness_coef = 1 / _np.pi \
         * (damping_ratio_2 * frequency_2 - damping_ratio_1 * frequency_1) \
-        / (frequency_2*frequency_2 - frequency_1*frequency_1)
+        / denom
+
+    return (mass_coef, stiffness_coef)

@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from mumaxplus import World, Grid, Ferromagnet
 from mumaxplus.util.config import gaussian_spherical_IP
-from mumaxplus.util.formulary import Rayleigh_damping_mass_coefficient, Rayleigh_damping_stiffness_coefficient
+from mumaxplus.util.formulary import Rayleigh_damping_coefficients
 
 J_to_eV = 6.24150907e18
 
@@ -68,19 +68,17 @@ magnet.C11, magnet.C44, magnet.C12 = C11, C44, C12
 
 # lowest relevant frequency has a wavelength similar to the length of the system
 lowest_freq = np.sqrt(min(C11, C44) / rho) / (2 * max(length, width))
-# highest relevant frequency has a wavelenght of a few cells
+# highest relevant frequency has a wavelength of a few cells
 highest_freq = np.sqrt(max(C11, C44) / rho) / (4 * min(cx, cy))
 damping_ratio = 0.01  # 1%
 
+mass_coef, stiffness_coef = Rayleigh_damping_coefficients(lowest_freq, damping_ratio,
+                                                          highest_freq, damping_ratio)
 # mass damping with phenomenological damping
-mass_coef = Rayleigh_damping_mass_coefficient(lowest_freq, damping_ratio,
-                                              highest_freq, damping_ratio)
 eta = mass_coef * rho
 magnet.eta = eta
 
 # stiffness damping with viscosity
-stiffness_coef = Rayleigh_damping_stiffness_coefficient(lowest_freq, damping_ratio,
-                                                        highest_freq, damping_ratio)
 eta11, eta44, eta12 = stiffness_coef * C11, stiffness_coef * C44, stiffness_coef * C12
 magnet.eta11, magnet.eta44, magnet.eta12 = eta11, eta44, eta12
 # --------------------

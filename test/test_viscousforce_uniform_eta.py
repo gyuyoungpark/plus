@@ -20,7 +20,7 @@ SRTOL_MIX = 1e-4
 cx, cy, cz = 1.5e-9, 2e-9, 2.5e-9
 cellsize = (cx, cy, cz)
 N1, N2 = 128, 256
-P1, P2 = 2, 3  # number of sinus periods
+P1, P2 = 2, 3  # number of sine periods
 A = 1e-8  # velocity amplitude
 eta11 = 283e-5
 eta44 = 58e-5
@@ -60,7 +60,6 @@ def set_and_check_sine_force(magnet, d_comp, v_comp, eta):
     Then checks if the simulated force corresponds to the expected analytical force.
     You need to set eta yourself.
     """
-    magnet.enable_elastodynamics = True  # just in case
 
     L = N1*cellsize[d_comp]
     k = P1 * 2*math.pi/L
@@ -79,7 +78,7 @@ def set_and_check_sine_force(magnet, d_comp, v_comp, eta):
 
 
 # ==================================================
-# Tests for double derivate along the corresponding direction
+# Tests for double derivative along the corresponding direction
 # eta11 is constant TODO: vary eta11 as well
 
 def test_dx_dx_vx():
@@ -98,50 +97,50 @@ def test_dz_dz_vz():
     set_and_check_sine_force(magnet, d_comp=2, v_comp=2, eta=eta11)
 
 # ==================================================
-# Tests for double derivate along the different direction
+# Tests for double derivative along the different direction
 # eta44 is constant TODO: vary eta44 as well (careful of mixed derivatives!)
 
 def test_dy_dy_vx():
     magnet = make_long_magnet(d_comp=1)
     magnet.eta44 = eta44
-    magnet.eta12 = -eta44  # to remove mixed derivate
+    magnet.eta12 = -eta44  # to remove mixed derivative
     set_and_check_sine_force(magnet, d_comp=1, v_comp=0, eta=eta44)
 
 def test_dz_dz_vx():
     magnet = make_long_magnet(d_comp=2)
     magnet.eta44 = eta44
-    magnet.eta12 = -eta44  # to remove mixed derivate
+    magnet.eta12 = -eta44  # to remove mixed derivative
     set_and_check_sine_force(magnet, d_comp=2, v_comp=0, eta=eta44)
 
 
 def test_dx_dx_vy():
     magnet = make_long_magnet(d_comp=0)
     magnet.eta44 = eta44
-    magnet.eta12 = -eta44  # to remove mixed derivate
+    magnet.eta12 = -eta44  # to remove mixed derivative
     set_and_check_sine_force(magnet, d_comp=0, v_comp=1, eta=eta44)
 
 def test_dz_dz_vy():
     magnet = make_long_magnet(d_comp=2)
     magnet.eta44 = eta44
-    magnet.eta12 = -eta44  # to remove mixed derivate
+    magnet.eta12 = -eta44  # to remove mixed derivative
     set_and_check_sine_force(magnet, d_comp=2, v_comp=1, eta=eta44)
 
 
 def test_dx_dx_vz():
     magnet = make_long_magnet(d_comp=0)
     magnet.eta44 = eta44
-    magnet.eta12 = -eta44  # to remove mixed derivate
+    magnet.eta12 = -eta44  # to remove mixed derivative
     set_and_check_sine_force(magnet, d_comp=0, v_comp=2, eta=eta44)
 
 def test_dy_dy_vz():
     magnet = make_long_magnet(d_comp=1)
     magnet.eta44 = eta44
-    magnet.eta12 = -eta44  # to remove mixed derivate
+    magnet.eta12 = -eta44  # to remove mixed derivative
     set_and_check_sine_force(magnet, d_comp=1, v_comp=2, eta=eta44)
 
 
 # ==================================================
-# Tests for mixed derivates
+# Tests for mixed derivatives
 # f_i += eta12 ∂j(∂i(v_j))
 # eta12 is constant TODO: vary eta12 as well (no eta44 so no double derivative!)
 
@@ -171,7 +170,7 @@ def check_mixed_derivative(d_comp_outer, d_comp_inner):
     world = World(cellsize, mastergrid=Grid(gridsize), pbc_repetitions=pbc_repetitions)
 
     # make magnet
-    gridsize = [1, 1, 1]  # other index will stay n1
+    gridsize = [1, 1, 1]
     gridsize[d_comp_outer], gridsize[d_comp_inner] = N1, N2
     magnet =  Ferromagnet(world, Grid(gridsize))
     magnet.enable_elastodynamics = True
