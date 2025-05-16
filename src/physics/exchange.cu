@@ -97,8 +97,7 @@ __global__ void k_exchangeField(CuField hField,
         a_ = a;
       }
 
-      Aex = (inter != 0) ? inter : harmonicMean(a, a_);
-      Aex *= scale;
+      Aex = getExchangeStiffness(inter, scale, a, a_);
       h += 2 * Aex * dot(normal, w) * (m_ - m);
     }
   }
@@ -159,6 +158,8 @@ __global__ void k_exchangeField(CuField hField,
     real inter = 0;
     real scale = 1;
     real Aex;
+    unsigned int ridx = system.getRegionIdx(idx);
+    unsigned int ridx_ = system.getRegionIdx(idx_);
 
     if(hField.cellInGeometry(coo_)) {
       if (msat.valueAt(idx_) == 0)
@@ -166,9 +167,6 @@ __global__ void k_exchangeField(CuField hField,
 
       m_ = m1Field.vectorAt(idx_);
       a_ = aex.valueAt(idx_);
-
-      unsigned int ridx = system.getRegionIdx(idx);
-      unsigned int ridx_ = system.getRegionIdx(idx_);
 
       if (ridx != ridx_) {
         scale = scaleEx.valueBetween(ridx, ridx_);
@@ -185,20 +183,24 @@ __global__ void k_exchangeField(CuField hField,
       real delta = dot(rel_coo, system.cellsize);
 
       real3 d_m2{0, 0, 0};
-      int3 other_neighbor_coo = mastergrid.wrap(coo - rel_coo);
-      if(hField.cellInGeometry(other_neighbor_coo)) {
+      int3 coo__ = mastergrid.wrap(coo - rel_coo);
+      int idx__ = grid.coord2index(coo__);
+      unsigned int ridx__ = system.getRegionIdx(idx__);
+      if(hField.cellInGeometry(coo__)) {
         // Approximate normal derivative of sister sublattice by taking
         // the bulk derivative closest to the edge.
-        real3 m2__ = m2Field.vectorAt(other_neighbor_coo);
+        real3 m2__ = m2Field.vectorAt(coo__);
         d_m2 = (m2 - m2__) / delta;
       }
-
-      m_ = m + (an * cross(cross(d_m2, m), m) + Gamma1) * delta / (2*a);
+      real Aex_nn = getExchangeStiffness(interEx.valueBetween(ridx, ridx__),
+                                         scaleEx.valueBetween(ridx, ridx__),
+                                         an,
+                                         afmex_nn.valueAt(idx__));
+      m_ = m + (Aex_nn * cross(cross(d_m2, m), m) + Gamma1) * delta / (2*a);
       a_ = a;
     }
 
-    Aex = (inter != 0) ? inter : harmonicMean(a, a_);
-    Aex *= scale;
+    Aex = getExchangeStiffness(inter, scale, a, a_);
     h += 2 * Aex * dot(normal, w) * (m_ - m);
   }
   hField.setVectorInCell(idx, h / msat.valueAt(idx));
@@ -259,6 +261,8 @@ __global__ void k_exchangeField(CuField hField,
     real inter = 0;
     real scale = 1;
     real Aex;
+    unsigned int ridx = system.getRegionIdx(idx);
+    unsigned int ridx_ = system.getRegionIdx(idx_);
 
     if(hField.cellInGeometry(coo_)) {
       if (msat.valueAt(idx_) == 0)
@@ -266,9 +270,6 @@ __global__ void k_exchangeField(CuField hField,
 
       m_ = m1Field.vectorAt(idx_);
       a_ = aex.valueAt(idx_);
-
-      unsigned int ridx = system.getRegionIdx(idx);
-      unsigned int ridx_ = system.getRegionIdx(idx_);
 
       if (ridx != ridx_) {
         scale = scaleEx.valueBetween(ridx, ridx_);
@@ -287,22 +288,26 @@ __global__ void k_exchangeField(CuField hField,
 
       real3 d_m2{0, 0, 0};
       real3 d_m3{0, 0, 0};
-      int3 other_neighbor_coo = mastergrid.wrap(coo - rel_coo);
-      if(hField.cellInGeometry(other_neighbor_coo)) {
+      int3 coo__ = mastergrid.wrap(coo - rel_coo);
+      int idx__ = grid.coord2index(coo__);
+      unsigned int ridx__ = system.getRegionIdx(idx__);
+      if(hField.cellInGeometry(coo__)) {
         // Approximate normal derivative of sister sublattice by taking
         // the bulk derivative closest to the edge.
-        real3 m2__ = m2Field.vectorAt(other_neighbor_coo);
-        real3 m3__ = m3Field.vectorAt(other_neighbor_coo);
+        real3 m2__ = m2Field.vectorAt(coo__);
+        real3 m3__ = m3Field.vectorAt(coo__);
         d_m2 = (m2 - m2__) / delta;
         d_m3 = (m3 - m3__) / delta;
       }
-
-      m_ = m + (an * (cross(cross(d_m2, m), m) + cross(cross(d_m3, m), m)) + Gamma1) * delta / (2*a);
+      real Aex_nn = getExchangeStiffness(interEx.valueBetween(ridx, ridx__),
+                                         scaleEx.valueBetween(ridx, ridx__),
+                                         an,
+                                         ncafmex_nn.valueAt(ridx__));
+      m_ = m + (Aex_nn * (cross(cross(d_m2, m), m) + cross(cross(d_m3, m), m)) + Gamma1) * delta / (2*a);
       a_ = a;
     }
 
-    Aex = (inter != 0) ? inter : harmonicMean(a, a_);
-    Aex *= scale;
+    Aex = getExchangeStiffness(inter, scale, a, a_);
     h += 2 * Aex * dot(normal, w) * (m_ - m);
   }
   hField.setVectorInCell(idx, h / msat.valueAt(idx));

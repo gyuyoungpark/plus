@@ -122,6 +122,8 @@ __global__ void k_dmiFieldAFM(CuField hField,
                            Grid mastergrid,
                            const CuParameter aex,
                            const CuParameter afmex_nn,
+                           const CuInterParameter interExch,
+                           const CuInterParameter scaleExch,
                            bool openBC) {
   const int idx = blockIdx.x * blockDim.x + threadIdx.x;
   const auto system = hField.system;
@@ -212,16 +214,23 @@ __global__ void k_dmiFieldAFM(CuField hField,
       real an = afmex_nn.valueAt(idx);
 
       real3 d_m2{0, 0, 0};
-      int3 other_neighbor_coo = mastergrid.wrap(coo - relative_coo);
-      if(hField.cellInGeometry(other_neighbor_coo)) {
+      int3 coo__ = mastergrid.wrap(coo - relative_coo);
+      int idx__ = system.grid.coord2index(coo__);
+
+      unsigned int ridx = system.getRegionIdx(idx);
+      unsigned int ridx__ = system.getRegionIdx(idx__);
+      if(hField.cellInGeometry(coo__)) {
         // Approximate normal derivative of sister sublattice by taking
         // the bulk derivative closest to the edge.
-        real3 m2__ = m2Field.vectorAt(other_neighbor_coo);
+        real3 m2__ = m2Field.vectorAt(coo__);
         d_m2 = (m2 - m2__) / delta;
       }
-
-      m1_ = m1 + (an * cross(cross(d_m2, m1), m1) + Gamma1) * delta / (2*a);
-      m2_ = m2 + (an * cross(cross((m1_ - m1)/delta, m2), m2) + Gamma2) * delta / (2*a);
+      real Aex_nn = getExchangeStiffness(interExch.valueBetween(ridx, ridx__),
+                                         scaleExch.valueBetween(ridx, ridx__),
+                                         an,
+                                         afmex_nn.valueAt(idx__));
+      m1_ = m1 + (Aex_nn * cross(cross(d_m2, m1), m1) + Gamma1) * delta / (2*a);
+      m2_ = m2 + (Aex_nn * cross(cross((m1_ - m1)/delta, m2), m2) + Gamma2) * delta / (2*a);
     }
     else {
       m1_ = m1Field.vectorAt(neighbor_idx);
@@ -252,6 +261,8 @@ __global__ void k_dmiFieldNCAFM(CuField hField,
                                 Grid mastergrid,
                                 const CuParameter aex,
                                 const CuParameter ncafmex_nn,
+                                const CuInterParameter interExch,
+                                const CuInterParameter scaleExch,
                                 bool openBC) {
   const int idx = blockIdx.x * blockDim.x + threadIdx.x;
   const auto system = hField.system;
@@ -348,19 +359,26 @@ __global__ void k_dmiFieldNCAFM(CuField hField,
       real an = ncafmex_nn.valueAt(idx);
       real3 d_m2{0, 0, 0};
       real3 d_m3{0, 0, 0};
-      int3 other_neighbor_coo = mastergrid.wrap(coo - relative_coo);
-      if(hField.cellInGeometry(other_neighbor_coo)) {
+      int3 coo__ = mastergrid.wrap(coo - relative_coo);
+      int idx__ = system.grid.coord2index(coo__);
+
+      unsigned int ridx = system.getRegionIdx(idx);
+      unsigned int ridx__ = system.getRegionIdx(idx__);
+      if(hField.cellInGeometry(coo__)) {
         // Approximate normal derivative of sister sublattices by taking
         // the bulk derivative closest to the edge.
-        real3 m2__ = m2Field.vectorAt(other_neighbor_coo);
-        real3 m3__ = m3Field.vectorAt(other_neighbor_coo);
+        real3 m2__ = m2Field.vectorAt(coo__);
+        real3 m3__ = m3Field.vectorAt(coo__);
         d_m2 = (m2 - m2__) / delta;
         d_m3 = (m3 - m3__) / delta;
       }
-
-      m1_ = m1 + (an * (cross(cross(d_m2, m1), m1) + cross(cross(d_m3, m1), m1)) + Gamma1) * delta / (2*a);
-      m2_ = m2 + (an * (cross(cross((m1_ - m1)/delta, m2), m2) + cross(cross(d_m3, m2), m2)) + Gamma2) * delta / (2*a);
-      m3_ = m3 + (an * (cross(cross((m1_ - m1)/delta, m3), m3) + cross(cross(d_m2, m3), m3)) + Gamma3) * delta / (2*a);
+      real Aex_nn = getExchangeStiffness(interExch.valueBetween(ridx, ridx__),
+                                         scaleExch.valueBetween(ridx, ridx__),
+                                         an,
+                                         ncafmex_nn.valueAt(idx__));
+      m1_ = m1 + (Aex_nn * (cross(cross(d_m2, m1), m1) + cross(cross(d_m3, m1), m1)) + Gamma1) * delta / (2*a);
+      m2_ = m2 + (Aex_nn * (cross(cross((m1_ - m1)/delta, m2), m2) + cross(cross(d_m3, m2), m2)) + Gamma2) * delta / (2*a);
+      m3_ = m3 + (Aex_nn * (cross(cross((m1_ - m1)/delta, m3), m3) + cross(cross(d_m2, m3), m3)) + Gamma3) * delta / (2*a);
     }
     else {
       m1_ = m1Field.vectorAt(neighbor_idx);
@@ -414,8 +432,10 @@ Field evalDmiField(const Ferromagnet* magnet) {
     auto afmex_nn = magnet->hostMagnet<Antiferromagnet>()->afmex_nn.cu();
     auto interDmiTensor = magnet->hostMagnet<Antiferromagnet>()->dmiTensor.cu();
     auto msat2 = magnet->hostMagnet<Antiferromagnet>()->getOtherSublattice(magnet)->msat.cu();
+    auto inter = magnet->hostMagnet<Antiferromagnet>()->interAfmExchNN.cu();
+    auto scale = magnet->hostMagnet<Antiferromagnet>()->scaleAfmExchNN.cu();
     cudaLaunch(ncells, k_dmiFieldAFM, hField.cu(), mag, mag2,
-              dmiTensor, interDmiTensor, msat, msat2, grid, aex, afmex_nn, BC);
+              dmiTensor, interDmiTensor, msat, msat2, grid, aex, afmex_nn, inter, scale, BC);
   }
   else {
     // magnet is sublatice in NCAFM
@@ -427,8 +447,10 @@ Field evalDmiField(const Ferromagnet* magnet) {
     auto msat3 = m3->msat.cu();
     auto ncafmex_nn = magnet->hostMagnet<NCAFM>()->ncafmex_nn.cu();
     auto interDmiTensor = magnet->hostMagnet<NCAFM>()->dmiTensor.cu();
+    auto inter = magnet->hostMagnet<NCAFM>()->interNCAfmExchNN.cu();
+    auto scale = magnet->hostMagnet<NCAFM>()->scaleNCAfmExchNN.cu();
     cudaLaunch(ncells, k_dmiFieldNCAFM, hField.cu(), mag, mag2, mag3, dmiTensor,
-               interDmiTensor, msat, msat2, msat3, grid, aex, ncafmex_nn, BC);
+               interDmiTensor, msat, msat2, msat3, grid, aex, ncafmex_nn, inter, scale, BC);
   }
   return hField;
 }
