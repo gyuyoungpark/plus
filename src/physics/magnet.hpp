@@ -82,6 +82,7 @@ class Magnet {
   Parameter C44;  // C44 = C55 = C66
 
   Parameter eta;  // Phenomenological elastic damping constant
+  Parameter stiffnessDamping;  // eta_ij = coeff * Cij
   Parameter eta11;  // viscosity tensor
   Parameter eta12;
   Parameter eta44;

@@ -6,6 +6,8 @@ class Magnet;
 class Field;
 
 bool viscousDampingAssuredZero(const Magnet*);
+bool viscousDampingTensorAssuredZero(const Magnet*);
+bool viscousDampingRayleighAssuredZero(const Magnet*);
 bool stressTensorAssuredZero(const Magnet*);
 
 Field evalElasticStress(const Magnet*);

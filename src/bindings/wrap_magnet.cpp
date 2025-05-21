@@ -38,6 +38,7 @@ void wrap_magnet(py::module& m) {
       .def_readonly("C12", &Magnet::C12)
       .def_readonly("C44", &Magnet::C44)
       .def_readonly("eta", &Magnet::eta)
+      .def_readonly("stiffness_damping", &Magnet::stiffnessDamping)
       .def_readonly("eta11", &Magnet::eta11)
       .def_readonly("eta12", &Magnet::eta12)
       .def_readonly("eta44", &Magnet::eta44)

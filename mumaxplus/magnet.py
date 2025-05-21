@@ -312,14 +312,47 @@ class Magnet(ABC):
         self.eta.set(value)
 
     @property
+    def stiffness_damping(self):
+        """Rayleigh damping stiffness coefficient β (s).
+
+        Default = 5e-14 / pi s.
+
+        This corresponds to a damping ratio of 5% at a frequency of 1 THz.
+        This is meant to stabilize the high frequency modes, with a typical
+        wavelength of only a few cellsizes in length.
+
+        The viscosity tensor η is assumed to be proportional to the stiffness
+        tensor C, with this coefficient β as the proportionality constant.
+
+        η = β * C
+
+        This parameter is completely IGNORED when any component of the viscosity
+        tensor (eta11, et12 or eta44) is set non-zero somewhere.
+
+        See Also
+        --------
+        eta11, eta12, eta44
+        C11, C12, C44
+        strain_rate, viscous_stress
+        """
+        return Parameter(self._impl.stiffness_damping)
+
+    @stiffness_damping.setter
+    def stiffness_damping(self, value):
+        self.stiffness_damping.set(value)
+
+    @property
     def eta11(self):
         """Viscosity constant eta11 = eta22 = eta33 of the viscosity tensor (Pa s)
         in Voigt notation, which connects strain rate to viscous stress
         σ = η : dε/dt.
+
+        When non-zero somewhere, this parameter overrules the stiffness_damping.
         
         See Also
         --------
         eta12, eta44
+        stiffness_damping
         strain_rate, viscous_stress
         """
         return Parameter(self._impl.eta11)
@@ -333,10 +366,13 @@ class Magnet(ABC):
         """Viscosity constant eta12 = eta13 = eta23 of the viscosity tensor (Pa s)
         in Voigt notation, which connects strain rate to viscous stress
         σ = η : dε/dt.
+
+        When non-zero somewhere, this parameter overrules the stiffness_damping.
         
         See Also
         --------
         eta11, eta44
+        stiffness_damping
         strain_rate, viscous_stress
         """
         return Parameter(self._impl.eta12)
@@ -352,10 +388,13 @@ class Magnet(ABC):
         σ = η : dε/dt.
 
         For isotropic materials, this is equal to the shear viscosity.
+
+        When non-zero somewhere, this parameter overrules the stiffness_damping.
         
         See Also
         --------
         eta11, eta12
+        stiffness_damping
         strain_rate, visocus_stress
         """
         return Parameter(self._impl.eta44)
@@ -494,6 +533,7 @@ class Magnet(ABC):
         See Also
         --------
         eta11, eta12, eta44
+        stiffness_damping
         strain_rate
         stress_tensor
         """
