@@ -1,8 +1,4 @@
-import pytest
 import numpy as np
-import math
-
-import matplotlib.pyplot as plt
 
 from mumaxplus import Grid, World, Ferromagnet
 
@@ -16,11 +12,6 @@ N = 1  # PBC
 C11 = 283e9
 C44 = 58e9
 C12 = 166e9
-beta = 3e-15
-# similar to stiffness but not exactly
-eta11 = beta * 0.9 * C11
-eta12 = beta * 1.2 * C12
-eta44 = beta * 1.05 * C44
 B1 = -8.8e6
 B2 = -4.4e6
 
@@ -46,9 +37,6 @@ class TestForces:
         self.magnet.enable_elastodynamics = True
 
         self.magnet.eta = np.random.rand(1, nz,ny,nx)
-        self.magnet.eta11 = eta11
-        self.magnet.eta12 = eta12
-        self.magnet.eta44 = eta44
         self.magnet.rho = np.random.rand(1, nz,ny,nx)
 
         self.magnet.C11 = C11
@@ -84,3 +72,7 @@ class TestForces:
         forces = self.magnet.effective_body_force.eval()
         rho = self.magnet.rho.eval()
         assert max_semirelative_error(rho*self.magnet.elastic_acceleration.eval(), (forces + damping)) < SRTOL
+
+    def test_default_damping(self):
+        """Check that there is viscous damping, even if viscosity tensor has not been set."""
+        assert np.any(self.magnet.elastic_damping.eval() != 0)
