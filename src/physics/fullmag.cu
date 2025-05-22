@@ -18,12 +18,14 @@ Field evalAFMFullMag(const Antiferromagnet* magnet) {
 }
 
 Field evalNCAFMFullMag(const NCAFM* magnet) {
-  return add(magnet->sub1()->msat.eval(),
+  auto result = add(magnet->sub1()->msat.eval(),
              magnet->sub1()->magnetization()->field(),
              magnet->sub2()->msat.eval(),
-             magnet->sub2()->magnetization()->field(),
-             magnet->sub3()->msat.eval(),
-             magnet->sub3()->magnetization()->field());
+             magnet->sub2()->magnetization()->field());
+  addTo(result,
+        magnet->sub3()->msat.eval(),
+        magnet->sub3()->magnetization()->field());
+  return result;
 }
 
 FM_FieldQuantity fullMagnetizationQuantity(const Ferromagnet* magnet) {

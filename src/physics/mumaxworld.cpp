@@ -110,7 +110,7 @@ NCAFM* MumaxWorld::addNCAFM(Grid grid,
   // Create name if not given.
   static int idxUnnamed = 1;
   if (name.length() == 0) {
-  name = "NCAFM" + std::to_string(idxUnnamed++);
+    name = "NCAFM_" + std::to_string(idxUnnamed++);
   }
 
   // Check if non-collinear antiferromagnet can be added to this world.

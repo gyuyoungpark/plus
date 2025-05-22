@@ -9,7 +9,7 @@
  *
  * with:
  *   -  i,j,k summation indices over x, y, and z.
- *   -  DMI tensor D_ijk, which is assymetric on j and k (D_ijk = - D_ikj)
+ *   -  DMI tensor D_ijk, which is antisymmetric on j and k (D_ijk = - D_ikj)
  *   -  spatial derivative d_i(..) along direction i
  *
  * Neumann boundary conditions are assumed, unless specified otherwise (i.e. open

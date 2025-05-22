@@ -82,7 +82,7 @@ __global__ void k_dmiFieldFM(CuField hField,
       Dyz = dmiTensor.zyz.harmonicMean(idx, neighbor_idx);
     }
 
-    Dzx = -Dxz;  // dmi tensor is assymetric
+    Dzx = -Dxz;  // dmi tensor is antisymmetric
     Dyx = -Dxy;
     Dzy = -Dyz;
 
@@ -193,7 +193,7 @@ __global__ void k_dmiFieldAFM(CuField hField,
       Diyz = interDmiTensor.zyz.harmonicMean(idx, neighbor_idx);
     }
 
-    Dzx = -Dxz;  // dmi tensor is assymetric
+    Dzx = -Dxz;  // dmi tensor is antisymmetric
     Dyx = -Dxy;
     Dzy = -Dyz;
     Dizx = -Dixz;
@@ -336,7 +336,7 @@ __global__ void k_dmiFieldNCAFM(CuField hField,
       Diyz = interDmiTensor.zyz.harmonicMean(idx, neighbor_idx);
     }
 
-    Dzx = -Dxz;  // dmi tensor is assymetric
+    Dzx = -Dxz;  // dmi tensor is antisymmetric
     Dyx = -Dxy;
     Dzy = -Dyz;
     Dizx = -Dixz;

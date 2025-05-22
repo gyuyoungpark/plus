@@ -97,8 +97,9 @@ real evalTotalEnergy(const Magnet* magnet) {
   else if (const NCAFM* mag = dynamic_cast<const NCAFM*>(magnet))
     edensAverage = totalEnergyDensityQuantity(mag).average()[0];
   else
-    throw std::invalid_argument("Cannot calculate energy of instance which"
-                                "is no Ferromagnet or Antiferromagnet.");
+    throw std::invalid_argument("Cannot calculate energy of instance which "
+                                "is no Ferromagnet, Antiferromagnet or"
+                                "non-collinear antiferromagnet.");
                  
   return ncells * edensAverage * cellVolume;
 }

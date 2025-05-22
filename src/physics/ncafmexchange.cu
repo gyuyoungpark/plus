@@ -14,8 +14,10 @@ bool inHomoNCAfmExchangeAssuredZero(const Ferromagnet* magnet) {
   if (!magnet->hostMagnet<NCAFM>()) { return true; }
 
   return ( magnet->hostMagnet<NCAFM>()->ncafmex_nn.assuredZero() ||
-           (magnet->hostMagnet<NCAFM>()->getOtherSublattices(magnet)[0]->msat.assuredZero() &&
-            magnet->hostMagnet<NCAFM>()->getOtherSublattices(magnet)[1]->msat.assuredZero()));
+           magnet->hostMagnet<NCAFM>()->latcon.assuredZero() ||
+          (magnet->hostMagnet<NCAFM>()->getOtherSublattices(magnet)[0]->msat.assuredZero() &&
+           magnet->hostMagnet<NCAFM>()->getOtherSublattices(magnet)[1]->msat.assuredZero())
+          );
 }
 
 bool homoNCAfmExchangeAssuredZero(const Ferromagnet* magnet) {
@@ -42,7 +44,7 @@ __global__ void k_NCafmExchangeFieldSite(CuField hField,
         hField.setVectorInCell(idx, real3{0, 0, 0});
       return;
     }
-    if (msat2.valueAt(idx) == 0. && msat3.valueAt(idx) == 0.) {
+    if ((msat2.valueAt(idx) == 0. && msat3.valueAt(idx) == 0.) || msat.valueAt(idx) == 0.) {
       hField.setVectorInCell(idx, real3{0, 0, 0});
       return;
     }
@@ -78,16 +80,12 @@ __global__ void k_NCafmExchangeFieldNN(CuField hField,
     return;
   }
 
-  const Grid grid = hField.system.grid;
-
-  if (!grid.cellInGrid(idx))
-    return;
-
-  if (msat2.valueAt(idx) == 0 && msat3.valueAt(idx) == 0) {
+  if ((msat2.valueAt(idx) == 0 && msat3.valueAt(idx) == 0) || msat.valueAt(idx == 0)) {
     hField.setVectorInCell(idx, real3{0, 0, 0});
     return;
   }
 
+  const Grid grid = hField.system.grid;
   const int3 coo = grid.index2coord(idx);
   const real3 m2 = m2Field.vectorAt(idx);
   const real3 m3 = m3Field.vectorAt(idx);
@@ -98,8 +96,7 @@ __global__ void k_NCafmExchangeFieldNN(CuField hField,
   openBC = (a == 0) ? true : openBC;
 
   // accumulate exchange field in h for cell at idx, divide by msat at the end
-  real3 h2{0, 0, 0};
-  real3 h3{0, 0, 0};
+  real3 h{0, 0, 0};
   
   // NCAFM exchange in NN cells
 #pragma unroll
@@ -115,95 +112,58 @@ __global__ void k_NCafmExchangeFieldNN(CuField hField,
     
     unsigned int ridx = system.getRegionIdx(idx);
     unsigned int ridx_ = system.getRegionIdx(idx_);
-    // TODO: is this gain in performance (2 if-scopes instead of
-    // 2 kernel functions) worth the ugliness?
-    if(msat2.valueAt(idx_) != 0 || !openBC) {
-      real3 m2_;
-      real ann_;
-      int3 normal = rel_coo * rel_coo;
 
-      real inter = 0;
-      real scale = 1;
-      real Aex;
+    CuField sisterMField[2] = {m2Field, m3Field};
+    CuParameter sisterMsat[2] = {msat2, msat3};
 
+    // Loop over different sister sublattices
+    for (int i = 0; i < 2; i++) {
+      if (sisterMsat[i].valueAt(idx_) != 0 || !openBC) {
+        real3 m = (i == 0) ? m2 : m3;
+        real3 m_;
+        real ann_;
+        int3 normal = rel_coo * rel_coo;
 
-      if (hField.cellInGeometry(coo_)) {
-        m2_ = m2Field.vectorAt(idx_);
-        ann_ = ncafmex_nn.valueAt(idx_);
+        real inter = 0;
+        real scale = 1;
+        real Aex;
 
-        if (ridx != ridx_) {
-          scale = scaleExch.valueBetween(ridx, ridx_);
-          inter = interExch.valueBetween(ridx, ridx_);
+        if (hField.cellInGeometry(coo_)) {
+          m_ = sisterMField[i].vectorAt(idx_);
+          ann_ = ncafmex_nn.valueAt(idx_);
+
+          if (ridx != ridx_) {
+            scale = scaleExch.valueBetween(ridx, ridx_);
+            inter = interExch.valueBetween(ridx, ridx_);
+          }
         }
-      }
-      else { // Neumann BC
-        real3 Gamma2 = getGamma(dmiTensor, idx, normal, m2);
+        else { // Neumann BC
+          real3 Gamma = getGamma(dmiTensor, idx, normal, m);
 
-        real3 d_m1{0, 0, 0};
-        int3 coo__ = mastergrid.wrap(coo - rel_coo);
-        int idx__ = grid.coord2index(coo__);
-        unsigned int ridx__ = system.getRegionIdx(idx__);
-        if(hField.cellInGeometry(coo__)){
-          // Approximate normal derivative of sister sublattice by taking
-          // the bulk derivative closest to the edge.
-          real3 m1__ = m1Field.vectorAt(coo__);
-          real3 m1 = m1Field.vectorAt(idx);
-          d_m1 = (m1 - m1__) / delta;
+          real3 d_m1{0, 0, 0};
+          int3 coo__ = mastergrid.wrap(coo - rel_coo);
+          int idx__ = grid.coord2index(coo__);
+          unsigned int ridx__ = system.getRegionIdx(idx__);
+          if(hField.cellInGeometry(coo__)){
+            real3 m1__ = m1Field.vectorAt(coo__);
+            real3 m1 = m1Field.vectorAt(idx);
+            d_m1 = (m1 - m1__) / delta;
+          }
+
+          real Aex_nn = getExchangeStiffness(interExch.valueBetween(ridx, ridx__),
+                                            scaleExch.valueBetween(ridx, ridx__),
+                                            ann,
+                                            ncafmex_nn.valueAt(idx__));
+          m_ = m + (Aex_nn * cross(cross(d_m1, m), m) + Gamma) * delta / (2*a);
+          ann_ = ann;
         }
-        real Aex_nn = getExchangeStiffness(interExch.valueBetween(ridx, ridx__),
-                                           scaleExch.valueBetween(ridx, ridx__),
-                                           ann,
-                                           ncafmex_nn.valueAt(idx__));
-        m2_ = m2 + (Aex_nn * cross(cross(d_m1, m2), m2) + Gamma2) * delta / (2*a);
-        ann_ = ann;
+
+        Aex = getExchangeStiffness(inter, scale, ann, ann_);
+        h += Aex * (m_ - m) / (delta * delta);
       }
-      Aex = getExchangeStiffness(inter, scale, ann, ann_);
-      h2 += Aex * (m2_ - m2) / (delta * delta);
-    }
-
-    if(msat3.valueAt(idx_) != 0 || !openBC) {
-      real3 m3_;
-      real ann_;
-      int3 normal = rel_coo * rel_coo;
-
-      real inter = 0;
-      real scale = 1;
-      real Aex;
-      if (hField.cellInGeometry(coo_)) {
-        m3_ = m3Field.vectorAt(idx_);
-        ann_ = ncafmex_nn.valueAt(idx_);
-
-        if (ridx != ridx_) {
-          scale = scaleExch.valueBetween(ridx, ridx_);
-          inter = interExch.valueBetween(ridx, ridx_);
-        }
-      }
-      else { // Neumann BC
-        real3 Gamma3 = getGamma(dmiTensor, idx, normal, m3);
-
-        real3 d_m1{0, 0, 0};
-        int3 coo__ = mastergrid.wrap(coo - rel_coo);
-        int idx__ = grid.coord2index(coo__);
-        unsigned int ridx__ = system.getRegionIdx(idx__);
-        if(hField.cellInGeometry(coo__)){
-          // Approximate normal derivative of sister sublattice by taking
-          // the bulk derivative closest to the edge.
-          real3 m1__ = m1Field.vectorAt(coo__);
-          real3 m1 = m1Field.vectorAt(idx);
-          d_m1 = (m1 - m1__) / delta;
-        }
-        real Aex_nn = getExchangeStiffness(interExch.valueBetween(ridx, ridx__),
-                                           scaleExch.valueBetween(ridx, ridx__),
-                                           ann,
-                                           ncafmex_nn.valueAt(idx__));
-        m3_ = m3 + (Aex_nn * cross(cross(d_m1, m3), m3) + Gamma3) * delta / (2*a);
-        ann_ = ann;
-      }
-      Aex = getExchangeStiffness(inter, scale, ann, ann_);
-      h3 += Aex * (m3_ - m3) / (delta * delta);
     }
   }
-  hField.setVectorInCell(idx, (h2 + h3) / msat.valueAt(idx));
+  hField.setVectorInCell(idx, h / msat.valueAt(idx));
 }
 
 Field evalHomogeneousNCAfmExchangeField(const Ferromagnet* magnet) {

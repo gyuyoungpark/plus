@@ -4,8 +4,6 @@
 #include "ncafm.hpp"
 #include "quantityevaluator.hpp"
 
-class Ferromagnet;
-
 template <typename FuncAFM, typename FuncNCAFM>
 FM_FieldQuantity hostExchangeFieldQuantity(const Ferromagnet* magnet, FuncAFM afmFunc, FuncNCAFM ncafmFunc) {
     if (magnet->hostMagnet<Antiferromagnet>()) { return afmFunc(magnet); }

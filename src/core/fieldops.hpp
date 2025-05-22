@@ -14,11 +14,6 @@ Field add(real3 a1, const Field& x1, real3 a2, const Field& x2);
 /// positional a1*x1 + a2*x2
 Field add(const Field& a1, const Field& x1, const Field& a2, const Field& x2);
 
-/// positional a1*x1 + a2*x2 + a3*x3
-Field add(const Field& a1, const Field& x1,
-          const Field& a2, const Field& x2,
-          const Field& a3, const Field& x3);
-
 /// x1 + x2
 Field add(const Field& x1, const Field& x2);
 /// x1 + x2

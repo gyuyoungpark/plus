@@ -39,6 +39,7 @@ __global__ void k_octupolevector(CuField octupole,
   real3 m2_rot = rotate_120(m2, k2, 1);
   real3 m3_rot = rotate_120(m3, k3, 1);
 
+  // if (dot(m1, m2) < 0 is zelfde voorwaarde, dus veel simpeler)
   if (fabs(dot(m1, rotate_120(m2, k2, -1))) >= fabs(dot(m1, m2_rot)))
     // m2 rotated in wrong direction
     m2_rot = rotate_120(m2, k2, -1);

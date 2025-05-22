@@ -1039,7 +1039,7 @@ class Ferromagnet(Magnet):
     @property
     def homogeneous_dmi_energy(self):
         """Energy related to the homogeneous DMI (J)."""
-        return FieldQuantity(_cpp.homogeneous_dmi_energy(self._impl))
+        return ScalarQuantity(_cpp.homogeneous_dmi_energy(self._impl))
 
     # --- magnetoelasticity ---
     # all elasticity is found in the Magnet parent

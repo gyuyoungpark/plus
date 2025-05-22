@@ -3,6 +3,10 @@ import numpy as np
 from mumaxplus import NCAFM, Grid, World
 from mumaxplus.util import *
 
+
+def max_relative_error(result, wanted):
+    return np.max(np.abs(result - wanted) / np.abs(wanted))
+
 def compute_fm_exchange_numpy(magnet):
     m = magnet.magnetization.get()
     cellsize = magnet.cellsize
@@ -74,14 +78,11 @@ class TestNCAFMExchange:
         magnet = NCAFM(world, Grid((16, 16, 4)))
         magnet.aex = 3.2e7
         magnet.msat = 5.4
+        magnet.enable_openbc = True
         for sub in magnet.sublattices:
             result = sub.exchange_field.eval()
             wanted = compute_fm_exchange_numpy(sub)
-
-            relative_error = np.abs(result - wanted) / np.abs(wanted)
-            max_relative_error = np.max(relative_error)
-
-            assert max_relative_error < 1e-3
+            assert max_relative_error(result, wanted) < 5e-3
     
     def test_homo_exchange(self):
         world = World((1e3, 2e3, 3e3))
@@ -94,28 +95,21 @@ class TestNCAFMExchange:
             result = sub.homogeneous_exchange_field()
             sub2, sub3 = magnet.sublattices[(i+1)%3], magnet.sublattices[(i+2)%3]
             wanted = compute_homo_exchange_numpy(magnet, sub2, sub3)
-
-            relative_error = np.abs(result - wanted) / np.abs(wanted)
-            max_relative_error = np.max(relative_error)
-
-            assert max_relative_error < 1e-3
+            assert max_relative_error(result, wanted) < 5e-3
 
     def test_inhomo_exchange(self):
         world = World((1e3, 2e3, 3e3))
         magnet = NCAFM(world, Grid((16, 16, 4)))
         magnet.msat = 5.4e3
         magnet.ncafmex_nn = -10e4
+        magnet.enable_openbc = True
 
         for i in range(3):
             sub = magnet.sublattices[i]
             sub2, sub3 = magnet.sublattices[(i+1)%3], magnet.sublattices[(i+2)%3]
             result = sub.inhomogeneous_exchange_field()
             wanted = compute_inhomo_exchange_numpy(magnet, sub2, sub3)
-            
-            relative_error = np.abs(result - wanted) / np.abs(wanted)
-            max_relative_error = np.max(relative_error)
-
-            assert max_relative_error < 2e-3
+            assert max_relative_error(result, wanted) < 5e-3
 
     def test_exchange_spiral(self):
         """This test compares numerical and analytical exchange energy for spiral

@@ -7,7 +7,6 @@
 #include "local_dmi.hpp"
 #include "ncafm.hpp"
 #include "parameter.hpp"
-#include "world.hpp"
 
 bool homoDmiAssuredZero(const Ferromagnet* magnet) {
   // Functions returns true if magnet is no sublattice
@@ -62,10 +61,7 @@ __global__ void k_homoDmiFieldNCAFM(CuField hField,
   real3 m2 = m2Field.vectorAt(idx);
   real3 m3 = m3Field.vectorAt(idx);
   real3 D = dmiVector.vectorAt(idx);
-  real3 term1 = symmetry_factor * cross(D, m2);
-  real3 term2 = - symmetry_factor * cross(D, m3);
-
-  hField.setVectorInCell(idx, (term1 + term2) / msat.valueAt(idx));
+  hField.setVectorInCell(idx, symmetry_factor * cross(D, m2 - m3) / msat.valueAt(idx));
 }
 
 Field evalHomoDmiField(const Ferromagnet* magnet) {

@@ -337,7 +337,7 @@ class Antiferromagnet(Magnet):
 
     @property
     def dmi_vector(self):
-        """ DMI vector D associated with the homogeneous DMI (in a single simulation cell),
+        """ DMI vector D (J/m³) associated with the homogeneous DMI (in a single simulation cell),
          defined by the energy density ε = D . (m1 x m2) with m1 and m2 being the sublattice
          magnetizations.
 

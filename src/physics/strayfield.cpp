@@ -97,6 +97,6 @@ bool StrayField::assuredZero() const {
            mag->sub3()->msat.assuredZero();
   else 
     throw std::invalid_argument("Cannot calculate strayfield since magnet is neither "
-                                "a Ferromagnet, an Antiferromagnet/Ferrimagnet "
+                                "a Ferromagnet, an Antiferromagnet/Ferrimagnet, "
                                 "nor an NCAFM.");
 }

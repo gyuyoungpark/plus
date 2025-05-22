@@ -65,32 +65,30 @@ void NCAFM::minimize(real tol, int nSamples) {
   minimizer.exec();
 }
 
-void NCAFM::relax(real tol) { // TODO: this code has gotten nasty and doesn't look
-                              // much extensible anymore...
-  std::vector<real> threshold = {sub1()->RelaxTorqueThreshold,
-                                 sub2()->RelaxTorqueThreshold,
-                                 sub3()->RelaxTorqueThreshold};
+void NCAFM::relax(real tol) {
+    std::vector<real> threshold = {
+        sub1()->RelaxTorqueThreshold,
+        sub2()->RelaxTorqueThreshold,
+        sub3()->RelaxTorqueThreshold
+    };
+
+    auto positive_min = [](real a, real b) -> real {
+        if (a > 0.0 && b > 0.0) return std::min(a, b);
+        if (a > 0.0) return a;
+        if (b > 0.0) return b;
+        return -1.0;
+    };
+
     // If only one sublattice has a user-set threshold, then all
     // sublattices are relaxed using the same threshold.
-    if (threshold[0] > 0.0 && (threshold[1] <= 0.0 && threshold[2] <= 0)) {
-      threshold[1] = threshold[0];
-      threshold[2] = threshold[0];
-    }
-    else if (threshold[1] > 0.0 && (threshold[0] <= 0.0 && threshold[2] <= 0.0)) {
-      threshold[0] = threshold[1];
-      threshold[2] = threshold[1];
-    }
-    else if (threshold[2] > 0.0 && (threshold[0] <= 0.0 && threshold[1] <= 0.0)) {
-      threshold[0] = threshold[2];
-      threshold[1] = threshold[2];
-    }
     // If two thresholds are set, propagate the smallest to the remaining one
-    else if (threshold[0] > 0.0 && threshold[1] > 0.0 && threshold[2] <= 0.0)
-      threshold[2] = std::min(threshold[0], threshold[1]);
-    else if (threshold[0] > 0.0 && threshold[2] > 0.0 && threshold[1] <= 0.0)
-        threshold[1] = std::min(threshold[0], threshold[2]);
-    else if (threshold[1] > 0.0 && threshold[2] > 0.0 && threshold[0] <= 0.0)
-        threshold[0] = std::min(threshold[1], threshold[2]);
+    for (int i = 0; i < 3; ++i) {
+      if (threshold[i] <= 0.0) {
+        real a = threshold[(i + 1) % 3];
+        real b = threshold[(i + 2) % 3];
+        threshold[i] = positive_min(a, b);
+      }
+    }
     Relaxer relaxer(this, threshold, tol);
     relaxer.exec();
 }

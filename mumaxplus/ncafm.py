@@ -193,8 +193,8 @@ class NCAFM(Magnet):
         warn = False
         if self.ncafmex_cell.is_uniform:
             warn = self.ncafmex_cell.uniform_value > 0
-        elif _np.any(self.ncafmex_cell.eval() > 0):
-            warn = True
+        else:
+            warn = _np.any(self.ncafmex_cell.eval() > 0)
         
         if warn:
             warnings.warn("The NCAFM exchange constant ncafmex_cell"
@@ -344,7 +344,7 @@ class NCAFM(Magnet):
 
     @property
     def dmi_vector(self):
-        """ DMI vector D associated with the homogeneous DMI (in a single simulation cell),
+        """ DMI vector D (J/m³) associated with the homogeneous DMI (in a single simulation cell),
          defined by the energy density ε = D . (m1 x m2 + m2 x m3 + m3 x m1) with m1, m2
          and m3 being the sublattice magnetizations.
 

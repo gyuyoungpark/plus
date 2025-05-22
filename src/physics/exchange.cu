@@ -224,21 +224,17 @@ __global__ void k_exchangeField(CuField hField,
 
   // When outside the geometry, set to zero and return early
   if (!hField.cellInGeometry(idx)) {
-    if (hField.cellInGrid(idx)) {
-    hField.setVectorInCell(idx, real3{0, 0, 0});
-    }
+    if (hField.cellInGrid(idx))
+      hField.setVectorInCell(idx, real3{0, 0, 0});
     return;
   }
-
-  const Grid grid = m1Field.system.grid;
-  if (!grid.cellInGrid(idx))
-    return;
 
   if (msat.valueAt(idx) == 0) {
     hField.setVectorInCell(idx, real3{0, 0, 0});
     return;
   }
 
+  const Grid grid = m1Field.system.grid;
   const int3 coo = grid.index2coord(idx);
   const real3 m = m1Field.vectorAt(idx);
   const real a = aex.valueAt(idx);

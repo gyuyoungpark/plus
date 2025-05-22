@@ -68,8 +68,8 @@ class MumaxWorld : public World {
   /** Get an antiferromagnet by its name.
    *  Return a nullptr if there is no antiferromagnet with specified name. */
   Antiferromagnet* getAntiferromagnet(std::string name) const;
-  /** Get an antiferromagnet by its name.
-   *  Return a nullptr if there is no antiferromagnet with specified name. */
+  /** Get a non-collinear antiferromagnet by its name.
+   *  Return a nullptr if there is no non-collinear antiferromagnet with specified name. */
   NCAFM* getNCAFM(std::string name) const;
 
   /** Get map of all Magnets in this world. */

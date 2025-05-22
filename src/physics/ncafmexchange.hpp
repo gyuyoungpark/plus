@@ -2,10 +2,6 @@
 
 #include "quantityevaluator.hpp"
 
-class Ferromagnet;
-class Field;
-class NCAFM;
-
 // The homogeneous and inhomogeneous contributions to NCAFM exchange is split up.
 // The homogeneous contribution (considering ncafmex_cell) corresponds to NCAFM
 // exchange at a single site.

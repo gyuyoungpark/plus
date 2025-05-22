@@ -21,18 +21,11 @@
 #include "world.hpp"
 #include "system.hpp"
 
-class Antiferromagnet;
-class NCAFM;
-
 class Ferromagnet : public Magnet {
  public:
   Ferromagnet(std::shared_ptr<System> system_ptr,
               std::string name,
               Magnet* hostMagnet_ = nullptr);
-
-  //Ferromagnet(std::shared_ptr<System> system_ptr,
-  //            std::string name,
-  //            NCAFM* hostMagnet_ = nullptr);
 
   Ferromagnet(MumaxWorld* world,
               Grid grid,
@@ -54,8 +47,6 @@ class Ferromagnet : public Magnet {
  private:
   NormalizedVariable magnetization_;
 
-  // TODO: what type of pointer?
-  // TODO: Magnet or Antiferromagnet?
   Magnet* hostMagnet_;
 
  public:
