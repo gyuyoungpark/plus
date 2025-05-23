@@ -4,10 +4,11 @@
 #include "ncafm.hpp"
 #include "octupole.hpp"
 
-__device__ real3 rotate_120(real3 m, real3 k, real direction) {
+__device__ real3 rotate_120(real3 m, real3 ref) {
   // rotate m about k over 120 degrees
-  const real SQRT3_2 = 0.86602540378;
-  return  -0.5 * m + cross(k, m) * SQRT3_2 * direction;
+  real3 k = normalized(cross(ref, m));
+  real dir = (dot(ref, m) < 0) ? -1.0 : 1.0;  // Use 1 if perpendicular
+  return -0.5 * m + cross(k, m) * 0.86602540378 * dir;
 }
 
 __global__ void k_octupolevector(CuField octupole,
@@ -33,20 +34,8 @@ __global__ void k_octupolevector(CuField octupole,
   real ms2 = msat2.valueAt(idx);
   real ms3 = msat3.valueAt(idx);
 
-  real3 k2 = normalized(cross(m1, m2)); 
-  real3 k3 = normalized(cross(m1, m3));
-
-  real3 m2_rot = rotate_120(m2, k2, 1);
-  real3 m3_rot = rotate_120(m3, k3, 1);
-
-  // if (dot(m1, m2) < 0 is zelfde voorwaarde, dus veel simpeler)
-  if (fabs(dot(m1, rotate_120(m2, k2, -1))) >= fabs(dot(m1, m2_rot)))
-    // m2 rotated in wrong direction
-    m2_rot = rotate_120(m2, k2, -1);
-
-  if (fabs(dot(m1, rotate_120(m3, k3, -1))) >= fabs(dot(m1, m3_rot)))
-    // m3 rotated in wrong direction
-    m3_rot = rotate_120(m3, k3, -1);
+  real3 m2_rot = rotate_120(m2, m1);
+  real3 m3_rot = rotate_120(m3, m1);
 
   octupole.setVectorInCell(idx, (m1 * ms1 + m2_rot * ms2 + m3_rot * ms3) / (ms1 + ms2 + ms3));
 }
