@@ -39,12 +39,14 @@ class Ferromagnet(Magnet):
         The regional structure of a ferromagnet can be set in the same three ways
         as the geometry. This parameter indexes each grid cell to a certain region.
 
-        !Important note! The values of `InterParameters` which act between
-        different regions are stored in an array with a size that scales with the
-        square of the maximal index value. Therefore, if possible, it's good
-        practice to keep each region index as close to zero as possible.
-        E.g. defining two regions with indices 1 and 500 will work, but occupies more
-        memory and will pay in performance than giving them the values 0 and 1.
+        Note
+        ----
+            The values of `InterParameters` which act between
+            different regions are stored in an array with a size that scales with the
+            square of the maximal index value. Therefore, if possible, it's good
+            practice to keep each region index as close to zero as possible.
+            E.g. defining two regions with indices 1 and 500 will work, but occupies more
+            memory and will pay in performance than giving them the values 0 and 1.
 
     name : str (default="")
         The ferromagnet's identifier. If the name is empty (the default), a name for the
@@ -255,8 +257,9 @@ class Ferromagnet(Magnet):
         is wanted, set `scale_exchange` to zero.
 
         This parameter should be set with
-        >>> magnet.inter_exchange.set_between(region1, region2, value)
-        >>> magnet.inter_exchange = value # uniform value
+        
+            >>> magnet.inter_exchange.set_between(region1, region2, value)
+            >>> magnet.inter_exchange = value # uniform value
 
         See Also
         --------
@@ -277,8 +280,9 @@ class Ferromagnet(Magnet):
         regions.
 
         This parameter can be set with
-        >>> magnet.scale_exchange.set_between(region1, region2, value)
-        >>> magnet.scale_exchange = value # uniform value
+
+            >>> magnet.scale_exchange.set_between(region1, region2, value)
+            >>> magnet.scale_exchange = value # uniform value
 
         See Also
         --------
@@ -916,14 +920,17 @@ class Ferromagnet(Magnet):
 
     @property
     def conductivity_tensor(self):
-        """Conductivity tensor taking into account AMR (S/m).
+        r"""Conductivity tensor taking into account AMR (S/m).
 
         This quantity has six components (Cxx, Cyy, Czz, Cxy, Cxz, Cyz)
-        which forms the symmetric conductivity tensor::
+        which forms the symmetric conductivity tensor:
 
-               Cxx Cxy Cxz
-               Cxy Cyy Cyz
-               Cxz Cyz Czz
+        .. math:: 
+            \begin{bmatrix}
+            Cxx & Cxy & Cxz \\
+            Cxy & Cyy & Cyz \\
+            Cxz & Cyz & Czz
+            \end{bmatrix}
 
         See Also
         --------

@@ -198,10 +198,10 @@ def blochskyrmion(position, radius, charge, polarization):
 # elastic displacement initial states
 
 def gaussian_spherical_OoP(position, amplitude, sigma_x, sigma_y):
-    """Return an out-of-xy-plane gaussian distribution centered on the specified
+    r"""Return an out-of-xy-plane gaussian distribution centered on the specified
     position with given standard deviations.
     
-    (0, 0, A exp(- (x - x0)²/2σx² * (y - y0)/2σy²))
+    .. math:: (0, 0, A \exp(- \frac{(x - x_0)^2}{2\sigma x^2} \frac{(y - y_0)}{2\sigma y^2})
 
     Parameters
     ----------
@@ -225,13 +225,15 @@ def gaussian_spherical_OoP(position, amplitude, sigma_x, sigma_y):
     return func
 
 def gaussian_spherical_IP(position, amplitude, angle, sigma_x, sigma_y):
-    """Return an in-xy-plane vector field with uniform orientation specified by
+    r"""Return an in-xy-plane vector field with uniform orientation specified by
     the given angle. The amplitude is modified by a gaussian distribution
     centered on the specified position with given standard deviations.
     
-    (A cos(θ) exp(- (x - x0)²/2σx² * (y - y0)/2σy²),
-     A sin(θ) exp(- (x - x0)²/2σx² * (y - y0)/2σy²),
-     0)
+    .. math ::
+
+        (A \cos(\theta) \exp(- \frac{(x - x_0)^2}{2\sigma x^2}  \frac{(y - y_0)}{2\sigma y^2}),
+        A \sin(\theta) \exp(- \frac{(x - x_0)^2}{2\sigma x^2} \frac{(y - y_0)}{2\sigma y^2}),
+        0)
 
     Parameters
     ----------
@@ -258,14 +260,13 @@ def gaussian_spherical_IP(position, amplitude, angle, sigma_x, sigma_y):
     return func
 
 def gaussian_uniform_IP(amplitude, theta, gausspos, sigma, phi):
-    """Return an in-xy-plane vector field with uniform orientation specified by
+    r"""Return an in-xy-plane vector field with uniform orientation specified by
     the given angle theta. The amplitude is modified by a one-dimensional
     Gaussian distribution centered on gausspos, which varies along the
     transverse direction in the xy-plane specified by angle phi.
 
-    (A cos(θ) exp(-(x'-x0)²/2σ²),
-     A sin(θ) exp(-(x'-x0)²/2σ²),
-     0)
+    .. math:: (A \cos(\theta) \exp(-(x'-x_0)^2/(2\sigma^2)), A \sin(\theta) \exp(-(x'-x_0)^2/(2\sigma^2)), 0)
+    
     with x0 = gausspos and x' = x*cos(ϕ) + y*sin(ϕ)
     
     Parameters

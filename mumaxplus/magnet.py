@@ -323,14 +323,17 @@ class Magnet(ABC):
 
     @property
     def rigid_norm_strain(self):
-        """The applied normal strain (m/m).
+        r"""The applied normal strain (m/m).
 
         This quantity has three components (εxx, εyy, εzz),
-        which forms the diagonal of the symmetric strain tensor::
+        which forms the diagonal of the symmetric strain tensor:
 
-               εxx  0   0
-                0  εyy  0
-                0   0  εzz
+        .. math::
+            \begin{bmatrix}
+            \varepsilon_{xx} & 0 & 0 \\
+            0 & \varepsilon_{yy} & 0 \\
+            0 & 0 & \varepsilon_{zz}
+            \end{bmatrix}
 
         The rigid strain can not be used together with elastodynamics.
         Here the strain is set by the user as a parameter for the magnetoelastic
@@ -351,14 +354,17 @@ class Magnet(ABC):
     
     @property
     def rigid_shear_strain(self):
-        """The applied shear strain (m/m).
+        r"""The applied shear strain (m/m).
 
         This quantity has three components (εxy, εxz, εyz),
-        which forms the off-diagonal of the symmetric strain tensor::
+        which forms the off-diagonal of the symmetric strain tensor:
 
-                 0  εxy εxz
-                εxy  0  εyz
-                εxz εyz  0
+        .. math::
+            \begin{bmatrix}
+            0 & \varepsilon_{xy} & \varepsilon_{xz} \\
+            \varepsilon_{xy} & 0 & \varepsilon_{yz} \\
+            \varepsilon_{xz} & \varepsilon_{yz} & 0
+            \end{bmatrix}
 
         The rigid strain can not be used together with elastodynamics.
         Here the strain is set by the user as a parameter for the magnetoelastic
@@ -381,15 +387,19 @@ class Magnet(ABC):
 
     @property
     def strain_tensor(self):
-        """Strain tensor (m/m), calculated according to ε = 1/2 (∇u + (∇u)^T),
+        r"""Strain tensor (m/m), calculated according to 
+        .. math:: \varepsilon = 1/2 (\nabla u + (\nabla u)^T),
         with u the elastic displacement.
 
         This quantity has six components (εxx, εyy, εzz, εxy, εxz, εyz),
-        which forms the symmetric strain tensor::
+        which forms the symmetric strain tensor:
 
-               εxx εxy εxz
-               εxy εyy εyz
-               εxz εyz εzz
+        .. math::
+            \begin{bmatrix}
+            \varepsilon_{xx} & \varepsilon_{xy} & \varepsilon_{xz} \\
+            \varepsilon_{xy} & \varepsilon_{yy} & \varepsilon_{yz} \\
+            \varepsilon_{xz} & \varepsilon_{yz} & \varepsilon_{zz}
+            \end{bmatrix}
 
         Note that the strain corresponds to the real strain and not the
         engineering strain, which would be (εxx, εyy, εzz, 2*εxy, 2*εxz, 2*εyz).
@@ -406,15 +416,18 @@ class Magnet(ABC):
     
     @property
     def stress_tensor(self):
-        """Stress tensor (N/m²), calculated according to Hooke's law
+        r"""Stress tensor (N/m²), calculated according to Hooke's law
         σ = cε.
 
         This quantity has six components (σxx, σyy, σzz, σxy, σxz, σyz),
-        which forms the symmetric stress tensor::
+        which forms the symmetric stress tensor:
 
-               σxx σxy σxz
-               σxy σyy σyz
-               σxz σyz σzz
+        .. math::
+            \begin{bmatrix}
+            \sigma_{xx} & \sigma_{xy} & \sigma_{xz} \\
+            \sigma_{xy} & \sigma_{yy} & \sigma_{yz} \\
+            \sigma_{xz} & \sigma_{yz} & \sigma_{zz}
+            \end{bmatrix}
 
         See Also
         --------
@@ -424,9 +437,9 @@ class Magnet(ABC):
 
     @property
     def elastic_force(self):
-        """Elastic body force density due to mechanical stress gradients (N/m³).
+        r"""Elastic body force density due to mechanical stress gradients (N/m³).
 
-        f = ∇σ = ∇(cε)
+        .. math:: f = \nabla \sigma = \nabla (c\varepsilon)
         
         See Also
         --------
@@ -437,11 +450,11 @@ class Magnet(ABC):
 
     @property
     def effective_body_force(self):
-        """Elastic effective body force density is the sum of elastic,
+        r"""Elastic effective body force density is the sum of elastic,
         magnetoelastic and external body force densities (N/m³).
         Elastic damping is not included.
 
-        f_eff = f_el + f_mel + f_ext
+        .. math:: f_{eff} = f_{el} + f_{mel} + f_{ext}
 
         In the case of this Magnet being a host (antiferromagnet),
         f_mel is the sum of all magnetoelastic body forces of all sublattices.

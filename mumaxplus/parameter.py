@@ -82,7 +82,7 @@ class Parameter(FieldQuantity):
         ----------
         term : callable
             Time-dependent function that will be added to the static parameter values.
-            Possible signatures are (float)->float and (float)->tuple(float).
+            Possible signatures are (float)→float and (float)→tuple(float).
         mask : ndarray or callable, optional
             A numpy array, or a callable function taking coordinates x, y and
             z as arguments, defining how the magnitude of the time-dependent
@@ -155,14 +155,14 @@ class Parameter(FieldQuantity):
 
         To set the values of an inhomogeneous parameter, use a numpy array or a function
         which returns the parameter value as a function of the position, i.e.
-        (x: float, y: float, z: float) -> float or
-        (x: float, y: float, z: float) -> sequence[float] of size 3.
+        (x: float, y: float, z: float) → float or
+        (x: float, y: float, z: float) → sequence[float] of size 3.
 
         To assign time-dependant terms using this method use either a single-argument
-        function, i.e. (float t) -> float or (t: float) -> sequence[float] of size 3;
+        function, i.e. (float t) → float or (t: float) → sequence[float] of size 3;
         or a tuple of size two consisting of a time-dependent term as its first entry
         and the mask of the function as its second entry, i.e.
-        ((float t) -> float, numpy.ndarray) or ((float t) -> [float], numpy.ndarray).
+        ((float t) → float, numpy.ndarray) or ((float t) → [float], numpy.ndarray).
 
         Parameters
         ----------

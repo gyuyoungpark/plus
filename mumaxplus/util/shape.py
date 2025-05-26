@@ -22,12 +22,12 @@ class Shape:
 
     def __call__(self, x, y, z):
         """Returns True if (x,y,z) is within this shape.
-        Calling shape.shape_func(x,y,z) or shape(x,y,z) is the same."""
+        ``Calling shape.shape_func(x,y,z)`` or ``shape(x,y,z)`` is the same."""
         return self.shape_func(x, y, z)
 
     def __contains__(self, coord):
         """Returns true if the given coordinate is within this shape.
-        Calling shape.shape_func(x,y,z) or shape(x,y,z) is the same.
+        Calling ``shape.shape_func(x,y,z)`` or ``shape(x,y,z)`` is the same.
 
         Parameters
         ----------
@@ -118,10 +118,10 @@ class Shape:
     def scale(self, sx, sy=None, sz=1):
         """Scale this shape, using (0,0,0) as the origin.
         Takes 1, 2 or 3 arguments:
-            1. (s): scale by s in all directions.
-            2. (sx, sy): scale by sx and sy in the xy-plane, but do not scale z.
-            3. (sx, sy, sz): scale by sx, sy and sz in the x-, y- and
-            z-direction respectively.
+        1. (s): scale by s in all directions.
+        2. (sx, sy): scale by sx and sy in the xy-plane, but do not scale z.
+        3. (sx, sy, sz): scale by sx, sy and sz in the x-, y- and
+        z-direction respectively.
         """
         if sy is None:
             sy = sz = sx
@@ -208,54 +208,54 @@ class Shape:
     
     def add(self, other: "Shape"):
         """Add given shape to this shape (logical OR).
-        Calling a.add(b), a+=b or a|=b is the same."""
+        Calling ``a.add(b)``, ``a+=b`` or ``a|=b`` is the same."""
         old_func = self.shape_func  # copy old version of self
         self.shape_func = lambda x, y, z: old_func(x, y, z) | other(x, y, z)
         return self
 
     def __iadd__(self, other: "Shape"):
         """Add given shape to this shape (logical OR).
-        Calling a.add(b), a+=b or a|=b is the same."""
+        Calling ``a.add(b)``, ``a+=b`` or ``a|=b`` is the same."""
         return self.add(other)
 
     def __ior__(self, other: "Shape"):
         """Add given shape to this shape (logical OR).
-        Calling a.add(b), a+=b or a|=b is the same."""
+        Calling ``a.add(b)``, ``a+=b`` or ``a|=b`` is the same."""
         return self.add(other)
 
     def sub(self, other: "Shape"):
         """Subtract given shape from this shape (logical AND NOT).
-        Calling a.sub(b) or a-=b is the same."""
+        Calling ``a.sub(b)`` or ``a-=b`` is the same."""
         old_func = self.shape_func  # copy old version of self
         self.shape_func = lambda x,y,z: old_func(x,y,z) & _np.logical_not(other(x,y,z))
         return self
     
     def __isub__(self, other: "Shape"):
         """Subtract given shape from this shape (logical AND NOT).
-        Calling a.sub(b) or a-=b is the same."""
+        Calling ``a.sub(b)`` or ``a-=b`` is the same."""
         return self.sub(other)
 
     def intersect(self, other: "Shape"):
         """Intersect given shape with this shape (logical AND).
-        Calling a.intersect(b), a&=b and a/=b are the same."""
+        Calling ``a.intersect(b)``, ``a&=b`` and ``a/=b`` are the same."""
         old_func = self.shape_func  # copy old version of self
         self.shape_func = lambda x,y,z: old_func(x,y,z) & other(x,y,z)
         return self
     
     def __iand__(self, other: "Shape"):
         """Intersect given shape with this shape (logical AND).
-        Calling a.intersect(b), a&=b and a/=b are the same."""
+        Calling ``a.intersect(b)``, ``a&=b`` and ``a/=b`` are the same."""
         return self.intersect(other)
 
     def __itruediv__(self, other: "Shape"):
         """Intersect given shape with this shape (logical AND).
-        Calling a.intersect(b), a&=b and a/=b are the same."""
+        Calling ``a.intersect(b)``, ``a&=b`` and ``a/=b`` are the same."""
         return self.intersect(other)
 
     def xor(self, other: "Shape"):
         """Keep everything from this shape and the given shape, except the
         intersection (logical XOR).
-        Calling a.xor(b) or a^=b is the same."""
+        Calling ``a.xor(b)`` or ``a^=b`` is the same."""
         old_func = self.shape_func  # copy old version of self
         self.shape_func = lambda x, y, z: old_func(x, y, z) ^ other(x, y, z)
         return self
@@ -263,7 +263,7 @@ class Shape:
     def __ixor__(self, other: "Shape"):
         """Keep everything from this shape and the given shape, except the
         intersection (logical XOR).
-        Calling a.xor(b) or a^=b is the same."""
+        Calling ``a.xor(b)`` or ``a^=b`` is the same."""
         return self.xor(other)
     
     # -------------------------
@@ -271,12 +271,12 @@ class Shape:
 
     def __add__(self, other: "Shape"):
         """Returns new shape as union of given shapes (logical OR).
-        Calling a+b or a|b is the same."""
+        Calling ``a+b`` or ``a|b`` is the same."""
         return Shape(lambda x, y, z: self(x, y, z) | other(x, y, z))
 
     def __or__(self, other: "Shape"):
         """Returns new shape as union of given shapes (logical OR).
-        Calling a+b or a|b is the same."""
+        Calling ``a+b`` or ``a|b`` is the same."""
         return self + other
 
     def __sub__(self, other: "Shape"):
@@ -286,12 +286,12 @@ class Shape:
 
     def __and__(self, other: "Shape"):
         """Returns new shape as intersection of given shapes (logical AND).
-        Calling a&b or a/b is the same."""
+        Calling ``a&b`` or ``a/b`` is the same."""
         return Shape(lambda x, y, z: self(x, y, z) & other(x, y, z))
 
     def __truediv__(self, other: "Shape"):
         """Returns new shape as intersection of given shapes (logical AND).
-        Calling a&b or a/b is the same."""
+        Calling ``a&b`` or ``a/b`` is the same."""
         return self & other
 
     def __xor__(self, other: "Shape"):

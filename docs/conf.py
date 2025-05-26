@@ -12,9 +12,11 @@ sys.path.insert(0, os.path.abspath("../mumaxplus"))
 
 # -- Project information -----------------------------------------------------
 
-project = "mumaxplus"
-author = "Diego De Gusem, Oleh Kozynets, Ian Lateur, Lars Moreels, Jeroen Mulkers"
+project = "mumax⁺"
+# "Diego De Gusem, Oleh Kozynets, Ian Lateur, Lars Moreels, Jeroen Mulkers"
+author = "the DyNaMat group, Ghent University, Belgium."
 release = "1.0.2"
+html_last_updated_fmt = "May 23, 2025"
 
 # -- General configuration ---------------------------------------------------
 
@@ -24,8 +26,13 @@ release = "1.0.2"
 extensions = [
     "sphinx.ext.autodoc", 
     "sphinx.ext.autosummary", 
-    "numpydoc", 
+    "sphinxcontrib.video",
+    "sphinx.ext.napoleon",
 ]
+
+napoleon_google_docstring = True
+napoleon_numpy_docstring = True
+toc_object_entries_show_parents = 'hide'
 
 # The default options for autodoc directives. They are applied to all autodoc directives
 # automatically. It must be a dictionary which maps option names to the values.
@@ -42,13 +49,66 @@ autosummary_generate = True
 # If True, methods and attributes will be shown twice
 numpydoc_show_class_members = False
 
+# Suppress full names like mumaxplus.World → just World when False
+add_module_names = False
+
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ["_build"]
 
+templates_path = ['_templates']
+
 # -- Options for HTML output -------------------------------------------------
 
 # The theme to use for HTML and HTML Help pages. See the documentation for
 # a list of builtin themes.
-html_theme = "sphinx_rtd_theme"
+
+html_theme = "sphinx_book_theme"
+html_logo = "_static/nimble-plusplus.png"
+html_title = "mumax⁺"
+
+html_static_path = ['_static']
+html_css_files = ['logo.css', 'custom.css']
+
+html_favicon = "_static/nimble-plusplus-white.png"
+
+rst_epilog = """
+.. |author| replace:: {}
+""".format(author)
+
+rst_epilog = """
+.. |version| replace:: {}
+""".format(release)
+
+# Automatically extract typehints when specified and place them in
+# descriptions of the relevant function/method.
+autodoc_typehints = "description"
+
+# Don't show class signature with the class' name.
+autodoc_class_signature = "separated"
+
+html_theme_options = {
+    "show_toc_level": 2,
+    "icon_links": [
+        {
+            "name": "Ghent University",
+            "url": "https://www.ugent.be/we/solidstatesciences/dynamat/en",
+            "icon": "fas fa-university",  # FontAwesome university icon
+            "type": "fontawesome",
+        },
+        {
+            "name": "GitHub",
+            "url": "https://github.com/mumax/plus",  # GitHub repo
+            "icon": "fab fa-github",  #  
+            "type": "fontawesome",
+        },
+        {
+            "name": "arXiv",
+            "url": "https://arxiv.org/abs/2411.18194",
+            "icon": "fas fa-file-alt",  # generic document icon
+            "type": "fontawesome",
+        },
+    ],
+    "icon_links_label": "Quick Links",  # screen reader label
+}

@@ -234,7 +234,8 @@ class Antiferromagnet(Magnet):
         is wanted, set `scale_afmex_nn` to zero.
 
         This parameter should be set with
-        >>> magnet.inter_afmex_nn.set_between(region1, region2, value)
+        
+            >>> magnet.inter_afmex_nn.set_between(region1, region2, value)
 
         See Also
         --------
@@ -261,7 +262,8 @@ class Antiferromagnet(Magnet):
         automatically set to zero when `inter_afmex_nn` is not.
 
         This parameter should be set with
-        >>> magnet.scale_afmex_nn.set_between(region1, region2, value)
+        
+            >>> magnet.scale_afmex_nn.set_between(region1, region2, value)
 
         See Also
         --------
@@ -323,11 +325,13 @@ class Antiferromagnet(Magnet):
 
         For example, to set interfacial DMI in the whole system to the same value,
         one could use
-        >>> magnet = Antiferromagnet(world, grid)
-        >>> magnet.dmi_tensors.set_interfacial_dmi(1e-3)
+        
+            >>> magnet = Antiferromagnet(world, grid)
+            >>> magnet.dmi_tensors.set_interfacial_dmi(1e-3)
 
         Or to set an individual tensor element, one could use
-        >>> magnet.dmi_tensors.xxy = 1e-3
+        
+            >>> magnet.dmi_tensors.xxy = 1e-3
 
         See Also
         --------
