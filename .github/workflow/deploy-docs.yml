@@ -3,7 +3,7 @@ name: Deploy Prebuilt Sphinx Docs
 on:
   push:
     branches:
-      - main  # or your default branch
+      - master
 
 permissions:
   contents: write
