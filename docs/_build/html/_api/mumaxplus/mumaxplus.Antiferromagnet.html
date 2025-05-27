@@ -1,0 +1,1293 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Antiferromagnet &#8212; mumax⁺</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../../_static/logo.css?v=81431fe9" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=583b82a9" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../_static/documentation_options.js?v=5549cc85"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_api/mumaxplus/mumaxplus.Antiferromagnet';</script>
+    <link rel="icon" href="../../_static/nimble-plusplus-white.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="TimeSolver" href="mumaxplus.TimeSolver.html" />
+    <link rel="prev" title="Ferromagnet" href="mumaxplus.Ferromagnet.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+    <meta name="docbuild:last-update" content="May 27, 2025"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/nimble-plusplus.png" class="logo__image only-light" alt="mumax⁺ - Home"/>
+    <script>document.write(`<img src="../../_static/nimble-plusplus.png" class="logo__image only-dark" alt="mumax⁺ - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><ul class="navbar-icon-links"
+    aria-label="Quick Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://www.ugent.be/we/solidstatesciences/dynamat/en" title="Ghent University" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fas fa-university fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Ghent University</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/mumax/plus" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://arxiv.org/abs/2411.18194" title="arXiv" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fas fa-file-alt fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">arXiv</span></a>
+        </li>
+</ul></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Installation</a></li>
+</ul>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../api.html">API</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="mumaxplus.World.html">World</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mumaxplus.Grid.html">Grid</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mumaxplus.Ferromagnet.html">Ferromagnet</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Antiferromagnet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mumaxplus.TimeSolver.html">TimeSolver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mumaxplus.Variable.html">Variable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mumaxplus.PoissonSystem.html">PoissonSystem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mumaxplus.Parameter.html">Parameter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mumaxplus.FieldQuantity.html">FieldQuantity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mumaxplus.ScalarQuantity.html">ScalarQuantity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mumaxplus.StrayField.html">StrayField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mumaxplus.DmiTensor.html">DmiTensor</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../util.html">util</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../util/mumaxplus.util.config.html">config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../util/mumaxplus.util.formulary.html">formulary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../util/mumaxplus.util.shape.html">shape</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../util/mumaxplus.util.show.html">show</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../util/mumaxplus.util.voronoi.html">voronoi</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../tutorial.html">Tutorials</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../magnetization.html">Setting magnetizations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../shapes.html">Setting shapes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../regions.html">Using regions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../stdp4.html">Standard problem #4</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../langevin.html">Applying temperature</a></li>
+</ul>
+</details></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../examples.html">Examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../stdp2.html">Standard Problem #2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../magnetoelastics.html">Magnetoelastics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../DW_SAW.html">Domain wall motion with surface acoustic waves</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../voronoi.html">Voronoi</a></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Antiferromagnet</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet"><code class="docutils literal notranslate"><span class="pre">Antiferromagnet</span></code></a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.__init__"><code class="docutils literal notranslate"><span class="pre">__init__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.sub1"><code class="docutils literal notranslate"><span class="pre">sub1</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.sub2"><code class="docutils literal notranslate"><span class="pre">sub2</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.sublattices"><code class="docutils literal notranslate"><span class="pre">sublattices</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.other_sublattice"><code class="docutils literal notranslate"><span class="pre">other_sublattice()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.bias_magnetic_field"><code class="docutils literal notranslate"><span class="pre">bias_magnetic_field</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.enable_demag"><code class="docutils literal notranslate"><span class="pre">enable_demag</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.minimize"><code class="docutils literal notranslate"><span class="pre">minimize()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.relax"><code class="docutils literal notranslate"><span class="pre">relax()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.afmex_cell"><code class="docutils literal notranslate"><span class="pre">afmex_cell</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.afmex_nn"><code class="docutils literal notranslate"><span class="pre">afmex_nn</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.inter_afmex_nn"><code class="docutils literal notranslate"><span class="pre">inter_afmex_nn</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.scale_afmex_nn"><code class="docutils literal notranslate"><span class="pre">scale_afmex_nn</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.latcon"><code class="docutils literal notranslate"><span class="pre">latcon</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.dmi_tensor"><code class="docutils literal notranslate"><span class="pre">dmi_tensor</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.C11"><code class="docutils literal notranslate"><span class="pre">C11</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.C12"><code class="docutils literal notranslate"><span class="pre">C12</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.C44"><code class="docutils literal notranslate"><span class="pre">C44</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.cellsize"><code class="docutils literal notranslate"><span class="pre">cellsize</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.center"><code class="docutils literal notranslate"><span class="pre">center</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.demag_field"><code class="docutils literal notranslate"><span class="pre">demag_field</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.dmi_tensors"><code class="docutils literal notranslate"><span class="pre">dmi_tensors</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.effective_body_force"><code class="docutils literal notranslate"><span class="pre">effective_body_force</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.elastic_acceleration"><code class="docutils literal notranslate"><span class="pre">elastic_acceleration</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.elastic_damping"><code class="docutils literal notranslate"><span class="pre">elastic_damping</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.elastic_displacement"><code class="docutils literal notranslate"><span class="pre">elastic_displacement</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.elastic_energy"><code class="docutils literal notranslate"><span class="pre">elastic_energy</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.elastic_energy_density"><code class="docutils literal notranslate"><span class="pre">elastic_energy_density</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.elastic_force"><code class="docutils literal notranslate"><span class="pre">elastic_force</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.elastic_velocity"><code class="docutils literal notranslate"><span class="pre">elastic_velocity</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.enable_as_stray_field_destination"><code class="docutils literal notranslate"><span class="pre">enable_as_stray_field_destination</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.enable_as_stray_field_source"><code class="docutils literal notranslate"><span class="pre">enable_as_stray_field_source</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.enable_elastodynamics"><code class="docutils literal notranslate"><span class="pre">enable_elastodynamics</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.eta"><code class="docutils literal notranslate"><span class="pre">eta</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.external_body_force"><code class="docutils literal notranslate"><span class="pre">external_body_force</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.geometry"><code class="docutils literal notranslate"><span class="pre">geometry</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.grid"><code class="docutils literal notranslate"><span class="pre">grid</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.kinetic_energy"><code class="docutils literal notranslate"><span class="pre">kinetic_energy</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.kinetic_energy_density"><code class="docutils literal notranslate"><span class="pre">kinetic_energy_density</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.meshgrid"><code class="docutils literal notranslate"><span class="pre">meshgrid</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.name"><code class="docutils literal notranslate"><span class="pre">name</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.origin"><code class="docutils literal notranslate"><span class="pre">origin</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.poynting_vector"><code class="docutils literal notranslate"><span class="pre">poynting_vector</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.regions"><code class="docutils literal notranslate"><span class="pre">regions</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.rho"><code class="docutils literal notranslate"><span class="pre">rho</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.rigid_norm_strain"><code class="docutils literal notranslate"><span class="pre">rigid_norm_strain</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.rigid_shear_strain"><code class="docutils literal notranslate"><span class="pre">rigid_shear_strain</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.strain_tensor"><code class="docutils literal notranslate"><span class="pre">strain_tensor</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.stray_field_from_magnet"><code class="docutils literal notranslate"><span class="pre">stray_field_from_magnet()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.stress_tensor"><code class="docutils literal notranslate"><span class="pre">stress_tensor</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.world"><code class="docutils literal notranslate"><span class="pre">world</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.neel_vector"><code class="docutils literal notranslate"><span class="pre">neel_vector</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.full_magnetization"><code class="docutils literal notranslate"><span class="pre">full_magnetization</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.angle_field"><code class="docutils literal notranslate"><span class="pre">angle_field</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.max_intracell_angle"><code class="docutils literal notranslate"><span class="pre">max_intracell_angle</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.total_energy_density"><code class="docutils literal notranslate"><span class="pre">total_energy_density</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.total_energy"><code class="docutils literal notranslate"><span class="pre">total_energy</span></code></a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="antiferromagnet">
+<h1>Antiferromagnet<a class="headerlink" href="#antiferromagnet" title="Link to this heading">#</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="mumaxplus.Antiferromagnet">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Antiferromagnet</span></span><a class="headerlink" href="#mumaxplus.Antiferromagnet" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Magnet</span></code></p>
+<p>Create an antiferromagnet instance.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mumaxplus.Antiferromagnet.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">world</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">regions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mumaxplus.Antiferromagnet.__init__" title="Link to this definition">#</a></dt>
+<dd><p>This class can also be used to create a Ferrimagnet instance since
+both sublattices are independently modifiable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>world</strong> (<a class="reference internal" href="mumaxplus.World.html#mumaxplus.World" title="mumaxplus.World"><em>mumaxplus.World</em></a>) – World in which the antiferromagnet lives.</p></li>
+<li><p><strong>grid</strong> (<a class="reference internal" href="mumaxplus.Grid.html#mumaxplus.Grid" title="mumaxplus.Grid"><em>mumaxplus.Grid</em></a>) – The number of cells in x, y, z the antiferromagnet should be divided into.</p></li>
+<li><p><strong>geometry</strong> (<em>None</em><em>, </em><em>ndarray</em><em>, or </em><em>callable</em><em> (</em><em>default=None</em><em>)</em>) – <p>The geometry of the antiferromagnet can be set in three ways.</p>
+<ol class="arabic simple">
+<li><p>If the geometry contains all cells in the grid, then use None (the default)</p></li>
+<li><p>Use an ndarray which specifies for each cell whether or not it is in the
+geometry.</p></li>
+<li><p>Use a function which takes x, y, and z coordinates as arguments and returns
+true if this position is inside the geometry and false otherwise.</p></li>
+</ol>
+</p></li>
+<li><p><strong>regions</strong> (<em>None</em><em>, </em><em>ndarray</em><em>, or </em><em>callable</em><em> (</em><em>default=None</em><em>)</em>) – The regional structure of an antiferromagnet can be set in the same three ways
+as the geometry. This parameter indexes each grid cell to a certain region.</p></li>
+<li><p><strong>name</strong> (<em>str</em><em> (</em><em>default=&quot;&quot;</em><em>)</em>) – The antiferromagnet’s identifier. If the name is empty (the default), a name for the
+antiferromagnet will be created.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mumaxplus.Antiferromagnet.sub1">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sub1</span></span><a class="headerlink" href="#mumaxplus.Antiferromagnet.sub1" title="Link to this definition">#</a></dt>
+<dd><p>First sublattice instance.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mumaxplus.Antiferromagnet.sub2">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sub2</span></span><a class="headerlink" href="#mumaxplus.Antiferromagnet.sub2" title="Link to this definition">#</a></dt>
+<dd><p>Second sublattice instance.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mumaxplus.Antiferromagnet.sublattices">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sublattices</span></span><a class="headerlink" href="#mumaxplus.Antiferromagnet.sublattices" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mumaxplus.Antiferromagnet.other_sublattice">
+<span class="sig-name descname"><span class="pre">other_sublattice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sub</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mumaxplus.Antiferromagnet.other_sublattice" title="Link to this definition">#</a></dt>
+<dd><p>Returns sister sublattice of given sublattice.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>sub</strong> (<a class="reference internal" href="mumaxplus.Ferromagnet.html#mumaxplus.Ferromagnet" title="mumaxplus.ferromagnet.Ferromagnet"><em>Ferromagnet</em></a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mumaxplus.Antiferromagnet.bias_magnetic_field">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">bias_magnetic_field</span></span><a class="headerlink" href="#mumaxplus.Antiferromagnet.bias_magnetic_field" title="Link to this definition">#</a></dt>
+<dd><p>Uniform bias magnetic field which will affect an antiferromagnet.</p>
+<p>The value should be specifed in Teslas.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mumaxplus.Antiferromagnet.enable_demag">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">enable_demag</span></span><a class="headerlink" href="#mumaxplus.Antiferromagnet.enable_demag" title="Link to this definition">#</a></dt>
+<dd><p>Enable/disable demagnetization switch of both sublattices.</p>
+<p>Default = True.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mumaxplus.Antiferromagnet.minimize">
+<span class="sig-name descname"><span class="pre">minimize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-06</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nsamples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mumaxplus.Antiferromagnet.minimize" title="Link to this definition">#</a></dt>
+<dd><p>Minimize the total energy.</p>
+<p>Fast energy minimization, but less robust than <a class="reference internal" href="#mumaxplus.Antiferromagnet.relax" title="mumaxplus.Antiferromagnet.relax"><code class="xref py py-func docutils literal notranslate"><span class="pre">relax()</span></code></a>
+when starting from a high energy state.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tol</strong> (<em>int / float</em><em> (</em><em>default=1e-6</em><em>)</em>) – The maximum allowed difference between consecutive magnetization
+evaluations when advancing toward an energy minimum.</p></li>
+<li><p><strong>nsamples</strong> (<em>int</em><em> (</em><em>default=20</em><em>)</em>) – The number of consecutive magnetization evaluations that must not
+differ by more than the tolerance “tol”.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#mumaxplus.Antiferromagnet.relax" title="mumaxplus.Antiferromagnet.relax"><code class="xref py py-obj docutils literal notranslate"><span class="pre">relax</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mumaxplus.Antiferromagnet.relax">
+<span class="sig-name descname"><span class="pre">relax</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-09</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mumaxplus.Antiferromagnet.relax" title="Link to this definition">#</a></dt>
+<dd><p>Relax the state to an energy minimum.</p>
+<p>The system evolves in time without precession (pure damping) until
+the total energy (i.e. the sum of sublattices) hits the noise floor.
+Hereafter, relaxation keeps on going until the maximum torque is
+minimized.</p>
+<p>Compared to <a class="reference internal" href="#mumaxplus.Antiferromagnet.minimize" title="mumaxplus.Antiferromagnet.minimize"><code class="xref py py-func docutils literal notranslate"><span class="pre">minimize()</span></code></a>, this function takes a longer time to execute,
+but is more robust when starting from a high energy state (i.e. random).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>tol</strong> (<em>float</em><em>, </em><em>default=1e-9</em>) – The lowest maximum error of the timesolver.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#mumaxplus.Antiferromagnet.minimize" title="mumaxplus.Antiferromagnet.minimize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">minimize</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mumaxplus.Antiferromagnet.afmex_cell">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">afmex_cell</span></span><a class="headerlink" href="#mumaxplus.Antiferromagnet.afmex_cell" title="Link to this definition">#</a></dt>
+<dd><p>Intracell antiferromagnetic exchange constant (J/m).
+This parameter plays the role of exchange constant of
+the antiferromagnetic homogeneous exchange interaction
+in a single simulation cell.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#mumaxplus.Antiferromagnet.afmex_nn" title="mumaxplus.Antiferromagnet.afmex_nn"><code class="xref py py-obj docutils literal notranslate"><span class="pre">afmex_nn</span></code></a>, <a class="reference internal" href="#mumaxplus.Antiferromagnet.latcon" title="mumaxplus.Antiferromagnet.latcon"><code class="xref py py-obj docutils literal notranslate"><span class="pre">latcon</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mumaxplus.Antiferromagnet.afmex_nn">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">afmex_nn</span></span><a class="headerlink" href="#mumaxplus.Antiferromagnet.afmex_nn" title="Link to this definition">#</a></dt>
+<dd><p>Intercell antiferromagnetic exchange constant (J/m).
+This parameter plays the role of exchange constant of
+the antiferromagnetic inhomogeneous exchange interaction
+between neighbouring simulation cells.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#mumaxplus.Antiferromagnet.afmex_cell" title="mumaxplus.Antiferromagnet.afmex_cell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">afmex_cell</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mumaxplus.Antiferromagnet.inter_afmex_nn">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">inter_afmex_nn</span></span><a class="headerlink" href="#mumaxplus.Antiferromagnet.inter_afmex_nn" title="Link to this definition">#</a></dt>
+<dd><p>Interregional antiferromagnetic exchange constant (J/m).
+If set to zero (default), then the harmonic mean of
+the exchange constants of the two regions are used.</p>
+<p>When no exchange interaction between different regions
+is wanted, set <cite>scale_afmex_nn</cite> to zero.</p>
+<p>This parameter should be set with</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">magnet</span><span class="o">.</span><span class="n">inter_afmex_nn</span><span class="o">.</span><span class="n">set_between</span><span class="p">(</span><span class="n">region1</span><span class="p">,</span> <span class="n">region2</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#mumaxplus.Antiferromagnet.afmex_nn" title="mumaxplus.Antiferromagnet.afmex_nn"><code class="xref py py-obj docutils literal notranslate"><span class="pre">afmex_nn</span></code></a>, <a class="reference internal" href="mumaxplus.Ferromagnet.html#mumaxplus.Ferromagnet.inter_exchange" title="mumaxplus.Ferromagnet.inter_exchange"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Ferromagnet.inter_exchange</span></code></a>, <a class="reference internal" href="#mumaxplus.Antiferromagnet.scale_afmex_nn" title="mumaxplus.Antiferromagnet.scale_afmex_nn"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scale_afmex_nn</span></code></a>, <a class="reference internal" href="mumaxplus.Ferromagnet.html#mumaxplus.Ferromagnet.scale_exchange" title="mumaxplus.Ferromagnet.scale_exchange"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Ferromagnet.scale_exchange</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mumaxplus.Antiferromagnet.scale_afmex_nn">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">scale_afmex_nn</span></span><a class="headerlink" href="#mumaxplus.Antiferromagnet.scale_afmex_nn" title="Link to this definition">#</a></dt>
+<dd><p>Scaling of the antiferromagnetic exchange constant between
+different regions. This factor is multiplied by the harmonic
+mean of the exchange constants of the two regions.</p>
+<p>If <cite>inter_afmex_nn</cite> is set to a non-zero value, then this
+overrides <cite>scale_afmex_nn</cite>, i.e. <cite>scale_afmex_nn</cite> is
+automatically set to zero when <cite>inter_afmex_nn</cite> is not.</p>
+<p>This parameter should be set with</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">magnet</span><span class="o">.</span><span class="n">scale_afmex_nn</span><span class="o">.</span><span class="n">set_between</span><span class="p">(</span><span class="n">region1</span><span class="p">,</span> <span class="n">region2</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#mumaxplus.Antiferromagnet.afmex_nn" title="mumaxplus.Antiferromagnet.afmex_nn"><code class="xref py py-obj docutils literal notranslate"><span class="pre">afmex_nn</span></code></a>, <a class="reference internal" href="#mumaxplus.Antiferromagnet.inter_afmex_nn" title="mumaxplus.Antiferromagnet.inter_afmex_nn"><code class="xref py py-obj docutils literal notranslate"><span class="pre">inter_afmex_nn</span></code></a>, <a class="reference internal" href="mumaxplus.Ferromagnet.html#mumaxplus.Ferromagnet.inter_exchange" title="mumaxplus.Ferromagnet.inter_exchange"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Ferromagnet.inter_exchange</span></code></a>, <a class="reference internal" href="mumaxplus.Ferromagnet.html#mumaxplus.Ferromagnet.scale_exchange" title="mumaxplus.Ferromagnet.scale_exchange"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Ferromagnet.scale_exchange</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mumaxplus.Antiferromagnet.latcon">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">latcon</span></span><a class="headerlink" href="#mumaxplus.Antiferromagnet.latcon" title="Link to this definition">#</a></dt>
+<dd><p>Lattice constant (m).</p>
+<p>Physical lattice constant of the Antiferromagnet. This doesn’t break the
+micromagnetic character of the simulation package, but is only used to
+calculate the homogeneous exchange field, i.e. the antiferromagnetic
+exchange interaction between spins at the same site.</p>
+<p>Default = 0.35 nm.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#mumaxplus.Antiferromagnet.afmex_cell" title="mumaxplus.Antiferromagnet.afmex_cell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">afmex_cell</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mumaxplus.Antiferromagnet.dmi_tensor">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dmi_tensor</span></span><a class="headerlink" href="#mumaxplus.Antiferromagnet.dmi_tensor" title="Link to this definition">#</a></dt>
+<dd><p>Get the DMI tensor of this Antiferromagnet. This tensor
+describes intersublattice DMI exchange.</p>
+<p>Note that individual sublattices can have their own tensor
+to describe intrasublattice DMI exchange.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The DMI tensor of this Antiferromagnet.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="mumaxplus.DmiTensor.html#mumaxplus.DmiTensor" title="mumaxplus.DmiTensor">DmiTensor</a></p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="mumaxplus.DmiTensor.html#mumaxplus.DmiTensor" title="mumaxplus.DmiTensor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DmiTensor</span></code></a>, <a class="reference internal" href="#mumaxplus.Antiferromagnet.dmi_tensors" title="mumaxplus.Antiferromagnet.dmi_tensors"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dmi_tensors</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mumaxplus.Antiferromagnet.C11">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">C11</span></span><a class="headerlink" href="#mumaxplus.Antiferromagnet.C11" title="Link to this definition">#</a></dt>
+<dd><p>Stiffness constant C11 = C22 = C33 of the stiffness tensor (N/m²).</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#mumaxplus.Antiferromagnet.C12" title="mumaxplus.Antiferromagnet.C12"><code class="xref py py-obj docutils literal notranslate"><span class="pre">C12</span></code></a>, <a class="reference internal" href="#mumaxplus.Antiferromagnet.C44" title="mumaxplus.Antiferromagnet.C44"><code class="xref py py-obj docutils literal notranslate"><span class="pre">C44</span></code></a>, <a class="reference internal" href="#mumaxplus.Antiferromagnet.stress_tensor" title="mumaxplus.Antiferromagnet.stress_tensor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stress_tensor</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mumaxplus.Antiferromagnet.C12">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">C12</span></span><a class="headerlink" href="#mumaxplus.Antiferromagnet.C12" title="Link to this definition">#</a></dt>
+<dd><p>Stiffness constant C12 = C13 = C23 of the stiffness tensor (N/m²).</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#mumaxplus.Antiferromagnet.C11" title="mumaxplus.Antiferromagnet.C11"><code class="xref py py-obj docutils literal notranslate"><span class="pre">C11</span></code></a>, <a class="reference internal" href="#mumaxplus.Antiferromagnet.C44" title="mumaxplus.Antiferromagnet.C44"><code class="xref py py-obj docutils literal notranslate"><span class="pre">C44</span></code></a>, <a class="reference internal" href="#mumaxplus.Antiferromagnet.stress_tensor" title="mumaxplus.Antiferromagnet.stress_tensor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stress_tensor</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mumaxplus.Antiferromagnet.C44">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">C44</span></span><a class="headerlink" href="#mumaxplus.Antiferromagnet.C44" title="Link to this definition">#</a></dt>
+<dd><p>Stiffness constant C44 = C55 = C66 of the stiffness tensor (N/m²).</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#mumaxplus.Antiferromagnet.C11" title="mumaxplus.Antiferromagnet.C11"><code class="xref py py-obj docutils literal notranslate"><span class="pre">C11</span></code></a>, <a class="reference internal" href="#mumaxplus.Antiferromagnet.C12" title="mumaxplus.Antiferromagnet.C12"><code class="xref py py-obj docutils literal notranslate"><span class="pre">C12</span></code></a>, <a class="reference internal" href="#mumaxplus.Antiferromagnet.stress_tensor" title="mumaxplus.Antiferromagnet.stress_tensor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stress_tensor</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mumaxplus.Antiferromagnet.cellsize">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cellsize</span></span><a class="headerlink" href="#mumaxplus.Antiferromagnet.cellsize" title="Link to this definition">#</a></dt>
+<dd><p>Dimensions of the cell.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mumaxplus.Antiferromagnet.center">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">center</span></span><a class="headerlink" href="#mumaxplus.Antiferromagnet.center" title="Link to this definition">#</a></dt>
+<dd><p>Center of the magnet.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>center</strong> – xyz coordinate of the center of the magnet.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>tuple[float] of size 3</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mumaxplus.Antiferromagnet.demag_field">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">demag_field</span></span><a class="headerlink" href="#mumaxplus.Antiferromagnet.demag_field" title="Link to this definition">#</a></dt>
+<dd><p>Demagnetization field (T).</p>
+<p>Ferromagnetic sublattices of other host magnets don’t have a demag field.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#mumaxplus.Antiferromagnet.stray_field_from_magnet" title="mumaxplus.Antiferromagnet.stray_field_from_magnet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stray_field_from_magnet</span></code></a>, <a class="reference internal" href="mumaxplus.StrayField.html#mumaxplus.StrayField" title="mumaxplus.StrayField"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StrayField</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mumaxplus.Antiferromagnet.dmi_tensors">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dmi_tensors</span></span><a class="headerlink" href="#mumaxplus.Antiferromagnet.dmi_tensors" title="Link to this definition">#</a></dt>
+<dd><p>Returns the DMI tensor of self, self.sub1 and self.sub2.</p>
+<p>This group can be used to set the intersublattice and both intrasublattice
+DMI tensors at the same time.</p>
+<p>For example, to set interfacial DMI in the whole system to the same value,
+one could use</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">magnet</span> <span class="o">=</span> <span class="n">Antiferromagnet</span><span class="p">(</span><span class="n">world</span><span class="p">,</span> <span class="n">grid</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">magnet</span><span class="o">.</span><span class="n">dmi_tensors</span><span class="o">.</span><span class="n">set_interfacial_dmi</span><span class="p">(</span><span class="mf">1e-3</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Or to set an individual tensor element, one could use</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">magnet</span><span class="o">.</span><span class="n">dmi_tensors</span><span class="o">.</span><span class="n">xxy</span> <span class="o">=</span> <span class="mf">1e-3</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="mumaxplus.DmiTensor.html#mumaxplus.DmiTensor" title="mumaxplus.DmiTensor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DmiTensor</span></code></a>, <a class="reference internal" href="#mumaxplus.Antiferromagnet.dmi_tensor" title="mumaxplus.Antiferromagnet.dmi_tensor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dmi_tensor</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mumaxplus.Antiferromagnet.effective_body_force">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">effective_body_force</span></span><a class="headerlink" href="#mumaxplus.Antiferromagnet.effective_body_force" title="Link to this definition">#</a></dt>
+<dd><p>Elastic effective body force density is the sum of elastic,
+magnetoelastic and external body force densities (N/m³).
+Elastic damping is not included.</p>
+<div class="math notranslate nohighlight">
+\[f_{eff} = f_{el} + f_{mel} + f_{ext}\]</div>
+<p>In the case of this Magnet being a host (antiferromagnet),
+f_mel is the sum of all magnetoelastic body forces of all sublattices.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#mumaxplus.Antiferromagnet.elastic_force" title="mumaxplus.Antiferromagnet.elastic_force"><code class="xref py py-obj docutils literal notranslate"><span class="pre">elastic_force</span></code></a>, <a class="reference internal" href="#mumaxplus.Antiferromagnet.external_body_force" title="mumaxplus.Antiferromagnet.external_body_force"><code class="xref py py-obj docutils literal notranslate"><span class="pre">external_body_force</span></code></a>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">magnetoelastic_force</span></code></p>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mumaxplus.Antiferromagnet.elastic_acceleration">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">elastic_acceleration</span></span><a class="headerlink" href="#mumaxplus.Antiferromagnet.elastic_acceleration" title="Link to this definition">#</a></dt>
+<dd><p>Elastic acceleration includes all effects that influence the elastic
+velocity including elastic, magnetoelastic and external body force
+densities, and elastic damping (m/s²).</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#mumaxplus.Antiferromagnet.rho" title="mumaxplus.Antiferromagnet.rho"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rho</span></code></a>, <a class="reference internal" href="#mumaxplus.Antiferromagnet.effective_body_force" title="mumaxplus.Antiferromagnet.effective_body_force"><code class="xref py py-obj docutils literal notranslate"><span class="pre">effective_body_force</span></code></a>, <a class="reference internal" href="#mumaxplus.Antiferromagnet.elastic_damping" title="mumaxplus.Antiferromagnet.elastic_damping"><code class="xref py py-obj docutils literal notranslate"><span class="pre">elastic_damping</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mumaxplus.Antiferromagnet.elastic_damping">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">elastic_damping</span></span><a class="headerlink" href="#mumaxplus.Antiferromagnet.elastic_damping" title="Link to this definition">#</a></dt>
+<dd><p>-ηv (N/m³).</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#mumaxplus.Antiferromagnet.eta" title="mumaxplus.Antiferromagnet.eta"><code class="xref py py-obj docutils literal notranslate"><span class="pre">eta</span></code></a>, <a class="reference internal" href="#mumaxplus.Antiferromagnet.elastic_velocity" title="mumaxplus.Antiferromagnet.elastic_velocity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">elastic_velocity</span></code></a></p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Elastic damping body force density proportional to η and velocity</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mumaxplus.Antiferromagnet.elastic_displacement">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">elastic_displacement</span></span><a class="headerlink" href="#mumaxplus.Antiferromagnet.elastic_displacement" title="Link to this definition">#</a></dt>
+<dd><p>Elastic displacement vector (m).</p>
+<p>The elastic displacement is uninitialized (does not exist) if the
+elastodynamics are disabled.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#mumaxplus.Antiferromagnet.elastic_velocity" title="mumaxplus.Antiferromagnet.elastic_velocity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">elastic_velocity</span></code></a>, <a class="reference internal" href="#mumaxplus.Antiferromagnet.enable_elastodynamics" title="mumaxplus.Antiferromagnet.enable_elastodynamics"><code class="xref py py-obj docutils literal notranslate"><span class="pre">enable_elastodynamics</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mumaxplus.Antiferromagnet.elastic_energy">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">elastic_energy</span></span><a class="headerlink" href="#mumaxplus.Antiferromagnet.elastic_energy" title="Link to this definition">#</a></dt>
+<dd><p>Potential energy related to elastics (J).</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#mumaxplus.Antiferromagnet.elastic_energy_density" title="mumaxplus.Antiferromagnet.elastic_energy_density"><code class="xref py py-obj docutils literal notranslate"><span class="pre">elastic_energy_density</span></code></a>, <a class="reference internal" href="#mumaxplus.Antiferromagnet.strain_tensor" title="mumaxplus.Antiferromagnet.strain_tensor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">strain_tensor</span></code></a>, <a class="reference internal" href="#mumaxplus.Antiferromagnet.stress_tensor" title="mumaxplus.Antiferromagnet.stress_tensor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stress_tensor</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mumaxplus.Antiferromagnet.elastic_energy_density">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">elastic_energy_density</span></span><a class="headerlink" href="#mumaxplus.Antiferromagnet.elastic_energy_density" title="Link to this definition">#</a></dt>
+<dd><p>Potential energy density related to elastics (J/m³).
+This is given by 1/2 σ:ε</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#mumaxplus.Antiferromagnet.elastic_energy" title="mumaxplus.Antiferromagnet.elastic_energy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">elastic_energy</span></code></a>, <a class="reference internal" href="#mumaxplus.Antiferromagnet.strain_tensor" title="mumaxplus.Antiferromagnet.strain_tensor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">strain_tensor</span></code></a>, <a class="reference internal" href="#mumaxplus.Antiferromagnet.stress_tensor" title="mumaxplus.Antiferromagnet.stress_tensor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stress_tensor</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mumaxplus.Antiferromagnet.elastic_force">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">elastic_force</span></span><a class="headerlink" href="#mumaxplus.Antiferromagnet.elastic_force" title="Link to this definition">#</a></dt>
+<dd><p>Elastic body force density due to mechanical stress gradients (N/m³).</p>
+<div class="math notranslate nohighlight">
+\[f = \nabla \sigma = \nabla (c\varepsilon)\]</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#mumaxplus.Antiferromagnet.C11" title="mumaxplus.Antiferromagnet.C11"><code class="xref py py-obj docutils literal notranslate"><span class="pre">C11</span></code></a>, <a class="reference internal" href="#mumaxplus.Antiferromagnet.C12" title="mumaxplus.Antiferromagnet.C12"><code class="xref py py-obj docutils literal notranslate"><span class="pre">C12</span></code></a>, <a class="reference internal" href="#mumaxplus.Antiferromagnet.C44" title="mumaxplus.Antiferromagnet.C44"><code class="xref py py-obj docutils literal notranslate"><span class="pre">C44</span></code></a>, <a class="reference internal" href="#mumaxplus.Antiferromagnet.effective_body_force" title="mumaxplus.Antiferromagnet.effective_body_force"><code class="xref py py-obj docutils literal notranslate"><span class="pre">effective_body_force</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mumaxplus.Antiferromagnet.elastic_velocity">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">elastic_velocity</span></span><a class="headerlink" href="#mumaxplus.Antiferromagnet.elastic_velocity" title="Link to this definition">#</a></dt>
+<dd><p>Elastic velocity vector (m/s).</p>
+<p>The elastic velocity is uninitialized (does not exist) if the
+elastodynamics are disabled.</p>
+<p>elastic_displacement
+enable_elastodynamics</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mumaxplus.Antiferromagnet.enable_as_stray_field_destination">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">enable_as_stray_field_destination</span></span><a class="headerlink" href="#mumaxplus.Antiferromagnet.enable_as_stray_field_destination" title="Link to this definition">#</a></dt>
+<dd><p>Enable/disable whether this magnet (self) is influenced by the stray
+fields of other magnets. This does not influence demagnetization.</p>
+<p>Default = True.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#mumaxplus.Antiferromagnet.enable_as_stray_field_source" title="mumaxplus.Antiferromagnet.enable_as_stray_field_source"><code class="xref py py-obj docutils literal notranslate"><span class="pre">enable_as_stray_field_source</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mumaxplus.Antiferromagnet.enable_as_stray_field_source">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">enable_as_stray_field_source</span></span><a class="headerlink" href="#mumaxplus.Antiferromagnet.enable_as_stray_field_source" title="Link to this definition">#</a></dt>
+<dd><p>Enable/disable this magnet (self) as the source of stray fields felt
+by other magnets. This does not influence demagnetization.</p>
+<p>Default = True.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#mumaxplus.Antiferromagnet.enable_as_stray_field_destination" title="mumaxplus.Antiferromagnet.enable_as_stray_field_destination"><code class="xref py py-obj docutils literal notranslate"><span class="pre">enable_as_stray_field_destination</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mumaxplus.Antiferromagnet.enable_elastodynamics">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">enable_elastodynamics</span></span><a class="headerlink" href="#mumaxplus.Antiferromagnet.enable_elastodynamics" title="Link to this definition">#</a></dt>
+<dd><p>Enable/disable elastodynamic time evolution.</p>
+<p>If elastodynamics are disabled (default), the elastic displacement and
+velocity are uninitialized to save memory.</p>
+<p>Elastodynamics can not be used together with rigid normal and shear
+strain, where strain is set by the user instead.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#mumaxplus.Antiferromagnet.rigid_norm_strain" title="mumaxplus.Antiferromagnet.rigid_norm_strain"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rigid_norm_strain</span></code></a>, <a class="reference internal" href="#mumaxplus.Antiferromagnet.rigid_shear_strain" title="mumaxplus.Antiferromagnet.rigid_shear_strain"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rigid_shear_strain</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mumaxplus.Antiferromagnet.eta">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">eta</span></span><a class="headerlink" href="#mumaxplus.Antiferromagnet.eta" title="Link to this definition">#</a></dt>
+<dd><p>Phenomenological elastic damping constant (kg/m³s).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mumaxplus.Antiferromagnet.external_body_force">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">external_body_force</span></span><a class="headerlink" href="#mumaxplus.Antiferromagnet.external_body_force" title="Link to this definition">#</a></dt>
+<dd><p>External body force density f_ext that is added to the effective body
+force density (N/m³).</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#mumaxplus.Antiferromagnet.effective_body_force" title="mumaxplus.Antiferromagnet.effective_body_force"><code class="xref py py-obj docutils literal notranslate"><span class="pre">effective_body_force</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mumaxplus.Antiferromagnet.geometry">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">geometry</span></span><a class="headerlink" href="#mumaxplus.Antiferromagnet.geometry" title="Link to this definition">#</a></dt>
+<dd><p>Geometry of the magnet.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mumaxplus.Antiferromagnet.grid">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">grid</span></span><a class="headerlink" href="#mumaxplus.Antiferromagnet.grid" title="Link to this definition">#</a></dt>
+<dd><p>Return the underlying grid of the magnet.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mumaxplus.Antiferromagnet.kinetic_energy">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">kinetic_energy</span></span><a class="headerlink" href="#mumaxplus.Antiferromagnet.kinetic_energy" title="Link to this definition">#</a></dt>
+<dd><p>Kinetic energy related to the elastic velocity (J/m³).</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#mumaxplus.Antiferromagnet.elastic_velocity" title="mumaxplus.Antiferromagnet.elastic_velocity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">elastic_velocity</span></code></a>, <a class="reference internal" href="#mumaxplus.Antiferromagnet.kinetic_energy_density" title="mumaxplus.Antiferromagnet.kinetic_energy_density"><code class="xref py py-obj docutils literal notranslate"><span class="pre">kinetic_energy_density</span></code></a>, <a class="reference internal" href="#mumaxplus.Antiferromagnet.rho" title="mumaxplus.Antiferromagnet.rho"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rho</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mumaxplus.Antiferromagnet.kinetic_energy_density">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">kinetic_energy_density</span></span><a class="headerlink" href="#mumaxplus.Antiferromagnet.kinetic_energy_density" title="Link to this definition">#</a></dt>
+<dd><p>Kinetic energy density related to the elastic velocity (J/m³).</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#mumaxplus.Antiferromagnet.elastic_velocity" title="mumaxplus.Antiferromagnet.elastic_velocity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">elastic_velocity</span></code></a>, <a class="reference internal" href="#mumaxplus.Antiferromagnet.kinetic_energy" title="mumaxplus.Antiferromagnet.kinetic_energy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">kinetic_energy</span></code></a>, <a class="reference internal" href="#mumaxplus.Antiferromagnet.rho" title="mumaxplus.Antiferromagnet.rho"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rho</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mumaxplus.Antiferromagnet.meshgrid">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">meshgrid</span></span><a class="headerlink" href="#mumaxplus.Antiferromagnet.meshgrid" title="Link to this definition">#</a></dt>
+<dd><p>Return a numpy meshgrid with the x, y, and z coordinate of each cell.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mumaxplus.Antiferromagnet.name">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#mumaxplus.Antiferromagnet.name" title="Link to this definition">#</a></dt>
+<dd><p>Name of the magnet.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mumaxplus.Antiferromagnet.origin">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">origin</span></span><a class="headerlink" href="#mumaxplus.Antiferromagnet.origin" title="Link to this definition">#</a></dt>
+<dd><p>Origin of the magnet.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>origin</strong> – xyz coordinate of the origin of the magnet.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>tuple[float] of size 3</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mumaxplus.Antiferromagnet.poynting_vector">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">poynting_vector</span></span><a class="headerlink" href="#mumaxplus.Antiferromagnet.poynting_vector" title="Link to this definition">#</a></dt>
+<dd><p>Poynting vector (W/m2).
+This is given by P = - σv</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#mumaxplus.Antiferromagnet.elastic_velocity" title="mumaxplus.Antiferromagnet.elastic_velocity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">elastic_velocity</span></code></a>, <a class="reference internal" href="#mumaxplus.Antiferromagnet.stress_tensor" title="mumaxplus.Antiferromagnet.stress_tensor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stress_tensor</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mumaxplus.Antiferromagnet.regions">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">regions</span></span><a class="headerlink" href="#mumaxplus.Antiferromagnet.regions" title="Link to this definition">#</a></dt>
+<dd><p>Regions of the magnet.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mumaxplus.Antiferromagnet.rho">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">rho</span></span><a class="headerlink" href="#mumaxplus.Antiferromagnet.rho" title="Link to this definition">#</a></dt>
+<dd><p>Mass density (kg/m³).</p>
+<p>Default = 1.0 kg/m³</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mumaxplus.Antiferromagnet.rigid_norm_strain">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">rigid_norm_strain</span></span><a class="headerlink" href="#mumaxplus.Antiferromagnet.rigid_norm_strain" title="Link to this definition">#</a></dt>
+<dd><p>The applied normal strain (m/m).</p>
+<p>This quantity has three components (εxx, εyy, εzz),
+which forms the diagonal of the symmetric strain tensor:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{bmatrix}
+\varepsilon_{xx} &amp; 0 &amp; 0 \\
+0 &amp; \varepsilon_{yy} &amp; 0 \\
+0 &amp; 0 &amp; \varepsilon_{zz}
+\end{bmatrix}\end{split}\]</div>
+<p>The rigid strain can not be used together with elastodynamics.
+Here the strain is set by the user as a parameter for the magnetoelastic
+field, instead of calculated dynamically (strain_tensor).</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#mumaxplus.Antiferromagnet.rigid_shear_strain" title="mumaxplus.Antiferromagnet.rigid_shear_strain"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rigid_shear_strain</span></code></a>, <a class="reference internal" href="#mumaxplus.Antiferromagnet.enable_elastodynamics" title="mumaxplus.Antiferromagnet.enable_elastodynamics"><code class="xref py py-obj docutils literal notranslate"><span class="pre">enable_elastodynamics</span></code></a>, <a class="reference internal" href="#mumaxplus.Antiferromagnet.strain_tensor" title="mumaxplus.Antiferromagnet.strain_tensor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">strain_tensor</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mumaxplus.Antiferromagnet.rigid_shear_strain">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">rigid_shear_strain</span></span><a class="headerlink" href="#mumaxplus.Antiferromagnet.rigid_shear_strain" title="Link to this definition">#</a></dt>
+<dd><p>The applied shear strain (m/m).</p>
+<p>This quantity has three components (εxy, εxz, εyz),
+which forms the off-diagonal of the symmetric strain tensor:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{bmatrix}
+0 &amp; \varepsilon_{xy} &amp; \varepsilon_{xz} \\
+\varepsilon_{xy} &amp; 0 &amp; \varepsilon_{yz} \\
+\varepsilon_{xz} &amp; \varepsilon_{yz} &amp; 0
+\end{bmatrix}\end{split}\]</div>
+<p>The rigid strain can not be used together with elastodynamics.
+Here the strain is set by the user as a parameter for the magnetoelastic
+field, instead of calculated dynamically (strain_tensor).</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#mumaxplus.Antiferromagnet.rigid_norm_strain" title="mumaxplus.Antiferromagnet.rigid_norm_strain"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rigid_norm_strain</span></code></a>, <a class="reference internal" href="#mumaxplus.Antiferromagnet.enable_elastodynamics" title="mumaxplus.Antiferromagnet.enable_elastodynamics"><code class="xref py py-obj docutils literal notranslate"><span class="pre">enable_elastodynamics</span></code></a>, <a class="reference internal" href="#mumaxplus.Antiferromagnet.strain_tensor" title="mumaxplus.Antiferromagnet.strain_tensor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">strain_tensor</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mumaxplus.Antiferromagnet.strain_tensor">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">strain_tensor</span></span><a class="headerlink" href="#mumaxplus.Antiferromagnet.strain_tensor" title="Link to this definition">#</a></dt>
+<dd><p>Strain tensor (m/m), calculated according to
+.. math:: varepsilon = 1/2 (nabla u + (nabla u)^T),
+with u the elastic displacement.</p>
+<p>This quantity has six components (εxx, εyy, εzz, εxy, εxz, εyz),
+which forms the symmetric strain tensor:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{bmatrix}
+\varepsilon_{xx} &amp; \varepsilon_{xy} &amp; \varepsilon_{xz} \\
+\varepsilon_{xy} &amp; \varepsilon_{yy} &amp; \varepsilon_{yz} \\
+\varepsilon_{xz} &amp; \varepsilon_{yz} &amp; \varepsilon_{zz}
+\end{bmatrix}\end{split}\]</div>
+<p>Note that the strain corresponds to the real strain and not the
+engineering strain, which would be (εxx, εyy, εzz, 2*εxy, 2*εxz, 2*εyz).</p>
+<p>If you want to set the strain as a parameter yourself, use rigid normal
+and shear strain.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#mumaxplus.Antiferromagnet.elastic_energy" title="mumaxplus.Antiferromagnet.elastic_energy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">elastic_energy</span></code></a>, <a class="reference internal" href="#mumaxplus.Antiferromagnet.elastic_energy_density" title="mumaxplus.Antiferromagnet.elastic_energy_density"><code class="xref py py-obj docutils literal notranslate"><span class="pre">elastic_energy_density</span></code></a>, <a class="reference internal" href="#mumaxplus.Antiferromagnet.elastic_displacement" title="mumaxplus.Antiferromagnet.elastic_displacement"><code class="xref py py-obj docutils literal notranslate"><span class="pre">elastic_displacement</span></code></a>, <a class="reference internal" href="#mumaxplus.Antiferromagnet.stress_tensor" title="mumaxplus.Antiferromagnet.stress_tensor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stress_tensor</span></code></a>, <a class="reference internal" href="#mumaxplus.Antiferromagnet.rigid_norm_strain" title="mumaxplus.Antiferromagnet.rigid_norm_strain"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rigid_norm_strain</span></code></a>, <a class="reference internal" href="#mumaxplus.Antiferromagnet.rigid_shear_strain" title="mumaxplus.Antiferromagnet.rigid_shear_strain"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rigid_shear_strain</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mumaxplus.Antiferromagnet.stray_field_from_magnet">
+<span class="sig-name descname"><span class="pre">stray_field_from_magnet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_magnet</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mumaxplus.Antiferromagnet.stray_field_from_magnet" title="Link to this definition">#</a></dt>
+<dd><p>Return the magnetic field created by the given input <cite>source_magnet</cite>,
+felt by this magnet (<cite>self</cite>). This raises an error if there exists no
+<cite>StrayField</cite> instance between these two magnets.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>source_magnet</strong> (<em>Magnet</em>) – The magnet acting as the source of the requested stray field.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>stray_field</strong> – StrayField with the given <cite>source_magnet</cite> as source and the Grid of
+this magnet (<cite>self</cite>) as destination.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="mumaxplus.StrayField.html#mumaxplus.StrayField" title="mumaxplus.StrayField">StrayField</a></p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="mumaxplus.StrayField.html#mumaxplus.StrayField" title="mumaxplus.StrayField"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StrayField</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mumaxplus.Antiferromagnet.stress_tensor">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">stress_tensor</span></span><a class="headerlink" href="#mumaxplus.Antiferromagnet.stress_tensor" title="Link to this definition">#</a></dt>
+<dd><p>Stress tensor (N/m²), calculated according to Hooke’s law
+σ = cε.</p>
+<p>This quantity has six components (σxx, σyy, σzz, σxy, σxz, σyz),
+which forms the symmetric stress tensor:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{bmatrix}
+\sigma_{xx} &amp; \sigma_{xy} &amp; \sigma_{xz} \\
+\sigma_{xy} &amp; \sigma_{yy} &amp; \sigma_{yz} \\
+\sigma_{xz} &amp; \sigma_{yz} &amp; \sigma_{zz}
+\end{bmatrix}\end{split}\]</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#mumaxplus.Antiferromagnet.C11" title="mumaxplus.Antiferromagnet.C11"><code class="xref py py-obj docutils literal notranslate"><span class="pre">C11</span></code></a>, <a class="reference internal" href="#mumaxplus.Antiferromagnet.C12" title="mumaxplus.Antiferromagnet.C12"><code class="xref py py-obj docutils literal notranslate"><span class="pre">C12</span></code></a>, <a class="reference internal" href="#mumaxplus.Antiferromagnet.C44" title="mumaxplus.Antiferromagnet.C44"><code class="xref py py-obj docutils literal notranslate"><span class="pre">C44</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mumaxplus.Antiferromagnet.world">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">world</span></span><a class="headerlink" href="#mumaxplus.Antiferromagnet.world" title="Link to this definition">#</a></dt>
+<dd><p>Return the World of which the magnet is a part.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mumaxplus.Antiferromagnet.neel_vector">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">neel_vector</span></span><a class="headerlink" href="#mumaxplus.Antiferromagnet.neel_vector" title="Link to this definition">#</a></dt>
+<dd><p>Weighted dimensionless Neel vector of an antiferromagnet/ferrimagnet.
+(msat1*m1 - msat2*m2) / (msat1 + msat2)</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mumaxplus.Antiferromagnet.full_magnetization">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">full_magnetization</span></span><a class="headerlink" href="#mumaxplus.Antiferromagnet.full_magnetization" title="Link to this definition">#</a></dt>
+<dd><p>Full antiferromagnetic magnetization M1 + M2 (A/m).</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="mumaxplus.Ferromagnet.html#mumaxplus.Ferromagnet.full_magnetization" title="mumaxplus.Ferromagnet.full_magnetization"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Ferromagnet.full_magnetization</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mumaxplus.Antiferromagnet.angle_field">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">angle_field</span></span><a class="headerlink" href="#mumaxplus.Antiferromagnet.angle_field" title="Link to this definition">#</a></dt>
+<dd><p>Returns the deviation from the optimal angle (180°) between
+magnetization vectors in the same cell which are coupled by the
+intracell exchange interaction (rad).</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#mumaxplus.Antiferromagnet.max_intracell_angle" title="mumaxplus.Antiferromagnet.max_intracell_angle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">max_intracell_angle</span></code></a>, <a class="reference internal" href="#mumaxplus.Antiferromagnet.afmex_cell" title="mumaxplus.Antiferromagnet.afmex_cell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">afmex_cell</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mumaxplus.Antiferromagnet.max_intracell_angle">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">max_intracell_angle</span></span><a class="headerlink" href="#mumaxplus.Antiferromagnet.max_intracell_angle" title="Link to this definition">#</a></dt>
+<dd><p>The maximal deviation from 180° between AFM-exchange coupled magnetization
+vectors in the same simulation cell (rad).</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#mumaxplus.Antiferromagnet.angle_field" title="mumaxplus.Antiferromagnet.angle_field"><code class="xref py py-obj docutils literal notranslate"><span class="pre">angle_field</span></code></a>, <a class="reference internal" href="#mumaxplus.Antiferromagnet.afmex_cell" title="mumaxplus.Antiferromagnet.afmex_cell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">afmex_cell</span></code></a>, <a class="reference internal" href="mumaxplus.Ferromagnet.html#mumaxplus.Ferromagnet.max_angle" title="mumaxplus.Ferromagnet.max_angle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Ferromagnet.max_angle</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mumaxplus.Antiferromagnet.total_energy_density">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">total_energy_density</span></span><a class="headerlink" href="#mumaxplus.Antiferromagnet.total_energy_density" title="Link to this definition">#</a></dt>
+<dd><p>Total energy density of both sublattices combined (J/m³). Kinetic and
+elastic energy densities of the antiferromagnet are also included if
+elastodynamics is enabled.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#mumaxplus.Antiferromagnet.total_energy" title="mumaxplus.Antiferromagnet.total_energy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">total_energy</span></code></a>, <a class="reference internal" href="#mumaxplus.Antiferromagnet.enable_elastodynamics" title="mumaxplus.Antiferromagnet.enable_elastodynamics"><code class="xref py py-obj docutils literal notranslate"><span class="pre">enable_elastodynamics</span></code></a>, <a class="reference internal" href="#mumaxplus.Antiferromagnet.elastic_energy_density" title="mumaxplus.Antiferromagnet.elastic_energy_density"><code class="xref py py-obj docutils literal notranslate"><span class="pre">elastic_energy_density</span></code></a>, <a class="reference internal" href="#mumaxplus.Antiferromagnet.kinetic_energy_density" title="mumaxplus.Antiferromagnet.kinetic_energy_density"><code class="xref py py-obj docutils literal notranslate"><span class="pre">kinetic_energy_density</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mumaxplus.Antiferromagnet.total_energy">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">total_energy</span></span><a class="headerlink" href="#mumaxplus.Antiferromagnet.total_energy" title="Link to this definition">#</a></dt>
+<dd><p>Total energy of both sublattices combined (J). Kinetic and elastic
+energies of the antiferromagnet are also included if elastodynamics is
+enabled.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#mumaxplus.Antiferromagnet.total_energy_density" title="mumaxplus.Antiferromagnet.total_energy_density"><code class="xref py py-obj docutils literal notranslate"><span class="pre">total_energy_density</span></code></a>, <a class="reference internal" href="#mumaxplus.Antiferromagnet.enable_elastodynamics" title="mumaxplus.Antiferromagnet.enable_elastodynamics"><code class="xref py py-obj docutils literal notranslate"><span class="pre">enable_elastodynamics</span></code></a>, <a class="reference internal" href="#mumaxplus.Antiferromagnet.elastic_energy" title="mumaxplus.Antiferromagnet.elastic_energy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">elastic_energy</span></code></a>, <a class="reference internal" href="#mumaxplus.Antiferromagnet.kinetic_energy" title="mumaxplus.Antiferromagnet.kinetic_energy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">kinetic_energy</span></code></a></p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="mumaxplus.Ferromagnet.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Ferromagnet</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="mumaxplus.TimeSolver.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">TimeSolver</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet"><code class="docutils literal notranslate"><span class="pre">Antiferromagnet</span></code></a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.__init__"><code class="docutils literal notranslate"><span class="pre">__init__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.sub1"><code class="docutils literal notranslate"><span class="pre">sub1</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.sub2"><code class="docutils literal notranslate"><span class="pre">sub2</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.sublattices"><code class="docutils literal notranslate"><span class="pre">sublattices</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.other_sublattice"><code class="docutils literal notranslate"><span class="pre">other_sublattice()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.bias_magnetic_field"><code class="docutils literal notranslate"><span class="pre">bias_magnetic_field</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.enable_demag"><code class="docutils literal notranslate"><span class="pre">enable_demag</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.minimize"><code class="docutils literal notranslate"><span class="pre">minimize()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.relax"><code class="docutils literal notranslate"><span class="pre">relax()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.afmex_cell"><code class="docutils literal notranslate"><span class="pre">afmex_cell</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.afmex_nn"><code class="docutils literal notranslate"><span class="pre">afmex_nn</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.inter_afmex_nn"><code class="docutils literal notranslate"><span class="pre">inter_afmex_nn</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.scale_afmex_nn"><code class="docutils literal notranslate"><span class="pre">scale_afmex_nn</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.latcon"><code class="docutils literal notranslate"><span class="pre">latcon</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.dmi_tensor"><code class="docutils literal notranslate"><span class="pre">dmi_tensor</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.C11"><code class="docutils literal notranslate"><span class="pre">C11</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.C12"><code class="docutils literal notranslate"><span class="pre">C12</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.C44"><code class="docutils literal notranslate"><span class="pre">C44</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.cellsize"><code class="docutils literal notranslate"><span class="pre">cellsize</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.center"><code class="docutils literal notranslate"><span class="pre">center</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.demag_field"><code class="docutils literal notranslate"><span class="pre">demag_field</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.dmi_tensors"><code class="docutils literal notranslate"><span class="pre">dmi_tensors</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.effective_body_force"><code class="docutils literal notranslate"><span class="pre">effective_body_force</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.elastic_acceleration"><code class="docutils literal notranslate"><span class="pre">elastic_acceleration</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.elastic_damping"><code class="docutils literal notranslate"><span class="pre">elastic_damping</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.elastic_displacement"><code class="docutils literal notranslate"><span class="pre">elastic_displacement</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.elastic_energy"><code class="docutils literal notranslate"><span class="pre">elastic_energy</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.elastic_energy_density"><code class="docutils literal notranslate"><span class="pre">elastic_energy_density</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.elastic_force"><code class="docutils literal notranslate"><span class="pre">elastic_force</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.elastic_velocity"><code class="docutils literal notranslate"><span class="pre">elastic_velocity</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.enable_as_stray_field_destination"><code class="docutils literal notranslate"><span class="pre">enable_as_stray_field_destination</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.enable_as_stray_field_source"><code class="docutils literal notranslate"><span class="pre">enable_as_stray_field_source</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.enable_elastodynamics"><code class="docutils literal notranslate"><span class="pre">enable_elastodynamics</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.eta"><code class="docutils literal notranslate"><span class="pre">eta</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.external_body_force"><code class="docutils literal notranslate"><span class="pre">external_body_force</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.geometry"><code class="docutils literal notranslate"><span class="pre">geometry</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.grid"><code class="docutils literal notranslate"><span class="pre">grid</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.kinetic_energy"><code class="docutils literal notranslate"><span class="pre">kinetic_energy</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.kinetic_energy_density"><code class="docutils literal notranslate"><span class="pre">kinetic_energy_density</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.meshgrid"><code class="docutils literal notranslate"><span class="pre">meshgrid</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.name"><code class="docutils literal notranslate"><span class="pre">name</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.origin"><code class="docutils literal notranslate"><span class="pre">origin</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.poynting_vector"><code class="docutils literal notranslate"><span class="pre">poynting_vector</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.regions"><code class="docutils literal notranslate"><span class="pre">regions</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.rho"><code class="docutils literal notranslate"><span class="pre">rho</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.rigid_norm_strain"><code class="docutils literal notranslate"><span class="pre">rigid_norm_strain</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.rigid_shear_strain"><code class="docutils literal notranslate"><span class="pre">rigid_shear_strain</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.strain_tensor"><code class="docutils literal notranslate"><span class="pre">strain_tensor</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.stray_field_from_magnet"><code class="docutils literal notranslate"><span class="pre">stray_field_from_magnet()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.stress_tensor"><code class="docutils literal notranslate"><span class="pre">stress_tensor</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.world"><code class="docutils literal notranslate"><span class="pre">world</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.neel_vector"><code class="docutils literal notranslate"><span class="pre">neel_vector</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.full_magnetization"><code class="docutils literal notranslate"><span class="pre">full_magnetization</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.angle_field"><code class="docutils literal notranslate"><span class="pre">angle_field</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.max_intracell_angle"><code class="docutils literal notranslate"><span class="pre">max_intracell_angle</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.total_energy_density"><code class="docutils literal notranslate"><span class="pre">total_energy_density</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.total_energy"><code class="docutils literal notranslate"><span class="pre">total_energy</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By the DyNaMat group, Ghent University, Belgium.
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  </div>
+  
+  <div class="footer-item">
+    <p class="last-updated">
+  Last updated on May 27, 2025.
+  <br/>
+</p>
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

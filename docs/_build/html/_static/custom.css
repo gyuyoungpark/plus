@@ -1,0 +1,4 @@
+/* Hide logo in dark mode and show alternative */
+html[data-theme="dark"] .navbar-brand img {
+    content: url("nimble-rustplus-shadow.png");
+}
