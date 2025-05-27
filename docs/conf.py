@@ -8,6 +8,8 @@
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 import os
 import sys
+import datetime
+
 sys.path.insert(0, os.path.abspath("../mumaxplus"))
 
 # -- Project information -----------------------------------------------------
@@ -16,7 +18,9 @@ project = "mumax⁺"
 # "Diego De Gusem, Oleh Kozynets, Ian Lateur, Lars Moreels, Jeroen Mulkers"
 author = "the DyNaMat group, Ghent University, Belgium."
 release = "1.0.2"
-html_last_updated_fmt = "May 23, 2025"
+
+date = datetime.datetime.now()
+html_last_updated_fmt = f"{date.strftime("%B")} {date.strftime("%d")}, {date.strftime("%Y")}"
 
 # -- General configuration ---------------------------------------------------
 
@@ -39,8 +43,12 @@ toc_object_entries_show_parents = 'hide'
 autodoc_default_options = {
     "members": True,
     "inherited-members": True,
-    "special-members": "__call__, __getitem__",
+    "special-members": "",
+    "undoc-members": True,
+    'show-inheritance': True,
 }
+
+autodoc_member_order = 'bysource'
 
 # Boolean indicating whether to scan all found documents for autosummary directives, and
 # to generate stub pages for each.
@@ -111,4 +119,5 @@ html_theme_options = {
         },
     ],
     "icon_links_label": "Quick Links",  # screen reader label
+    "use_download_button": False,
 }

@@ -4,17 +4,16 @@ import _mumaxpluscpp as _cpp
 
 
 class Grid:
-    """Create a Grid instance.
-
-    Parameters
-    ----------
-    size : tuple[int] of size 3
-        The grid size.
-    origin : tuple[int] of size 3, optional
-        The origin of the grid. The default value is (0, 0, 0).
-    """
-
+    """Create a Grid instance."""
     def __init__(self, size, origin=(0, 0, 0)):
+        """
+        Parameters
+        ----------
+        size : tuple[int] of size 3
+            The grid size.
+        origin : tuple[int] of size 3, optional
+            The origin of the grid. The default value is (0, 0, 0).
+        """
         if len(size) != 3:
             raise ValueError("'size' should have three dimensions.")
 

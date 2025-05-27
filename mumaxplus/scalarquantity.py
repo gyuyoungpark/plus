@@ -3,7 +3,6 @@
 
 class ScalarQuantity:
     """Functor representing a physical scalar quantity."""
-
     def __init__(self, impl):
         self._impl = impl
 

@@ -3,7 +3,6 @@
 
 class PoissonSystem:
     """Poisson System which can be solver for the electrostatic potential."""
-
     def __init__(self, impl):
         self._impl = impl
 
@@ -15,16 +14,18 @@ class PoissonSystem:
         """Set the solver method.
 
         The implemented methods are:
-            - jacobi
-            - conjugategradient
-            - minimalresidual
-            - steepestdescent
+
+        * jacobi
+        * conjugategradient
+        * minimalresidual
+        * steepestdescent
+        
         """
         return self._impl.solver.set_method(method_name)
 
     @property
     def max_iter(self):
-        """Maximum of iterations for the solver (no maximum if <0)."""
+        """Maximum of iterations for the solver (no maximum if < 0)."""
         return self._impl.solver.max_iter
 
     @max_iter.setter

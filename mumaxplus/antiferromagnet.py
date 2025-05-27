@@ -15,34 +15,34 @@ from .scalarquantity import ScalarQuantity
 
 
 class Antiferromagnet(Magnet):
-    """Create an antiferromagnet instance.
-    This class can also be used to create a Ferrimagnet instance since
-    both sublattices are independently modifiable.
-
-    Parameters
-    ----------
-    world : mumaxplus.World
-        World in which the antiferromagnet lives.
-    grid : mumaxplus.Grid
-        The number of cells in x, y, z the antiferromagnet should be divided into.
-    geometry : None, ndarray, or callable (default=None)
-        The geometry of the antiferromagnet can be set in three ways.
-
-        1. If the geometry contains all cells in the grid, then use None (the default)
-        2. Use an ndarray which specifies for each cell wheter or not it is in the
-           geometry.
-        3. Use a function which takes x, y, and z coordinates as arguments and returns
-           true if this position is inside the geometry and false otherwise.
-    
-    regions : None, ndarray, or callable (default=None)
-        The regional structure of an antiferromagnet can be set in the same three ways
-        as the geometry. This parameter indexes each grid cell to a certain region.
-    name : str (default="")
-        The antiferromagnet's identifier. If the name is empty (the default), a name for the
-        antiferromagnet will be created.
-    """
-
+    """Create an antiferromagnet instance."""
     def __init__(self, world, grid, name="", geometry=None, regions=None):
+        """        
+        This class can also be used to create a Ferrimagnet instance since
+        both sublattices are independently modifiable.
+
+        Parameters
+        ----------
+        world : mumaxplus.World
+            World in which the antiferromagnet lives.
+        grid : mumaxplus.Grid
+            The number of cells in x, y, z the antiferromagnet should be divided into.
+        geometry : None, ndarray, or callable (default=None)
+            The geometry of the antiferromagnet can be set in three ways.
+
+            1. If the geometry contains all cells in the grid, then use None (the default)
+            2. Use an ndarray which specifies for each cell whether or not it is in the
+               geometry.
+            3. Use a function which takes x, y, and z coordinates as arguments and returns
+               true if this position is inside the geometry and false otherwise.
+
+        regions : None, ndarray, or callable (default=None)
+            The regional structure of an antiferromagnet can be set in the same three ways
+            as the geometry. This parameter indexes each grid cell to a certain region.
+        name : str (default="")
+            The antiferromagnet's identifier. If the name is empty (the default), a name for the
+            antiferromagnet will be created.
+        """
         super().__init__(world._impl.add_antiferromagnet,
                          world, grid, name, geometry, regions)
 
@@ -119,7 +119,7 @@ class Antiferromagnet(Magnet):
     def minimize(self, tol=1e-6, nsamples=20):
         """Minimize the total energy.
 
-        Fast energy minimization, but less robust than `relax`
+        Fast energy minimization, but less robust than :func:`relax`
         when starting from a high energy state.
 
         Parameters
@@ -146,7 +146,7 @@ class Antiferromagnet(Magnet):
         Hereafter, relaxation keeps on going until the maximum torque is
         minimized.
 
-        Compared to `minimize`, this function takes a longer time to execute,
+        Compared to :func:`minimize`, this function takes a longer time to execute,
         but is more robust when starting from a high energy state (i.e. random).
 
         Parameters
@@ -235,11 +235,11 @@ class Antiferromagnet(Magnet):
 
         This parameter should be set with
         
-            >>> magnet.inter_afmex_nn.set_between(region1, region2, value)
+        >>> magnet.inter_afmex_nn.set_between(region1, region2, value)
 
         See Also
         --------
-        afmex_nn, inter_exchange, scale_afmex_nn, scale_exchange
+        afmex_nn, Ferromagnet.inter_exchange, scale_afmex_nn, Ferromagnet.scale_exchange
         """
         return InterParameter(self._impl.inter_afmex_nn)
 
@@ -263,11 +263,11 @@ class Antiferromagnet(Magnet):
 
         This parameter should be set with
         
-            >>> magnet.scale_afmex_nn.set_between(region1, region2, value)
+        >>> magnet.scale_afmex_nn.set_between(region1, region2, value)
 
         See Also
         --------
-        afmex_nn, inter_afmex_nn, inter_exchange, scale_exchange
+        afmex_nn, inter_afmex_nn, Ferromagnet.inter_exchange, Ferromagnet.scale_exchange
         """
         return InterParameter(self._impl.scale_afmex_nn)
 
@@ -326,12 +326,12 @@ class Antiferromagnet(Magnet):
         For example, to set interfacial DMI in the whole system to the same value,
         one could use
         
-            >>> magnet = Antiferromagnet(world, grid)
-            >>> magnet.dmi_tensors.set_interfacial_dmi(1e-3)
+        >>> magnet = Antiferromagnet(world, grid)
+        >>> magnet.dmi_tensors.set_interfacial_dmi(1e-3)
 
         Or to set an individual tensor element, one could use
         
-            >>> magnet.dmi_tensors.xxy = 1e-3
+        >>> magnet.dmi_tensors.xxy = 1e-3
 
         See Also
         --------

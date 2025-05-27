@@ -5,18 +5,17 @@ import os as _os
 from tqdm import tqdm as _tqdm
 
 class TimeSolverOutput:
-    """Collect values of a list of quantities on specified timepoints.
-
-    Parameters
-    ----------
-    quantity_dict : dict
-        Quantities to collect.
-    file_name : str, optional
-        Optional name of an output file, in which the data is also written as
-        tab-separated values.
-    """
-
     def __init__(self, quantity_dict, file_name=None):
+        """Collect values of a list of quantities on specified timepoints.
+
+        Parameters
+        ----------
+        quantity_dict : dict
+            Quantities to collect.
+        file_name : str, optional
+            Optional name of an output file, in which the data is also written as
+            tab-separated values.
+        """
         self._quantities = quantity_dict
         self._data = {"time": []}
         for key in self._quantities.keys():
@@ -73,11 +72,12 @@ class TimeSolver:
         """Set the Runga Kutta method used by the time solver.
 
         Implemented methods are:
-          'Heun'
-          'BogackiShampine'
-          'CashKarp'
-          'Fehlberg'
-          'DormandPrince'
+        
+        * 'Heun'
+        * 'BogackiShampine'
+        * 'CashKarp'
+        * 'Fehlberg'
+        * 'DormandPrince'
 
         The default and recommended Runge Kutta method is 'Fehlberg'.
         """

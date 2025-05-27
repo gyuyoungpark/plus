@@ -6,11 +6,7 @@ from .grid import Grid
 
 
 class FieldQuantity:
-    """A functor representing a physical field quantity.
-
-    The class wraps the C++ FieldQuantity class.
-    """
-
+    """A functor representing a physical field quantity."""
     def __init__(self, impl):
         self._impl = impl
 

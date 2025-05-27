@@ -6,17 +6,16 @@ from .fieldquantity import FieldQuantity
 
 
 class StrayField(FieldQuantity):
-    """Represent a stray field of a magnet in a specific grid.
-
-    Parameters
-    ----------
-    magnet : mumaxplus.Ferromagnet
-        Magnet instance which is the field source.
-    grid : mumaxplus.Grid
-        Grid instance on which the stray field will be computed.
-    """
-
+    """Represent a stray field of a magnet in a specific grid."""
     def __init__(self, magnet, grid):
+        """
+        Parameters
+        ----------
+        magnet : mumaxplus.Ferromagnet
+            Magnet instance which is the field source.
+        grid : mumaxplus.Grid
+            Grid instance on which the stray field will be computed.
+        """
         super().__init__(_cpp.StrayField(magnet._impl, grid._impl))
 
     @classmethod

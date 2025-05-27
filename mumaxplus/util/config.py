@@ -82,7 +82,7 @@ def vortex(position, diameter, circulation, polarization):
 
 
 def antivortex(position, diameter, circulation, polarization):
-    """Return a antivortex magnetization configuration.
+    """Return an antivortex magnetization configuration.
 
     Parameters
     ----------
@@ -201,7 +201,8 @@ def gaussian_spherical_OoP(position, amplitude, sigma_x, sigma_y):
     r"""Return an out-of-xy-plane gaussian distribution centered on the specified
     position with given standard deviations.
     
-    .. math:: (0, 0, A \exp(- \frac{(x - x_0)^2}{2\sigma x^2} \frac{(y - y_0)}{2\sigma y^2})
+    .. math:: 
+        \left(0, 0, A \exp\left(- \frac{(x - x_0)^2}{2\sigma x^2} \frac{(y - y_0)}{2\sigma y^2}\right)\right)
 
     Parameters
     ----------
@@ -231,9 +232,9 @@ def gaussian_spherical_IP(position, amplitude, angle, sigma_x, sigma_y):
     
     .. math ::
 
-        (A \cos(\theta) \exp(- \frac{(x - x_0)^2}{2\sigma x^2}  \frac{(y - y_0)}{2\sigma y^2}),
-        A \sin(\theta) \exp(- \frac{(x - x_0)^2}{2\sigma x^2} \frac{(y - y_0)}{2\sigma y^2}),
-        0)
+        \left(A \cos(\theta) \exp\left(- \frac{(x - x_0)^2}{2\sigma x^2}  \frac{(y - y_0)}{2\sigma y^2}\right),
+        A \sin(\theta) \exp\left(- \frac{(x - x_0)^2}{2\sigma x^2} \frac{(y - y_0)}{2\sigma y^2}\right),
+        0\right)
 
     Parameters
     ----------
@@ -265,7 +266,8 @@ def gaussian_uniform_IP(amplitude, theta, gausspos, sigma, phi):
     Gaussian distribution centered on gausspos, which varies along the
     transverse direction in the xy-plane specified by angle phi.
 
-    .. math:: (A \cos(\theta) \exp(-(x'-x_0)^2/(2\sigma^2)), A \sin(\theta) \exp(-(x'-x_0)^2/(2\sigma^2)), 0)
+    .. math:: 
+        \left(A \cos(\theta) \exp\left(-\frac{(x'-x_0)^2}{2\sigma^2}\right), A \sin(\theta) \exp\left(-\frac{(x'-x_0)^2}{2\sigma^2}\right), 0\right)
     
     with x0 = gausspos and x' = x*cos(ϕ) + y*sin(ϕ)
     

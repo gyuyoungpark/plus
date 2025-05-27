@@ -18,42 +18,41 @@ import warnings
 
 
 class Ferromagnet(Magnet):
-    """Create a ferromagnet instance.
-
-    Parameters
-    ----------
-    world : mumaxplus.World
-        World in which the ferromagnet lives.
-    grid : mumaxplus.Grid
-        The number of cells in x, y, z the ferromagnet should be divided into.
-    geometry : None, ndarray, or callable (default=None)
-        The geometry of the ferromagnet can be set in three ways.
-
-        1. If the geometry contains all cells in the grid, then use None (the default)
-        2. Use an ndarray which specifies for each cell wheter or not it is in the
-           geometry.
-        3. Use a function which takes x, y, and z coordinates as arguments and returns
-           true if this position is inside the geometry and false otherwise.
-
-    regions : None, ndarray, or callable (default=None)
-        The regional structure of a ferromagnet can be set in the same three ways
-        as the geometry. This parameter indexes each grid cell to a certain region.
-
-        Note
-        ----
-            The values of `InterParameters` which act between
-            different regions are stored in an array with a size that scales with the
-            square of the maximal index value. Therefore, if possible, it's good
-            practice to keep each region index as close to zero as possible.
-            E.g. defining two regions with indices 1 and 500 will work, but occupies more
-            memory and will pay in performance than giving them the values 0 and 1.
-
-    name : str (default="")
-        The ferromagnet's identifier. If the name is empty (the default), a name for the
-        ferromagnet will be created.
-    """
-
+    """Create a ferromagnet instance."""
     def __init__(self, world, grid, name="", geometry=None, regions=None):
+        """
+        Parameters
+        ----------
+        world : mumaxplus.World
+            World in which the ferromagnet lives.
+        grid : mumaxplus.Grid
+            The number of cells in x, y, z the ferromagnet should be divided into.
+        geometry : None, ndarray, or callable (default=None)
+            The geometry of the ferromagnet can be set in three ways.
+
+            1. If the geometry contains all cells in the grid, then use None (the default)
+            2. Use an ndarray which specifies for each cell wheter or not it is in the
+               geometry.
+            3. Use a function which takes x, y, and z coordinates as arguments and returns
+               true if this position is inside the geometry and false otherwise.
+
+        regions : None, ndarray, or callable (default=None)
+            The regional structure of a ferromagnet can be set in the same three ways
+            as the geometry. This parameter indexes each grid cell to a certain region.
+
+            Note
+            ----
+                The values of `InterParameters` which act between
+                different regions are stored in an array with a size that scales with the
+                square of the maximal index value. Therefore, if possible, it's good
+                practice to keep each region index as close to zero as possible.
+                E.g. defining two regions with indices 1 and 500 will work, but occupies more
+                memory and will pay in performance than giving them the values 0 and 1.
+
+        name : str (default="")
+            The ferromagnet's identifier. If the name is empty (the default), a name for the
+            ferromagnet will be created.
+        """
         super().__init__(world._impl.add_ferromagnet, world, grid, name, geometry, regions)
 
     def __repr__(self):
@@ -146,7 +145,7 @@ class Ferromagnet(Magnet):
     def minimize(self, tol=1e-6, nsamples=10):
         """Minimize the total energy.
 
-        Fast energy minimization, but less robust than `relax`
+        Fast energy minimization, but less robust than :func:`relax`
         when starting from a high energy state.
 
         Parameters
@@ -173,7 +172,7 @@ class Ferromagnet(Magnet):
         Hereafter, relaxation keeps on going until the maximum torque is
         minimized.
 
-        Compared to `minimize`, this function takes a longer time to execute,
+        Compared to :func:`minimize`, this function takes a longer time to execute,
         but is more robust when starting from a high energy state (i.e. random).
 
         Parameters
@@ -258,8 +257,8 @@ class Ferromagnet(Magnet):
 
         This parameter should be set with
         
-            >>> magnet.inter_exchange.set_between(region1, region2, value)
-            >>> magnet.inter_exchange = value # uniform value
+        >>> magnet.inter_exchange.set_between(region1, region2, value)
+        >>> magnet.inter_exchange = value # uniform value
 
         See Also
         --------
@@ -281,8 +280,8 @@ class Ferromagnet(Magnet):
 
         This parameter can be set with
 
-            >>> magnet.scale_exchange.set_between(region1, region2, value)
-            >>> magnet.scale_exchange = value # uniform value
+        >>> magnet.scale_exchange.set_between(region1, region2, value)
+        >>> magnet.scale_exchange = value # uniform value
 
         See Also
         --------
@@ -671,7 +670,7 @@ class Ferromagnet(Magnet):
         
         See Also
         --------
-        electric_potential
+        electrical_potential
         applied_potential, conductivity, conductivity_tensor
         """
         return PoissonSystem(self._impl.poisson_system)
@@ -969,7 +968,7 @@ class Ferromagnet(Magnet):
         
         See Also
         --------
-        inhomogeneous_energy_exchange_density, inhomogeneous_exchange_energy
+        inhomogeneous_exchange_energy_density, inhomogeneous_exchange_energy
         """
         return FieldQuantity(_cpp.inhomogeneous_exchange_field(self._impl))
     

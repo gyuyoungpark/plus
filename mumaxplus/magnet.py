@@ -260,7 +260,7 @@ class Magnet(ABC):
 
     @property
     def C11(self):
-        """Stiffness constant C11 = c22 = c33 of the stiffness tensor (N/m²).
+        """Stiffness constant C11 = C22 = C33 of the stiffness tensor (N/m²).
         
         See Also
         --------
@@ -274,7 +274,7 @@ class Magnet(ABC):
 
     @property
     def C12(self):
-        """Stiffness constant C12 = c13 = c23 of the stiffness tensor (N/m²).
+        """Stiffness constant C12 = C13 = C23 of the stiffness tensor (N/m²).
         
         See Also
         --------
@@ -288,7 +288,7 @@ class Magnet(ABC):
 
     @property
     def C44(self):
-        """Stiffness constant C44 = c55 = c66 of the stiffness tensor (N/m²).
+        """Stiffness constant C44 = C55 = C66 of the stiffness tensor (N/m²).
         
         See Also
         --------

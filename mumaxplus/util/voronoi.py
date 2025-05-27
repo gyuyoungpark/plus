@@ -13,12 +13,12 @@ class VoronoiTessellator:
         """Create a Voronoi tessellator instance.
         
         This class is used to generate a Voronoi tessellation, which can
-        be done using either the ``generate`` or the ``coo_to_idx`` method.
+        be done using either the :func:`generate` or the :func:`coo_to_idx` method.
 
         Important
         ---------
         Other methods in this class cannot be used unless
-        ``generate`` has been called. E.g. retrieving a list of region
+        :func:`generate` has been called. E.g. retrieving a list of region
         indices requires a specified world and grid.
 
         Parameters
@@ -58,7 +58,7 @@ class VoronoiTessellator:
         ---------
         This method has no information about the used world and
         grid. E.g. this means that periodic boundary conditions will not apply.
-        This can be overriden by calling ``generate`` before assinging this function
+        This can be overriden by calling :func:`generate` before assigning this function
         to the ``Magnet``'s regions parameter.
         """
         return self._impl.coo_to_idx((x,y,z))

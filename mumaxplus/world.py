@@ -10,36 +10,39 @@ from .antiferromagnet import Antiferromagnet
 import warnings
 
 class World:
-    """Construct a world with a given cell size.
-
-    Parameters
-    ----------
-    cellsize : tuple[float] of size 3
-        A tuple of three floating pointing numbers which represent the dimensions
-        of the cells in the x, y, and z direction.
-
-    pbc_repetitions : tuple[int] of size 3, default=(0,0,0)
-        The number of repetitions for everything inside mastergrid in the
-        x, y and z directions to create periodic boundary conditions.
-        The number of repetitions determines the cutoff range for the
-        demagnetization.
-    
-    mastergrid : Grid, default=Grid((0,0,0))
-        Mastergrid defines a periodic simulation box. If it has zero size in
-        a direction, then it is considered to be infinitely large
-        (no periodicity) in that direction.
-        A 0 in `mastergrid` should correspond to a 0 in `pbc_repetitions`.
-        All subsequently added magnets need to fit inside this mastergrid.
-
-    ``pbc_repetitions`` and ``mastergrid`` can be changed later using ``set_pbc``.
-
-    See Also
-    --------
-    cellsize, pbc_repetitions, mastergrid
-    """
-
+    """Construct a world with a given cell size."""
     def __init__(self, cellsize,
                  pbc_repetitions=(0,0,0), mastergrid=Grid((0,0,0))):
+        
+        """
+        Parameters
+        ----------
+        cellsize : tuple[float] of size 3
+            A tuple of three floating pointing numbers which represent the dimensions
+            of the cells in the x, y, and z direction.
+
+        pbc_repetitions : tuple[int] of size 3, default=(0,0,0)
+            The number of repetitions for everything inside mastergrid in the
+            x, y and z directions to create periodic boundary conditions.
+            The number of repetitions determines the cutoff range for the
+            demagnetization.
+        
+        mastergrid : Grid, default=Grid((0,0,0))
+            Mastergrid defines a periodic simulation box. If it has zero size in
+            a direction, then it is considered to be infinitely large
+            (no periodicity) in that direction.
+            A 0 in `mastergrid` should correspond to a 0 in `pbc_repetitions`.
+            All subsequently added magnets need to fit inside this mastergrid.
+
+        Note
+        ----
+            ``pbc_repetitions`` and ``mastergrid`` can be changed later using :func:`set_pbc`.
+
+        See Also
+        --------
+        cellsize, pbc_repetitions, mastergrid
+        """
+        
         if len(cellsize) != 3:
             raise ValueError("'cellsize' should have three dimensions.")
         if len(pbc_repetitions) != 3:
@@ -66,6 +69,7 @@ class World:
 
     def get_ferromagnet(self, name):
         """Get a ferromagnet by its name.
+
         Raises KeyError if there is no magnet with the given name."""
         magnet_impl = self._impl.get_ferromagnet(name)
         if magnet_impl is None:
@@ -74,6 +78,7 @@ class World:
     
     def get_antiferromagnet(self, name):
         """Get an antiferromagnet by its name.
+        
         Raises KeyError if there is no magnet with the given name."""
         magnet_impl = self._impl.get_antiferromagnet(name)
         if magnet_impl is None:
@@ -193,7 +198,7 @@ class World:
         direction, then it is considered to be infinitely large (no periodicity) in
         that direction.
 
-        It is advised to set ``mastergrid`` using ``set_pbc``.
+        It is advised to set ``mastergrid`` using :func:`set_pbc`.
 
         See Also
         --------
@@ -227,7 +232,7 @@ class World:
         but not in the y direction. That row is then copied once up and once down,
         creating a 5x1x3 grid.
 
-        It is advised to set ``pbc_repetitions`` using ``set_pbc``.
+        It is advised to set ``pbc_repetitions`` using :func:`set_pbc`.
 
         See Also
         --------

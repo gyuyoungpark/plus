@@ -118,9 +118,11 @@ class Shape:
     def scale(self, sx, sy=None, sz=1):
         """Scale this shape, using (0,0,0) as the origin.
         Takes 1, 2 or 3 arguments:
+
         1. (s): scale by s in all directions.
         2. (sx, sy): scale by sx and sy in the xy-plane, but do not scale z.
         3. (sx, sy, sz): scale by sx, sy and sz in the x-, y- and
+
         z-direction respectively.
         """
         if sy is None:
