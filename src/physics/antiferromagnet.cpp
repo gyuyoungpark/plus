@@ -14,7 +14,7 @@
 
 Antiferromagnet::Antiferromagnet(std::shared_ptr<System> system_ptr,
                                  std::string name)
-    : Magnet(system_ptr, name),
+    : HostMagnet(system_ptr, name),
       afmex_cell(system(), 0.0, name + ":afmex_cell", "J/m"),
       afmex_nn(system(), 0.0, name + ":afmex_nn", "J/m"),
       latcon(system(), 0.35e-9, name + ":latcon", "m"),
@@ -23,7 +23,10 @@ Antiferromagnet::Antiferromagnet(std::shared_ptr<System> system_ptr,
       scaleAfmExchNN(system(), 1.0, name + ":scale_afmex_nn", ""),
       dmiVector(system(), real3{0,0,0}, name + ":dmi_vector", "J/m³"),
       sub1_(Ferromagnet(system_ptr, name + ":sublattice_1", this)),
-      sub2_(Ferromagnet(system_ptr, name + ":sublattice_2", this)) {}
+      sub2_(Ferromagnet(system_ptr, name + ":sublattice_2", this)) {
+        addSublattice(&sub1_);
+        addSublattice(&sub2_);
+      }
       
 Antiferromagnet::Antiferromagnet(MumaxWorld* world,
                          Grid grid,

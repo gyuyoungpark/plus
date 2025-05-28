@@ -11,12 +11,12 @@
 #include "gpubuffer.hpp"
 #include "grid.hpp"
 #include "inter_parameter.hpp"
-#include "magnet.hpp"
+#include "hostmagnet.hpp"
 #include "parameter.hpp"
 #include "world.hpp"
 #include "system.hpp"
 
-class NCAFM : public Magnet {
+class NCAFM : public HostMagnet {
  public:
   NCAFM(std::shared_ptr<System> system_ptr,
          std::string name);
@@ -28,7 +28,6 @@ class NCAFM : public Magnet {
          GpuBuffer<unsigned int> regions);
          
   /** Empty destructor
-   *
    * Sublattices are destroyed automatically. They are not pointers.
    */
   ~NCAFM() override {};

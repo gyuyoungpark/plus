@@ -21,11 +21,13 @@
 #include "world.hpp"
 #include "system.hpp"
 
+class HostMagnet;
+
 class Ferromagnet : public Magnet {
  public:
   Ferromagnet(std::shared_ptr<System> system_ptr,
               std::string name,
-              Magnet* hostMagnet_ = nullptr);
+              HostMagnet* hostMagnet_ = nullptr);
 
   Ferromagnet(MumaxWorld* world,
               Grid grid,
@@ -38,8 +40,13 @@ class Ferromagnet : public Magnet {
 
   bool isSublattice() const;
 
+  const HostMagnet* hostMagnet() const { return hostMagnet_; }
+
+  //TODO: is this function still necessary?
   template <typename T>
-  const T* hostMagnet() const;  // TODO: right amount of const?
+  const T* hostMagnet() const {
+    return dynamic_cast<const T*>(hostMagnet_);
+  }
 
   void minimize(real tol = 1e-6, int nSamples = 10);
   void relax(real tol);
@@ -47,7 +54,7 @@ class Ferromagnet : public Magnet {
  private:
   NormalizedVariable magnetization_;
 
-  Magnet* hostMagnet_;
+  HostMagnet* hostMagnet_;
 
  public:
   mutable PoissonSystem poissonSystem;
@@ -95,8 +102,3 @@ class Ferromagnet : public Magnet {
   Parameter B1;  // First magnetoelastic coupling constant
   Parameter B2;  // Second magnetoelastic coupling constant
 };
-
-template <typename T>
-const T* Ferromagnet::hostMagnet() const {
-    return dynamic_cast<const T*>(hostMagnet_);
-}

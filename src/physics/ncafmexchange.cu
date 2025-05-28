@@ -2,6 +2,7 @@
 #include "cudalaunch.hpp"
 #include "dmi.hpp" // used for Neumann BC
 #include "energy.hpp"
+#include "hostmagnet.hpp"
 #include "ncafmexchange.hpp"
 #include "ferromagnet.hpp"
 #include "field.hpp"
@@ -80,7 +81,7 @@ __global__ void k_NCafmExchangeFieldNN(CuField hField,
     return;
   }
 
-  if ((msat2.valueAt(idx) == 0 && msat3.valueAt(idx) == 0) || msat.valueAt(idx == 0)) {
+  if ((msat2.valueAt(idx) == 0 && msat3.valueAt(idx) == 0) || msat.valueAt(idx) == 0) {
     hField.setVectorInCell(idx, real3{0, 0, 0});
     return;
   }
@@ -157,7 +158,6 @@ __global__ void k_NCafmExchangeFieldNN(CuField hField,
           m_ = m + (Aex_nn * cross(cross(d_m1, m), m) + Gamma) * delta / (2*a);
           ann_ = ann;
         }
-
         Aex = getExchangeStiffness(inter, scale, ann, ann_);
         h += Aex * (m_ - m) / (delta * delta);
       }

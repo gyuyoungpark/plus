@@ -11,15 +11,15 @@
 #include "gpubuffer.hpp"
 #include "grid.hpp"
 #include "inter_parameter.hpp"
-#include "magnet.hpp"
+#include "hostmagnet.hpp"
 #include "parameter.hpp"
 #include "world.hpp"
 #include "system.hpp"
 
-class Antiferromagnet : public Magnet {
+class Antiferromagnet : public HostMagnet {
  public:
   Antiferromagnet(std::shared_ptr<System> system_ptr,
-         std::string name);
+                  std::string name);
 
   Antiferromagnet(MumaxWorld* world,
          Grid grid,
@@ -28,7 +28,6 @@ class Antiferromagnet : public Magnet {
          GpuBuffer<unsigned int> regions);
          
   /** Empty destructor
-   *
    * Sublattices are destroyed automatically. They are not pointers.
    */
   ~Antiferromagnet() override {};

@@ -42,24 +42,17 @@ std::vector<DynamicEquation> Relaxer::getEquation(const Magnet* magnet) {
           std::shared_ptr<FieldQuantity>(thermalNoiseQuantity(mag).clone()));
       eqs.push_back(eq);
     }
-    else if (const Antiferromagnet* mag = magnet->asAFM()) {
-      for (const Ferromagnet* sub : mag->sublattices()) {
-        DynamicEquation eq(
-          sub->magnetization(),
-          std::shared_ptr<FieldQuantity>(relaxTorqueQuantity(sub).clone()),
-          std::shared_ptr<FieldQuantity>(thermalNoiseQuantity(sub).clone()));
-        eqs.push_back(eq);
+    else if (auto host = dynamic_cast<const HostMagnet*>(magnet)) {
+      for (const Ferromagnet* sub : host->sublattices()) {
+          eqs.emplace_back(
+              sub->magnetization(),
+              std::shared_ptr<FieldQuantity>(relaxTorqueQuantity(sub).clone()),
+              std::shared_ptr<FieldQuantity>(thermalNoiseQuantity(sub).clone()));
       }
     }
-    else if (const NCAFM* mag = magnet->asNCAFM()) {
-      for (const Ferromagnet* sub : mag->sublattices()) {
-        DynamicEquation eq(
-          sub->magnetization(),
-          std::shared_ptr<FieldQuantity>(relaxTorqueQuantity(sub).clone()),
-          std::shared_ptr<FieldQuantity>(thermalNoiseQuantity(sub).clone()));
-        eqs.push_back(eq);
-      }
-    }
+    else
+      throw std::invalid_argument("Cannot relax quantity which is "
+                                  "no Ferromagnet or (non-collinear) Antiferromagnet");
     return eqs;
 }
 
@@ -68,19 +61,14 @@ std::vector<FM_FieldQuantity> Relaxer::getTorque() {
   for (auto magnet : magnets_) {
     if (const Ferromagnet* mag = magnet->asFM())
      torque.push_back(relaxTorqueQuantity(mag));
-    else if (const Antiferromagnet* mag = magnet->asAFM()) {
-      torque.push_back(relaxTorqueQuantity(mag->sub1()));
-      torque.push_back(relaxTorqueQuantity(mag->sub2()));
-    }
-    else if (const NCAFM* mag = magnet->asNCAFM()) {
-      torque.push_back(relaxTorqueQuantity(mag->sub1()));
-      torque.push_back(relaxTorqueQuantity(mag->sub2()));
-      torque.push_back(relaxTorqueQuantity(mag->sub3()));
+
+    else if (auto host = dynamic_cast<const HostMagnet*>(magnet)) {
+      for (const Ferromagnet* sub : host->sublattices())
+        torque.push_back(relaxTorqueQuantity(sub));
     }
     else
       throw std::invalid_argument("Cannot relax quantity which is "
-                                  "no Ferromagnet, Antiferromagnet/ "
-                                  "Ferrimagnet or NCAFM." );
+                                  "no Ferromagnet or (non-collinear) Antiferromagnet");
   }
   return torque;
 }

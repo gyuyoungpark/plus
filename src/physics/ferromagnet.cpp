@@ -17,7 +17,7 @@
 
 Ferromagnet::Ferromagnet(std::shared_ptr<System> system_ptr, 
                          std::string name,
-                         Magnet* hostMagnet)
+                         HostMagnet* hostMagnet)
     : Magnet(system_ptr, name),
       hostMagnet_(hostMagnet),
       magnetization_(system(), 3, name + ":magnetization", ""),
