@@ -445,10 +445,10 @@ Field evalDmiField(const Ferromagnet* magnet) {
     auto mag3 = m3->magnetization()->field().cu();
     auto msat2 = m2->msat.cu();
     auto msat3 = m3->msat.cu();
-    auto ncafmex_nn = magnet->hostMagnet<NCAFM>()->ncafmex_nn.cu();
+    auto ncafmex_nn = magnet->hostMagnet<NCAFM>()->afmex_nn.cu();
     auto interDmiTensor = magnet->hostMagnet<NCAFM>()->dmiTensor.cu();
-    auto inter = magnet->hostMagnet<NCAFM>()->interNCAfmExchNN.cu();
-    auto scale = magnet->hostMagnet<NCAFM>()->scaleNCAfmExchNN.cu();
+    auto inter = magnet->hostMagnet<NCAFM>()->interAfmExchNN.cu();
+    auto scale = magnet->hostMagnet<NCAFM>()->scaleAfmExchNN.cu();
     cudaLaunch(ncells, k_dmiFieldNCAFM, hField.cu(), mag, mag2, mag3, dmiTensor,
                interDmiTensor, msat, msat2, msat3, grid, aex, ncafmex_nn, inter, scale, BC);
   }

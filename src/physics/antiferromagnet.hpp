@@ -10,7 +10,6 @@
 #include "field.hpp"
 #include "gpubuffer.hpp"
 #include "grid.hpp"
-#include "inter_parameter.hpp"
 #include "hostmagnet.hpp"
 #include "parameter.hpp"
 #include "world.hpp"
@@ -41,11 +40,6 @@ class Antiferromagnet : public HostMagnet {
  void relax(real tol);
 
  public:
-  Parameter afmex_cell;
-  Parameter afmex_nn;
-  InterParameter interAfmExchNN;
-  InterParameter scaleAfmExchNN;
-  Parameter latcon;
   VectorParameter dmiVector;
   Ferromagnet sub1_;
   Ferromagnet sub2_;

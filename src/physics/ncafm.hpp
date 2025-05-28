@@ -10,7 +10,6 @@
 #include "field.hpp"
 #include "gpubuffer.hpp"
 #include "grid.hpp"
-#include "inter_parameter.hpp"
 #include "hostmagnet.hpp"
 #include "parameter.hpp"
 #include "world.hpp"
@@ -42,11 +41,6 @@ class NCAFM : public HostMagnet {
  void relax(real tol);
 
  public:
-  Parameter ncafmex_cell;
-  Parameter ncafmex_nn;
-  InterParameter interNCAfmExchNN;
-  InterParameter scaleNCAfmExchNN;
-  Parameter latcon;
   VectorParameter dmiVector;
   Ferromagnet sub1_;
   Ferromagnet sub2_;

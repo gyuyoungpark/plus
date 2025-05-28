@@ -27,8 +27,6 @@ Field evalEffectiveField(const Ferromagnet* magnet) {
       // AFM exchange terms
       if (!inHomoAfmExchangeAssuredZero(magnet)) {h += evalInHomogeneousAfmExchangeField(magnet);}
       if (!homoAfmExchangeAssuredZero(magnet)) {h += evalHomogeneousAfmExchangeField(magnet);}
-      if (!inHomoNCAfmExchangeAssuredZero(magnet)) {h += evalInHomogeneousNCAfmExchangeField(magnet);}
-      if (!homoNCAfmExchangeAssuredZero(magnet)) {h += evalHomogeneousNCAfmExchangeField(magnet);}
       // Homogeneous (local) DMI term
       if (!homoDmiAssuredZero(magnet)) {h += evalHomoDmiField(magnet);}
   return h;

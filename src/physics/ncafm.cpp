@@ -15,12 +15,7 @@
 NCAFM::NCAFM(std::shared_ptr<System> system_ptr,
              std::string name)
     : HostMagnet(system_ptr, name),
-      ncafmex_cell(system(), 0.0, name + ":ncafmex_cell", "J/m"),
-      ncafmex_nn(system(), 0.0, name + ":ncafmex_nn", "J/m"),
-      latcon(system(), 0.35e-9, name + ":latcon", "m"),
       dmiTensor(system()),
-      interNCAfmExchNN(system(), 0.0, name + ":inter_ncafmex_nn", "J/m"),
-      scaleNCAfmExchNN(system(), 1.0, name + ":scale_ncafmex_nn", ""),
       dmiVector(system(), real3{0,0,0}, name + ":dmi_vector", "J/m³"),
       sub1_(Ferromagnet(system_ptr, name + ":sublattice_1", this)),
       sub2_(Ferromagnet(system_ptr, name + ":sublattice_2", this)),

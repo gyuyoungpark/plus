@@ -68,6 +68,7 @@ class TestAfmExchange:
         magnet = Antiferromagnet(world, Grid((16, 16, 4)))
         magnet.aex = 3.2e7
         magnet.msat = 5.4
+        magnet.enable_openbc = True
         for sub in magnet.sublattices:
             result = sub.exchange_field.eval()
             wanted = compute_fm_exchange_numpy(sub)
@@ -90,7 +91,6 @@ class TestAfmExchange:
 
             relative_error = np.abs(result - wanted) / np.abs(wanted)
             max_relative_error = np.max(relative_error)
-
             assert max_relative_error < 1e-3
 
     def test_inhomo_exchange(self):
@@ -98,6 +98,7 @@ class TestAfmExchange:
         magnet = Antiferromagnet(world, Grid((16, 16, 4)))
         magnet.msat = 5.4
         magnet.afmex_nn = -10e4
+        magnet.enable_openbc = True
 
         for i in range(2):
             sub = magnet.sublattices[i]

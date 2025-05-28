@@ -347,7 +347,7 @@ Field evalExchangeField(const Ferromagnet* magnet) {
     // the Neumann BC. There are no open boundaries when in this scope.
     auto mag2 = magnet->hostMagnet<NCAFM>()->getOtherSublattices(magnet)[0]->magnetization()->field().cu();
     auto mag3 = magnet->hostMagnet<NCAFM>()->getOtherSublattices(magnet)[1]->magnetization()->field().cu();
-    auto ncafmex_nn = magnet->hostMagnet<NCAFM>()->ncafmex_nn.cu();
+    auto ncafmex_nn = magnet->hostMagnet<NCAFM>()->afmex_nn.cu();
     cudaLaunch(ncells, k_exchangeField, hField.cu(), mag, mag2, mag3, aex, ncafmex_nn,
                msat, w, grid, dmiTensor, interEx, scaleEx);
   }

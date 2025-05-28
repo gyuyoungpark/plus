@@ -36,7 +36,6 @@ add_library(physics STATIC
     ferromagnet.hpp 
     fullmag.cu
     fullmag.hpp
-    hostexchange.hpp
     hostmagnet.cpp
     hostmagnet.hpp
     local_dmi.cu

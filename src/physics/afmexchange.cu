@@ -11,17 +11,29 @@
 #include "world.hpp"
 
 bool inHomoAfmExchangeAssuredZero(const Ferromagnet* magnet) {
-  if (!magnet->hostMagnet<Antiferromagnet>()) { return true; }
+  if (!magnet->hostMagnet()) { return true; }
+  if (magnet->hostMagnet()->afmex_nn.assuredZero() ||
+      magnet->msat.assuredZero()) { return true; }
 
-  return ( magnet->hostMagnet<Antiferromagnet>()->afmex_nn.assuredZero() ||
-           magnet->hostMagnet<Antiferromagnet>()->getOtherSublattice(magnet)->msat.assuredZero());
+  for (auto sub : magnet->hostMagnet()->getOtherSublattices(magnet)) {
+    if (!sub->msat.assuredZero())
+      return false;
+  }
+  return true;
 }
 
 bool homoAfmExchangeAssuredZero(const Ferromagnet* magnet) {
-  if (!magnet->hostMagnet<Antiferromagnet>()) { return true; }
-
-  return (magnet->hostMagnet<Antiferromagnet>()->afmex_cell.assuredZero() ||
-          magnet->hostMagnet<Antiferromagnet>()->getOtherSublattice(magnet)->msat.assuredZero());
+  if (!magnet->hostMagnet()) { return true; }
+  if (magnet->hostMagnet()->afmex_cell.assuredZero() ||
+      magnet->hostMagnet()->latcon.assuredZero() ||
+      magnet->msat.assuredZero()) {
+        return true;
+  }
+  for (auto sub : magnet->hostMagnet()->getOtherSublattices(magnet)) {
+    if (!sub->msat.assuredZero())
+      return false;
+  }
+  return true;
 }
 
 // AFM exchange at a single site
@@ -43,8 +55,8 @@ __global__ void k_afmExchangeFieldSite(CuField hField,
     }
 
   const real l = latcon.valueAt(idx);
-  real3 h = 4 * afmex_cell.valueAt(idx) * mField.vectorAt(idx) / (l * l);
-  hField.setVectorInCell(idx, h / msat.valueAt(idx));
+  real3 current = hField.vectorAt(idx);
+  hField.setVectorInCell(idx, current + 4 * afmex_cell.valueAt(idx) * mField.vectorAt(idx) / (l * l * msat.valueAt(idx)));
   }
 
 // AFM exchange between NN cells
@@ -147,51 +159,52 @@ __global__ void k_afmExchangeFieldNN(CuField hField,
       h += Aex * (m2_ - m2) / (delta * delta);
     }
   }
-  hField.setVectorInCell(idx, h / msat2.valueAt(idx));
+  real3 current = hField.vectorAt(idx);
+  hField.setVectorInCell(idx, current + h / msat2.valueAt(idx));
 }
 
 Field evalHomogeneousAfmExchangeField(const Ferromagnet* magnet) {
-  Field hField(magnet->system(), 3);
-  
-  if (homoAfmExchangeAssuredZero(magnet)) {
-    hField.makeZero();
+  Field hField(magnet->system(), 3, real3{0, 0, 0});
+  if (homoAfmExchangeAssuredZero(magnet))
     return hField;
+
+  auto host = magnet->hostMagnet();
+  auto afmex_cell = host->afmex_cell.cu();
+  auto latcon = host->latcon.cu();
+  auto msat = magnet->msat.cu();
+
+  for (auto sub : host->getOtherSublattices(magnet)) {
+    auto mag2 = sub->magnetization()->field().cu();
+    cudaLaunch(hField.grid().ncells(), k_afmExchangeFieldSite, hField.cu(),
+               mag2, msat, afmex_cell, latcon);
   }
-
-  auto otherSub = magnet->hostMagnet<Antiferromagnet>()->getOtherSublattice(magnet);
-  auto otherMag = otherSub->magnetization()->field().cu();
-  auto msat2 = otherSub->msat.cu();
-  auto afmex_cell = magnet->hostMagnet<Antiferromagnet>()->afmex_cell.cu();
-  auto latcon = magnet->hostMagnet<Antiferromagnet>()->latcon.cu();
-
-  cudaLaunch(hField.grid().ncells(), k_afmExchangeFieldSite, hField.cu(),
-            otherMag, msat2, afmex_cell, latcon);
   return hField;
 }
 
 Field evalInHomogeneousAfmExchangeField(const Ferromagnet* magnet) {
+  Field hField(magnet->system(), 3, real3{0, 0, 0});
 
-  Field hField(magnet->system(), 3);
-  
-  if (inHomoAfmExchangeAssuredZero(magnet)) {
-    hField.makeZero();
+  if (inHomoAfmExchangeAssuredZero(magnet))
     return hField;
-  }
-  
-  auto otherSub = magnet->hostMagnet<Antiferromagnet>()->getOtherSublattice(magnet);
-  auto mag = magnet->magnetization()->field().cu();
-  auto otherMag = otherSub->magnetization()->field().cu();
-  auto msat2 = otherSub->msat.cu();
-  auto aex = magnet->aex.cu();
-  auto afmex_nn = magnet->hostMagnet<Antiferromagnet>()->afmex_nn.cu();
-  auto BC = magnet->enableOpenBC;
-  auto dmiTensor = magnet->dmiTensor.cu();
-  auto inter = magnet->hostMagnet<Antiferromagnet>()->interAfmExchNN.cu();
-  auto scale = magnet->hostMagnet<Antiferromagnet>()->scaleAfmExchNN.cu();
 
-  cudaLaunch(hField.grid().ncells(), k_afmExchangeFieldNN, hField.cu(),
-            mag, otherMag, aex, afmex_nn, inter, scale, msat2,
-            magnet->world()->mastergrid(), dmiTensor, BC);
+  auto aex = magnet->aex.cu();
+  auto dmiTensor = magnet->dmiTensor.cu();
+  auto BC = magnet->enableOpenBC;
+  auto mag = magnet->magnetization()->field().cu();
+
+  auto host = magnet->hostMagnet();
+  auto afmex_nn = host->afmex_nn.cu();
+  auto inter = host->interAfmExchNN.cu();
+  auto scale = host->scaleAfmExchNN.cu();
+
+  for (auto sub : host->getOtherSublattices(magnet)) {
+    // Accumulate seperate sublattice contributions
+    auto mag2 = sub->magnetization()->field().cu();
+    auto msat2 = sub->msat.cu();
+    cudaLaunch(hField.grid().ncells(), k_afmExchangeFieldNN, hField.cu(),
+              mag, mag2, aex, afmex_nn, inter, scale, msat2,
+              magnet->world()->mastergrid(), dmiTensor, BC);
+  }
   return hField;
 }
 
