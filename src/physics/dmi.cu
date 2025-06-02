@@ -428,12 +428,12 @@ Field evalDmiField(const Ferromagnet* magnet) {
               mag, dmiTensor, msat, grid, aex, BC);
   else if (magnet->hostMagnet<Antiferromagnet>()){
     // magnet is sublattice in AFM
-    auto mag2 = magnet->hostMagnet<Antiferromagnet>()->getOtherSublattice(magnet)->magnetization()->field().cu();
-    auto afmex_nn = magnet->hostMagnet<Antiferromagnet>()->afmex_nn.cu();
-    auto interDmiTensor = magnet->hostMagnet<Antiferromagnet>()->dmiTensor.cu();
-    auto msat2 = magnet->hostMagnet<Antiferromagnet>()->getOtherSublattice(magnet)->msat.cu();
-    auto inter = magnet->hostMagnet<Antiferromagnet>()->interAfmExchNN.cu();
-    auto scale = magnet->hostMagnet<Antiferromagnet>()->scaleAfmExchNN.cu();
+    auto mag2 = magnet->hostMagnet()->getOtherSublattices(magnet)[0]->magnetization()->field().cu();
+    auto afmex_nn = magnet->hostMagnet()->afmex_nn.cu();
+    auto interDmiTensor = magnet->hostMagnet()->dmiTensor.cu();
+    auto msat2 = magnet->hostMagnet()->getOtherSublattices(magnet)[0]->msat.cu();
+    auto inter = magnet->hostMagnet()->interAfmExchNN.cu();
+    auto scale = magnet->hostMagnet()->scaleAfmExchNN.cu();
     cudaLaunch(ncells, k_dmiFieldAFM, hField.cu(), mag, mag2,
               dmiTensor, interDmiTensor, msat, msat2, grid, aex, afmex_nn, inter, scale, BC);
   }
@@ -445,10 +445,10 @@ Field evalDmiField(const Ferromagnet* magnet) {
     auto mag3 = m3->magnetization()->field().cu();
     auto msat2 = m2->msat.cu();
     auto msat3 = m3->msat.cu();
-    auto ncafmex_nn = magnet->hostMagnet<NCAFM>()->afmex_nn.cu();
-    auto interDmiTensor = magnet->hostMagnet<NCAFM>()->dmiTensor.cu();
-    auto inter = magnet->hostMagnet<NCAFM>()->interAfmExchNN.cu();
-    auto scale = magnet->hostMagnet<NCAFM>()->scaleAfmExchNN.cu();
+    auto ncafmex_nn = magnet->hostMagnet()->afmex_nn.cu();
+    auto interDmiTensor = magnet->hostMagnet()->dmiTensor.cu();
+    auto inter = magnet->hostMagnet()->interAfmExchNN.cu();
+    auto scale = magnet->hostMagnet()->scaleAfmExchNN.cu();
     cudaLaunch(ncells, k_dmiFieldNCAFM, hField.cu(), mag, mag2, mag3, dmiTensor,
                interDmiTensor, msat, msat2, msat3, grid, aex, ncafmex_nn, inter, scale, BC);
   }

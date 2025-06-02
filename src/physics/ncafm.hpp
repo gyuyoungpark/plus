@@ -5,7 +5,6 @@
 #include <string>
 #include <vector>
 
-#include "dmitensor.hpp"
 #include "ferromagnet.hpp"
 #include "field.hpp"
 #include "gpubuffer.hpp"
@@ -45,8 +44,6 @@ class NCAFM : public HostMagnet {
   Ferromagnet sub1_;
   Ferromagnet sub2_;
   Ferromagnet sub3_;
-
-  DmiTensor dmiTensor;
  
  private:
   std::vector<const Ferromagnet*> sublattices_ = {&sub1_, &sub2_, &sub3_};

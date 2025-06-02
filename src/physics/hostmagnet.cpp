@@ -6,7 +6,8 @@ HostMagnet::HostMagnet(std::shared_ptr<System> system_ptr, std::string name)
       afmex_nn(system(), 0.0, name + ":afmex_nn", "J/m"),
       latcon(system(), 0.35e-9, name + ":latcon", "m"),
       interAfmExchNN(system(), 0.0, name + ":inter_afmex_nn", "J/m"),
-      scaleAfmExchNN(system(), 1.0, name + ":scale_afmex_nn", "") {}
+      scaleAfmExchNN(system(), 1.0, name + ":scale_afmex_nn", ""),
+      dmiTensor(system()) {}
 
 std::vector<const Ferromagnet*> HostMagnet::sublattices() const {
     return sublattices_;

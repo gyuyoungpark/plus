@@ -1,5 +1,6 @@
 #pragma once
 
+#include "dmitensor.hpp"
 #include "magnet.hpp"
 #include "ferromagnet.hpp"
 #include "inter_parameter.hpp"
@@ -22,6 +23,9 @@ public:
     Parameter latcon;
     InterParameter interAfmExchNN;
     InterParameter scaleAfmExchNN;
+
+    DmiTensor dmiTensor;
+
 private:
     std::vector<const Ferromagnet*> sublattices_;
 };
