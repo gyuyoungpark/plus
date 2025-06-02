@@ -42,7 +42,7 @@ std::vector<DynamicEquation> Relaxer::getEquation(const Magnet* magnet) {
           std::shared_ptr<FieldQuantity>(thermalNoiseQuantity(mag).clone()));
       eqs.push_back(eq);
     }
-    else if (auto host = dynamic_cast<const HostMagnet*>(magnet)) {
+    else if (auto host = magnet->asHost()) {
       for (const Ferromagnet* sub : host->sublattices()) {
           eqs.emplace_back(
               sub->magnetization(),
@@ -62,7 +62,7 @@ std::vector<FM_FieldQuantity> Relaxer::getTorque() {
     if (const Ferromagnet* mag = magnet->asFM())
      torque.push_back(relaxTorqueQuantity(mag));
 
-    else if (auto host = dynamic_cast<const HostMagnet*>(magnet)) {
+    else if (auto host = magnet->asHost()) {
       for (const Ferromagnet* sub : host->sublattices())
         torque.push_back(relaxTorqueQuantity(sub));
     }

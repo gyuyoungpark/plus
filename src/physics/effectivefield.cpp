@@ -19,7 +19,7 @@ Field evalEffectiveField(const Ferromagnet* magnet) {
   if (!exchangeAssuredZero(magnet)) {h += evalExchangeField(magnet);}
   if (!anisotropyAssuredZero(magnet)) {h += evalAnisotropyField(magnet);}
   if (!externalFieldAssuredZero(magnet)) {h += evalExternalField(magnet);}
-  if (!dmiAssuredZero(magnet)) {h += evalDmiField(magnet);}
+  if (!inhomoDmiAssuredZero(magnet)) {h += evalDmiField(magnet);}
   if (!demagFieldAssuredZero(magnet)) {h += evalDemagField(magnet);}
   if (!magnetoelasticAssuredZero(magnet)) {
       h += evalMagnetoelasticField(magnet);}

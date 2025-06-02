@@ -15,7 +15,6 @@
 Antiferromagnet::Antiferromagnet(std::shared_ptr<System> system_ptr,
                                  std::string name)
     : HostMagnet(system_ptr, name),
-      dmiVector(system(), real3{0,0,0}, name + ":dmi_vector", "J/m³"),
       sub1_(Ferromagnet(system_ptr, name + ":sublattice_1", this)),
       sub2_(Ferromagnet(system_ptr, name + ":sublattice_2", this)) {
         addSublattice(&sub1_);
@@ -35,16 +34,6 @@ const Ferromagnet* Antiferromagnet::sub1() const {
 
 const Ferromagnet* Antiferromagnet::sub2() const {
   return &sub2_;
-}
-
-const Ferromagnet* Antiferromagnet::getOtherSublattice(const Ferromagnet* sub) const {
-  if (std::find(sublattices_.begin(), sublattices_.end(), sub) == sublattices_.end())
-    throw std::out_of_range("Sublattice not found in Antiferromagnet.");
-  return sublattices_[0] == sub ? &sub2_ : &sub1_;
-}
-
-std::vector<const Ferromagnet*> Antiferromagnet::sublattices() const {
-  return sublattices_;
 }
 
 void Antiferromagnet::minimize(real tol, int nSamples) {

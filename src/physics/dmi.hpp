@@ -30,7 +30,7 @@ class Field;
  *  DMI field and energy(density) are assured to be zero if the ferromagnet's
  *  DMI tensor or saturation magnetization (msat) can assured to be zero.
  */
-bool dmiAssuredZero(const Ferromagnet*);
+bool inhomoDmiAssuredZero(const Ferromagnet*);
 
 /** Evaluate the effective magnetic field related to DMI. */
 Field evalDmiField(const Ferromagnet*);

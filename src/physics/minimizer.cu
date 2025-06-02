@@ -54,7 +54,7 @@ Minimizer::Minimizer(const MumaxWorld* world,
   m1.resize(N);
 
   for (const auto pair : world->magnets()) {
-    if (auto host = dynamic_cast<const HostMagnet*>(pair.second)) {
+    if (auto host = pair.second->asHost()) {
       for (auto sub : host->sublattices())
         magnets_.push_back(sub);
     }

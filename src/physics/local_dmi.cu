@@ -9,12 +9,10 @@
 #include "parameter.hpp"
 
 bool homoDmiAssuredZero(const Ferromagnet* magnet) {
-  // Functions returns true if magnet is no sublattice
+  // Function returns true if magnet is no sublattice
   bool dmiVectorIsZero = true;
-  if (magnet->hostMagnet<Antiferromagnet>())
-    dmiVectorIsZero = magnet->hostMagnet<Antiferromagnet>()->dmiVector.assuredZero();
-  else if (magnet->hostMagnet<NCAFM>())
-    dmiVectorIsZero = magnet->hostMagnet<NCAFM>()->dmiVector.assuredZero();
+  if (magnet->hostMagnet())
+    dmiVectorIsZero = magnet->hostMagnet()->dmiVector.assuredZero();
   return magnet->msat.assuredZero() || dmiVectorIsZero;
 }
 
@@ -37,7 +35,9 @@ __global__ void k_homoDmiFieldAFM(CuField hField,
 
   real3 m2 = m2Field.vectorAt(idx);
   real3 D = dmiVector.vectorAt(idx);
-  hField.setVectorInCell(idx, symmetry_factor * cross(D, m2) / msat.valueAt(idx));
+  real3 current = hField.vectorAt(idx);
+
+  hField.setVectorInCell(idx, current + symmetry_factor * cross(D, m2) / msat.valueAt(idx));
 }
 
 __global__ void k_homoDmiFieldNCAFM(CuField hField,
@@ -65,7 +65,7 @@ __global__ void k_homoDmiFieldNCAFM(CuField hField,
 }
 
 Field evalHomoDmiField(const Ferromagnet* magnet) {
-  Field hField(magnet->system(), 3);
+  Field hField(magnet->system(), 3, real3{0, 0, 0});
   if (homoDmiAssuredZero(magnet)) {
     hField.makeZero();
     return hField;
@@ -73,23 +73,16 @@ Field evalHomoDmiField(const Ferromagnet* magnet) {
 
   int ncells = hField.grid().ncells();
   auto msat = magnet->msat.cu();
+  auto host = magnet->hostMagnet();
+  auto D = host->dmiVector.cu();
+  auto subs = host->getOtherSublattices(magnet);
 
-  if (magnet->hostMagnet<Antiferromagnet>()) {
-    auto host = magnet->hostMagnet<Antiferromagnet>();
-    auto D = host->dmiVector.cu();
-    auto m2 = host->getOtherSublattice(magnet)->magnetization()->field().cu();
-    real symmetry_factor = (magnet == host->sub1()) ? 1.0 : -1.0;
+  int i = host->getSublatticeIndex(magnet);
+  for (auto sub : subs) {
+    auto m2 = sub->magnetization()->field().cu();
+    real symmetry_factor = (i % 2 == 0) ? 1 : -1;
     cudaLaunch(ncells, k_homoDmiFieldAFM, hField.cu(), m2, D, msat, symmetry_factor);
-  }
-  else if (magnet->hostMagnet<NCAFM>()) {
-    auto host = magnet->hostMagnet<NCAFM>();
-    auto D = host->dmiVector.cu();
-    auto sub2 = magnet->hostMagnet<NCAFM>()->getOtherSublattices(magnet)[0];
-    auto sub3 = magnet->hostMagnet<NCAFM>()->getOtherSublattices(magnet)[1];
-    auto m2 = sub2->magnetization()->field().cu();
-    auto m3 = sub3->magnetization()->field().cu();
-    real symmetry_factor = (magnet == host->sub2()) ? -1.0 : 1.0;
-    cudaLaunch(ncells, k_homoDmiFieldNCAFM, hField.cu(), m2, m3, D, msat, symmetry_factor);
+    i += 1;
   }
   return hField;
 }

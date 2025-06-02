@@ -10,12 +10,10 @@
 #include "parameter.hpp"
 #include "world.hpp"
 
-bool dmiAssuredZero(const Ferromagnet* magnet) {
+bool inhomoDmiAssuredZero(const Ferromagnet* magnet) {
   if (magnet->msat.assuredZero()) { return true; }
-  if (magnet->hostMagnet<Antiferromagnet>())
-    return magnet->dmiTensor.assuredZero() && magnet->hostMagnet<Antiferromagnet>()->dmiTensor.assuredZero();
-  if (magnet->hostMagnet<NCAFM>())
-    return magnet->dmiTensor.assuredZero() && magnet->hostMagnet<NCAFM>()->dmiTensor.assuredZero();
+  if (magnet->hostMagnet())
+    return magnet->dmiTensor.assuredZero() && magnet->hostMagnet()->dmiTensor.assuredZero();
   return magnet->dmiTensor.assuredZero();
 }
 
@@ -408,8 +406,9 @@ __global__ void k_dmiFieldNCAFM(CuField hField,
 }
 
 Field evalDmiField(const Ferromagnet* magnet) {
+  // Inhomogeneous DMI field
   Field hField(magnet->system(), 3);
-  if (dmiAssuredZero(magnet)) {
+  if (inhomoDmiAssuredZero(magnet)) {
     hField.makeZero();
     return hField;
   }
@@ -426,7 +425,7 @@ Field evalDmiField(const Ferromagnet* magnet) {
     // magnet is stand-alone FM
     cudaLaunch(ncells, k_dmiFieldFM, hField.cu(),
               mag, dmiTensor, msat, grid, aex, BC);
-  else if (magnet->hostMagnet<Antiferromagnet>()){
+  else if (magnet->hostMagnet()){
     // magnet is sublattice in AFM
     auto mag2 = magnet->hostMagnet()->getOtherSublattices(magnet)[0]->magnetization()->field().cu();
     auto afmex_nn = magnet->hostMagnet()->afmex_nn.cu();
@@ -439,8 +438,8 @@ Field evalDmiField(const Ferromagnet* magnet) {
   }
   else {
     // magnet is sublatice in NCAFM
-    auto m2 = magnet->hostMagnet<NCAFM>()->getOtherSublattices(magnet)[0];
-    auto m3 = magnet->hostMagnet<NCAFM>()->getOtherSublattices(magnet)[1];
+    auto m2 = magnet->hostMagnet()->getOtherSublattices(magnet)[0];
+    auto m3 = magnet->hostMagnet()->getOtherSublattices(magnet)[1];
     auto mag2 = m2->magnetization()->field().cu();
     auto mag3 = m3->magnetization()->field().cu();
     auto msat2 = m2->msat.cu();
@@ -456,14 +455,14 @@ Field evalDmiField(const Ferromagnet* magnet) {
 }
 
 Field evalDmiEnergyDensity(const Ferromagnet* magnet) {
-  if (dmiAssuredZero(magnet))
+  if (inhomoDmiAssuredZero(magnet))
     return Field(magnet->system(), 1, 0.0);
 
   return evalEnergyDensity(magnet, evalDmiField(magnet), 0.5);
 }
 
 real evalDmiEnergy(const Ferromagnet* magnet) {
-  if (dmiAssuredZero(magnet))
+  if (inhomoDmiAssuredZero(magnet))
     return 0;
 
   real edens = dmiEnergyDensityQuantity(magnet).average()[0];

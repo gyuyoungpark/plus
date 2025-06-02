@@ -42,12 +42,6 @@ class Ferromagnet : public Magnet {
 
   const HostMagnet* hostMagnet() const { return hostMagnet_; }
 
-  //TODO: is this function still necessary?
-  template <typename T>
-  const T* hostMagnet() const {
-    return dynamic_cast<const T*>(hostMagnet_);
-  }
-
   void minimize(real tol = 1e-6, int nSamples = 10);
   void relax(real tol);
 

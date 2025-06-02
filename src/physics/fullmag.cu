@@ -6,36 +6,27 @@
 #include "fullmag.hpp"
 #include "ncafm.hpp"
 
-Field evalFullMag(const Ferromagnet* magnet) {
+Field evalFMFullMag(const Ferromagnet* magnet) {
   return magnet->msat.eval() * magnet->magnetization()->field();
 }
 
-Field evalAFMFullMag(const Antiferromagnet* magnet) {
-  return add(magnet->sub1()->msat.eval(),
-             magnet->sub1()->magnetization()->field(),
-             magnet->sub2()->msat.eval(),
-             magnet->sub2()->magnetization()->field());
-}
-
-Field evalNCAFMFullMag(const NCAFM* magnet) {
-  auto result = add(magnet->sub1()->msat.eval(),
-             magnet->sub1()->magnetization()->field(),
-             magnet->sub2()->msat.eval(),
-             magnet->sub2()->magnetization()->field());
-  addTo(result,
-        magnet->sub3()->msat.eval(),
-        magnet->sub3()->magnetization()->field());
+Field evalHMFullMag(const HostMagnet* magnet) {
+  // TODO: do we want one general evalfunc?
+  auto sublattices = magnet->sublattices();
+  Field result = sublattices[0]->msat.eval() * sublattices[0]->magnetization()->field();
+  for (int i = 1; i < sublattices.size(); i++)
+    addTo(result, sublattices[i]->msat.eval(), sublattices[i]->magnetization()->field());
   return result;
 }
 
 FM_FieldQuantity fullMagnetizationQuantity(const Ferromagnet* magnet) {
-    return FM_FieldQuantity(magnet, evalFullMag, 3, "full_magnetization", "A/m");
+    return FM_FieldQuantity(magnet, evalFMFullMag, 3, "full_magnetization", "A/m");
 }
 
 AFM_FieldQuantity fullMagnetizationQuantity(const Antiferromagnet* magnet) {
-    return AFM_FieldQuantity(magnet, evalAFMFullMag, 3, "full_magnetization", "A/m");
+    return AFM_FieldQuantity(magnet, evalHMFullMag, 3, "full_magnetization", "A/m");
 }
 
 NCAFM_FieldQuantity fullMagnetizationQuantity(const NCAFM* magnet) {
-    return NCAFM_FieldQuantity(magnet, evalNCAFMFullMag, 3, "full_magnetization", "A/m");
+    return NCAFM_FieldQuantity(magnet, evalHMFullMag, 3, "full_magnetization", "A/m");
 }

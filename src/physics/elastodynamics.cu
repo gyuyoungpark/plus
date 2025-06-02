@@ -29,19 +29,14 @@ Field evalEffectiveBodyForce(const Magnet* magnet) {
   if (!magnet->externalBodyForce.assuredZero())
     fField += magnet->externalBodyForce;
 
-  if (const Antiferromagnet* afm = magnet->asAFM()) {
-    // add magnetoelastic force of both sublattices
-    for (const Ferromagnet* sub : afm->sublattices()) {
-      if (!magnetoelasticAssuredZero(sub))
-        fField += evalMagnetoelasticForce(sub);
-    }
-  } else if (const NCAFM* ncafm = magnet->asNCAFM()) {
+  if (auto host = magnet->asHost()) {
     // add magnetoelastic force of all sublattices
-    for (const Ferromagnet* sub : ncafm->sublattices()) {
+    for (const Ferromagnet* sub : host->sublattices()) {
       if (!magnetoelasticAssuredZero(sub))
         fField += evalMagnetoelasticForce(sub);
     }
-  } else {
+  }
+  else {
     // add magnetoelastic force of independent ferromagnet
     const Ferromagnet* fm = magnet->asFM();
     if (!magnetoelasticAssuredZero(fm))

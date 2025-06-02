@@ -30,19 +30,13 @@ class Antiferromagnet : public HostMagnet {
    */
   ~Antiferromagnet() override {};
   
- std::vector<const Ferromagnet*> sublattices() const;
  const Ferromagnet* sub1() const;
  const Ferromagnet* sub2() const;
- const Ferromagnet* getOtherSublattice(const Ferromagnet* sub) const;
  
  void minimize(real tol = 1e-6, int nSamples = 20);
  void relax(real tol);
 
- public:
-  VectorParameter dmiVector;
+ private:
   Ferromagnet sub1_;
   Ferromagnet sub2_;
- 
- private:
-  std::vector<const Ferromagnet*> sublattices_ = {&sub1_, &sub2_};
 };

@@ -30,21 +30,15 @@ class NCAFM : public HostMagnet {
    */
   ~NCAFM() override {};
   
- std::vector<const Ferromagnet*> sublattices() const;
  const Ferromagnet* sub1() const;
  const Ferromagnet* sub2() const;
  const Ferromagnet* sub3() const;
- std::vector<const Ferromagnet*> getOtherSublattices(const Ferromagnet* sub) const;
 
  void minimize(real tol = 1e-6, int nsamples = 30);
  void relax(real tol);
 
- public:
-  VectorParameter dmiVector;
+ private:
   Ferromagnet sub1_;
   Ferromagnet sub2_;
   Ferromagnet sub3_;
- 
- private:
-  std::vector<const Ferromagnet*> sublattices_ = {&sub1_, &sub2_, &sub3_};
 };

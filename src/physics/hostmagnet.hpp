@@ -12,10 +12,11 @@ public:
     HostMagnet(std::shared_ptr<System> system_ptr, std::string name);
 
     // Return all sublattices
-    virtual std::vector<const Ferromagnet*> sublattices() const;
+    std::vector<const Ferromagnet*> sublattices() const;
 
     void addSublattice(const Ferromagnet* sub);
     std::vector<const Ferromagnet*> getOtherSublattices(const Ferromagnet*) const;
+    int getSublatticeIndex(const Ferromagnet*) const;
 
 public:
     Parameter afmex_cell;
@@ -25,6 +26,7 @@ public:
     InterParameter scaleAfmExchNN;
 
     DmiTensor dmiTensor;
+    VectorParameter dmiVector;
 
 private:
     std::vector<const Ferromagnet*> sublattices_;

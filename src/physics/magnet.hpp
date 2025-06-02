@@ -17,6 +17,7 @@
 class Antiferromagnet;
 class Ferromagnet;
 class FieldQuantity;
+class HostMagnet;
 class MumaxWorld;
 class NCAFM;
 class System;
@@ -43,6 +44,7 @@ class Magnet {
 
   // Cast Magnet instance to child instances
   const Ferromagnet* asFM() const;
+  const HostMagnet* asHost() const;
   const Antiferromagnet* asAFM() const;
   const NCAFM* asNCAFM() const;
 

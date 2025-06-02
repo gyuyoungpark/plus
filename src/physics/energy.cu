@@ -55,7 +55,7 @@ Field evalTotalEnergyDensity(const Ferromagnet* magnet) {
   if (!exchangeAssuredZero(magnet)) {edens += evalExchangeEnergyDensity(magnet);}
   if (!anisotropyAssuredZero(magnet)) {edens += evalAnisotropyEnergyDensity(magnet);}
   if (!externalFieldAssuredZero(magnet)) {edens += evalZeemanEnergyDensity(magnet);}
-  if (!dmiAssuredZero(magnet)) {edens += evalDmiEnergyDensity(magnet);}
+  if (!inhomoDmiAssuredZero(magnet)) {edens += evalDmiEnergyDensity(magnet);}
   if (!demagFieldAssuredZero(magnet)) {edens += evalDemagEnergyDensity(magnet);}
   if (!homoAfmExchangeAssuredZero(magnet)) {edens += evalHomoAfmExchangeEnergyDensity(magnet);}
   if (!inHomoAfmExchangeAssuredZero(magnet)) {edens += evalInHomoAfmExchangeEnergyDensity(magnet);}
@@ -90,11 +90,11 @@ real evalTotalEnergy(const Magnet* magnet) {
   real cellVolume = magnet->world()->cellVolume();
   real edensAverage;
   
-  if (const Ferromagnet* mag = dynamic_cast<const Ferromagnet*>(magnet))
+  if (const Ferromagnet* mag = magnet->asFM())
     edensAverage = totalEnergyDensityQuantity(mag).average()[0];
-  else if (const Antiferromagnet* mag = dynamic_cast<const Antiferromagnet*>(magnet))
+  else if (const Antiferromagnet* mag = magnet->asAFM())
     edensAverage = totalEnergyDensityQuantity(mag).average()[0];
-  else if (const NCAFM* mag = dynamic_cast<const NCAFM*>(magnet))
+  else if (const NCAFM* mag = magnet->asNCAFM())
     edensAverage = totalEnergyDensityQuantity(mag).average()[0];
   else
     throw std::invalid_argument("Cannot calculate energy of instance which "

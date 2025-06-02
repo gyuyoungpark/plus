@@ -7,9 +7,8 @@ class Ferromagnet;
 class Field;
 class NCAFM;
 
-Field evalFullMag(const Ferromagnet*);
-Field evalAFMFullMag(const Antiferromagnet*);
-Field evalNCAFMFullMag(const NCAFM*);
+Field evalFMFullMag(const Ferromagnet*);
+Field evalHMFullMag(const HostMagnet*);
 
 FM_FieldQuantity fullMagnetizationQuantity(const Ferromagnet*);
 AFM_FieldQuantity fullMagnetizationQuantity(const Antiferromagnet*);

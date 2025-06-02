@@ -7,7 +7,8 @@ HostMagnet::HostMagnet(std::shared_ptr<System> system_ptr, std::string name)
       latcon(system(), 0.35e-9, name + ":latcon", "m"),
       interAfmExchNN(system(), 0.0, name + ":inter_afmex_nn", "J/m"),
       scaleAfmExchNN(system(), 1.0, name + ":scale_afmex_nn", ""),
-      dmiTensor(system()) {}
+      dmiTensor(system()),
+      dmiVector(system(), real3{0,0,0}, name + ":dmi_vector", "J/m³") {}
 
 std::vector<const Ferromagnet*> HostMagnet::sublattices() const {
     return sublattices_;
@@ -18,6 +19,7 @@ void HostMagnet::addSublattice(const Ferromagnet* sub) {
 }
 
 std::vector<const Ferromagnet*> HostMagnet::getOtherSublattices(const Ferromagnet* sub) const {
+    // TODO: loops over sublattices_ twice, which can be improved.
     if (std::find(sublattices_.begin(), sublattices_.end(), sub) == sublattices_.end())
         throw std::out_of_range("Sublattice not found in HostMagnet.");
     std::vector<const Ferromagnet*> result;
@@ -26,4 +28,12 @@ std::vector<const Ferromagnet*> HostMagnet::getOtherSublattices(const Ferromagne
             result.push_back(s);
     }
     return result;
+}
+
+int HostMagnet::getSublatticeIndex(const Ferromagnet* magnet) const {
+    for (int i = 0; i < sublattices_.size(); ++i) {
+      if (sublattices_[i] == magnet)
+        return i;
+    }
+    throw std::runtime_error("Sublattice not found in host magnet.");
 }
