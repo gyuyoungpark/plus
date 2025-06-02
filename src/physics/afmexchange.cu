@@ -67,6 +67,7 @@ __global__ void k_afmExchangeFieldNN(CuField hField,
                                 const CuParameter afmex_nn,
                                 const CuInterParameter interExch,
                                 const CuInterParameter scaleExch,
+                                const CuParameter msat,
                                 const CuParameter msat2,
                                 const Grid mastergrid,
                                 const CuDmiTensor dmiTensor,
@@ -86,7 +87,7 @@ __global__ void k_afmExchangeFieldNN(CuField hField,
   if (!grid.cellInGrid(idx))
     return;
 
-  if (msat2.valueAt(idx) == 0) {
+  if (msat.valueAt(idx) == 0) {
     hField.setVectorInCell(idx, real3{0, 0, 0});
     return;
   }
@@ -160,7 +161,7 @@ __global__ void k_afmExchangeFieldNN(CuField hField,
     }
   }
   real3 current = hField.vectorAt(idx);
-  hField.setVectorInCell(idx, current + h / msat2.valueAt(idx));
+  hField.setVectorInCell(idx, current + h / msat.valueAt(idx));
 }
 
 Field evalHomogeneousAfmExchangeField(const Ferromagnet* magnet) {
@@ -174,6 +175,7 @@ Field evalHomogeneousAfmExchangeField(const Ferromagnet* magnet) {
   auto msat = magnet->msat.cu();
 
   for (auto sub : host->getOtherSublattices(magnet)) {
+    // Accumulate seperate sublattice contributions
     auto mag2 = sub->magnetization()->field().cu();
     cudaLaunch(hField.grid().ncells(), k_afmExchangeFieldSite, hField.cu(),
                mag2, msat, afmex_cell, latcon);
@@ -191,6 +193,7 @@ Field evalInHomogeneousAfmExchangeField(const Ferromagnet* magnet) {
   auto dmiTensor = magnet->dmiTensor.cu();
   auto BC = magnet->enableOpenBC;
   auto mag = magnet->magnetization()->field().cu();
+  auto msat = magnet->msat.cu();
 
   auto host = magnet->hostMagnet();
   auto afmex_nn = host->afmex_nn.cu();
@@ -202,7 +205,7 @@ Field evalInHomogeneousAfmExchangeField(const Ferromagnet* magnet) {
     auto mag2 = sub->magnetization()->field().cu();
     auto msat2 = sub->msat.cu();
     cudaLaunch(hField.grid().ncells(), k_afmExchangeFieldNN, hField.cu(),
-              mag, mag2, aex, afmex_nn, inter, scale, msat2,
+              mag, mag2, aex, afmex_nn, inter, scale, msat, msat2,
               magnet->world()->mastergrid(), dmiTensor, BC);
   }
   return hField;

@@ -99,7 +99,6 @@ void wrap_ferromagnet(py::module& m) {
   m.def("homogeneous_exchange_energy", &homoAfmExchangeEnergyQuantity);
   m.def("inhomogeneous_exchange_energy", &inHomoAfmExchangeEnergyQuantity);
 
-
   m.def("homogeneous_dmi_field", &homoDmiFieldQuantity);
   m.def("homogeneous_dmi_energy_density", &homoDmiEnergyDensityQuantity);
   m.def("homogeneous_dmi_energy", &homoDmiEnergyQuantity);
