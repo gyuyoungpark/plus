@@ -315,7 +315,7 @@ class Magnet(ABC):
     def stiffness_damping(self):
         """Rayleigh damping stiffness coefficient β (s).
 
-        Default = 5e-14 / pi s.
+        Default = 0.05 / (1e12 * pi) s.
 
         This corresponds to a damping ratio of 5% at a frequency of 1 THz.
         This is meant to stabilize the high frequency modes, with a typical
@@ -326,8 +326,8 @@ class Magnet(ABC):
 
         η = β * C
 
-        This parameter is completely IGNORED when any component of the viscosity
-        tensor (eta11, et12 or eta44) is set non-zero somewhere.
+        This parameter is completely **ignored** when any component of the viscosity
+        tensor (:attr:`eta11`, :attr:`et12` or :attr:`eta44`) has been set.
 
         See Also
         --------
@@ -344,10 +344,10 @@ class Magnet(ABC):
     @property
     def eta11(self):
         """Viscosity constant eta11 = eta22 = eta33 of the viscosity tensor (Pa s)
-        in Voigt notation, which connects strain rate to viscous stress
+        in Voigt notation, which connects strain rate to viscous stress via
         σ = η : dε/dt.
 
-        When non-zero somewhere, this parameter overrules the stiffness_damping.
+        When set, this parameter overrules the :attr:`stiffness_damping`.
         
         See Also
         --------
@@ -364,10 +364,10 @@ class Magnet(ABC):
     @property
     def eta12(self):
         """Viscosity constant eta12 = eta13 = eta23 of the viscosity tensor (Pa s)
-        in Voigt notation, which connects strain rate to viscous stress
+        in Voigt notation, which connects strain rate to viscous stress via
         σ = η : dε/dt.
 
-        When non-zero somewhere, this parameter overrules the stiffness_damping.
+        When set, this parameter overrules the :attr:`stiffness_damping`.
         
         See Also
         --------
@@ -384,12 +384,12 @@ class Magnet(ABC):
     @property
     def eta44(self):
         """Viscosity constant eta44 = eta55 = eta66 of the viscosity tensor (Pa s)
-        in Voigt notation, which connects strain rate to viscous stress
+        in Voigt notation, which connects strain rate to viscous stress via
         σ = η : dε/dt.
 
         For isotropic materials, this is equal to the shear viscosity.
 
-        When non-zero somewhere, this parameter overrules the stiffness_damping.
+        When set, this parameter overrules the :attr:`stiffness_damping`.
         
         See Also
         --------
@@ -527,7 +527,9 @@ class Magnet(ABC):
     def viscous_stress(self):
         """Viscous stress tensor (N/m²) due to isotropic viscous damping,
         calculated according to
+
         σ = η : dε/dt
+
         with η the viscosity tensor and dε/dt the strain rate tensor.
 
         See Also

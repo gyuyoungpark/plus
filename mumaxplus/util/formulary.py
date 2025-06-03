@@ -184,7 +184,9 @@ def Rayleigh_damping_coefficients(frequency_1, damping_ratio_1, frequency_2, dam
     calculated by providing damping ratios ζ₁,₂ at specified frequencies f₁,₂.
 
     α = 4π f₁ f₂ * (ζ₁f₂ - ζ₂f₁) / (f₂² - f₁²)
+
     β = 1/π * (ζ₂f₂ - ζ₁f₁) / (f₂² - f₁²)
+
     with f₁/f₂ <= ζ₂/ζ₁ <= f₂/f₁
 
     Based on https://www.comsol.com/blogs/how-to-model-different-types-of-damping-in-comsol-multiphysics
@@ -212,7 +214,7 @@ def Rayleigh_damping_coefficients(frequency_1, damping_ratio_1, frequency_2, dam
     --------
     Rayleigh_damping_stiffness_coefficient
     """
-    assert damping_ratio_1 >= 0 and damping_ratio_2 >= 0
+    assert damping_ratio_1 > 0 and damping_ratio_2 >= 0
     assert frequency_1 >= 0 and frequency_2 >= 0 and frequency_2 > frequency_1
     assert frequency_1 / frequency_2 <= damping_ratio_2 / damping_ratio_1 and \
            damping_ratio_2 / damping_ratio_1 <= frequency_2 / frequency_1
@@ -256,6 +258,6 @@ def Rayleigh_damping_stiffness_coefficient(frequency, damping_ratio):
     --------
     Rayleigh_damping_coefficients
     """
-    assert damping_ratio >= 0 and frequency >= 0
+    assert damping_ratio >= 0 and frequency > 0
 
     return damping_ratio / (_np.pi * frequency)

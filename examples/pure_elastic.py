@@ -64,7 +64,12 @@ C11, C44, C12 = 283e9, 58e9, 166e9
 magnet.C11, magnet.C44, magnet.C12 = C11, C44, C12
 
 # --------------------
-# Add Rayleigh damping for stability
+"""Add Rayleigh damping
+
+The stiffness part of Rayleigh damping is automatically enabled by default via
+the `Magnet.stiffness_damping` property. That Parameter is ignored when any part
+of the viscosity tensor is set, like we explicitly do here in this example.
+"""
 
 # lowest relevant frequency has a wavelength similar to the length of the system
 lowest_freq = np.sqrt(min(C11, C44) / rho) / (2 * max(length, width))
