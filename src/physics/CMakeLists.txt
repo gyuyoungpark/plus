@@ -22,8 +22,6 @@ add_library(physics STATIC
     elasticdamping.hpp
     elasticenergies.cu
     elasticenergies.hpp
-    elasticforce.cu
-    elasticforce.hpp
     elastodynamics.cu
     elastodynamics.hpp
     electricalpotential.hpp
@@ -36,6 +34,8 @@ add_library(physics STATIC
     ferromagnet.hpp 
     fullmag.cu
     fullmag.hpp 
+    internalbodyforce.cu
+    internalbodyforce.hpp
     magnet.cpp
     magnet.hpp 
     magnetoelasticfield.cu
