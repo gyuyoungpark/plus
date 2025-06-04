@@ -87,11 +87,11 @@ std::string StrayField::unit() const {
 }
 
 bool StrayField::assuredZero() const {
-  if(const Ferromagnet* mag = dynamic_cast<const Ferromagnet*>(magnet_))
+  if(const Ferromagnet* mag = magnet_->asFM())
     return mag->msat.assuredZero();
-  else if (const Antiferromagnet* mag = dynamic_cast<const Antiferromagnet*>(magnet_))
+  else if (const Antiferromagnet* mag = magnet_->asAFM())
     return mag->sub1()->msat.assuredZero() && mag->sub2()->msat.assuredZero();
-  else if (const NcAfm* mag = dynamic_cast<const NcAfm*>(magnet_))
+  else if (const NcAfm* mag = magnet_->asNcAfm())
     return mag->sub1()->msat.assuredZero() &&
            mag->sub2()->msat.assuredZero() &&
            mag->sub3()->msat.assuredZero();

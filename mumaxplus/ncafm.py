@@ -48,7 +48,7 @@ class NcAfm(Magnet):
 
     def __repr__(self):
         """Return non-collinear antiferromagnet string representation."""
-        return f"Antiferromagnet(grid={self.grid}, name='{self.name}')"
+        return f"NcAfm(grid={self.grid}, name='{self.name}')"
 
     def __setattr__(self, name, value):
         """Set non-collinear antiferromagnet or sublattice properties.

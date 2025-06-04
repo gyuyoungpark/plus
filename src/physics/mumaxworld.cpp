@@ -104,9 +104,9 @@ Antiferromagnet* MumaxWorld::addAntiferromagnet(Grid grid,
 }
 
 NcAfm* MumaxWorld::addNcAfm(Grid grid,
-  GpuBuffer<bool> geometry,
-  GpuBuffer<unsigned int> regions,
-  std::string name) {
+                            GpuBuffer<bool> geometry,
+                            GpuBuffer<unsigned int> regions,
+                            std::string name) {
   // Create name if not given.
   static int idxUnnamed = 1;
   if (name.length() == 0) {
