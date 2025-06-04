@@ -93,6 +93,10 @@ class NCAFM(Magnet):
     def sublattices(self):
         return (self.sub1, self.sub2, self.sub3)
 
+    def other_sublattices(self, sub: "Ferromagnet"):
+        """Returns sister sublattices of given sublattice."""
+        return self._impl.other_sublattice(sub._impl)
+
     @property
     def bias_magnetic_field(self):
         """Uniform bias magnetic field which will affect an NCAFM.

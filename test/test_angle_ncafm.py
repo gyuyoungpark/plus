@@ -71,7 +71,6 @@ class TestMaxAngleNCAFM:
         a13 = magnet.max_intracell_angle_between(magnet.sub1, magnet.sub3)
         a23 = magnet.max_intracell_angle_between(magnet.sub2, magnet.sub3)
 
-        
         assert np.isclose(n12, a12)
         assert np.isclose(n13, a13)
         assert np.isclose(n23, a23)

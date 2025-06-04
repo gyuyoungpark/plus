@@ -19,6 +19,9 @@ void wrap_ncafm(py::module& m) {
       .def("sub2", &NCAFM::sub2, py::return_value_policy::reference)
       .def("sub3", &NCAFM::sub3, py::return_value_policy::reference)
       .def("sublattices", &NCAFM::sublattices, py::return_value_policy::reference)
+      .def("other_sublattice",
+          [](const NCAFM* m, Ferromagnet* mag) { return m->getOtherSublattices(mag); },
+            py::return_value_policy::reference)
 
       .def_readonly("ncafmex_cell", &NCAFM::afmex_cell)
       .def_readonly("ncafmex_nn", &NCAFM::afmex_nn)
