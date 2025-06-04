@@ -394,10 +394,9 @@ class NCAFM(Magnet):
         """
         return FieldQuantity(_cpp.angle_field(self._impl))
 
-    @property
-    def max_intracell_angle(self):
-        """The maximal deviation from 120° between NCAFM-exchange coupled magnetization
-        vectors in the same simulation cell (rad).
+    def max_intracell_angle_between(self, sub_i : "Ferromagnet", sub_j : "Ferromagnet"):
+        """The maximal angle between sublattice spins in the same simulation cell (rad).
+        Input should be two integers from {1, 2, 3} denoting a sublattice index.
 
         See Also
         --------
@@ -405,7 +404,7 @@ class NCAFM(Magnet):
         ncafmex_cell
         Ferromagnet.max_angle
         """
-        return ScalarQuantity(_cpp.max_intracell_angle(self._impl))
+        return _cpp.max_intracell_angle_between(sub_i._impl, sub_j._impl)
 
     @property
     def total_energy_density(self):

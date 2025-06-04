@@ -36,7 +36,9 @@ void wrap_ncafm(py::module& m) {
         py::overload_cast<const NCAFM*>(&fullMagnetizationQuantity));
 
   m.def("angle_field", &angleFieldQuantity);
-  m.def("max_intracell_angle", &maxAngle);
+  m.def("max_intracell_angle_between",
+          [](const Ferromagnet* i, const Ferromagnet* j) { return evalMaxAngle(i, j); },
+          py::arg("sub1"), py::arg("sub2"));
 
   m.def("total_energy_density",
         py::overload_cast<const NCAFM*>(&totalEnergyDensityQuantity));

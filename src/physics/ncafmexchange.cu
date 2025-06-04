@@ -41,6 +41,42 @@ __global__ void k_angle(CuField angleField,
   angleField.setVectorInCell(idx, real3{dev12, dev13, dev23});
 }
 
+__global__ void k_maxAngle(real* result,
+                           CuField sub1,
+                           CuField sub2,
+                           CuParameter msat1,
+                           CuParameter msat2) {
+  // Reduce to a block
+  __shared__ real sdata[BLOCKDIM];
+  int ncells = sub1.system.grid.ncells();
+  int tid = threadIdx.x;
+  real threadValue = -1.0;
+
+  for (int i = tid; i < ncells; i += BLOCKDIM) {
+    if (!sub1.cellInGeometry(i))
+      continue;
+    if (msat1.valueAt(i) == 0 || msat2.valueAt(i) == 0)
+      continue;
+    real angle = acos(dot(sub1.vectorAt(i), sub2.vectorAt(i)));
+    threadValue = angle > threadValue ? angle : threadValue;
+  }
+  sdata[tid] = threadValue;
+  __syncthreads();
+
+  // Reduce the block
+  for (unsigned int s = BLOCKDIM / 2; s > 0; s >>= 1) {
+    if (tid < s)
+      if (sdata[tid + s] > sdata[tid])
+        sdata[tid] = sdata[tid + s];
+    __syncthreads();
+  }
+  // TODO: check if loop unrolling makes sense here
+
+  // Set the result
+  if (tid == 0)
+    *result = sdata[0];
+}
+
 Field evalAngleField(const NCAFM* magnet) {
   // Three components for the angles between 1-2, 1-3 and 2-3
   Field angleField(magnet->system(), 3);
@@ -56,14 +92,27 @@ Field evalAngleField(const NCAFM* magnet) {
   return angleField;
 }
 
-real evalMaxAngle(const NCAFM* magnet) {
-return maxAbsValue(evalAngleField(magnet));
+real evalMaxAngle(const Ferromagnet* sub1, const Ferromagnet* sub2) {
+  if (!sub1->hostMagnet()->asNCAFM() || !sub2->hostMagnet()->asNCAFM())
+    throw std::invalid_argument("Maximum angle can only be calculated for NCAFM sublattices.");
+  if (sub1->hostMagnet()->asNCAFM() != sub2->hostMagnet()->asNCAFM())
+    throw std::invalid_argument("Maximum angle can only be calculated for sublattices in the same NCAFM host.");
+  if (sub1 == sub2)
+    throw std::invalid_argument("Maximum angle can only be calculated for different sublattices.");
+  auto m1 = sub1->magnetization()->field().cu();
+  auto m2 = sub2->magnetization()->field().cu();
+  auto ms1 = sub1->msat.cu();
+  auto ms2 = sub2->msat.cu();
+
+  GpuBuffer<real> d_result(1);
+  cudaLaunchReductionKernel(k_maxAngle, d_result.get(), m1, m2, ms1, ms2);
+
+  real result;
+  checkCudaError(cudaMemcpyAsync(&result, d_result.get(), 1 * sizeof(real),
+                                 cudaMemcpyDeviceToHost, getCudaStream()));
+  return result;
 }
 
 NCAFM_FieldQuantity angleFieldQuantity(const NCAFM* magnet) {
-return NCAFM_FieldQuantity(magnet, evalAngleField, 3, "angle_field", "rad");
-}
-
-NCAFM_ScalarQuantity maxAngle(const NCAFM* magnet) {
-return NCAFM_ScalarQuantity(magnet, evalMaxAngle, "max_angle", "rad");
+  return NCAFM_FieldQuantity(magnet, evalAngleField, 3, "angle_field", "rad");
 }
