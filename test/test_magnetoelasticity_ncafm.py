@@ -1,6 +1,6 @@
 import numpy as np
 
-from mumaxplus import Grid, World, NCAFM
+from mumaxplus import Grid, World, NcAfm
 
 
 SRTOL = 1e-5
@@ -44,12 +44,12 @@ def check_magnetoelastic_field(host, sublattice):
     
 
 
-class TestMelNCAFM:
+class TestMelNcAfm:
 
     def setup_class(self):
         world = World(cellsize)
 
-        self.magnet = NCAFM(world, Grid((nx,ny,nz)))
+        self.magnet = NcAfm(world, Grid((nx,ny,nz)))
         self.magnet.msat = msat
 
         self.magnet.enable_elastodynamics = True

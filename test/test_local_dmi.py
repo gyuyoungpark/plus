@@ -1,6 +1,6 @@
 import numpy as np
 
-from mumaxplus import Antiferromagnet, NCAFM, Grid, World
+from mumaxplus import Antiferromagnet, NcAfm, Grid, World
 
 def max_absolute_error(result, wanted):
     """Maximum error for vector quantities."""
@@ -30,7 +30,7 @@ class TestLocalDMI:
 
     def test_local_dmi_ncafm(self):
         world = World((1, 1, 1))
-        magnet = NCAFM(world, Grid((32, 32, 5)))
+        magnet = NcAfm(world, Grid((32, 32, 5)))
         magnet.msat = 5
         magnet.dmi_vector = (8, 42, 3e-1)
 

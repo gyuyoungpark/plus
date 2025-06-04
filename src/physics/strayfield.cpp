@@ -91,12 +91,12 @@ bool StrayField::assuredZero() const {
     return mag->msat.assuredZero();
   else if (const Antiferromagnet* mag = dynamic_cast<const Antiferromagnet*>(magnet_))
     return mag->sub1()->msat.assuredZero() && mag->sub2()->msat.assuredZero();
-  else if (const NCAFM* mag = dynamic_cast<const NCAFM*>(magnet_))
+  else if (const NcAfm* mag = dynamic_cast<const NcAfm*>(magnet_))
     return mag->sub1()->msat.assuredZero() &&
            mag->sub2()->msat.assuredZero() &&
            mag->sub3()->msat.assuredZero();
   else 
     throw std::invalid_argument("Cannot calculate strayfield since magnet is neither "
                                 "a Ferromagnet, an Antiferromagnet/Ferrimagnet, "
-                                "nor an NCAFM.");
+                                "nor an NcAfm.");
 }

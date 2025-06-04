@@ -77,7 +77,7 @@ __global__ void k_maxAngle(real* result,
     *result = sdata[0];
 }
 
-Field evalAngleField(const NCAFM* magnet) {
+Field evalAngleField(const NcAfm* magnet) {
   // Three components for the angles between 1-2, 1-3 and 2-3
   Field angleField(magnet->system(), 3);
 
@@ -93,10 +93,10 @@ Field evalAngleField(const NCAFM* magnet) {
 }
 
 real evalMaxAngle(const Ferromagnet* sub1, const Ferromagnet* sub2) {
-  if (!sub1->hostMagnet()->asNCAFM() || !sub2->hostMagnet()->asNCAFM())
+  if (!sub1->hostMagnet()->asNcAfm() || !sub2->hostMagnet()->asNcAfm())
     throw std::invalid_argument("Maximum angle can only be calculated for NCAFM sublattices.");
-  if (sub1->hostMagnet()->asNCAFM() != sub2->hostMagnet()->asNCAFM())
-    throw std::invalid_argument("Maximum angle can only be calculated for sublattices in the same NCAFM host.");
+  if (sub1->hostMagnet()->asNcAfm() != sub2->hostMagnet()->asNcAfm())
+    throw std::invalid_argument("Maximum angle can only be calculated for sublattices in the same NcAfm host.");
   if (sub1 == sub2)
     throw std::invalid_argument("Maximum angle can only be calculated for different sublattices.");
   auto m1 = sub1->magnetization()->field().cu();
@@ -113,6 +113,6 @@ real evalMaxAngle(const Ferromagnet* sub1, const Ferromagnet* sub2) {
   return result;
 }
 
-NCAFM_FieldQuantity angleFieldQuantity(const NCAFM* magnet) {
-  return NCAFM_FieldQuantity(magnet, evalAngleField, 3, "angle_field", "rad");
+NcAfm_FieldQuantity angleFieldQuantity(const NcAfm* magnet) {
+  return NcAfm_FieldQuantity(magnet, evalAngleField, 3, "angle_field", "rad");
 }

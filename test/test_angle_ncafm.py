@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from mumaxplus import Antiferromagnet, Ferromagnet, NCAFM, Grid, World
+from mumaxplus import Antiferromagnet, Ferromagnet, NcAfm, Grid, World
 
 def max_absolute_error(result, wanted):
     """Maximum error for vector quantities."""
@@ -13,51 +13,51 @@ def max_semirelative_error(result, wanted):
     """
     return max_absolute_error(result, wanted) / np.max(abs(wanted))
 
-class TestMaxAngleNCAFM:
+class TestMaxAngleNcAfm:
 
     def test_same_sublattices(self):
-        magnet = NCAFM(World((1, 1, 1)), Grid((1, 1, 1)))
+        magnet = NcAfm(World((1, 1, 1)), Grid((1, 1, 1)))
         with pytest.raises((ValueError)):
             angle = magnet.max_intracell_angle_between(magnet.sub1, magnet.sub1)
 
     def test_different_host(self):
-        magnet1 = NCAFM(World((1, 1, 1)), Grid((1, 1, 1)))
-        magnet2 = NCAFM(World((1, 1, 1)), Grid((1, 1, 1)))
+        magnet1 = NcAfm(World((1, 1, 1)), Grid((1, 1, 1)))
+        magnet2 = NcAfm(World((1, 1, 1)), Grid((1, 1, 1)))
         with pytest.raises((ValueError)):
             angle = magnet1.max_intracell_angle_between(magnet1.sub1, magnet2.sub2)
 
     def test_afm_sublattice(self):
-        magnet1 = NCAFM(World((1, 1, 1)), Grid((1, 1, 1)))
+        magnet1 = NcAfm(World((1, 1, 1)), Grid((1, 1, 1)))
         magnet2 = Antiferromagnet(World((1, 1, 1)), Grid((1, 1, 1)))
         with pytest.raises((ValueError)):
             angle = magnet1.max_intracell_angle_between(magnet1.sub1, magnet2.sub1)
     
     def test_fm(self):
-        magnet1 = NCAFM(World((1, 1, 1)), Grid((1, 1, 1)))
+        magnet1 = NcAfm(World((1, 1, 1)), Grid((1, 1, 1)))
         magnet2 = Ferromagnet(World((1, 1, 1)), Grid((1, 1, 1)))
         with pytest.raises((ValueError)):
             angle = magnet1.max_intracell_angle_between(magnet1.sub1, magnet2)
 
     def test_90(self):
-        magnet = NCAFM(World((1, 1, 1)), Grid((1, 1, 1)))
+        magnet = NcAfm(World((1, 1, 1)), Grid((1, 1, 1)))
         magnet.sub1.magnetization = (1, 0, 0)
         magnet.sub2.magnetization = (0, 1, 0)
         assert np.isclose(magnet.max_intracell_angle_between(magnet.sub1, magnet.sub2), np.pi/2)
 
     def test_0(self):
-        magnet = NCAFM(World((1, 1, 1)), Grid((1, 1, 1)))
+        magnet = NcAfm(World((1, 1, 1)), Grid((1, 1, 1)))
         magnet.sub1.magnetization = (1, 0, 0)
         magnet.sub2.magnetization = (1, 0, 0)
         assert np.isclose(magnet.max_intracell_angle_between(magnet.sub1, magnet.sub2), 0)
 
     def test_180(self):
-        magnet = NCAFM(World((1, 1, 1)), Grid((1, 1, 1)))
+        magnet = NcAfm(World((1, 1, 1)), Grid((1, 1, 1)))
         magnet.sub1.magnetization = (1, 0, 0)
         magnet.sub2.magnetization = (-1, 0, 0)
         assert np.isclose(magnet.max_intracell_angle_between(magnet.sub1, magnet.sub2), np.pi)
 
     def test_max_angle(self):
-        magnet = NCAFM(World((1, 1, 1)), Grid((10, 10, 10)))
+        magnet = NcAfm(World((1, 1, 1)), Grid((10, 10, 10)))
 
         m1 = magnet.sub1.magnetization()
         m2 = magnet.sub2.magnetization()
@@ -76,7 +76,7 @@ class TestMaxAngleNCAFM:
         assert np.isclose(n23, a23)
     
     def test_angle_field(self):
-        magnet = NCAFM(World((1, 1, 1)), Grid((10, 10, 10)))
+        magnet = NcAfm(World((1, 1, 1)), Grid((10, 10, 10)))
         magnet.msat = 1
         magnet.ncafmex_cell = -1
 

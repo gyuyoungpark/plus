@@ -40,7 +40,7 @@ __global__ void k_octupolevector(CuField octupole,
   octupole.setVectorInCell(idx, (m1 * ms1 + m2_rot * ms2 + m3_rot * ms3) / (ms1 + ms2 + ms3));
 }
 
-Field evalOctupoleVector(const NCAFM* magnet) {
+Field evalOctupoleVector(const NcAfm* magnet) {
   // Calculate a weighted octupole vector (dimensionless) to account for NC-ferrimagnets
   Field octupole(magnet->system(), 3);
 
@@ -60,6 +60,6 @@ Field evalOctupoleVector(const NCAFM* magnet) {
   return octupole;
 }
 
-NCAFM_FieldQuantity octupoleVectorQuantity(const NCAFM* magnet) {
-    return NCAFM_FieldQuantity(magnet, evalOctupoleVector, 3, "octupole_vector", "");
+NcAfm_FieldQuantity octupoleVectorQuantity(const NcAfm* magnet) {
+    return NcAfm_FieldQuantity(magnet, evalOctupoleVector, 3, "octupole_vector", "");
 }

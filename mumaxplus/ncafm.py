@@ -14,7 +14,7 @@ from .parameter import Parameter
 from .scalarquantity import ScalarQuantity
 
 
-class NCAFM(Magnet):
+class NcAfm(Magnet):
     """Create a non-collinear antiferromagnet instance.
 
     Parameters
@@ -51,19 +51,19 @@ class NCAFM(Magnet):
         return f"Antiferromagnet(grid={self.grid}, name='{self.name}')"
 
     def __setattr__(self, name, value):
-        """Set NCAFM or sublattice properties.
+        """Set non-collinear antiferromagnet or sublattice properties.
         
-            If the NCAFM doesn't have the named attribute, then the corresponding
+            If the non-collinear antiferromagnet doesn't have the named attribute, then the corresponding
             attributes of all sublattices are set.
             e.g. to set the saturation magnetization of all sublattices to the
             same value, one could use:
-                NCAFM.msat = 800e3
+                NcAfm.msat = 800e3
             which is equal to
-                NCAFM.sub1.msat = 800e3
-                NCAFM.sub2.msat = 800e3
-                NCAFM.sub3.msat = 800e3
+                NcAfm.sub1.msat = 800e3
+                NcAfm.sub2.msat = 800e3
+                NcAfm.sub3.msat = 800e3
         """
-        if hasattr(NCAFM, name) or name == "_impl":
+        if hasattr(NcAfm, name) or name == "_impl":
             # set attribute of yourself, without causing recursion
             object.__setattr__(self, name, value)
         elif hasattr(Ferromagnet, name):
@@ -72,7 +72,7 @@ class NCAFM(Magnet):
             setattr(self.sub3, name, value)
         else:
             raise AttributeError(
-                r'Both NCAFM and Ferromagnet have no attribute "{}".'.format(name))
+                r'Both non-collinear antiferromagnet and Ferromagnet have no attribute "{}".'.format(name))
 
     @property
     def sub1(self):
@@ -99,7 +99,7 @@ class NCAFM(Magnet):
 
     @property
     def bias_magnetic_field(self):
-        """Uniform bias magnetic field which will affect an NCAFM.
+        """Uniform bias magnetic field which will affect a non-collinear antiferromagnet.
 
         The value should be specifed in Teslas.
         """
@@ -178,10 +178,10 @@ class NCAFM(Magnet):
 
     @property
     def ncafmex_cell(self):
-        """Intracell NCAFM exchange constant (J/m).
-        This parameter plays the role of exchange constant of
-        the NCAFM homogeneous exchange interaction
-        in a single simulation cell.
+        """Intracell non-collinear antiferromagnetic exchange constant (J/m).
+        This parameter plays the role of exchange constant of the
+        antiferromagnetic homogeneous exchange interaction in a single
+        simulation cell.
         
         See Also
         --------
@@ -201,16 +201,16 @@ class NCAFM(Magnet):
             warn = _np.any(self.ncafmex_cell.eval() > 0)
         
         if warn:
-            warnings.warn("The NCAFM exchange constant ncafmex_cell"
+            warnings.warn("The non-collinear antiferromagnetic exchange constant ncafmex_cell"
                           + " is set to a positive value, instead of negative (or zero)."
                           + " Make sure this is intentional!", UserWarning)
 
     @property
     def ncafmex_nn(self):
-        """Intercell NCAFM exchange constant (J/m).
-        This parameter plays the role of exchange constant of
-        the NCAFM inhomogeneous exchange interaction
-        between neighbouring simulation cells.
+        """Intercell non-collinear antiferromagnetic exchange constant (J/m).
+        This parameter plays the role of exchange constant of the
+        antiferromagnetic inhomogeneous exchange interaction between
+        neighbouring simulation cells.
         
         See Also
         --------
@@ -229,15 +229,15 @@ class NCAFM(Magnet):
             warn = True
         
         if warn:
-            warnings.warn("The NCAFM exchange constant ncafmex_nn"
+            warnings.warn("The non-collinear antiferromagnet exchange constant ncafmex_nn"
                           + " is set to a positive value, instead of negative (or zero)."
                           + " Make sure this is intentional!", UserWarning)
 
     @property
     def inter_ncafmex_nn(self):
-        """Interregional NCAFM exchange constant (J/m).
-        If set to zero (default), then the harmonic mean of
-        the exchange constants of the two regions are used.
+        """Interregional non-collinear antiferromagnetic exchange constant (J/m).
+        If set to zero (default), then the harmonic mean of the exchange constants
+        of the two regions are used.
 
         When no exchange interaction between different regions
         is wanted, set `scale_ncafmex_nn` to zero.
@@ -254,15 +254,15 @@ class NCAFM(Magnet):
     @inter_ncafmex_nn.setter
     def inter_ncafmex_nn(self, value):
         if value > 0:
-            warnings.warn("The NCAFM exchange constant inter_ncafmex_nn"
-                          + " is set to a positive value, instead of negative (or zero)."
-                          + " Make sure this is intentional!", UserWarning)
+            warnings.warn("The non-collinear antiferromagnetic exchange constant"
+                          + " inter_ncafmex_nn is set to a positive value, instead"
+                          + "of negative (or zero). Make sure this is intentional!", UserWarning)
         self.inter_ncafmex_nn.set(value)
 
     @property
     def scale_ncafmex_nn(self):
-        """Scaling of the NCAFM exchange constant between
-        different regions. This factor is multiplied by the harmonic
+        """Scaling of the non-collinear antiferromagneticic exchange constant
+        between different regions. This factor is multiplied by the harmonic
         mean of the exchange constants of the two regions.
 
         If `inter_ncafmex_nn` is set to a non-zero value, then this
@@ -286,10 +286,11 @@ class NCAFM(Magnet):
     def latcon(self):
         """Lattice constant (m).
 
-        Physical lattice constant of the NCAFM. This doesn't break the
-        micromagnetic character of the simulation package, but is only used to
-        calculate the homogeneous exchange field, i.e. the NCAFM
-        exchange interaction between spins at the same site.
+        Physical lattice constant of the non-collinear antiferromagnet. This
+        doesn't break the micromagnetic character of the simulation package,
+        but is only used to calculate the homogeneous exchange field, i.e.
+        the non-collinear antiferromagnetic exchange interaction between spins
+        at the same site.
 
         Default = 0.35 nm.
 
@@ -306,8 +307,8 @@ class NCAFM(Magnet):
     @property
     def dmi_tensor(self):
         """
-        Get the DMI tensor of this NCAFM. This tensor
-        describes intersublattice DMI exchange.
+        Get the DMI tensor of this non-collinear antiferromagnet.
+        This tensor describes intersublattice DMI exchange.
 
         Note that individual sublattices can have their own tensor
         to describe intrasublattice DMI exchange.
@@ -315,7 +316,7 @@ class NCAFM(Magnet):
         Returns
         -------
         DmiTensor
-            The DMI tensor of this NCAFM.
+            The DMI tensor of this non-collinear antiferromagnet.
         
         See Also
         --------
@@ -332,7 +333,7 @@ class NCAFM(Magnet):
 
         For example, to set interfacial DMI in the whole system to the same value,
         one could use
-        >>> magnet = NCAFM(world, grid)
+        >>> magnet = NcAfm(world, grid)
         >>> magnet.dmi_tensors.set_interfacial_dmi(1e-3)
 
         Or to set an individual tensor element, one could use
@@ -366,8 +367,7 @@ class NCAFM(Magnet):
     @property
     def octupole_vector(self):
         """Weighted dimensionless octupole vector of a non-collinear
-        antiferromagnet/ferrimagnet as defined in
-        https://doi.org/10.1038/s41563-023-01620-2.
+        antiferromagnet as defined in https://doi.org/10.1038/s41563-023-01620-2.
         """
         return FieldQuantity(_cpp.octupole_vector(self._impl))
 
@@ -413,8 +413,8 @@ class NCAFM(Magnet):
     @property
     def total_energy_density(self):
         """Total energy density of all sublattices combined (J/m³). Kinetic and
-        elastic energy densities of the NCAFM are also included if
-        elastodynamics is enabled.
+        elastic energy densities of the non-collinear antiferromagnet are also
+        included if elastodynamics is enabled.
 
         See Also
         --------
@@ -426,8 +426,8 @@ class NCAFM(Magnet):
     @property
     def total_energy(self):
         """Total energy of all sublattices combined (J). Kinetic and elastic
-        energies of the NCAFM are also included if elastodynamics is
-        enabled.
+        energies of the non-collinear antiferromagnet are also included if
+        elastodynamics is enabled.
 
         See Also
         --------

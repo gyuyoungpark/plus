@@ -103,14 +103,14 @@ Antiferromagnet* MumaxWorld::addAntiferromagnet(Grid grid,
   return newMagnet;
 }
 
-NCAFM* MumaxWorld::addNCAFM(Grid grid,
+NcAfm* MumaxWorld::addNcAfm(Grid grid,
   GpuBuffer<bool> geometry,
   GpuBuffer<unsigned int> regions,
   std::string name) {
   // Create name if not given.
   static int idxUnnamed = 1;
   if (name.length() == 0) {
-    name = "NCAFM_" + std::to_string(idxUnnamed++);
+    name = "NcAfm_" + std::to_string(idxUnnamed++);
   }
 
   // Check if non-collinear antiferromagnet can be added to this world.
@@ -118,8 +118,8 @@ NCAFM* MumaxWorld::addNCAFM(Grid grid,
 
   // Create the magnet and add it to this world
   ncafms_[name] =
-      std::make_unique<NCAFM>(this, grid, name, geometry, regions);
-  NCAFM* newMagnet = ncafms_[name].get();
+      std::make_unique<NcAfm>(this, grid, name, geometry, regions);
+  NcAfm* newMagnet = ncafms_[name].get();
   magnets_[name] = newMagnet;
 
   handleNewStrayfield(newMagnet);
@@ -160,7 +160,7 @@ Antiferromagnet* MumaxWorld::getAntiferromagnet(std::string name) const {
   return namedMagnet->second.get();
 }
 
-NCAFM* MumaxWorld::getNCAFM(std::string name) const {
+NcAfm* MumaxWorld::getNcAfm(std::string name) const {
   auto namedMagnet = ncafms_.find(name);
   if (namedMagnet == ncafms_.end())
     return nullptr;
@@ -187,12 +187,12 @@ const std::map<std::string, Antiferromagnet*> MumaxWorld::antiferromagnets() con
   return sharedAntiferromagnets;
 }
 
-const std::map<std::string, NCAFM*> MumaxWorld::ncafms() const {
-  std::map<std::string, NCAFM*> sharedNCAFMs;
+const std::map<std::string, NcAfm*> MumaxWorld::ncafms() const {
+  std::map<std::string, NcAfm*> sharedNcAfms;
   for (const auto& pair : ncafms_) {
-    sharedNCAFMs[pair.first] = pair.second.get();
+    sharedNcAfms[pair.first] = pair.second.get();
   }
-  return sharedNCAFMs;
+  return sharedNcAfms;
 }
 
 void MumaxWorld::resetTimeSolverEquations(FM_Field torque) const {
@@ -218,7 +218,7 @@ void MumaxWorld::resetTimeSolverEquations(FM_Field torque) const {
   }
 
   for (const auto& namedMagnet : ncafms_) {
-    const NCAFM* magnet = namedMagnet.second.get();
+    const NcAfm* magnet = namedMagnet.second.get();
     for (const Ferromagnet* sub : magnet->sublattices()) {
       DynamicEquation eq(
         sub->magnetization(),

@@ -1,5 +1,5 @@
 import numpy as np
-from mumaxplus import NCAFM, Grid, World
+from mumaxplus import NcAfm, Grid, World
 
 def max_absolute_error(result, wanted):
     """Maximum error for vector quantities."""
@@ -28,7 +28,7 @@ def compute_octupole_vector(m1, m2, m3, ms1, ms2, ms3):
 class TestOctupoleVector:
     def test_octupole_vector(self):
         world = World((1, 1, 1))
-        magnet = NCAFM(world, Grid((32, 32, 32)))
+        magnet = NcAfm(world, Grid((32, 32, 32)))
         ms1, ms2, ms3 = 123, 456, 789
         magnet.sub1.msat = ms1
         magnet.sub2.msat = ms2
@@ -43,7 +43,7 @@ class TestOctupoleVector:
 
     def test_octupole_vector_uniform(self):
         world = World((1, 1, 1))
-        magnet = NCAFM(world, Grid((1, 1, 1)))
+        magnet = NcAfm(world, Grid((1, 1, 1)))
         magnet.msat = 10
         magnet.magnetization = (1, 0, 0)
 
@@ -52,7 +52,7 @@ class TestOctupoleVector:
 
     def test_octupole_vector_120(self):
         world = World((1, 1, 1))
-        magnet = NCAFM(world, Grid((1, 1, 1)))
+        magnet = NcAfm(world, Grid((1, 1, 1)))
         magnet.msat = 10
         for i, sub in enumerate(magnet.sublattices):
             theta = i * 120 * np.pi / 180

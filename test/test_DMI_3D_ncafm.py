@@ -1,11 +1,12 @@
 """This test is based on the 3D case in
    https://iopscience.iop.org/article/10.1088/1367-2630/aaea1c
-   It compares the final magnetization of all sublattices in an NCAFM
-   with that of a ferromagnet. All NCAFM exchanges are set to 0 for this test."""
+   It compares the final magnetization of all sublattices in a non-collinear
+   antiferromagnet with that of a ferromagnet. All antiferromagnetic exchanges
+   are set to 0 for this test."""
 
 import pytest
 import numpy as np
-from mumaxplus import NCAFM, Ferromagnet, Grid, World
+from mumaxplus import NcAfm, Ferromagnet, Grid, World
 from mumaxplus.util.shape import Cylinder
 from mumaxplus.util.config import blochskyrmion
 
@@ -17,7 +18,7 @@ def max_absolute_error(result, wanted):
 
 def simulations(openBC):
     """This simulates a 3D cylinder with bulk DMI and a bloch skyrmion
-       in a ferromagnet and an NCAFM."""
+       in a ferromagnet and a non-collinear antiferromagnet."""
     
     # constants
     A = 8.78e-12
@@ -56,28 +57,28 @@ def simulations(openBC):
     magnet.minimize()
 
     # antiferromagnet simulation
-    world_NCAFM = World(cellsize=cellsize)
+    world_NcAfm = World(cellsize=cellsize)
     geo = Cylinder(diam, thickness).translate((nx*dx-dx)/2, (ny*dy-dy)/2, (nz*dz-dz)/2)
-    magnet_NCAFM = NCAFM(world_NCAFM, Grid(gridsize), geometry=geo)
+    magnet_NcAfm = NcAfm(world_NcAfm, Grid(gridsize), geometry=geo)
 
-    magnet_NCAFM.enable_demag = False
-    magnet_NCAFM.enable_openbc = openBC
-    magnet_NCAFM.msat = Ms
-    magnet_NCAFM.aex = A
-    magnet_NCAFM.ncafmex_cell = 0
-    magnet_NCAFM.ncafmex_nn = 0
+    magnet_NcAfm.enable_demag = False
+    magnet_NcAfm.enable_openbc = openBC
+    magnet_NcAfm.msat = Ms
+    magnet_NcAfm.aex = A
+    magnet_NcAfm.ncafmex_cell = 0
+    magnet_NcAfm.ncafmex_nn = 0
 
-    for sub in magnet_NCAFM.sublattices:
+    for sub in magnet_NcAfm.sublattices:
         sub.dmi_tensor.set_bulk_dmi(D)
 
-    magnet_NCAFM.bias_magnetic_field = (0,0,Bz)
+    magnet_NcAfm.bias_magnetic_field = (0,0,Bz)
 
-    magnet_NCAFM.magnetization = blochskyrmion(magnet.center, skyrmion_radius, charge, pol)
+    magnet_NcAfm.magnetization = blochskyrmion(magnet.center, skyrmion_radius, charge, pol)
 
-    magnet_NCAFM.minimize()
+    magnet_NcAfm.minimize()
 
 
-    return  magnet, magnet_NCAFM
+    return  magnet, magnet_NcAfm
 
 
 @pytest.mark.slow
@@ -86,15 +87,15 @@ class TestDMI3D:
     """
 
     def test_closed(self):
-        magnet, magnet_NCAFM = simulations(False)
+        magnet, magnet_NcAfm = simulations(False)
         for i in range(3):
-            sub = magnet_NCAFM.sublattices[i]
+            sub = magnet_NcAfm.sublattices[i]
             err = max_absolute_error(magnet.magnetization.eval(), sub.magnetization.eval())
             assert err < ATOL
     
     def test_open(self):
-        magnet, magnet_NCAFM = simulations(True)
+        magnet, magnet_NcAfm = simulations(True)
         for i in range(3):
-            sub = magnet_NCAFM.sublattices[i]
+            sub = magnet_NcAfm.sublattices[i]
             err = max_absolute_error(magnet.magnetization.eval(), sub.magnetization.eval())
             assert err < ATOL

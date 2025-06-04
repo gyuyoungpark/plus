@@ -14,12 +14,12 @@
 #include "world.hpp"
 #include "system.hpp"
 
-class NCAFM : public HostMagnet {
+class NcAfm : public HostMagnet {
  public:
-  NCAFM(std::shared_ptr<System> system_ptr,
+  NcAfm(std::shared_ptr<System> system_ptr,
          std::string name);
 
-  NCAFM(MumaxWorld* world,
+  NcAfm(MumaxWorld* world,
          Grid grid,
          std::string name,
          GpuBuffer<bool> geometry,
@@ -28,7 +28,7 @@ class NCAFM : public HostMagnet {
   /** Empty destructor
    * Sublattices are destroyed automatically. They are not pointers.
    */
-  ~NCAFM() override {};
+  ~NcAfm() override {};
   
  const Ferromagnet* sub1() const;
  const Ferromagnet* sub2() const;

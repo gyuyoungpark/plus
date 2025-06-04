@@ -6,7 +6,7 @@ class Antiferromagnet;
 class Ferromagnet;
 class Field;
 class Magnet;
-class NCAFM;
+class NcAfm;
 
 // Returns the energy density of an effective field term.
 //   edens = - prefactor * Msat * dot(m,h)
@@ -15,7 +15,7 @@ Field evalEnergyDensity(const Ferromagnet*, const Field&, real prefactor);
 
 Field evalTotalEnergyDensity(const Ferromagnet*);
 Field evalTotalEnergyDensity(const Antiferromagnet*);
-Field evalTotalEnergyDensity(const NCAFM*);
+Field evalTotalEnergyDensity(const NcAfm*);
 real evalTotalEnergy(const Magnet*);
 
 FM_FieldQuantity totalEnergyDensityQuantity(const Ferromagnet*);
@@ -24,5 +24,5 @@ FM_ScalarQuantity totalEnergyQuantity(const Ferromagnet*);
 AFM_FieldQuantity totalEnergyDensityQuantity(const Antiferromagnet*);
 AFM_ScalarQuantity totalEnergyQuantity(const Antiferromagnet*);
 
-NCAFM_FieldQuantity totalEnergyDensityQuantity(const NCAFM*);
-NCAFM_ScalarQuantity totalEnergyQuantity(const NCAFM*);
+NcAfm_FieldQuantity totalEnergyDensityQuantity(const NcAfm*);
+NcAfm_ScalarQuantity totalEnergyQuantity(const NcAfm*);

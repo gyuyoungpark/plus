@@ -76,7 +76,7 @@ Field evalTotalEnergyDensity(const Antiferromagnet* magnet) {
   return edens;
 }
 
-Field evalTotalEnergyDensity(const NCAFM* magnet) {
+Field evalTotalEnergyDensity(const NcAfm* magnet) {
   Field edens = evalTotalEnergyDensity(magnet->sub1()) +
                 evalTotalEnergyDensity(magnet->sub2()) +
                 evalTotalEnergyDensity(magnet->sub3());
@@ -94,7 +94,7 @@ real evalTotalEnergy(const Magnet* magnet) {
     edensAverage = totalEnergyDensityQuantity(mag).average()[0];
   else if (const Antiferromagnet* mag = magnet->asAFM())
     edensAverage = totalEnergyDensityQuantity(mag).average()[0];
-  else if (const NCAFM* mag = magnet->asNCAFM())
+  else if (const NcAfm* mag = magnet->asNcAfm())
     edensAverage = totalEnergyDensityQuantity(mag).average()[0];
   else
     throw std::invalid_argument("Cannot calculate energy of instance which "
@@ -124,12 +124,12 @@ AFM_ScalarQuantity totalEnergyQuantity(const Antiferromagnet* magnet) {
   return AFM_ScalarQuantity(magnet, evalTotalEnergy, "total_energy", "J");
 }
 
-NCAFM_FieldQuantity totalEnergyDensityQuantity(const NCAFM* magnet) {
-  return NCAFM_FieldQuantity(magnet,
-    static_cast<Field(*)(const NCAFM*)>(evalTotalEnergyDensity),
+NcAfm_FieldQuantity totalEnergyDensityQuantity(const NcAfm* magnet) {
+  return NcAfm_FieldQuantity(magnet,
+    static_cast<Field(*)(const NcAfm*)>(evalTotalEnergyDensity),
     1, "total_energy_density", "J/m3");
 }
 
-NCAFM_ScalarQuantity totalEnergyQuantity(const NCAFM* magnet) {
-  return NCAFM_ScalarQuantity(magnet, evalTotalEnergy, "total_energy", "J");
+NcAfm_ScalarQuantity totalEnergyQuantity(const NcAfm* magnet) {
+  return NcAfm_ScalarQuantity(magnet, evalTotalEnergy, "total_energy", "J");
 }

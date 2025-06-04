@@ -19,7 +19,7 @@ class Ferromagnet;
 class FieldQuantity;
 class HostMagnet;
 class MumaxWorld;
-class NCAFM;
+class NcAfm;
 class System;
 
 class Magnet {
@@ -46,7 +46,7 @@ class Magnet {
   const Ferromagnet* asFM() const;
   const HostMagnet* asHost() const;
   const Antiferromagnet* asAFM() const;
-  const NCAFM* asNCAFM() const;
+  const NcAfm* asNcAfm() const;
 
   const StrayField* getStrayField(const Magnet*) const;
   std::vector<const StrayField*> getStrayFields() const;

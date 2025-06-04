@@ -27,6 +27,6 @@ AFM_FieldQuantity fullMagnetizationQuantity(const Antiferromagnet* magnet) {
     return AFM_FieldQuantity(magnet, evalHMFullMag, 3, "full_magnetization", "A/m");
 }
 
-NCAFM_FieldQuantity fullMagnetizationQuantity(const NCAFM* magnet) {
-    return NCAFM_FieldQuantity(magnet, evalHMFullMag, 3, "full_magnetization", "A/m");
+NcAfm_FieldQuantity fullMagnetizationQuantity(const NcAfm* magnet) {
+    return NcAfm_FieldQuantity(magnet, evalHMFullMag, 3, "full_magnetization", "A/m");
 }

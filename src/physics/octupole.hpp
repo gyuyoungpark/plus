@@ -2,5 +2,5 @@
 
 #include "quantityevaluator.hpp"
 
-Field evalOctupoleVector(const NCAFM*);
-NCAFM_FieldQuantity octupoleVectorQuantity(const NCAFM*);
+Field evalOctupoleVector(const NcAfm*);
+NcAfm_FieldQuantity octupoleVectorQuantity(const NcAfm*);

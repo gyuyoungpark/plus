@@ -1,6 +1,6 @@
 import numpy as np
 
-from mumaxplus import NCAFM, Grid, World
+from mumaxplus import NcAfm, Grid, World
 from mumaxplus.util import *
 
 
@@ -71,11 +71,11 @@ def compute_inhomo_exchange_numpy(magnet, sub2, sub3):
 
     return magnet.ncafmex_nn.average()[0] * h_exch / sub2.msat.average()[0]
 
-class TestNCAFMExchange:
+class TestNcAfmExchange:
     def test_fm_exchange(self):
 
         world = World((1e3, 2e3, 3e3))
-        magnet = NCAFM(world, Grid((16, 16, 4)))
+        magnet = NcAfm(world, Grid((16, 16, 4)))
         magnet.aex = 3.2e7
         magnet.msat = 5.4
         magnet.enable_openbc = True
@@ -86,7 +86,7 @@ class TestNCAFMExchange:
     
     def test_homo_exchange(self):
         world = World((1e3, 2e3, 3e3))
-        magnet = NCAFM(world, Grid((16, 16, 4)))
+        magnet = NcAfm(world, Grid((16, 16, 4)))
         magnet.msat = 5.4
         magnet.ncafmex_cell = -10e4
 
@@ -99,7 +99,7 @@ class TestNCAFMExchange:
 
     def test_inhomo_exchange(self):
         world = World((1e3, 2e3, 3e3))
-        magnet = NCAFM(world, Grid((16, 16, 4)))
+        magnet = NcAfm(world, Grid((16, 16, 4)))
         magnet.msat = 5.4e3
         magnet.ncafmex_nn = -10e4
         magnet.enable_openbc = True
@@ -127,7 +127,7 @@ class TestNCAFMExchange:
         nx, ny, nz = int(length/1e-9), 1, 1
         cx, cy, cz = length/nx, width/ny, thickness/nz
         world = World(cellsize=(cx, cy, cz))
-        magnet = NCAFM(world, Grid((nx, ny, nz)))
+        magnet = NcAfm(world, Grid((nx, ny, nz)))
         magnet.msat = msat
         magnet.sub3.msat = 0
         magnet.aex = aex
@@ -177,7 +177,7 @@ class TestNCAFMExchange:
         nx, ny, nz = int(length/1e-9), 1, 1
         cx, cy, cz = length/nx, width/ny, thickness/nz
         world = World(cellsize=(cx, cy, cz))
-        magnet = NCAFM(world, Grid((nx, ny, nz)))
+        magnet = NcAfm(world, Grid((nx, ny, nz)))
         magnet.msat = msat
         magnet.sub3.msat = 0
         magnet.ncafmex_nn = ncafmex_nn

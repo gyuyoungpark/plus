@@ -12,7 +12,7 @@
 #include "mumaxworld.hpp"
 #include "relaxer.hpp"
 
-NCAFM::NCAFM(std::shared_ptr<System> system_ptr,
+NcAfm::NcAfm(std::shared_ptr<System> system_ptr,
              std::string name)
     : HostMagnet(system_ptr, name),
       sub1_(Ferromagnet(system_ptr, name + ":sublattice_1", this)),
@@ -23,31 +23,31 @@ NCAFM::NCAFM(std::shared_ptr<System> system_ptr,
         addSublattice(&sub3_);
       }
       
-NCAFM::NCAFM(MumaxWorld* world,
+NcAfm::NcAfm(MumaxWorld* world,
              Grid grid,
              std::string name,
              GpuBuffer<bool> geometry,
              GpuBuffer<unsigned int> regions)
-    : NCAFM(std::make_shared<System>(world, grid, geometry, regions), name) {}
+    : NcAfm(std::make_shared<System>(world, grid, geometry, regions), name) {}
 
-const Ferromagnet* NCAFM::sub1() const {
+const Ferromagnet* NcAfm::sub1() const {
   return &sub1_;
 }
 
-const Ferromagnet* NCAFM::sub2() const {
+const Ferromagnet* NcAfm::sub2() const {
   return &sub2_;
 }
 
-const Ferromagnet* NCAFM::sub3() const {
+const Ferromagnet* NcAfm::sub3() const {
   return &sub3_;
 }
 
-void NCAFM::minimize(real tol, int nSamples) {
+void NcAfm::minimize(real tol, int nSamples) {
   Minimizer minimizer(this, tol, nSamples);
   minimizer.exec();
 }
 
-void NCAFM::relax(real tol) {
+void NcAfm::relax(real tol) {
     std::vector<real> threshold = {
         sub1()->RelaxTorqueThreshold,
         sub2()->RelaxTorqueThreshold,

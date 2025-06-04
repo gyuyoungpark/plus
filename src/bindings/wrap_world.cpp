@@ -84,7 +84,7 @@ void wrap_world(py::module& m) {
                                  geometryArray,
                                  regionsArray,
                                  name,
-                                 &MumaxWorld::addNCAFM);
+                                 &MumaxWorld::addNcAfm);
           },
           py::arg("grid"), py::arg("geometry_array")=py::none(),
           py::arg("regions_array")=py::none(), py::arg("name") = std::string(""),
@@ -98,7 +98,7 @@ void wrap_world(py::module& m) {
            "get a reference to an antiferromagnet by name",
            py::return_value_policy::reference)
 
-      .def("get_ncafm", &MumaxWorld::getNCAFM, py::arg("name"),
+      .def("get_ncafm", &MumaxWorld::getNcAfm, py::arg("name"),
            "get a reference to a non-collinear antiferromagnet by name",
            py::return_value_policy::reference)
 

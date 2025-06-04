@@ -247,7 +247,7 @@ __global__ void k_dmiFieldAFM(CuField hField,
   hField.setVectorInCell(idx, h);
 }
 
-__global__ void k_dmiFieldNCAFM(CuField hField,
+__global__ void k_dmiFieldNcAfm(CuField hField,
                                 const CuField m1Field,
                                 const CuField m2Field,
                                 const CuField m3Field,
@@ -437,7 +437,7 @@ Field evalDmiField(const Ferromagnet* magnet) {
               dmiTensor, interDmiTensor, msat, msat2, grid, aex, afmex_nn, inter, scale, BC);
   }
   else {
-    // magnet is sublatice in NCAFM
+    // magnet is sublatice in NcAfm
     auto m2 = magnet->hostMagnet()->getOtherSublattices(magnet)[0];
     auto m3 = magnet->hostMagnet()->getOtherSublattices(magnet)[1];
     auto mag2 = m2->magnetization()->field().cu();
@@ -448,7 +448,7 @@ Field evalDmiField(const Ferromagnet* magnet) {
     auto interDmiTensor = magnet->hostMagnet()->dmiTensor.cu();
     auto inter = magnet->hostMagnet()->interAfmExchNN.cu();
     auto scale = magnet->hostMagnet()->scaleAfmExchNN.cu();
-    cudaLaunch(ncells, k_dmiFieldNCAFM, hField.cu(), mag, mag2, mag3, dmiTensor,
+    cudaLaunch(ncells, k_dmiFieldNcAfm, hField.cu(), mag, mag2, mag3, dmiTensor,
                interDmiTensor, msat, msat2, msat3, grid, aex, ncafmex_nn, inter, scale, BC);
   }
   return hField;

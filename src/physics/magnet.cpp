@@ -120,8 +120,8 @@ const Antiferromagnet* Magnet::asAFM() const {
   return dynamic_cast<const Antiferromagnet*>(this);
 }
 
-const NCAFM* Magnet::asNCAFM() const {
-  return dynamic_cast<const NCAFM*>(this);
+const NcAfm* Magnet::asNcAfm() const {
+  return dynamic_cast<const NcAfm*>(this);
 }
 
 const StrayField* Magnet::getStrayField(const Magnet* magnet) const {

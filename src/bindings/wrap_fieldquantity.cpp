@@ -34,5 +34,5 @@ void wrap_antiferromagnetfieldquantity(py::module& m) {
 }
 
 void wrap_ncafmfieldquantity(py::module& m) {
-  py::class_<NCAFM_FieldQuantity, FieldQuantity>(m, "NCAFMFieldQuantity");
+  py::class_<NcAfm_FieldQuantity, FieldQuantity>(m, "NcAfmFieldQuantity");
 }

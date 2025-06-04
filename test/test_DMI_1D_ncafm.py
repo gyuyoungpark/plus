@@ -1,11 +1,12 @@
 """This test is based on the 1D case in
    https://iopscience.iop.org/article/10.1088/1367-2630/aaea1c
-   It compares the final magnetization of all sublattices in an NCAFM
-   with that of a ferromagnet. All NCAFM exchanges are set to 0 for this test."""
+   It compares the final magnetization of all sublattices in a non-collinear
+   antiferromagnet with that of a ferromagnet. All antiferromagnetic exchanges
+   are set to 0 for this test."""
 
 import pytest
 import numpy as np
-from mumaxplus import Ferromagnet, NCAFM, Grid, World
+from mumaxplus import Ferromagnet, NcAfm, Grid, World
 
 RTOL = 1e-5
 def max_relative_error(result, wanted):
@@ -15,7 +16,7 @@ def max_relative_error(result, wanted):
 
 def simulations(openbc, interfacial):
     """This simulates a 1D wire with bulk or interfacial DMI in both
-       a ferromagnet and an NCAFM."""
+       a ferromagnet and a non-collinear antiferromagnet."""
 
     # constants
     A = 13e-12
@@ -47,30 +48,30 @@ def simulations(openbc, interfacial):
     magnet.magnetization = magnetization
     magnet.minimize()
     
-    # NCAFM simulation
-    world_NCAFM = World(cellsize=cellsize)
-    magnet_NCAFM = NCAFM(world_NCAFM, Grid(gridsize))
-    magnet_NCAFM.enable_demag = False
-    magnet_NCAFM.enable_openbc = openbc
+    # NcAfm simulation
+    world_NcAfm = World(cellsize=cellsize)
+    magnet_NcAfm = NcAfm(world_NcAfm, Grid(gridsize))
+    magnet_NcAfm.enable_demag = False
+    magnet_NcAfm.enable_openbc = openbc
 
-    magnet_NCAFM.msat = Ms
-    magnet_NCAFM.aex = A
-    magnet_NCAFM.ncafmex_cell = 0
-    magnet_NCAFM.ncafmex_nn = 0
-    magnet_NCAFM.ku1 = Ku
-    magnet_NCAFM.anisU = anisU
+    magnet_NcAfm.msat = Ms
+    magnet_NcAfm.aex = A
+    magnet_NcAfm.ncafmex_cell = 0
+    magnet_NcAfm.ncafmex_nn = 0
+    magnet_NcAfm.ku1 = Ku
+    magnet_NcAfm.anisU = anisU
 
-    for sub in magnet_NCAFM.sublattices:
+    for sub in magnet_NcAfm.sublattices:
         if interfacial:
             sub.dmi_tensor.set_interfacial_dmi(D)
         else:
             sub.dmi_tensor.set_bulk_dmi(D)
     
-    magnet_NCAFM.magnetization = magnetization
+    magnet_NcAfm.magnetization = magnetization
 
-    magnet_NCAFM.minimize()
+    magnet_NcAfm.minimize()
 
-    return  magnet, magnet_NCAFM
+    return  magnet, magnet_NcAfm
 
 
 class TestDMI1D:
@@ -78,30 +79,30 @@ class TestDMI1D:
     """
 
     def test_closed_inter(self):
-        magnet, magnet_NCAFM = simulations(False, True)
+        magnet, magnet_NcAfm= simulations(False, True)
         for i in range(3):
-            sub = magnet_NCAFM.sublattices[i]
+            sub = magnet_NcAfm.sublattices[i]
             err = max_relative_error(magnet.magnetization.eval(), sub.magnetization.eval())
             assert err < RTOL
 
     def test_closed_bulk(self):
-        magnet, magnet_NCAFM = simulations(False, False)
+        magnet, magnet_NcAfm = simulations(False, False)
         for i in range(3):
-            sub = magnet_NCAFM.sublattices[i]
+            sub = magnet_NcAfm.sublattices[i]
             err = max_relative_error(magnet.magnetization.eval(), sub.magnetization.eval())
             assert err < RTOL
 
     def test_open_inter(self):
-        magnet, magnet_NCAFM = simulations(True, True)
+        magnet, magnet_NcAfm = simulations(True, True)
         for i in range(3):
-            sub = magnet_NCAFM.sublattices[i]
+            sub = magnet_NcAfm.sublattices[i]
             err = max_relative_error(magnet.magnetization.eval(), sub.magnetization.eval())
             assert err < RTOL
 
 
     def test_open_bulk(self):
-        magnet, magnet_NCAFM = simulations(True, False)
+        magnet, magnet_NcAfm = simulations(True, False)
         for i in range(3):
-            sub = magnet_NCAFM.sublattices[i]
+            sub = magnet_NcAfm.sublattices[i]
             err = max_relative_error(magnet.magnetization.eval(), sub.magnetization.eval())
             assert err < RTOL

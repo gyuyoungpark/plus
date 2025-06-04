@@ -40,7 +40,7 @@ __global__ void k_homoDmiFieldAFM(CuField hField,
   hField.setVectorInCell(idx, current + symmetry_factor * cross(D, m2) / msat.valueAt(idx));
 }
 
-__global__ void k_homoDmiFieldNCAFM(CuField hField,
+__global__ void k_homoDmiFieldNcAfm(CuField hField,
                                   const CuField m2Field,
                                   const CuField m3Field,
                                   const CuVectorParameter dmiVector,

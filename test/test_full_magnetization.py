@@ -1,5 +1,5 @@
 import numpy as np
-from mumaxplus import Antiferromagnet, NCAFM, World, Grid
+from mumaxplus import Antiferromagnet, NcAfm, World, Grid
 
 
 def max_relative_error(result, wanted):
@@ -26,7 +26,7 @@ def test_full_magnetization_afm():
 def test_full_magnetization_ncafm():
     nx, ny, nz = 31, 120, 60
     world = World(cellsize=(1e-9, 1e-9, 1e-9))
-    magnet = NCAFM(world, Grid((nx, ny, nz)))
+    magnet = NcAfm(world, Grid((nx, ny, nz)))
     # magnet should initialize with random magnetization
 
     # add random saturation magnetizations

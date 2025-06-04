@@ -16,7 +16,7 @@
 class Antiferromagnet;
 class Ferromagnet;
 class Magnet;
-class NCAFM;
+class NcAfm;
 class TimeSolver;
 
 typedef std::function<FM_FieldQuantity(const Ferromagnet*)> FM_Field;
@@ -51,7 +51,7 @@ class MumaxWorld : public World {
                                       std::string name = "");
 
   /** Add a non-collinear antiferromagnet to the world. */
-  NCAFM* addNCAFM(Grid grid,
+  NcAfm* addNcAfm(Grid grid,
                   GpuBuffer<bool> geometry,
                   GpuBuffer<unsigned int> regions,
                   std::string name = "");
@@ -70,7 +70,7 @@ class MumaxWorld : public World {
   Antiferromagnet* getAntiferromagnet(std::string name) const;
   /** Get a non-collinear antiferromagnet by its name.
    *  Return a nullptr if there is no non-collinear antiferromagnet with specified name. */
-  NCAFM* getNCAFM(std::string name) const;
+  NcAfm* getNcAfm(std::string name) const;
 
   /** Get map of all Magnets in this world. */
   const std::map<std::string, Magnet*> magnets() const;
@@ -79,7 +79,7 @@ class MumaxWorld : public World {
   /** Get map of all Antiferromagnets in this world. */
   const std::map<std::string, Antiferromagnet*> antiferromagnets() const;
   /** Get map of all non-collinear antiferromagnets in this world. */
-  const std::map<std::string, NCAFM*> ncafms() const;
+  const std::map<std::string, NcAfm*> ncafms() const;
 
   /** Minimize the current energy state of the world with every magnet in it. */
   void minimize(real tol = 1e-6, int nSamples = 10);
@@ -203,5 +203,5 @@ class MumaxWorld : public World {
   std::map<std::string, Magnet*> magnets_;
   std::map<std::string, std::unique_ptr<Ferromagnet>> ferromagnets_;
   std::map<std::string, std::unique_ptr<Antiferromagnet>> antiferromagnets_;
-  std::map<std::string, std::unique_ptr<NCAFM>> ncafms_;
+  std::map<std::string, std::unique_ptr<NcAfm>> ncafms_;
 };
