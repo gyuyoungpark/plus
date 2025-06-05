@@ -11,12 +11,12 @@ class ScalarQuantity:
         return f"ScalarQuantity(name='{self.name}', unit={self.unit})"
 
     @property
-    def name(self):
+    def name(self) -> str:
         """Return the instance's name."""
         return self._impl.name
 
     @property
-    def unit(self):
+    def unit(self) -> str:
         """Return the instance's unit."""
         return self._impl.unit
 

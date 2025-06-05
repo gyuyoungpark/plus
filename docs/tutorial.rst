@@ -1,3 +1,5 @@
+:nosearch:
+
 Tutorials
 =========
 
@@ -8,8 +10,8 @@ started!
 .. toctree::
    :maxdepth: 1
 
-   Setting magnetizations <magnetization>
-   Setting shapes <shapes>
-   Using regions <regions>
-   Standard problem #4 <stdp4>
-   Applying temperature <langevin>
+   tutorial/magnetization
+   tutorial/shapes
+   tutorial/regions
+   tutorial/stdp4
+   tutorial/langevin

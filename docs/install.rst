@@ -1,3 +1,5 @@
+:nosearch:
+
 Installation
 ============
 
@@ -26,7 +28,7 @@ Linux
 Make sure that the following applications and build tools are installed:
 
 * C++ compiler which supports c++17, such as GCC
-* CPython (version 3.8 recommended) and pip
+* CPython (version ≥ 3.8 recommended) and pip
 * CUDA Toolkit (version 10.0 or later)
 * git
 * miniconda or anaconda
@@ -63,10 +65,11 @@ Then build and install mumax\ :sup:`+` using pip.
 
 .. code-block:: bash
 
-    pip install -ve .
+    pip install -v .
 
-If changes are made to the C++ code, then ``pip install -ve .`` can be used to
-rebuild mumax\ :sup:`+`.
+If changes are made to the code, then ``pip install -v .`` can be used to
+rebuild mumax\ :sup:`+`. If you want to change the Python code without needing
+to reinstall, you can use ``pip install -ve .``.
 
 You could also compile the source code with double precision, by changing
 ``FP_PRECISION`` in ``CMakeLists.txt`` from ``SINGLE`` to ``DOUBLE`` before

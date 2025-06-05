@@ -11,9 +11,9 @@ class StrayField(FieldQuantity):
         """
         Parameters
         ----------
-        magnet : mumaxplus.Ferromagnet
+        magnet : Ferromagnet
             Magnet instance which is the field source.
-        grid : mumaxplus.Grid
+        grid : Grid
             Grid instance on which the stray field will be computed.
         """
         super().__init__(_cpp.StrayField(magnet._impl, grid._impl))

@@ -23,7 +23,7 @@ class Parameter(FieldQuantity):
         return super().__repr__().replace("FieldQuantity", "Parameter")
 
     @property
-    def is_uniform(self):
+    def is_uniform(self) -> bool:
         """Return True if a Parameter instance is uniform, otherwise False.
         
         See Also
@@ -33,12 +33,12 @@ class Parameter(FieldQuantity):
         return self._impl.is_uniform
 
     @property
-    def is_dynamic(self):
+    def is_dynamic(self) -> bool:
         """Return True if a Parameter instance has time dependent terms."""
         return self._impl.is_dynamic
 
     @property
-    def uniform_value(self):
+    def uniform_value(self) -> float:
         """Return the uniform value of the Parameter instance if it exists.
         
         See Also

@@ -18,12 +18,12 @@ class FieldQuantity:
         )
 
     @property
-    def name(self):
+    def name(self) -> str:
         """Return instance's name."""
         return self._impl.name
 
     @property
-    def unit(self):
+    def unit(self) -> str:
         """Return the unit of the quantity.
 
         Returns
@@ -34,7 +34,7 @@ class FieldQuantity:
         return self._impl.unit
 
     @property
-    def ncomp(self):
+    def ncomp(self) -> int:
         """Return the number of components of the quantity.
 
         In most cases this would be either 1 (scalar field) or 3 (vector fields).
@@ -47,7 +47,7 @@ class FieldQuantity:
         return self._impl.ncomp
 
     @property
-    def grid(self):
+    def grid(self) -> Grid:
         """Return grid on which the quantity will be evaluated.
 
         Returns
@@ -76,7 +76,7 @@ class FieldQuantity:
         """Evaluate the quantity."""
         return self.eval()
 
-    def average(self):
+    def average(self) -> float:
         """Evaluate the quantity and return the average of each component."""
         # TODO add return type.
         return self._impl.average()

@@ -30,8 +30,9 @@
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/logo.css?v=81431fe9" />
-    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=583b82a9" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=d4b325e0" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
@@ -41,17 +42,19 @@
     <script src="../../_static/documentation_options.js?v=5549cc85"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
     <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_api/mumaxplus/mumaxplus.DmiTensor';</script>
-    <link rel="icon" href="../../_static/nimble-plusplus-white.png"/>
+    <link rel="icon" href="../../_static/nimble-plus.png"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="util" href="../../util.html" />
-    <link rel="prev" title="StrayField" href="mumaxplus.StrayField.html" />
+    <link rel="prev" title="PoissonSystem" href="mumaxplus.PoissonSystem.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="May 29, 2025"/>
+    <meta name="docbuild:last-update" content="June 05, 2025"/>
   </head>
   
   
@@ -141,8 +144,8 @@
       
     
     
-    <img src="../../_static/nimble-plusplus.png" class="logo__image only-light" alt="mumax⁺ - Home"/>
-    <script>document.write(`<img src="../../_static/nimble-plusplus.png" class="logo__image only-dark" alt="mumax⁺ - Home"/>`);</script>
+    <img src="../../_static/nimble-plus.png" class="logo__image only-light" alt="mumax⁺ - Home"/>
+    <script>document.write(`<img src="../../_static/nimble-plus.png" class="logo__image only-dark" alt="mumax⁺ - Home"/>`);</script>
   
   
 </a></div>
@@ -157,8 +160,8 @@
           
           
           
-          <a href="https://www.ugent.be/we/solidstatesciences/dynamat/en" title="Ghent University" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fas fa-university fa-lg" aria-hidden="true"></i>
-            <span class="sr-only">Ghent University</span></a>
+          <a href="https://www.ugent.be/we/solidstatesciences/dynamat/en" title="DyNaMat research group" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fas fa-university fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">DyNaMat research group</span></a>
         </li>
         <li class="nav-item">
           
@@ -169,8 +172,8 @@
           
           
           
-          <a href="https://github.com/mumax/plus" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github fa-lg" aria-hidden="true"></i>
-            <span class="sr-only">GitHub</span></a>
+          <a href="https://github.com/mumax/plus" title="GitHub repository" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub repository</span></a>
         </li>
         <li class="nav-item">
           
@@ -181,8 +184,8 @@
           
           
           
-          <a href="https://arxiv.org/abs/2411.18194" title="arXiv" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fas fa-file-alt fa-lg" aria-hidden="true"></i>
-            <span class="sr-only">arXiv</span></a>
+          <a href="https://arxiv.org/abs/2411.18194" title="Paper on arXiv" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fas fa-file-alt fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Paper on arXiv</span></a>
         </li>
 </ul></div>
         <div class="sidebar-primary-item">
@@ -205,15 +208,17 @@
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../../api.html">API</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="mumaxplus.World.html">World</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mumaxplus.Grid.html">Grid</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mumaxplus.Magnet.html">Magnet</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mumaxplus.Ferromagnet.html">Ferromagnet</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mumaxplus.Antiferromagnet.html">Antiferromagnet</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mumaxplus.TimeSolver.html">TimeSolver</a></li>
-<li class="toctree-l2"><a class="reference internal" href="mumaxplus.Variable.html">Variable</a></li>
-<li class="toctree-l2"><a class="reference internal" href="mumaxplus.PoissonSystem.html">PoissonSystem</a></li>
-<li class="toctree-l2"><a class="reference internal" href="mumaxplus.Parameter.html">Parameter</a></li>
-<li class="toctree-l2"><a class="reference internal" href="mumaxplus.FieldQuantity.html">FieldQuantity</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mumaxplus.ScalarQuantity.html">ScalarQuantity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mumaxplus.FieldQuantity.html">FieldQuantity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mumaxplus.Variable.html">Variable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mumaxplus.Parameter.html">Parameter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mumaxplus.InterParameter.html">InterParameter</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mumaxplus.StrayField.html">StrayField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mumaxplus.PoissonSystem.html">PoissonSystem</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">DmiTensor</a></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../util.html">util</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="../util/mumaxplus.util.config.html">config</a></li>
@@ -228,20 +233,20 @@
 </ul>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../tutorial.html">Tutorials</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../magnetization.html">Setting magnetizations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../shapes.html">Setting shapes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../regions.html">Using regions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../stdp4.html">Standard problem #4</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../langevin.html">Applying temperature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorial/magnetization.html">Setting a magnetization configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorial/shapes.html">Shapes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorial/regions.html">Regions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorial/stdp4.html">Micromagnetic standard problem #4</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorial/langevin.html">Temperature</a></li>
 </ul>
 </details></li>
 </ul>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../examples.html">Examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../stdp2.html">Standard Problem #2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../magnetoelastics.html">Magnetoelastics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../DW_SAW.html">Domain wall motion with surface acoustic waves</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../voronoi.html">Voronoi</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../examples/stdp2.html">Standard Problem #2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../examples/magnetoelastics.html">Magnetoelastics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../examples/DW_SAW.html">Domain wall motion with surface acoustic waves</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../examples/voronoi.html">Voronoi</a></li>
 </ul>
 </details></li>
 </ul>
@@ -386,8 +391,8 @@ document.write(`
 and chiral properties are contained in the dmi tensor <span class="math notranslate nohighlight">\(D_{ijk}\)</span>. This tensor is
 antisymmetric in it’s magnetic indices (<span class="math notranslate nohighlight">\(D_{ijk} = - D_{ikj}\)</span>) and hence can be
 fully described by only 9 elements.</p>
-<p><a class="reference internal" href="#mumaxplus.DmiTensor" title="mumaxplus.DmiTensor"><code class="xref py py-func docutils literal notranslate"><span class="pre">DmiTensor()</span></code></a> has 9 Parameter properties: <a class="reference internal" href="#mumaxplus.DmiTensor.xxy" title="mumaxplus.DmiTensor.xxy"><code class="xref py py-func docutils literal notranslate"><span class="pre">xxy()</span></code></a>, <a class="reference internal" href="#mumaxplus.DmiTensor.xxz" title="mumaxplus.DmiTensor.xxz"><code class="xref py py-func docutils literal notranslate"><span class="pre">xxz()</span></code></a>, <a class="reference internal" href="#mumaxplus.DmiTensor.xyz" title="mumaxplus.DmiTensor.xyz"><code class="xref py py-func docutils literal notranslate"><span class="pre">xyz()</span></code></a>, <a class="reference internal" href="#mumaxplus.DmiTensor.yxy" title="mumaxplus.DmiTensor.yxy"><code class="xref py py-func docutils literal notranslate"><span class="pre">yxy()</span></code></a>,
-<a class="reference internal" href="#mumaxplus.DmiTensor.yxz" title="mumaxplus.DmiTensor.yxz"><code class="xref py py-func docutils literal notranslate"><span class="pre">yxz()</span></code></a>, <a class="reference internal" href="#mumaxplus.DmiTensor.yyz" title="mumaxplus.DmiTensor.yyz"><code class="xref py py-func docutils literal notranslate"><span class="pre">yyz()</span></code></a>, <a class="reference internal" href="#mumaxplus.DmiTensor.zxy" title="mumaxplus.DmiTensor.zxy"><code class="xref py py-func docutils literal notranslate"><span class="pre">zxy()</span></code></a>, <a class="reference internal" href="#mumaxplus.DmiTensor.zxz" title="mumaxplus.DmiTensor.zxz"><code class="xref py py-func docutils literal notranslate"><span class="pre">zxz()</span></code></a>, and <a class="reference internal" href="#mumaxplus.DmiTensor.zyz" title="mumaxplus.DmiTensor.zyz"><code class="xref py py-func docutils literal notranslate"><span class="pre">zyz()</span></code></a>. These 9 parameters fully define the
+<p><a class="reference internal" href="#mumaxplus.DmiTensor" title="mumaxplus.DmiTensor"><code class="xref py py-func docutils literal notranslate"><span class="pre">DmiTensor()</span></code></a> has 9 Parameter properties: <a class="reference internal" href="#mumaxplus.DmiTensor.xxy" title="mumaxplus.DmiTensor.xxy"><code class="xref py py-attr docutils literal notranslate"><span class="pre">xxy</span></code></a>, <a class="reference internal" href="#mumaxplus.DmiTensor.xxz" title="mumaxplus.DmiTensor.xxz"><code class="xref py py-attr docutils literal notranslate"><span class="pre">xxz</span></code></a>, <a class="reference internal" href="#mumaxplus.DmiTensor.xyz" title="mumaxplus.DmiTensor.xyz"><code class="xref py py-attr docutils literal notranslate"><span class="pre">xyz</span></code></a>, <a class="reference internal" href="#mumaxplus.DmiTensor.yxy" title="mumaxplus.DmiTensor.yxy"><code class="xref py py-attr docutils literal notranslate"><span class="pre">yxy</span></code></a>,
+<a class="reference internal" href="#mumaxplus.DmiTensor.yxz" title="mumaxplus.DmiTensor.yxz"><code class="xref py py-attr docutils literal notranslate"><span class="pre">yxz</span></code></a>, <a class="reference internal" href="#mumaxplus.DmiTensor.yyz" title="mumaxplus.DmiTensor.yyz"><code class="xref py py-attr docutils literal notranslate"><span class="pre">yyz</span></code></a>, <a class="reference internal" href="#mumaxplus.DmiTensor.zxy" title="mumaxplus.DmiTensor.zxy"><code class="xref py py-attr docutils literal notranslate"><span class="pre">zxy</span></code></a>, <a class="reference internal" href="#mumaxplus.DmiTensor.zxz" title="mumaxplus.DmiTensor.zxz"><code class="xref py py-attr docutils literal notranslate"><span class="pre">zxz</span></code></a>, and <a class="reference internal" href="#mumaxplus.DmiTensor.zyz" title="mumaxplus.DmiTensor.zyz"><code class="xref py py-attr docutils literal notranslate"><span class="pre">zyz</span></code></a>. These 9 parameters fully define the
 dmi tensor of a ferromagnet. The parameters can be set separately, or can be set
 through one of the following methods:</p>
 <ul class="simple">
@@ -481,7 +486,7 @@ of the DMI tensor. The value can be anything which can be used in
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mumaxplus.DmiTensor.xxy">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">xxy</span></span><a class="headerlink" href="#mumaxplus.DmiTensor.xxy" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">xxy</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="mumaxplus.Parameter.html#mumaxplus.Parameter" title="mumaxplus.parameter.Parameter"><span class="pre">Parameter</span></a></em><a class="headerlink" href="#mumaxplus.DmiTensor.xxy" title="Link to this definition">#</a></dt>
 <dd><p>Dzyaloshinskii-Moriya interaction strength parameter <cite>D_xxy</cite> (J/m²).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -495,7 +500,7 @@ of the DMI tensor. The value can be anything which can be used in
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mumaxplus.DmiTensor.xyz">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">xyz</span></span><a class="headerlink" href="#mumaxplus.DmiTensor.xyz" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">xyz</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="mumaxplus.Parameter.html#mumaxplus.Parameter" title="mumaxplus.parameter.Parameter"><span class="pre">Parameter</span></a></em><a class="headerlink" href="#mumaxplus.DmiTensor.xyz" title="Link to this definition">#</a></dt>
 <dd><p>Dzyaloshinskii-Moriya interaction strength parameter <cite>D_xyz</cite> (J/m²).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -509,7 +514,7 @@ of the DMI tensor. The value can be anything which can be used in
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mumaxplus.DmiTensor.xxz">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">xxz</span></span><a class="headerlink" href="#mumaxplus.DmiTensor.xxz" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">xxz</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="mumaxplus.Parameter.html#mumaxplus.Parameter" title="mumaxplus.parameter.Parameter"><span class="pre">Parameter</span></a></em><a class="headerlink" href="#mumaxplus.DmiTensor.xxz" title="Link to this definition">#</a></dt>
 <dd><p>Dzyaloshinskii-Moriya interaction strength parameter <cite>D_xxz</cite> (J/m²).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
@@ -520,7 +525,7 @@ of the DMI tensor. The value can be anything which can be used in
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mumaxplus.DmiTensor.yxy">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">yxy</span></span><a class="headerlink" href="#mumaxplus.DmiTensor.yxy" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">yxy</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="mumaxplus.Parameter.html#mumaxplus.Parameter" title="mumaxplus.parameter.Parameter"><span class="pre">Parameter</span></a></em><a class="headerlink" href="#mumaxplus.DmiTensor.yxy" title="Link to this definition">#</a></dt>
 <dd><p>Dzyaloshinskii-Moriya interaction strength parameter <cite>D_yxy</cite> (J/m²).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
@@ -531,7 +536,7 @@ of the DMI tensor. The value can be anything which can be used in
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mumaxplus.DmiTensor.yyz">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">yyz</span></span><a class="headerlink" href="#mumaxplus.DmiTensor.yyz" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">yyz</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="mumaxplus.Parameter.html#mumaxplus.Parameter" title="mumaxplus.parameter.Parameter"><span class="pre">Parameter</span></a></em><a class="headerlink" href="#mumaxplus.DmiTensor.yyz" title="Link to this definition">#</a></dt>
 <dd><p>Dzyaloshinskii-Moriya interaction strength parameter <cite>D_yyz</cite> (J/m²).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
@@ -542,7 +547,7 @@ of the DMI tensor. The value can be anything which can be used in
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mumaxplus.DmiTensor.yxz">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">yxz</span></span><a class="headerlink" href="#mumaxplus.DmiTensor.yxz" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">yxz</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="mumaxplus.Parameter.html#mumaxplus.Parameter" title="mumaxplus.parameter.Parameter"><span class="pre">Parameter</span></a></em><a class="headerlink" href="#mumaxplus.DmiTensor.yxz" title="Link to this definition">#</a></dt>
 <dd><p>Dzyaloshinskii-Moriya interaction strength parameter <cite>D_yxz</cite> (J/m²).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
@@ -553,7 +558,7 @@ of the DMI tensor. The value can be anything which can be used in
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mumaxplus.DmiTensor.zxy">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">zxy</span></span><a class="headerlink" href="#mumaxplus.DmiTensor.zxy" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">zxy</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="mumaxplus.Parameter.html#mumaxplus.Parameter" title="mumaxplus.parameter.Parameter"><span class="pre">Parameter</span></a></em><a class="headerlink" href="#mumaxplus.DmiTensor.zxy" title="Link to this definition">#</a></dt>
 <dd><p>Dzyaloshinskii-Moriya interaction strength parameter <cite>D_zxy</cite> (J/m²).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
@@ -564,7 +569,7 @@ of the DMI tensor. The value can be anything which can be used in
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mumaxplus.DmiTensor.zyz">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">zyz</span></span><a class="headerlink" href="#mumaxplus.DmiTensor.zyz" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">zyz</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="mumaxplus.Parameter.html#mumaxplus.Parameter" title="mumaxplus.parameter.Parameter"><span class="pre">Parameter</span></a></em><a class="headerlink" href="#mumaxplus.DmiTensor.zyz" title="Link to this definition">#</a></dt>
 <dd><p>Dzyaloshinskii-Moriya interaction strength parameter <cite>D_zyz</cite> (J/m²).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
@@ -575,7 +580,7 @@ of the DMI tensor. The value can be anything which can be used in
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mumaxplus.DmiTensor.zxz">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">zxz</span></span><a class="headerlink" href="#mumaxplus.DmiTensor.zxz" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">zxz</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="mumaxplus.Parameter.html#mumaxplus.Parameter" title="mumaxplus.parameter.Parameter"><span class="pre">Parameter</span></a></em><a class="headerlink" href="#mumaxplus.DmiTensor.zxz" title="Link to this definition">#</a></dt>
 <dd><p>Dzyaloshinskii-Moriya interaction strength parameter <cite>D_zxz</cite> (J/m²).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
@@ -600,12 +605,12 @@ of the DMI tensor. The value can be anything which can be used in
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="mumaxplus.StrayField.html"
+       href="mumaxplus.PoissonSystem.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">StrayField</p>
+        <p class="prev-next-title">PoissonSystem</p>
       </div>
     </a>
     <a class="right-next"
@@ -675,7 +680,7 @@ By the DyNaMat group, Ghent University, Belgium.
   
   <div class="footer-item">
     <p class="last-updated">
-  Last updated on May 29, 2025.
+  Last updated on June 05, 2025.
   <br/>
 </p>
   </div>

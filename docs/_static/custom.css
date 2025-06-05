@@ -2,3 +2,7 @@
 html[data-theme="dark"] .navbar-brand img {
     content: url("nimble-rustplus-shadow.png");
 }
+
+.headerlink {
+    display: none;
+}

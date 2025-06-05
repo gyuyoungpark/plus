@@ -4,11 +4,11 @@ import numpy as _np
 from .constants import MU0
 
 
-def magnetostatic_energy_density(msat):
+def magnetostatic_energy_density(msat) -> float:
     r"""Magnetostatic energy density (J/m³).
     
-    .. math:: \frac{1}{2} \mu_0 \text{msat}^2
-
+    1/2 μ0 msat²
+    
     Parameters
     ----------
     msat : float
@@ -21,10 +21,10 @@ def magnetostatic_energy_density(msat):
     """
     return 0.5 * MU0 * msat**2
 
-def Km(msat):
+def Km(msat) -> float:
     r"""Magnetostatic energy density (J/m³).
     
-    .. math:: \frac{1}{2} \mu_0 \text{msat}^2
+    1/2 μ0 msat²
 
     This is a short alias for `magnetostatic_energy_density(msat)`.
 
@@ -41,11 +41,11 @@ def Km(msat):
     return magnetostatic_energy_density(msat)
 
 
-def exchange_length(aex, msat):
+def exchange_length(aex, msat) -> float:
     r"""Ferromagnetic exchange length (m). Beware that different definitions exist
     without the √2 prefactor, but this one seems to be used most often.
     
-    .. math:: l_{ex} = \sqrt{\text{aex}/\text{Km}} = \sqrt{2\text{aex}/(\mu_0 \text{msat}^2)}
+    .. math:: l_{ex} = \sqrt{a_\text{ex}/K_\text{m}} = \sqrt{2a_\text{ex}/(\mu_0 m_\text{sat}^2)}
     
     Parameters
     ----------
@@ -61,11 +61,11 @@ def exchange_length(aex, msat):
     """
     return _np.sqrt(aex/Km(msat))
 
-def l_ex(aex, msat):
+def l_ex(aex, msat) -> float:
     r"""Ferromagnetic exchange length (m). Beware that different definitions exist
     without the √2 prefactor, but this one seems to be used most often.
 
-    .. math:: l_{ex} = \sqrt{\text{aex}/\text{Km}} = \sqrt{2\text{aex}/(\mu_0 \text{msat}^2)}
+    .. math:: l_{ex} = \sqrt{a_\text{ex}/K_\text{m}} = \sqrt{2a_\text{ex}/(\mu_0 m_\text{sat}^2)}
 
     This is a short alias for `exchange_length(aex, msat)`.
     
@@ -84,11 +84,11 @@ def l_ex(aex, msat):
     return exchange_length(aex, msat)
 
 
-def wall_width(aex, K_eff):
+def wall_width(aex, K_eff) -> float:
     r"""Bloch wall width (m). Mind the lack of any prefactor! Different
     definitions exist, for example with a prefactor π.
     
-    .. math:: \sqrt{\text{aex}/K_{\text{eff}}}
+    .. math:: \sqrt{a_\text{ex}/K_{\text{eff}}}
 
     Parameters
     ----------
@@ -104,11 +104,11 @@ def wall_width(aex, K_eff):
     """
     return _np.sqrt(aex/K_eff)
 
-def wall_energy(aex, K_eff):
+def wall_energy(aex, K_eff) -> float:
     r"""Bloch wall energy (J/m²): the energy per unit of Bloch domain wall area.
     Mind the lack of any prefactor, different definitions exist!
 
-    .. math:: \sqrt{\text{aex} K_{\text{eff}}}
+    .. math:: \sqrt{a_\text{ex} K_{\text{eff}}}
 
     Parameters
     ----------
@@ -125,12 +125,12 @@ def wall_energy(aex, K_eff):
     return _np.sqrt(aex*K_eff)
 
 
-def helical_length(aex, D):
+def helical_length(aex, D) -> float:
     r"""Characteristic length scale of a DMI dominated system, such as with
     skyrmions. Mind the lack of any prefactor! Different definitions exist,
     with prefactors like 1, 2 or 4π.
     
-    .. math:: \text{aex}/D
+    aex/D
 
     Parameters
     ----------
@@ -147,11 +147,11 @@ def helical_length(aex, D):
     return aex/D
 
 
-def magnetic_hardness(K1, msat):
+def magnetic_hardness(K1, msat) -> float:
     r"""Magnetic hardness parameter κ (dimensionless). It should be greater than
     1 for a permanent magnet and much less than 1 for a good temporary magnet.
     
-    .. math:: \sqrt{\frac{|K_1|}{\mu_0 \text{msat}^2}}
+    .. math:: \sqrt{\frac{|K_1|}{\mu_0 m_\text{sat}^2}}
     
     https://doi.org/10.1016/j.scriptamat.2015.09.021
 

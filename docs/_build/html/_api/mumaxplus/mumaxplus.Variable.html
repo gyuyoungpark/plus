@@ -30,8 +30,9 @@
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/logo.css?v=81431fe9" />
-    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=583b82a9" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=d4b325e0" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
@@ -41,16 +42,18 @@
     <script src="../../_static/documentation_options.js?v=5549cc85"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
     <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_api/mumaxplus/mumaxplus.Variable';</script>
-    <link rel="icon" href="../../_static/nimble-plusplus-white.png"/>
+    <link rel="icon" href="../../_static/nimble-plus.png"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="PoissonSystem" href="mumaxplus.PoissonSystem.html" />
-    <link rel="prev" title="TimeSolver" href="mumaxplus.TimeSolver.html" />
+    <link rel="next" title="Parameter" href="mumaxplus.Parameter.html" />
+    <link rel="prev" title="FieldQuantity" href="mumaxplus.FieldQuantity.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="May 29, 2025"/>
+    <meta name="docbuild:last-update" content="June 05, 2025"/>
   </head>
   
   
@@ -140,8 +143,8 @@
       
     
     
-    <img src="../../_static/nimble-plusplus.png" class="logo__image only-light" alt="mumax⁺ - Home"/>
-    <script>document.write(`<img src="../../_static/nimble-plusplus.png" class="logo__image only-dark" alt="mumax⁺ - Home"/>`);</script>
+    <img src="../../_static/nimble-plus.png" class="logo__image only-light" alt="mumax⁺ - Home"/>
+    <script>document.write(`<img src="../../_static/nimble-plus.png" class="logo__image only-dark" alt="mumax⁺ - Home"/>`);</script>
   
   
 </a></div>
@@ -156,8 +159,8 @@
           
           
           
-          <a href="https://www.ugent.be/we/solidstatesciences/dynamat/en" title="Ghent University" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fas fa-university fa-lg" aria-hidden="true"></i>
-            <span class="sr-only">Ghent University</span></a>
+          <a href="https://www.ugent.be/we/solidstatesciences/dynamat/en" title="DyNaMat research group" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fas fa-university fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">DyNaMat research group</span></a>
         </li>
         <li class="nav-item">
           
@@ -168,8 +171,8 @@
           
           
           
-          <a href="https://github.com/mumax/plus" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github fa-lg" aria-hidden="true"></i>
-            <span class="sr-only">GitHub</span></a>
+          <a href="https://github.com/mumax/plus" title="GitHub repository" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub repository</span></a>
         </li>
         <li class="nav-item">
           
@@ -180,8 +183,8 @@
           
           
           
-          <a href="https://arxiv.org/abs/2411.18194" title="arXiv" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fas fa-file-alt fa-lg" aria-hidden="true"></i>
-            <span class="sr-only">arXiv</span></a>
+          <a href="https://arxiv.org/abs/2411.18194" title="Paper on arXiv" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fas fa-file-alt fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Paper on arXiv</span></a>
         </li>
 </ul></div>
         <div class="sidebar-primary-item">
@@ -204,15 +207,17 @@
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../../api.html">API</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="mumaxplus.World.html">World</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mumaxplus.Grid.html">Grid</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mumaxplus.Magnet.html">Magnet</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mumaxplus.Ferromagnet.html">Ferromagnet</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mumaxplus.Antiferromagnet.html">Antiferromagnet</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mumaxplus.TimeSolver.html">TimeSolver</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">Variable</a></li>
-<li class="toctree-l2"><a class="reference internal" href="mumaxplus.PoissonSystem.html">PoissonSystem</a></li>
-<li class="toctree-l2"><a class="reference internal" href="mumaxplus.Parameter.html">Parameter</a></li>
-<li class="toctree-l2"><a class="reference internal" href="mumaxplus.FieldQuantity.html">FieldQuantity</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mumaxplus.ScalarQuantity.html">ScalarQuantity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mumaxplus.FieldQuantity.html">FieldQuantity</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Variable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mumaxplus.Parameter.html">Parameter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mumaxplus.InterParameter.html">InterParameter</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mumaxplus.StrayField.html">StrayField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mumaxplus.PoissonSystem.html">PoissonSystem</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mumaxplus.DmiTensor.html">DmiTensor</a></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../util.html">util</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="../util/mumaxplus.util.config.html">config</a></li>
@@ -227,20 +232,20 @@
 </ul>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../tutorial.html">Tutorials</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../magnetization.html">Setting magnetizations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../shapes.html">Setting shapes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../regions.html">Using regions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../stdp4.html">Standard problem #4</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../langevin.html">Applying temperature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorial/magnetization.html">Setting a magnetization configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorial/shapes.html">Shapes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorial/regions.html">Regions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorial/stdp4.html">Micromagnetic standard problem #4</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorial/langevin.html">Temperature</a></li>
 </ul>
 </details></li>
 </ul>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../examples.html">Examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../stdp2.html">Standard Problem #2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../magnetoelastics.html">Magnetoelastics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../DW_SAW.html">Domain wall motion with surface acoustic waves</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../voronoi.html">Voronoi</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../examples/stdp2.html">Standard Problem #2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../examples/magnetoelastics.html">Magnetoelastics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../examples/DW_SAW.html">Domain wall motion with surface acoustic waves</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../examples/voronoi.html">Voronoi</a></li>
 </ul>
 </details></li>
 </ul>
@@ -347,15 +352,6 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Variable.__init__"><code class="docutils literal notranslate"><span class="pre">__init__()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Variable.set"><code class="docutils literal notranslate"><span class="pre">set()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Variable.get"><code class="docutils literal notranslate"><span class="pre">get()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Variable.average"><code class="docutils literal notranslate"><span class="pre">average()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Variable.eval"><code class="docutils literal notranslate"><span class="pre">eval()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Variable.get_rgb"><code class="docutils literal notranslate"><span class="pre">get_rgb()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Variable.grid"><code class="docutils literal notranslate"><span class="pre">grid</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Variable.meshgrid"><code class="docutils literal notranslate"><span class="pre">meshgrid</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Variable.name"><code class="docutils literal notranslate"><span class="pre">name</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Variable.ncomp"><code class="docutils literal notranslate"><span class="pre">ncomp</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Variable.shape"><code class="docutils literal notranslate"><span class="pre">shape</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Variable.unit"><code class="docutils literal notranslate"><span class="pre">unit</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -402,94 +398,6 @@ as a function of the position.</p>
 <dd><p>Get the variable value.</p>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="mumaxplus.Variable.average">
-<span class="sig-name descname"><span class="pre">average</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mumaxplus.Variable.average" title="Link to this definition">#</a></dt>
-<dd><p>Evaluate the quantity and return the average of each component.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="mumaxplus.Variable.eval">
-<span class="sig-name descname"><span class="pre">eval</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mumaxplus.Variable.eval" title="Link to this definition">#</a></dt>
-<dd><p>Evaluate the quantity.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="mumaxplus.Variable.get_rgb">
-<span class="sig-name descname"><span class="pre">get_rgb</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mumaxplus.Variable.get_rgb" title="Link to this definition">#</a></dt>
-<dd><p>Evaluate the vector field quantity and return its rgb representation
-as a numpy ndarray of the same shape (ncomp, nz, ny, nx).</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="mumaxplus.Variable.grid">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">grid</span></span><a class="headerlink" href="#mumaxplus.Variable.grid" title="Link to this definition">#</a></dt>
-<dd><p>Return grid on which the quantity will be evaluated.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>grid</strong> – The grid on which the quantity will be evaluated.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="mumaxplus.Grid.html#mumaxplus.Grid" title="mumaxplus.Grid">Grid</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="mumaxplus.Variable.meshgrid">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">meshgrid</span></span><a class="headerlink" href="#mumaxplus.Variable.meshgrid" title="Link to this definition">#</a></dt>
-<dd><p>Return a numpy meshgrid with the x, y, and z coordinate of each cell.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="mumaxplus.Variable.name">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#mumaxplus.Variable.name" title="Link to this definition">#</a></dt>
-<dd><p>Return instance’s name.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="mumaxplus.Variable.ncomp">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ncomp</span></span><a class="headerlink" href="#mumaxplus.Variable.ncomp" title="Link to this definition">#</a></dt>
-<dd><p>Return the number of components of the quantity.</p>
-<p>In most cases this would be either 1 (scalar field) or 3 (vector fields).</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>ncomp</strong> – The number of components of the quantity.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>int</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="mumaxplus.Variable.shape">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">shape</span></span><a class="headerlink" href="#mumaxplus.Variable.shape" title="Link to this definition">#</a></dt>
-<dd><p>Return the shape of the output numpy array of this quantity.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>shape</strong> – The shape of the output numpy array of this quantity.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>tuple of ints</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="mumaxplus.Variable.unit">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">unit</span></span><a class="headerlink" href="#mumaxplus.Variable.unit" title="Link to this definition">#</a></dt>
-<dd><p>Return the unit of the quantity.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>unit</strong> – The unit of the quantity, the default value is an empty string.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
 </dd></dl>
 
 </section>
@@ -506,20 +414,20 @@ as a numpy ndarray of the same shape (ncomp, nz, ny, nx).</p>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="mumaxplus.TimeSolver.html"
+       href="mumaxplus.FieldQuantity.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">TimeSolver</p>
+        <p class="prev-next-title">FieldQuantity</p>
       </div>
     </a>
     <a class="right-next"
-       href="mumaxplus.PoissonSystem.html"
+       href="mumaxplus.Parameter.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">PoissonSystem</p>
+        <p class="prev-next-title">Parameter</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -543,15 +451,6 @@ as a numpy ndarray of the same shape (ncomp, nz, ny, nx).</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Variable.__init__"><code class="docutils literal notranslate"><span class="pre">__init__()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Variable.set"><code class="docutils literal notranslate"><span class="pre">set()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Variable.get"><code class="docutils literal notranslate"><span class="pre">get()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Variable.average"><code class="docutils literal notranslate"><span class="pre">average()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Variable.eval"><code class="docutils literal notranslate"><span class="pre">eval()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Variable.get_rgb"><code class="docutils literal notranslate"><span class="pre">get_rgb()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Variable.grid"><code class="docutils literal notranslate"><span class="pre">grid</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Variable.meshgrid"><code class="docutils literal notranslate"><span class="pre">meshgrid</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Variable.name"><code class="docutils literal notranslate"><span class="pre">name</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Variable.ncomp"><code class="docutils literal notranslate"><span class="pre">ncomp</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Variable.shape"><code class="docutils literal notranslate"><span class="pre">shape</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Variable.unit"><code class="docutils literal notranslate"><span class="pre">unit</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -580,7 +479,7 @@ By the DyNaMat group, Ghent University, Belgium.
   
   <div class="footer-item">
     <p class="last-updated">
-  Last updated on May 29, 2025.
+  Last updated on June 05, 2025.
   <br/>
 </p>
   </div>

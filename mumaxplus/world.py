@@ -12,7 +12,7 @@ import warnings
 class World:
     """Construct a world with a given cell size."""
     def __init__(self, cellsize,
-                 pbc_repetitions=(0,0,0), mastergrid=Grid((0,0,0))):
+                 pbc_repetitions=(0,0,0), mastergrid:Grid=Grid((0,0,0))):
         
         """
         Parameters
@@ -34,10 +34,12 @@ class World:
             A 0 in `mastergrid` should correspond to a 0 in `pbc_repetitions`.
             All subsequently added magnets need to fit inside this mastergrid.
 
+            
         Note
         ----
-            ``pbc_repetitions`` and ``mastergrid`` can be changed later using :func:`set_pbc`.
+        ``pbc_repetitions`` and ``mastergrid`` can be changed later using :func:`set_pbc`.
 
+            
         See Also
         --------
         cellsize, pbc_repetitions, mastergrid
@@ -63,12 +65,12 @@ class World:
         return world
 
     @property
-    def timesolver(self):
-        """Time solver for this world."""
+    def timesolver(self) -> TimeSolver:
+        """:class:`TimeSolver` for this world."""
         return TimeSolver(self._impl.timesolver)
 
-    def get_ferromagnet(self, name):
-        """Get a ferromagnet by its name.
+    def get_ferromagnet(self, name) -> Ferromagnet:
+        """Get a :class:`Ferromagnet` by its name.
 
         Raises KeyError if there is no magnet with the given name."""
         magnet_impl = self._impl.get_ferromagnet(name)
@@ -76,8 +78,8 @@ class World:
             raise KeyError(f"No magnet named {name}")
         return Ferromagnet._from_impl(magnet_impl)
     
-    def get_antiferromagnet(self, name):
-        """Get an antiferromagnet by its name.
+    def get_antiferromagnet(self, name) -> Antiferromagnet:
+        """Get an :class:`Antiferromagnet` by its name.
         
         Raises KeyError if there is no magnet with the given name."""
         magnet_impl = self._impl.get_antiferromagnet(name)
@@ -86,14 +88,14 @@ class World:
         return Antiferromagnet._from_impl(magnet_impl)
 
     @property
-    def ferromagnets(self):
-        """Get a dictionairy of ferromagnets by name."""
+    def ferromagnets(self) -> dict[str,Ferromagnet]:
+        """Get a dictionairy of :class:`Ferromagnet` names."""
         return {key: Ferromagnet._from_impl(impl) for key, impl in
                 self._impl.ferromagnets.items()}
     
     @property
-    def antiferromagnets(self):
-        """Get a dictionairy of antiferromagnets by name."""
+    def antiferromagnets(self) -> dict[str,Antiferromagnet]:
+        """Get a dictionairy of :class:`Antiferromagnet` names."""
         return {key: Antiferromagnet._from_impl(impl) for key, impl in
                 self._impl.antiferromagnets.items()}
     
@@ -146,7 +148,7 @@ class World:
         self._impl.relax(tol)
 
     @property
-    def RelaxTorqueThreshold(self):
+    def RelaxTorqueThreshold(self) -> float:
         """Threshold torque used for relaxing the system (default = -1).
 
         If set to a negative value (default behaviour),
@@ -169,7 +171,7 @@ class World:
         self._impl.RelaxTorqueThreshold = value
 
     @property
-    def cellsize(self):
+    def cellsize(self) -> tuple[float]:
         """Return the cell size of the world.
 
         Returns
@@ -181,7 +183,7 @@ class World:
         return self._impl.cellsize
 
     @property
-    def bias_magnetic_field(self):
+    def bias_magnetic_field(self) -> tuple[float]:
         """Return a uniform magnetic field which extends over the whole world."""
         return self._impl.bias_magnetic_field
 
@@ -191,7 +193,7 @@ class World:
         self._impl.bias_magnetic_field = value
 
     @property
-    def mastergrid(self):
+    def mastergrid(self) -> Grid:
         """The master grid of the world.
 
         Mastergrid defines a periodic simulation box. If it has zero size in a
@@ -222,7 +224,7 @@ class World:
         self._impl.mastergrid = mastergrid._impl
 
     @property
-    def pbc_repetitions(self):
+    def pbc_repetitions(self) -> tuple[int]:
         """The number of repetitions for everything inside mastergrid in the
         x, y and z directions to create periodic boundary conditions. The number of
         repetitions determines the cutoff range for the demagnetization.
@@ -260,8 +262,8 @@ class World:
         self._impl.pbc_repetitions = value
 
     @property
-    def bounding_grid(self):
-        """Returns Grid which is the minimum bounding box of all magnets
+    def bounding_grid(self) -> Grid:
+        """Returns :class:`Grid` which is the minimum bounding box of all magnets
         currently in the world.
         """
         return Grid._from_impl(self._impl.bounding_grid)

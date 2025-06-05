@@ -31,18 +31,17 @@ extensions = [
     "sphinx.ext.autodoc", 
     "sphinx.ext.autosummary", 
     "sphinxcontrib.video",
-    "sphinx.ext.napoleon",
+    "sphinx_copybutton",
+    "sphinx.ext.napoleon"
 ]
 
-napoleon_google_docstring = True
-napoleon_numpy_docstring = True
 toc_object_entries_show_parents = 'hide'
 
 # The default options for autodoc directives. They are applied to all autodoc directives
 # automatically. It must be a dictionary which maps option names to the values.
 autodoc_default_options = {
     "members": True,
-    "inherited-members": True,
+    "inherited-members": False,
     "special-members": "",
     "undoc-members": True,
     'show-inheritance': True,
@@ -73,13 +72,13 @@ templates_path = ['_templates']
 # a list of builtin themes.
 
 html_theme = "sphinx_book_theme"
-html_logo = "_static/nimble-plusplus.png"
+html_logo = "_static/nimble-plus.png"
 html_title = "mumax⁺"
 
 html_static_path = ['_static']
 html_css_files = ['logo.css', 'custom.css']
 
-html_favicon = "_static/nimble-plusplus-white.png"
+html_favicon = "_static/nimble-plus.png"
 
 rst_epilog = """
 .. |author| replace:: {}
@@ -100,19 +99,19 @@ html_theme_options = {
     "show_toc_level": 2,
     "icon_links": [
         {
-            "name": "Ghent University",
+            "name": "DyNaMat research group",
             "url": "https://www.ugent.be/we/solidstatesciences/dynamat/en",
             "icon": "fas fa-university",  # FontAwesome university icon
             "type": "fontawesome",
         },
         {
-            "name": "GitHub",
+            "name": "GitHub repository",
             "url": "https://github.com/mumax/plus",  # GitHub repo
             "icon": "fab fa-github",  #  
             "type": "fontawesome",
         },
         {
-            "name": "arXiv",
+            "name": "Paper on arXiv",
             "url": "https://arxiv.org/abs/2411.18194",
             "icon": "fas fa-file-alt",  # generic document icon
             "type": "fontawesome",

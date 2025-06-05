@@ -30,8 +30,9 @@
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="_static/logo.css?v=81431fe9" />
-    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=583b82a9" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=d4b325e0" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
@@ -41,17 +42,19 @@
     <script src="_static/documentation_options.js?v=5549cc85"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
     <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'api';</script>
-    <link rel="icon" href="_static/nimble-plusplus-white.png"/>
+    <link rel="icon" href="_static/nimble-plus.png"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="World" href="_api/mumaxplus/mumaxplus.World.html" />
     <link rel="prev" title="Installation" href="install.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="May 29, 2025"/>
+    <meta name="docbuild:last-update" content="June 05, 2025"/>
   </head>
   
   
@@ -141,8 +144,8 @@
       
     
     
-    <img src="_static/nimble-plusplus.png" class="logo__image only-light" alt="mumax⁺ - Home"/>
-    <script>document.write(`<img src="_static/nimble-plusplus.png" class="logo__image only-dark" alt="mumax⁺ - Home"/>`);</script>
+    <img src="_static/nimble-plus.png" class="logo__image only-light" alt="mumax⁺ - Home"/>
+    <script>document.write(`<img src="_static/nimble-plus.png" class="logo__image only-dark" alt="mumax⁺ - Home"/>`);</script>
   
   
 </a></div>
@@ -157,8 +160,8 @@
           
           
           
-          <a href="https://www.ugent.be/we/solidstatesciences/dynamat/en" title="Ghent University" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fas fa-university fa-lg" aria-hidden="true"></i>
-            <span class="sr-only">Ghent University</span></a>
+          <a href="https://www.ugent.be/we/solidstatesciences/dynamat/en" title="DyNaMat research group" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fas fa-university fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">DyNaMat research group</span></a>
         </li>
         <li class="nav-item">
           
@@ -169,8 +172,8 @@
           
           
           
-          <a href="https://github.com/mumax/plus" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github fa-lg" aria-hidden="true"></i>
-            <span class="sr-only">GitHub</span></a>
+          <a href="https://github.com/mumax/plus" title="GitHub repository" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub repository</span></a>
         </li>
         <li class="nav-item">
           
@@ -181,8 +184,8 @@
           
           
           
-          <a href="https://arxiv.org/abs/2411.18194" title="arXiv" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fas fa-file-alt fa-lg" aria-hidden="true"></i>
-            <span class="sr-only">arXiv</span></a>
+          <a href="https://arxiv.org/abs/2411.18194" title="Paper on arXiv" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fas fa-file-alt fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Paper on arXiv</span></a>
         </li>
 </ul></div>
         <div class="sidebar-primary-item">
@@ -205,15 +208,17 @@
 <li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">API</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="_api/mumaxplus/mumaxplus.World.html">World</a></li>
 <li class="toctree-l2"><a class="reference internal" href="_api/mumaxplus/mumaxplus.Grid.html">Grid</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_api/mumaxplus/mumaxplus.Magnet.html">Magnet</a></li>
 <li class="toctree-l2"><a class="reference internal" href="_api/mumaxplus/mumaxplus.Ferromagnet.html">Ferromagnet</a></li>
 <li class="toctree-l2"><a class="reference internal" href="_api/mumaxplus/mumaxplus.Antiferromagnet.html">Antiferromagnet</a></li>
 <li class="toctree-l2"><a class="reference internal" href="_api/mumaxplus/mumaxplus.TimeSolver.html">TimeSolver</a></li>
-<li class="toctree-l2"><a class="reference internal" href="_api/mumaxplus/mumaxplus.Variable.html">Variable</a></li>
-<li class="toctree-l2"><a class="reference internal" href="_api/mumaxplus/mumaxplus.PoissonSystem.html">PoissonSystem</a></li>
-<li class="toctree-l2"><a class="reference internal" href="_api/mumaxplus/mumaxplus.Parameter.html">Parameter</a></li>
-<li class="toctree-l2"><a class="reference internal" href="_api/mumaxplus/mumaxplus.FieldQuantity.html">FieldQuantity</a></li>
 <li class="toctree-l2"><a class="reference internal" href="_api/mumaxplus/mumaxplus.ScalarQuantity.html">ScalarQuantity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_api/mumaxplus/mumaxplus.FieldQuantity.html">FieldQuantity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_api/mumaxplus/mumaxplus.Variable.html">Variable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_api/mumaxplus/mumaxplus.Parameter.html">Parameter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_api/mumaxplus/mumaxplus.InterParameter.html">InterParameter</a></li>
 <li class="toctree-l2"><a class="reference internal" href="_api/mumaxplus/mumaxplus.StrayField.html">StrayField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_api/mumaxplus/mumaxplus.PoissonSystem.html">PoissonSystem</a></li>
 <li class="toctree-l2"><a class="reference internal" href="_api/mumaxplus/mumaxplus.DmiTensor.html">DmiTensor</a></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="util.html">util</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="_api/util/mumaxplus.util.config.html">config</a></li>
@@ -228,20 +233,20 @@
 </ul>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1 has-children"><a class="reference internal" href="tutorial.html">Tutorials</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="magnetization.html">Setting magnetizations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="shapes.html">Setting shapes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="regions.html">Using regions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stdp4.html">Standard problem #4</a></li>
-<li class="toctree-l2"><a class="reference internal" href="langevin.html">Applying temperature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/magnetization.html">Setting a magnetization configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/shapes.html">Shapes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/regions.html">Regions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/stdp4.html">Micromagnetic standard problem #4</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/langevin.html">Temperature</a></li>
 </ul>
 </details></li>
 </ul>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1 has-children"><a class="reference internal" href="examples.html">Examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="stdp2.html">Standard Problem #2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="magnetoelastics.html">Magnetoelastics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="DW_SAW.html">Domain wall motion with surface acoustic waves</a></li>
-<li class="toctree-l2"><a class="reference internal" href="voronoi.html">Voronoi</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/stdp2.html">Standard Problem #2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/magnetoelastics.html">Magnetoelastics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/DW_SAW.html">Domain wall motion with surface acoustic waves</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/voronoi.html">Voronoi</a></li>
 </ul>
 </details></li>
 </ul>
@@ -358,32 +363,38 @@ document.write(`
 <tr class="row-even"><td><p><a class="reference internal" href="_api/mumaxplus/mumaxplus.Grid.html#mumaxplus.Grid" title="mumaxplus.Grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Grid</span></code></a></p></td>
 <td><p>Create a Grid instance.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="_api/mumaxplus/mumaxplus.Ferromagnet.html#mumaxplus.Ferromagnet" title="mumaxplus.Ferromagnet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Ferromagnet</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="_api/mumaxplus/mumaxplus.Magnet.html#mumaxplus.Magnet" title="mumaxplus.Magnet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Magnet</span></code></a></p></td>
+<td><p>A Magnet should never be initialized by the user.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="_api/mumaxplus/mumaxplus.Ferromagnet.html#mumaxplus.Ferromagnet" title="mumaxplus.Ferromagnet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Ferromagnet</span></code></a></p></td>
 <td><p>Create a ferromagnet instance.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="_api/mumaxplus/mumaxplus.Antiferromagnet.html#mumaxplus.Antiferromagnet" title="mumaxplus.Antiferromagnet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Antiferromagnet</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="_api/mumaxplus/mumaxplus.Antiferromagnet.html#mumaxplus.Antiferromagnet" title="mumaxplus.Antiferromagnet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Antiferromagnet</span></code></a></p></td>
 <td><p>Create an antiferromagnet instance.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="_api/mumaxplus/mumaxplus.TimeSolver.html#mumaxplus.TimeSolver" title="mumaxplus.TimeSolver"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TimeSolver</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="_api/mumaxplus/mumaxplus.TimeSolver.html#mumaxplus.TimeSolver" title="mumaxplus.TimeSolver"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TimeSolver</span></code></a></p></td>
 <td><p>Evolve the world in time.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="_api/mumaxplus/mumaxplus.Variable.html#mumaxplus.Variable" title="mumaxplus.Variable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Variable</span></code></a></p></td>
-<td><p>Represent a physical variable field, e.g. magnetization.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="_api/mumaxplus/mumaxplus.ScalarQuantity.html#mumaxplus.ScalarQuantity" title="mumaxplus.ScalarQuantity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ScalarQuantity</span></code></a></p></td>
+<td><p>Functor representing a physical scalar quantity.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="_api/mumaxplus/mumaxplus.PoissonSystem.html#mumaxplus.PoissonSystem" title="mumaxplus.PoissonSystem"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PoissonSystem</span></code></a></p></td>
-<td><p>Poisson System which can be solver for the electrostatic potential.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="_api/mumaxplus/mumaxplus.FieldQuantity.html#mumaxplus.FieldQuantity" title="mumaxplus.FieldQuantity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldQuantity</span></code></a></p></td>
+<td><p>A functor representing a physical field quantity.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="_api/mumaxplus/mumaxplus.Variable.html#mumaxplus.Variable" title="mumaxplus.Variable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Variable</span></code></a></p></td>
+<td><p>Represent a physical variable field, e.g. magnetization.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="_api/mumaxplus/mumaxplus.Parameter.html#mumaxplus.Parameter" title="mumaxplus.Parameter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Parameter</span></code></a></p></td>
 <td><p>Represent a physical material parameter, e.g. the exchange stiffness.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="_api/mumaxplus/mumaxplus.FieldQuantity.html#mumaxplus.FieldQuantity" title="mumaxplus.FieldQuantity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldQuantity</span></code></a></p></td>
-<td><p>A functor representing a physical field quantity.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="_api/mumaxplus/mumaxplus.InterParameter.html#mumaxplus.InterParameter" title="mumaxplus.InterParameter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">InterParameter</span></code></a></p></td>
+<td><p>Represent a physical material parameter which acts between different regions, i.e. <cite>inter_exchange</cite>.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="_api/mumaxplus/mumaxplus.ScalarQuantity.html#mumaxplus.ScalarQuantity" title="mumaxplus.ScalarQuantity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ScalarQuantity</span></code></a></p></td>
-<td><p>Functor representing a physical scalar quantity.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="_api/mumaxplus/mumaxplus.StrayField.html#mumaxplus.StrayField" title="mumaxplus.StrayField"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StrayField</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="_api/mumaxplus/mumaxplus.StrayField.html#mumaxplus.StrayField" title="mumaxplus.StrayField"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StrayField</span></code></a></p></td>
 <td><p>Represent a stray field of a magnet in a specific grid.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="_api/mumaxplus/mumaxplus.PoissonSystem.html#mumaxplus.PoissonSystem" title="mumaxplus.PoissonSystem"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PoissonSystem</span></code></a></p></td>
+<td><p>Poisson System which can be solver for the electrostatic potential.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="_api/mumaxplus/mumaxplus.DmiTensor.html#mumaxplus.DmiTensor" title="mumaxplus.DmiTensor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DmiTensor</span></code></a></p></td>
 <td><p>Contains the DMI parameters of a ferromagnet.</p></td>
@@ -393,14 +404,7 @@ document.write(`
 </div>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="util.html">util</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="_api/util/mumaxplus.util.config.html">config</a></li>
-<li class="toctree-l2"><a class="reference internal" href="_api/util/mumaxplus.util.formulary.html">formulary</a></li>
-<li class="toctree-l2"><a class="reference internal" href="_api/util/mumaxplus.util.shape.html">shape</a></li>
-<li class="toctree-l2"><a class="reference internal" href="_api/util/mumaxplus.util.show.html">show</a></li>
-<li class="toctree-l2"><a class="reference internal" href="_api/util/mumaxplus.util.voronoi.html">voronoi</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="util.html">util</a></li>
 </ul>
 </div>
 </section>
@@ -462,7 +466,7 @@ By the DyNaMat group, Ghent University, Belgium.
   
   <div class="footer-item">
     <p class="last-updated">
-  Last updated on May 29, 2025.
+  Last updated on June 05, 2025.
   <br/>
 </p>
   </div>

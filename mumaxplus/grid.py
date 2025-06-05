@@ -39,17 +39,17 @@ class Grid:
         return grid
 
     @property
-    def size(self):
+    def size(self) -> tuple[int]:
         """Return the number of cells in the x, y, and z direction."""
         return self._impl.size
 
     @property
-    def origin(self):
+    def origin(self) -> tuple[float]:
         """Return the origin the grid."""
         return self._impl.origin
 
     @property
-    def shape(self):
+    def shape(self) -> tuple[int]:
         """Return the number of cells in the x, y, and z direction.
 
         The shape property is similar to the size property, but with the order of
@@ -59,6 +59,6 @@ class Grid:
         return (Nz, Ny, Nx)
 
     @property
-    def ncells(self):
+    def ncells(self) -> int:
         """Return the total number of cells in this grid."""
         return self._impl.ncells

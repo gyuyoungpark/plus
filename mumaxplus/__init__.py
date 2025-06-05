@@ -7,6 +7,8 @@ from .dmitensor import DmiTensor
 from .ferromagnet import Ferromagnet
 from .fieldquantity import FieldQuantity
 from .grid import Grid
+from .interparameter import InterParameter
+from .magnet import Magnet
 from .parameter import Parameter
 from .poissonsystem import PoissonSystem
 from .scalarquantity import ScalarQuantity
@@ -23,6 +25,8 @@ __all__ = [
     "Ferromagnet",
     "FieldQuantity",
     "Grid",
+    "InterParameter",
+    "Magnet",
     "Parameter",
     "ScalarQuantity",
     "StrayField",

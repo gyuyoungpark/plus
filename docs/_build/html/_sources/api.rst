@@ -1,3 +1,5 @@
+:nosearch:
+
 API
 ===
 
@@ -11,18 +13,20 @@ API
 
    World
    Grid
+   Magnet
    Ferromagnet
    Antiferromagnet
    TimeSolver
-   Variable
-   PoissonSystem
-   Parameter
-   FieldQuantity
    ScalarQuantity
+   FieldQuantity
+   Variable
+   Parameter
+   InterParameter
    StrayField
+   PoissonSystem
    DmiTensor
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    util

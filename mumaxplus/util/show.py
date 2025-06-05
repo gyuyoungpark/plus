@@ -34,7 +34,7 @@ def hsl_to_rgb(H, S, L):
 
 
 def vector_to_rgb(x, y, z):
-    """Map vector (with norm<1) to RGB."""
+    """Map vector (with norm ≤ 1) to RGB."""
     H = _np.arctan2(y, x)
     S = _np.sqrt(x ** 2 + y ** 2 + z ** 2)
     L = 0.5 + 0.5 * z
@@ -57,7 +57,7 @@ def _quantity_img_xy_extent(quantity):
 def get_rgba(field, quantity=None, layer=None):
     """Get rgba values of given field.
     There is also a CUDA version of this function which utilizes the GPU.
-    Use ``quantity.get_rgb()``, but it has a different shape.
+    Use :func:`mumaxplus.FieldQuantity.get_rgb()`, but it has a different shape.
 
     Parameters
     ----------

@@ -1,5 +1,7 @@
+:nosearch:
+
 util
-==============
+====
 
 .. currentmodule:: mumaxplus.util
 
