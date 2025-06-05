@@ -71,7 +71,7 @@ class VoronoiTessellator:
 
         from collections import defaultdict
         tessellation = self.tessellation
-        _, nz, ny, nx = tessellation.shape
+        nz, ny, nx = tessellation.shape
         
         idxs = tessellation.flatten()
         coords = _np.array(_np.meshgrid(range(nx), range(ny), range(nz), indexing='ij')
