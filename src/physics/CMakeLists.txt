@@ -74,6 +74,8 @@ add_library(physics STATIC
     thermalnoise.hpp
     torque.cu 
     torque.hpp
+    traction.cpp
+    traction.hpp
     quantityevaluator.hpp
     zeeman.cu
     zeeman.hpp

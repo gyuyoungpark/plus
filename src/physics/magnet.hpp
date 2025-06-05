@@ -13,6 +13,7 @@
 #include "variable.hpp"
 #include "world.hpp"
 #include "system.hpp"
+#include "traction.hpp"
 
 class Antiferromagnet;
 class Ferromagnet;
@@ -75,6 +76,8 @@ class Magnet {
   VectorParameter externalBodyForce;  // Externally applied force density
   VectorParameter rigidNormStrain;
   VectorParameter rigidShearStrain;
+
+  BoundaryTraction boundaryTraction;  // Externally applied traction at the boundaries
 
   // stiffness constants; TODO: can this be generalized to a 6x6 tensor?
   Parameter C11;  // C11 = C22 = C33
