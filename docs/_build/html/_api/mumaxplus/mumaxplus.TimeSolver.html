@@ -28,7 +28,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/logo.css?v=81431fe9" />
@@ -381,7 +381,7 @@ document.write(`
 <h1>TimeSolver<a class="headerlink" href="#timesolver" title="Link to this heading">#</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="mumaxplus.TimeSolver">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TimeSolver</span></span><a class="headerlink" href="#mumaxplus.TimeSolver" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TimeSolver</span></span><a class="headerlink" href="#mumaxplus.TimeSolver" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Evolve the world in time.</p>
 <p>Each world has already its own TimeSolver. This TimeSolver can be accessed through
@@ -462,13 +462,13 @@ as tab-separated values during the simulation.</p></li>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mumaxplus.TimeSolver.timestep">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">timestep</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#mumaxplus.TimeSolver.timestep" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">timestep</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#mumaxplus.TimeSolver.timestep" title="Link to this definition">#</a></dt>
 <dd><p>Return the timestep value.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mumaxplus.TimeSolver.adaptive_timestep">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">adaptive_timestep</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#mumaxplus.TimeSolver.adaptive_timestep" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">adaptive_timestep</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#mumaxplus.TimeSolver.adaptive_timestep" title="Link to this definition">#</a></dt>
 <dd><p>Return the adaptive_timestep value.</p>
 <p>True if an adaptive time step is used, False otherwise.
 To enable an adaptive time step, set to True, to disable set to False.</p>
@@ -476,13 +476,13 @@ To enable an adaptive time step, set to True, to disable set to False.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mumaxplus.TimeSolver.time">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">time</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#mumaxplus.TimeSolver.time" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">time</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#mumaxplus.TimeSolver.time" title="Link to this definition">#</a></dt>
 <dd><p>Return the time value.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mumaxplus.TimeSolver.max_error">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">max_error</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#mumaxplus.TimeSolver.max_error" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">max_error</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#mumaxplus.TimeSolver.max_error" title="Link to this definition">#</a></dt>
 <dd><p>Return the maximum error per step the solver can tollerate.</p>
 <p>The default value is 1e-5.</p>
 <div class="admonition seealso">
@@ -493,7 +493,7 @@ To enable an adaptive time step, set to True, to disable set to False.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mumaxplus.TimeSolver.headroom">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">headroom</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#mumaxplus.TimeSolver.headroom" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">headroom</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#mumaxplus.TimeSolver.headroom" title="Link to this definition">#</a></dt>
 <dd><p>Return the solver headroom.</p>
 <p>The default value is 0.8.</p>
 <div class="admonition seealso">
@@ -504,7 +504,7 @@ To enable an adaptive time step, set to True, to disable set to False.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mumaxplus.TimeSolver.lower_bound">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">lower_bound</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#mumaxplus.TimeSolver.lower_bound" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">lower_bound</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#mumaxplus.TimeSolver.lower_bound" title="Link to this definition">#</a></dt>
 <dd><p>Return the lower bound which is used to cap the scaling of the time step
 from below.</p>
 <p>The default value is 0.5.</p>
@@ -516,7 +516,7 @@ from below.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mumaxplus.TimeSolver.upper_bound">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">upper_bound</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#mumaxplus.TimeSolver.upper_bound" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">upper_bound</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#mumaxplus.TimeSolver.upper_bound" title="Link to this definition">#</a></dt>
 <dd><p>Return the upper bound which is used to cap the scaling of the time step
 from the top.</p>
 <p>The default value is 2.0.</p>
@@ -528,7 +528,7 @@ from the top.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mumaxplus.TimeSolver.sensible_factor">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sensible_factor</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#mumaxplus.TimeSolver.sensible_factor" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sensible_factor</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#mumaxplus.TimeSolver.sensible_factor" title="Link to this definition">#</a></dt>
 <dd><p>Return the sensible time step factor which is used as a scaling factor
 when determining a sensible timestep.</p>
 <p>The default value is 0.01.</p>
@@ -540,7 +540,7 @@ when determining a sensible timestep.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mumaxplus.TimeSolver.sensible_timestep_default">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sensible_timestep_default</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#mumaxplus.TimeSolver.sensible_timestep_default" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sensible_timestep_default</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#mumaxplus.TimeSolver.sensible_timestep_default" title="Link to this definition">#</a></dt>
 <dd><p>Return the time step which is used if no sensible time step
 can be calculated (e.g. when the total torque is zero).</p>
 <p>The default value is 1e-14 s.</p>

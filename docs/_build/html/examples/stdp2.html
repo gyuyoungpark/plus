@@ -28,7 +28,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/logo.css?v=81431fe9" />
@@ -355,12 +355,12 @@ document.write(`
 <p>In <a class="reference external" href="https://www.ctcms.nist.gov/~rdm/mumag.org.html">standard problem 2</a> we
 look at the magnetization in function of the thickness devided by the
 exchange length.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>  <span class="c1"># progress bar</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tqdm</span><span class="w"> </span><span class="kn">import</span> <span class="n">tqdm</span>  <span class="c1"># progress bar</span>
 
-<span class="kn">from</span> <span class="nn">mumaxplus</span> <span class="kn">import</span> <span class="n">Ferromagnet</span><span class="p">,</span> <span class="n">Grid</span><span class="p">,</span> <span class="n">World</span>
-<span class="kn">from</span> <span class="nn">mumaxplus.util.constants</span> <span class="kn">import</span> <span class="n">MU0</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mumaxplus</span><span class="w"> </span><span class="kn">import</span> <span class="n">Ferromagnet</span><span class="p">,</span> <span class="n">Grid</span><span class="p">,</span> <span class="n">World</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mumaxplus.util.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">MU0</span>
 
 <span class="c1"># dimensions</span>
 <span class="n">d_min</span><span class="p">,</span> <span class="n">d_max</span><span class="p">,</span> <span class="n">d_step</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">1</span>  <span class="c1"># dimensionless widths d = width/l_ex</span>
@@ -374,13 +374,13 @@ exchange length.</p>
 <span class="n">aex</span> <span class="o">=</span> <span class="mf">13e-12</span>
 <span class="n">l_ex</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">aex</span> <span class="o">/</span> <span class="p">(</span><span class="n">MU0</span> <span class="o">*</span> <span class="n">msat</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
 
-<span class="k">def</span> <span class="nf">get_next_power_of_2</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_next_power_of_2</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="n">y</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="k">while</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="n">x</span><span class="p">:</span>
         <span class="n">y</span> <span class="o">*=</span> <span class="mi">2</span>
     <span class="k">return</span> <span class="n">y</span>
 
-<span class="k">def</span> <span class="nf">get_gridsize</span><span class="p">(</span><span class="n">L</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">l_ex</span><span class="o">=</span><span class="n">l_ex</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_gridsize</span><span class="p">(</span><span class="n">L</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">l_ex</span><span class="o">=</span><span class="n">l_ex</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Cell length should at least be &lt; l_ex/2. The number of cells is best</span>
 <span class="sd">    a power of 2 for FFT. This results in cell sizes between 0.25*l_ex and</span>
 <span class="sd">    0.5*l_ex.&quot;&quot;&quot;</span>

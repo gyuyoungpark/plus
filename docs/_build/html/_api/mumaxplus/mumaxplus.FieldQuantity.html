@@ -28,7 +28,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/logo.css?v=81431fe9" />
@@ -376,7 +376,7 @@ document.write(`
 <h1>FieldQuantity<a class="headerlink" href="#fieldquantity" title="Link to this heading">#</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="mumaxplus.FieldQuantity">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">FieldQuantity</span></span><a class="headerlink" href="#mumaxplus.FieldQuantity" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">FieldQuantity</span></span><a class="headerlink" href="#mumaxplus.FieldQuantity" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>A functor representing a physical field quantity.</p>
 <dl class="py method">
@@ -386,13 +386,13 @@ document.write(`
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mumaxplus.FieldQuantity.name">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#mumaxplus.FieldQuantity.name" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#mumaxplus.FieldQuantity.name" title="Link to this definition">#</a></dt>
 <dd><p>Return instance’s name.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mumaxplus.FieldQuantity.unit">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">unit</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#mumaxplus.FieldQuantity.unit" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">unit</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#mumaxplus.FieldQuantity.unit" title="Link to this definition">#</a></dt>
 <dd><p>Return the unit of the quantity.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -406,7 +406,7 @@ document.write(`
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mumaxplus.FieldQuantity.ncomp">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ncomp</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#mumaxplus.FieldQuantity.ncomp" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ncomp</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#mumaxplus.FieldQuantity.ncomp" title="Link to this definition">#</a></dt>
 <dd><p>Return the number of components of the quantity.</p>
 <p>In most cases this would be either 1 (scalar field) or 3 (vector fields).</p>
 <dl class="field-list simple">
@@ -421,7 +421,7 @@ document.write(`
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mumaxplus.FieldQuantity.grid">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">grid</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="mumaxplus.Grid.html#mumaxplus.Grid" title="mumaxplus.grid.Grid"><span class="pre">Grid</span></a></em><a class="headerlink" href="#mumaxplus.FieldQuantity.grid" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">grid</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="mumaxplus.Grid.html#mumaxplus.Grid" title="mumaxplus.grid.Grid"><span class="pre">Grid</span></a></em><a class="headerlink" href="#mumaxplus.FieldQuantity.grid" title="Link to this definition">#</a></dt>
 <dd><p>Return grid on which the quantity will be evaluated.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -435,7 +435,7 @@ document.write(`
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mumaxplus.FieldQuantity.shape">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">shape</span></span><a class="headerlink" href="#mumaxplus.FieldQuantity.shape" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">shape</span></span><a class="headerlink" href="#mumaxplus.FieldQuantity.shape" title="Link to this definition">#</a></dt>
 <dd><p>Return the shape of the output numpy array of this quantity.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -473,7 +473,7 @@ as a numpy ndarray of the same shape (ncomp, nz, ny, nx).</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mumaxplus.FieldQuantity.meshgrid">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">meshgrid</span></span><a class="headerlink" href="#mumaxplus.FieldQuantity.meshgrid" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">meshgrid</span></span><a class="headerlink" href="#mumaxplus.FieldQuantity.meshgrid" title="Link to this definition">#</a></dt>
 <dd><p>Return a numpy meshgrid with the x, y, and z coordinate of each cell.</p>
 </dd></dl>
 
