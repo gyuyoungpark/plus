@@ -11,7 +11,7 @@ class StrayField(FieldQuantity):
         """
         Parameters
         ----------
-        magnet : Ferromagnet
+        magnet : Magnet
             Magnet instance which is the field source.
         grid : Grid
             Grid instance on which the stray field will be computed.

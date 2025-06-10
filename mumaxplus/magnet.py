@@ -290,7 +290,9 @@ class Magnet(ABC):
     @property
     def C44(self) -> Parameter:
         """Stiffness constant C44 = C55 = C66 of the stiffness tensor (N/m²).
-        
+
+        For isotropic materials, this is equal to the shear modulus.
+
         See Also
         --------
         C11, C12, stress_tensor
@@ -309,6 +311,98 @@ class Magnet(ABC):
     @eta.setter
     def eta(self, value):
         self.eta.set(value)
+
+    @property
+    def stiffness_damping(self) -> Parameter:
+        """Rayleigh damping stiffness coefficient β (s).
+
+        Default = 0.05 / (1e12 * pi) s.
+
+        This corresponds to a damping ratio of 5% at a frequency of 1 THz.
+        This is meant to stabilize the high frequency modes, with a typical
+        wavelength of only a few cellsizes in length.
+
+        The viscosity tensor η is assumed to be proportional to the stiffness
+        tensor C, with this coefficient β as the proportionality constant.
+
+        η = β * C
+
+        This parameter is completely **ignored** when any component of the viscosity
+        tensor (:attr:`eta11`, :attr:`et12` or :attr:`eta44`) has been set.
+
+        See Also
+        --------
+        eta11, eta12, eta44
+        C11, C12, C44
+        strain_rate, viscous_stress
+        """
+        return Parameter(self._impl.stiffness_damping)
+
+    @stiffness_damping.setter
+    def stiffness_damping(self, value):
+        self.stiffness_damping.set(value)
+
+    @property
+    def eta11(self) -> Parameter:
+        """Viscosity constant eta11 = eta22 = eta33 of the viscosity tensor (Pa s)
+        in Voigt notation, which connects strain rate to viscous stress via
+        σ = η : dε/dt.
+
+        When set, this parameter overrules the :attr:`stiffness_damping`.
+        
+        See Also
+        --------
+        eta12, eta44
+        stiffness_damping
+        strain_rate, viscous_stress
+        """
+        return Parameter(self._impl.eta11)
+
+    @eta11.setter
+    def eta11(self, value):
+        self.eta11.set(value)
+
+    @property
+    def eta12(self) -> Parameter:
+        """Viscosity constant eta12 = eta13 = eta23 of the viscosity tensor (Pa s)
+        in Voigt notation, which connects strain rate to viscous stress via
+        σ = η : dε/dt.
+
+        When set, this parameter overrules the :attr:`stiffness_damping`.
+        
+        See Also
+        --------
+        eta11, eta44
+        stiffness_damping
+        strain_rate, viscous_stress
+        """
+        return Parameter(self._impl.eta12)
+
+    @eta12.setter
+    def eta12(self, value):
+        self.eta12.set(value)
+
+    @property
+    def eta44(self) -> Parameter:
+        """Viscosity constant eta44 = eta55 = eta66 of the viscosity tensor (Pa s)
+        in Voigt notation, which connects strain rate to viscous stress via
+        σ = η : dε/dt.
+
+        For isotropic materials, this is equal to the shear viscosity.
+
+        When set, this parameter overrules the :attr:`stiffness_damping`.
+        
+        See Also
+        --------
+        eta11, eta12
+        stiffness_damping
+        strain_rate, visocus_stress
+        """
+        return Parameter(self._impl.eta44)
+
+    @eta44.setter
+    def eta44(self, value):
+        self.eta44.set(value)
 
     @property
     def rho(self) -> Parameter:
@@ -413,12 +507,54 @@ class Magnet(ABC):
         rigid_norm_strain, rigid_shear_strain
         """
         return FieldQuantity(_cpp.strain_tensor(self._impl))
+
+    @property
+    def strain_rate(self):
+        """Time derivative of the strain tensor (1/s), calculated according to
+        dε/dt = 1/2 (∇v + (∇v)^T), with v the elastic velocity.
+
+        See Also
+        --------
+        strain_tensor
+        elastic_velocity
+        """
+        return FieldQuantity(_cpp.strain_rate(self._impl))
     
     @property
-    def stress_tensor(self) -> FieldQuantity:
-        r"""Stress tensor (N/m²), calculated according to Hooke's law
-        σ = cε.
+    def elastic_stress(self):
+        """Elastic stress tensor (N/m²), calculated according to Hooke's law
+        σ = c:ε.
 
+        See Also
+        --------
+        C11, C12, C44
+        strain_tensor
+        stress_tensor
+        """
+        return FieldQuantity(_cpp.elastic_stress(self._impl))
+
+    @property
+    def viscous_stress(self):
+        """Viscous stress tensor (N/m²) due to isotropic viscous damping,
+        calculated according to
+
+        σ = η : dε/dt
+
+        with η the viscosity tensor and dε/dt the strain rate tensor.
+
+        See Also
+        --------
+        eta11, eta12, eta44
+        stiffness_damping
+        strain_rate
+        stress_tensor
+        """
+        return FieldQuantity(_cpp.viscous_stress(self._impl))
+
+    @property
+    def stress_tensor(self):
+        """Total stress tensor (N/m²), including elastic stress and viscous stress.
+        
         This quantity has six components (σxx, σyy, σzz, σxy, σxz, σyz),
         which forms the symmetric stress tensor:
 
@@ -431,22 +567,23 @@ class Magnet(ABC):
 
         See Also
         --------
-        C11, C12, C44
+        elastic_stress, viscous_stress
+        internal_body_force
         """
         return FieldQuantity(_cpp.stress_tensor(self._impl))
 
     @property
-    def elastic_force(self) -> FieldQuantity:
-        r"""Elastic body force density due to mechanical stress gradients (N/m³).
+    def internal_body_force(self):
+        """Internal body force density due to stress divergence (N/m³).
 
-        f = ∇σ = ∇(cε)
+        f = ∇·σ
         
         See Also
         --------
-        C11, C12, C44
+        stress_tensor
         effective_body_force
         """
-        return FieldQuantity(_cpp.elastic_force(self._impl))
+        return FieldQuantity(_cpp.internal_body_force(self._impl))
 
     @property
     def effective_body_force(self) -> FieldQuantity:
@@ -454,14 +591,14 @@ class Magnet(ABC):
         magnetoelastic and external body force densities (N/m³).
         Elastic damping is not included.
 
-        .. math:: f_{eff} = f_{el} + f_{mel} + f_{ext}
+        f_eff = f_int + f_mel + f_ext
 
         In the case of this Magnet being a host (antiferromagnet),
         f_mel is the sum of all magnetoelastic body forces of all sublattices.
 
         See Also
         --------
-        elastic_force, external_body_force, magnetoelastic_force
+        external_body_force, internal_body_force, magnetoelastic_force
         """
         return FieldQuantity(_cpp.effective_body_force(self._impl))
 
