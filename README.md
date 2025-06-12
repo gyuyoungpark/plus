@@ -60,6 +60,7 @@ pip install -v .
 ```
 If changes are made to the code, then ``pip install -v .`` can be used to
 rebuild mumax⁺. If you want to change the Python code without needing
+to reinstall, you can use ``pip install -ve .``.
 
 You could also compile the source code with double precision, by changing `FP_PRECISION` in `CMakeLists.txt` from `SINGLE` to `DOUBLE` before rebuilding.
 ```cmake
