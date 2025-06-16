@@ -553,7 +553,7 @@ class Magnet(ABC):
 
     @property
     def stress_tensor(self):
-        """Total stress tensor (N/m²), including elastic stress and viscous stress.
+        r"""Total stress tensor (N/m²), including elastic stress and viscous stress.
         
         This quantity has six components (σxx, σyy, σzz, σxy, σxz, σyz),
         which forms the symmetric stress tensor:
