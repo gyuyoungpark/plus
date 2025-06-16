@@ -37,7 +37,7 @@ Magnet::Magnet(std::shared_ptr<System> system_ptr,
       rho(system(), 1.0, name + ":rho", "kg/m3"),
       rigidNormStrain(system(), {0.0, 0.0, 0.0}, name + ":rigid_norm_strain", ""),
       rigidShearStrain(system(), {0.0, 0.0, 0.0}, name + ":rigid_shear_strain", ""),
-      boundaryTraction(system()) {
+      boundaryTraction(system(), name + ":boundary_traction") {
   // Check that the system has at least size 1
   int3 size = system_->grid().size();
   if (size.x < 1 || size.y < 1 || size.z < 1)

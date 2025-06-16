@@ -3,13 +3,13 @@
 #include "parameter.hpp"
 #include "system.hpp"
 
-BoundaryTraction::BoundaryTraction(std::shared_ptr<const System> system)
-    : posXside(system),
-      negXside(system),
-      posYside(system),
-      negYside(system),
-      posZside(system),
-      negZside(system) {}
+BoundaryTraction::BoundaryTraction(std::shared_ptr<const System> system, std::string name)
+    : posXside(system, {0.,0.,0.}, name + ":pos_x_side", "Pa"),
+      negXside(system, {0.,0.,0.}, name + ":neg_x_side", "Pa"),
+      posYside(system, {0.,0.,0.}, name + ":pos_y_side", "Pa"),
+      negYside(system, {0.,0.,0.}, name + ":neg_y_side", "Pa"),
+      posZside(system, {0.,0.,0.}, name + ":pos_z_side", "Pa"),
+      negZside(system, {0.,0.,0.}, name + ":neg_z_side", "Pa") {}
 
 CuBoundaryTraction BoundaryTraction::cu() const {
   return CuBoundaryTraction{

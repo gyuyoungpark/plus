@@ -15,7 +15,7 @@ struct BoundaryTraction {
   VectorParameter negZside;
 
   /** Construct the DMI tensor for a given system */
-  explicit BoundaryTraction(std::shared_ptr<const System> system);
+  explicit BoundaryTraction(std::shared_ptr<const System> system, std::string name = "");
 
   /** Return CuDmiTensor */
   CuBoundaryTraction cu() const;

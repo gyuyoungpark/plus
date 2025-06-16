@@ -43,7 +43,7 @@ class BoundaryTraction:
 
     @property
     def pos_x_side(self):
-        """External traction vector (N/m²)
+        """External traction vector (Pa)
         applied at the boundary with normal vector n = (+1, 0, 0).
         """
         return Parameter(self._impl.pos_x_side)
@@ -54,7 +54,7 @@ class BoundaryTraction:
 
     @property
     def neg_x_side(self):
-        """External traction vector (N/m²)
+        """External traction vector (Pa)
         applied at the boundary with normal vector n = (-1, 0, 0).
         """
         return Parameter(self._impl.neg_x_side)
@@ -66,7 +66,7 @@ class BoundaryTraction:
 
     @property
     def pos_y_side(self):
-        """External traction vector (N/m²)
+        """External traction vector (Pa)
         applied at the boundary with normal vector n = (0, +1, 0).
         """
         return Parameter(self._impl.pos_y_side)
@@ -77,7 +77,7 @@ class BoundaryTraction:
 
     @property
     def neg_y_side(self):
-        """External traction vector (N/m²)
+        """External traction vector (Pa)
         applied at the boundary with normal vector n = (0, -1, 0).
         """
         return Parameter(self._impl.neg_y_side)
@@ -89,7 +89,7 @@ class BoundaryTraction:
 
     @property
     def pos_z_side(self):
-        """External traction vector (N/m²)
+        """External traction vector (Pa)
         applied at the boundary with normal vector n = (0, 0, +1).
         """
         return Parameter(self._impl.pos_z_side)
@@ -100,7 +100,7 @@ class BoundaryTraction:
 
     @property
     def neg_z_side(self):
-        """External traction vector (N/m²)
+        """External traction vector (Pa)
         applied at the boundary with normal vector n = (0, 0, -1).
         """
         return Parameter(self._impl.neg_z_side)
