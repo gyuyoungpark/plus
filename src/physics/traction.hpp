@@ -14,10 +14,10 @@ struct BoundaryTraction {
   VectorParameter posZside;
   VectorParameter negZside;
 
-  /** Construct the DMI tensor for a given system */
+  /** Construct the boundary traction for a given system */
   explicit BoundaryTraction(std::shared_ptr<const System> system, std::string name = "");
 
-  /** Return CuDmiTensor */
+  /** Return CuBoundaryTraction */
   CuBoundaryTraction cu() const;
 
   /** Returns true if all 6 VectorParameters are equal to zero. */
