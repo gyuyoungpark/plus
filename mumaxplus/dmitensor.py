@@ -83,13 +83,13 @@ class DmiTensor:
 
         warning
         -------
-            The end user should not create DmiTensor instances. Each Ferromagnet
-            already has a DmiTensor as an attribute which can be used to set
-            the DMI parameters. See :func:`Ferromagnet.dmi_tensor`.
+        The end user should not create DmiTensor instances. Each Ferromagnet
+        already has a DmiTensor as an attribute which can be used to set
+        the DMI parameters. See :attr:`Ferromagnet.dmi_tensor`.
 
         Parameters
         ----------
-        impl: _mumaxpluscpp.dmi_tensor
+        impl: _mumaxpluscpp.DmiTensor
         """
         self._impl = impl
 
