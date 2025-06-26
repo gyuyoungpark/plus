@@ -42,10 +42,10 @@ class VoronoiTessellator:
         If make_2d is set to True (default: False) the VoronoiTesselator ignores the z-direction,
         resulting in a tessellation where a region index is uniform in the z-direction.
 
+        **Important:** 2D grids are assumed to lie in the xy-plane.
+
         Returns an ndarray of shape (nz, ny, nx) which is filled
         with region indices.
-
-        **Important:** 2D grids are assumed to lie in the xy-plane.
         """
 
         has_pbc = world.pbc_repetitions != (0,0,0)
