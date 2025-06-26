@@ -13,9 +13,12 @@ VoronoiTessellator::VoronoiTessellator(real grainsize,
     : grainsize_(grainsize),
       seed_(seed),
       distReal_(0.0, 1.0),
-      distInt_(0, maxIdx) {
-        pbc_ = false;
-        is2D_ = false;
+      distInt_(0, maxIdx),
+      numTiles_x(1),
+      numTiles_y(1),
+      numTiles_z(1),
+      pbc_(false),
+      is2D_(false) {
         if (centerIdx) { centerIdx_ = centerIdx; }
         else
             centerIdx_ = [this](real3 coo) -> unsigned int { return distInt_(engine_); };
@@ -27,7 +30,7 @@ real3 VoronoiTessellator::getTileSize(const real3 griddims) const {
 
     return griddims / real3{std::max(real(1), std::ceil(griddims.x / (2 * grainsize_))),
                             std::max(real(1), std::ceil(griddims.y / (2 * grainsize_))),
-                            is2D_ ? 0 : std::max(real(1), std::ceil(griddims.z / (2 * grainsize_)))};
+                            std::max(real(1), std::ceil(griddims.z / (2 * grainsize_)))};
 }
 
 std::vector<unsigned int> VoronoiTessellator::generate(const Grid grid,
@@ -41,13 +44,13 @@ std::vector<unsigned int> VoronoiTessellator::generate(const Grid grid,
 
     tilesize_ = getTileSize(grid_dims_);
 
-    lambda_ = (tilesize_.x / grainsize_)
+    lambda_ =   (tilesize_.x / grainsize_)
               * (tilesize_.y / grainsize_)
               * (is2D_ ? 1 : (tilesize_.z / grainsize_));
     if (pbc) {
         numTiles_x = std::ceil(grid_dims_.x / tilesize_.x);
         numTiles_y = std::ceil(grid_dims_.y / tilesize_.y);
-        numTiles_z = std::ceil(grid_dims_.z / tilesize_.z);
+        numTiles_z = is2D_ ? 1 : std::ceil(grid_dims_.z / tilesize_.z);
     }
 
     std::vector<unsigned int> data(grid.ncells());
@@ -69,13 +72,15 @@ unsigned int VoronoiTessellator::regionOf(const real3 coo) {
     Tile t = tileOfCell(coo);
     Center nearest = Center{coo, 0};
     real mindist = INFINITY;
-    int tz_start = is2D_ ? t.pos.z : t.pos.z - 1;
-    int tz_end   = is2D_ ? t.pos.z : t.pos.z + 1;
+
+    int tz_start = t.pos.z - 1;
+    int tz_end   = t.pos.z + 1;
+    if (is2D_)
+        tz_start = tz_end = t.pos.z;
 
     for (int tx = t.pos.x-1; tx <= t.pos.x+1; tx++) {
         for (int ty = t.pos.y-1; ty <= t.pos.y+1; ty++) {
-            for (int tz = is2D_ ? t.pos.z : t.pos.z - 1;
-                 tz <= (is2D_ ? t.pos.z : t.pos.z + 1); tz++) {
+            for (int tz = tz_start; tz <= tz_end; tz++) {
                 int wrapped_tx = pbc_ ? (tx + numTiles_x) % numTiles_x : tx;
                 int wrapped_ty = pbc_ ? (ty + numTiles_y) % numTiles_y : ty;
                 int wrapped_tz = pbc_ ? (tz + numTiles_z) % numTiles_z : tz;
@@ -84,8 +89,8 @@ unsigned int VoronoiTessellator::regionOf(const real3 coo) {
                 for (auto c : centers) {
                     real3 center = pbc_ ? (periodicShift(coo, c.pos)) : c.pos;
                     real dist = (coo.x - center.x) * (coo.x - center.x)
-                              + (coo.y - center.y) * (coo.y - center.y);
-                              + (coo.z - center.z) * (coo.z - center.z) * (!is2D_);
+                              + (coo.y - center.y) * (coo.y - center.y)
+                              + (coo.z - center.z) * (coo.z - center.z);
                     if (dist < mindist) {
                         nearest = c;
                         mindist = dist;
@@ -101,7 +106,7 @@ real3 VoronoiTessellator::periodicShift(const real3 coo, real3 center) {
     real3 d = center - coo;
     if (std::abs(d.x) > 0.5 * grid_dims_.x) center.x -= std::copysign(grid_dims_.x, d.x);
     if (std::abs(d.y) > 0.5 * grid_dims_.y) center.y -= std::copysign(grid_dims_.y, d.y);
-    if (!is2D_ && std::abs(d.z) > 0.5 * grid_dims_.z) center.z -= std::copysign(grid_dims_.z, d.z);
+    if (std::abs(d.z) > 0.5 * grid_dims_.z) center.z -= std::copysign(grid_dims_.z, d.z);
     return center;
 }
 
@@ -124,7 +129,7 @@ std::vector<Center> VoronoiTessellator::centersInTile(const int3 pos) {
     for (int n = 0; n < N; n++) {
         real cx = (pos.x + distReal_(engine_)) * tilesize_.x;
         real cy = (pos.y + distReal_(engine_)) * tilesize_.y;
-        real cz = is2D_ ? 0 : (pos.z + distReal_(engine_)) * tilesize_.z;
+        real cz = (pos.z + distReal_(engine_)) * tilesize_.z;
 
         centers[n] = Center(real3{cx, cy, cz}, centerIdx_(real3{cx, cy, cz}));
     }

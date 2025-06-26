@@ -40,7 +40,10 @@ class VoronoiTessellator:
         """Generates a Voronoi tessellation.
 
         Returns an ndarray of shape (nz, ny, nx) which is filled
-        with region indices."""
+        with region indices.
+
+        **Important:** 2D grids are assumed to lie in the xy-plane.
+        """
 
         has_pbc = world.pbc_repetitions != (0,0,0)
         self.tessellation = self._impl.generate(grid._impl, world.cellsize, has_pbc)
