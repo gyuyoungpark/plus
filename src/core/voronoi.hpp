@@ -37,7 +37,10 @@ class VoronoiTessellator {
   ~VoronoiTessellator() = default;
 
   // * Generate a Voronoi tessellation
-  std::vector<unsigned int> generate(const Grid grid, const real3 cellsize, const bool pbc);
+  std::vector<unsigned int> generate(const Grid grid,
+                                     const real3 cellsize,
+                                     const bool pbc,
+                                     const bool make2D = false);
   
   real3 getTileSize(const real3 griddims) const;
 

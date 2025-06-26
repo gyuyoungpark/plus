@@ -35,9 +35,11 @@ real3 VoronoiTessellator::getTileSize(const real3 griddims) const {
 
 std::vector<unsigned int> VoronoiTessellator::generate(const Grid grid,
                                                        const real3 cellsize,
-                                                       const bool pbc) {
+                                                       const bool pbc,
+                                                       const bool make2D) {
     pbc_ = pbc;
-    is2D_ = (grid.size().z == 1);
+    is2D_ = make2D ? make2D : (grid.size().z == 1);
+
     grid_dims_ = real3{grid.size().x * cellsize.x,
                        grid.size().y * cellsize.y,
                        (!is2D_) * grid.size().z * cellsize.z};

@@ -36,8 +36,11 @@ class VoronoiTessellator:
         self.seed = seed if seed is not None else _np.random.randint(1234567)
         self._impl = _cpp.VoronoiTessellator(grainsize, self.seed, max_idx, region_of_center)
 
-    def generate(self, world, grid):
+    def generate(self, world, grid, make_2d=False):
         """Generates a Voronoi tessellation.
+
+        If make_2d is set to True (default: False) the VoronoiTesselator ignores the z-direction,
+        resulting in a tessellation where a region index is uniform in the z-direction.
 
         Returns an ndarray of shape (nz, ny, nx) which is filled
         with region indices.
@@ -46,7 +49,7 @@ class VoronoiTessellator:
         """
 
         has_pbc = world.pbc_repetitions != (0,0,0)
-        self.tessellation = self._impl.generate(grid._impl, world.cellsize, has_pbc)
+        self.tessellation = self._impl.generate(grid._impl, world.cellsize, has_pbc, make_2d)
         return self.tessellation
     
     def coo_to_idx(self, x, y, z):
