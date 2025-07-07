@@ -14,12 +14,12 @@
 #include "world.hpp"
 #include "system.hpp"
 
-class Antiferromagnet : public HostMagnet {
+class NcAfm : public HostMagnet {
  public:
-  Antiferromagnet(std::shared_ptr<System> system_ptr,
-                  std::string name);
+  NcAfm(std::shared_ptr<System> system_ptr,
+         std::string name);
 
-  Antiferromagnet(MumaxWorld* world,
+  NcAfm(MumaxWorld* world,
          Grid grid,
          std::string name,
          GpuBuffer<bool> geometry,
@@ -28,15 +28,17 @@ class Antiferromagnet : public HostMagnet {
   /** Empty destructor
    * Sublattices are destroyed automatically. They are not pointers.
    */
-  ~Antiferromagnet() override {};
+  ~NcAfm() override {};
   
  const Ferromagnet* sub1() const;
  const Ferromagnet* sub2() const;
- 
- void minimize(real tol = 1e-6, int nSamples = 20);
+ const Ferromagnet* sub3() const;
+
+ void minimize(real tol = 1e-6, int nsamples = 30);
  void relax(real tol);
 
  private:
   Ferromagnet sub1_;
   Ferromagnet sub2_;
+  Ferromagnet sub3_;
 };
