@@ -76,7 +76,7 @@ Field evalTotalEnergyDensity(const Antiferromagnet* magnet) {
 }
 
 real evalTotalEnergy(const Magnet* magnet) {
-  int ncells = magnet->grid().ncells();
+  int ncells = magnet->system()->cellsingeo();
   real cellVolume = magnet->world()->cellVolume();
   real edensAverage;
   

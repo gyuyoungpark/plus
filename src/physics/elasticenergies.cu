@@ -52,7 +52,7 @@ real evalKineticEnergy(const Magnet* magnet) {
     return 0.0;
 
   real edens = kineticEnergyDensityQuantity(magnet).average()[0];
-  int ncells = magnet->grid().ncells();
+  int ncells = magnet->system()->cellsingeo();
   real cellVolume = magnet->world()->cellVolume();
   return ncells * edens * cellVolume;
 }
@@ -109,7 +109,7 @@ real evalElasticEnergy(const Magnet* magnet) {
     return 0.0;
 
   real edens = elasticEnergyDensityQuantity(magnet).average()[0];
-  int ncells = magnet->grid().ncells();
+  int ncells = magnet->system()->cellsingeo();
   real cellVolume = magnet->world()->cellVolume();
   return ncells * edens * cellVolume;
 }

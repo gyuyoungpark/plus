@@ -27,7 +27,7 @@ Field evalDemagEnergyDensity(const Ferromagnet* magnet) {
 real evalDemagEnergy(const Ferromagnet* magnet) {
   if (demagFieldAssuredZero(magnet))
     return 0.0;
-  int ncells = magnet->grid().ncells();
+  int ncells = magnet->system()->cellsingeo();
   real edensAverage = demagEnergyDensityQuantity(magnet).average()[0];
   real cellVolume = magnet->world()->cellVolume();
   return ncells * edensAverage * cellVolume;

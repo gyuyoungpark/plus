@@ -101,7 +101,7 @@ real zeemanEnergy(const Ferromagnet* magnet) {
     return 0.0;
 
   real edens = zeemanEnergyDensityQuantity(magnet).average()[0];
-  int ncells = magnet->grid().ncells();
+  int ncells = magnet->system()->cellsingeo();
   real cellVolume = magnet->world()->cellVolume();
   return ncells * edens * cellVolume;
 }

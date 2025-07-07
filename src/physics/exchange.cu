@@ -249,7 +249,7 @@ real evalExchangeEnergy(const Ferromagnet* magnet) {
     
   real edens = exchangeEnergyDensityQuantity(magnet).average()[0];
 
-  int ncells = magnet->grid().ncells();
+  int ncells = magnet->system()->cellsingeo();
   real cellVolume = magnet->world()->cellVolume();
   return ncells * edens * cellVolume;
 }

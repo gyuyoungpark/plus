@@ -281,7 +281,7 @@ real evalDmiEnergy(const Ferromagnet* magnet) {
 
   real edens = dmiEnergyDensityQuantity(magnet).average()[0];
 
-  int ncells = magnet->grid().ncells();
+  int ncells = magnet->system()->cellsingeo();
   real cellVolume = magnet->world()->cellVolume();
   return ncells * edens * cellVolume;
 }
