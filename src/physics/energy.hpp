@@ -12,6 +12,8 @@ class Magnet;
 // The prefactor depends on the origin of the effective field term
 Field evalEnergyDensity(const Ferromagnet*, const Field&, real prefactor);
 
+real energyFromEnergyDensity(const Magnet*, real);
+
 Field evalTotalEnergyDensity(const Ferromagnet*);
 Field evalTotalEnergyDensity(const Antiferromagnet*);
 real evalTotalEnergy(const Magnet*);

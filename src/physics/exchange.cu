@@ -246,12 +246,9 @@ Field evalExchangeEnergyDensity(const Ferromagnet* magnet) {
 real evalExchangeEnergy(const Ferromagnet* magnet) {
   if (exchangeAssuredZero(magnet))
     return 0;
-    
-  real edens = exchangeEnergyDensityQuantity(magnet).average()[0];
 
-  int ncells = magnet->system()->cellsingeo();
-  real cellVolume = magnet->world()->cellVolume();
-  return ncells * edens * cellVolume;
+  real edens = exchangeEnergyDensityQuantity(magnet).average()[0];
+  return energyFromEnergyDensity(magnet, edens);
 }
 
 FM_FieldQuantity exchangeFieldQuantity(const Ferromagnet* magnet) {

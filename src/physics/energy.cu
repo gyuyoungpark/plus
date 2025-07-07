@@ -49,6 +49,12 @@ Field evalEnergyDensity(const Ferromagnet* magnet,
   return edens;
 }
 
+real energyFromEnergyDensity(const Magnet* magnet, real edens) {
+  int ncells = magnet->system()->cellsInGeo();
+  real cellVolume = magnet->world()->cellVolume();
+  return ncells * cellVolume * edens;
+}
+
 Field evalTotalEnergyDensity(const Ferromagnet* magnet) {
   Field edens(magnet->system(), 1, 0.0);
   if (!exchangeAssuredZero(magnet)) {edens += evalExchangeEnergyDensity(magnet);}
@@ -76,10 +82,7 @@ Field evalTotalEnergyDensity(const Antiferromagnet* magnet) {
 }
 
 real evalTotalEnergy(const Magnet* magnet) {
-  int ncells = magnet->system()->cellsingeo();
-  real cellVolume = magnet->world()->cellVolume();
-  real edensAverage;
-  
+  real edensAverage = 0;
   if (const Ferromagnet* mag = magnet->asFM())
     edensAverage = totalEnergyDensityQuantity(mag).average()[0];
   else if (const Antiferromagnet* mag = magnet->asAFM())
@@ -87,8 +90,7 @@ real evalTotalEnergy(const Magnet* magnet) {
   else
     throw std::invalid_argument("Cannot calculate energy of instance which"
                                 "is no Ferromagnet or Antiferromagnet.");
-                 
-  return ncells * edensAverage * cellVolume;
+  return energyFromEnergyDensity(magnet, edensAverage);
 }
 
 FM_FieldQuantity totalEnergyDensityQuantity(const Ferromagnet* magnet) {

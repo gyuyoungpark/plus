@@ -208,23 +208,17 @@ Field evalHomoAfmExchangeEnergyDensity(const Ferromagnet* magnet) {
 real evalInHomoAfmExchangeEnergy(const Ferromagnet* magnet) {
   if (inHomoAfmExchangeAssuredZero(magnet))
     return 0;
-    
-  real edens = inHomoAfmExchangeEnergyDensityQuantity(magnet).average()[0];
 
-  int ncells = magnet->system()->cellsingeo();
-  real cellVolume = magnet->world()->cellVolume();
-  return ncells * edens * cellVolume;
+  real edens = inHomoAfmExchangeEnergyDensityQuantity(magnet).average()[0];
+  return energyFromEnergyDensity(magnet, edens);
 }
 
 real evalHomoAfmExchangeEnergy(const Ferromagnet* magnet) {
   if (homoAfmExchangeAssuredZero(magnet))
     return 0;
-    
-  real edens = homoAfmExchangeEnergyDensityQuantity(magnet).average()[0];
 
-  int ncells = magnet->system()->cellsingeo();
-  real cellVolume = magnet->world()->cellVolume();
-  return ncells * edens * cellVolume;
+  real edens = homoAfmExchangeEnergyDensityQuantity(magnet).average()[0];
+  return energyFromEnergyDensity(magnet, edens);
 }
 
 FM_FieldQuantity inHomoAfmExchangeFieldQuantity(const Ferromagnet* magnet) {
