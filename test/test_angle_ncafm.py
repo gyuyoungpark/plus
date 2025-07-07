@@ -42,19 +42,19 @@ class TestMaxAngleNcAfm:
         magnet = NcAfm(World((1, 1, 1)), Grid((1, 1, 1)))
         magnet.sub1.magnetization = (1, 0, 0)
         magnet.sub2.magnetization = (0, 1, 0)
-        assert np.isclose(magnet.max_intracell_angle_between(magnet.sub1, magnet.sub2), np.pi/2)
+        assert np.isclose(magnet.max_intracell_angle_between(magnet.sub1, magnet.sub2), np.pi / 6)
 
     def test_0(self):
         magnet = NcAfm(World((1, 1, 1)), Grid((1, 1, 1)))
         magnet.sub1.magnetization = (1, 0, 0)
         magnet.sub2.magnetization = (1, 0, 0)
-        assert np.isclose(magnet.max_intracell_angle_between(magnet.sub1, magnet.sub2), 0)
+        assert np.isclose(magnet.max_intracell_angle_between(magnet.sub1, magnet.sub2), 2 * np.pi / 3)
 
     def test_180(self):
         magnet = NcAfm(World((1, 1, 1)), Grid((1, 1, 1)))
         magnet.sub1.magnetization = (1, 0, 0)
         magnet.sub2.magnetization = (-1, 0, 0)
-        assert np.isclose(magnet.max_intracell_angle_between(magnet.sub1, magnet.sub2), np.pi)
+        assert np.isclose(magnet.max_intracell_angle_between(magnet.sub1, magnet.sub2), np.pi / 3)
 
     def test_max_angle(self):
         magnet = NcAfm(World((1, 1, 1)), Grid((10, 10, 10)))
@@ -63,9 +63,9 @@ class TestMaxAngleNcAfm:
         m2 = magnet.sub2.magnetization()
         m3 = magnet.sub3.magnetization()
 
-        n12 = np.max(np.arccos(np.sum(m1 * m2, axis=0)))
-        n13 = np.max(np.arccos(np.sum(m1 * m3, axis=0)))
-        n23 = np.max(np.arccos(np.sum(m2 * m3, axis=0)))
+        n12 = np.max(np.abs(np.arccos(np.sum(m1 * m2, axis=0)) - 2 * np.pi/3))
+        n13 = np.max(np.abs(np.arccos(np.sum(m1 * m3, axis=0)) - 2 * np.pi/3))
+        n23 = np.max(np.abs(np.arccos(np.sum(m2 * m3, axis=0)) - 2 * np.pi/3))
 
         a12 = magnet.max_intracell_angle_between(magnet.sub1, magnet.sub2)
         a13 = magnet.max_intracell_angle_between(magnet.sub1, magnet.sub3)

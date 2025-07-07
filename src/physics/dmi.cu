@@ -213,6 +213,8 @@ __global__ void k_dmiFieldAFM(CuField hField,
 
       real3 d_m2{0, 0, 0};
       int3 coo__ = mastergrid.wrap(coo - relative_coo);
+      if(!hField.cellInGeometry(coo__))
+        continue;
       int idx__ = system.grid.coord2index(coo__);
 
       unsigned int ridx = system.getRegionIdx(idx);
@@ -358,6 +360,8 @@ __global__ void k_dmiFieldNcAfm(CuField hField,
       real3 d_m2{0, 0, 0};
       real3 d_m3{0, 0, 0};
       int3 coo__ = mastergrid.wrap(coo - relative_coo);
+      if(!hField.cellInGeometry(coo__))
+        continue;
       int idx__ = system.grid.coord2index(coo__);
 
       unsigned int ridx = system.getRegionIdx(idx);
@@ -425,14 +429,14 @@ Field evalDmiField(const Ferromagnet* magnet) {
     // magnet is stand-alone FM
     cudaLaunch(ncells, k_dmiFieldFM, hField.cu(),
               mag, dmiTensor, msat, grid, aex, BC);
-  else if (magnet->hostMagnet()){
+  else if (auto host = magnet->hostMagnet()->asAFM()){
     // magnet is sublattice in AFM
-    auto mag2 = magnet->hostMagnet()->getOtherSublattices(magnet)[0]->magnetization()->field().cu();
-    auto afmex_nn = magnet->hostMagnet()->afmex_nn.cu();
-    auto interDmiTensor = magnet->hostMagnet()->dmiTensor.cu();
-    auto msat2 = magnet->hostMagnet()->getOtherSublattices(magnet)[0]->msat.cu();
-    auto inter = magnet->hostMagnet()->interAfmExchNN.cu();
-    auto scale = magnet->hostMagnet()->scaleAfmExchNN.cu();
+    auto mag2 = host->getOtherSublattices(magnet)[0]->magnetization()->field().cu();
+    auto afmex_nn = host->afmex_nn.cu();
+    auto interDmiTensor = host->dmiTensor.cu();
+    auto msat2 = host->getOtherSublattices(magnet)[0]->msat.cu();
+    auto inter = host->interAfmExchNN.cu();
+    auto scale = host->scaleAfmExchNN.cu();
     cudaLaunch(ncells, k_dmiFieldAFM, hField.cu(), mag, mag2,
               dmiTensor, interDmiTensor, msat, msat2, grid, aex, afmex_nn, inter, scale, BC);
   }

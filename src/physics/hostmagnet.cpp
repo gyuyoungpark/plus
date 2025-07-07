@@ -19,14 +19,15 @@ void HostMagnet::addSublattice(const Ferromagnet* sub) {
 }
 
 std::vector<const Ferromagnet*> HostMagnet::getOtherSublattices(const Ferromagnet* sub) const {
-    // TODO: loops over sublattices_ twice, which can be improved.
-    if (std::find(sublattices_.begin(), sublattices_.end(), sub) == sublattices_.end())
-        throw std::out_of_range("Sublattice not found in HostMagnet.");
-    std::vector<const Ferromagnet*> result;
-    for (auto s : sublattices_) {
-        if (s != sub)
-            result.push_back(s);
+    bool found = false;
+    int j = 0;
+    std::vector<const Ferromagnet*> result(sublattices_.size() - 1);
+    for (int i = 0; i < sublattices_.size(); i++) {
+    if (sublattices_[i] != sub) { result[j++] = sublattices_[i]; }
+    else { found = true; }
     }
+    if (!found)
+        throw std::out_of_range("Sublattice not found in HostMagnet.");
     return result;
 }
 

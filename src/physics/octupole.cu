@@ -8,7 +8,7 @@ __device__ real3 rotate_120(real3 m, real3 ref) {
   // rotate m about k over 120 degrees
   real3 k = normalized(cross(ref, m));
   real dir = (dot(ref, m) < 0) ? -1.0 : 1.0;  // Use 1 if perpendicular
-  return -0.5 * m + cross(k, m) * 0.86602540378 * dir;
+  return -0.5 * m + cross(k, m) * 0.86602540378 * dir; // Use sqrt(3) / 2 = 0.86602540378
 }
 
 __global__ void k_octupolevector(CuField octupole,

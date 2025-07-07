@@ -20,7 +20,7 @@ void wrap_antiferromagnet(py::module& m) {
       .def("sub2", &Antiferromagnet::sub2, py::return_value_policy::reference)
       .def("sublattices", &Antiferromagnet::sublattices, py::return_value_policy::reference)
       .def("other_sublattice",
-          [](const Antiferromagnet* m, Ferromagnet* mag) { return m->getOtherSublattices(mag); },
+          [](const Antiferromagnet* m, Ferromagnet* mag) { return m->getOtherSublattices(mag)[0]; },
             py::return_value_policy::reference)
       .def_readonly("afmex_cell", &Antiferromagnet::afmex_cell)
       .def_readonly("afmex_nn", &Antiferromagnet::afmex_nn)

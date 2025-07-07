@@ -68,7 +68,6 @@ class TestAfmExchange:
         magnet = Antiferromagnet(world, Grid((16, 16, 4)))
         magnet.aex = 3.2e7
         magnet.msat = 5.4
-        magnet.enable_openbc = True
         for sub in magnet.sublattices:
             result = sub.exchange_field.eval()
             wanted = compute_fm_exchange_numpy(sub)
@@ -98,7 +97,6 @@ class TestAfmExchange:
         magnet = Antiferromagnet(world, Grid((16, 16, 4)))
         magnet.msat = 5.4
         magnet.afmex_nn = -10e4
-        magnet.enable_openbc = True
 
         for i in range(2):
             sub = magnet.sublattices[i]

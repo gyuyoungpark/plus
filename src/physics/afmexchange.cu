@@ -55,8 +55,8 @@ __global__ void k_afmExchangeFieldSite(CuField hField,
     }
 
   const real l = latcon.valueAt(idx);
-  real3 current = hField.vectorAt(idx);
-  hField.setVectorInCell(idx, current + 4 * afmex_cell.valueAt(idx) * mField.vectorAt(idx) / (l * l * msat.valueAt(idx)));
+  real3 h0 = hField.vectorAt(idx);
+  hField.setVectorInCell(idx, h0 + 4 * afmex_cell.valueAt(idx) * mField.vectorAt(idx) / (l * l * msat.valueAt(idx)));
   }
 
 // AFM exchange between NN cells
@@ -140,6 +140,8 @@ __global__ void k_afmExchangeFieldNN(CuField hField,
 
         real3 d_m1{0, 0, 0};
         int3 coo__ = mastergrid.wrap(coo - rel_coo);
+        if(!hField.cellInGeometry(coo__))
+          continue;
         int idx__ = grid.coord2index(coo__);
         unsigned int ridx__ = system.getRegionIdx(idx__);
         if(hField.cellInGeometry(coo__)){
@@ -160,8 +162,8 @@ __global__ void k_afmExchangeFieldNN(CuField hField,
       h += Aex * (m2_ - m2) / (delta * delta);
     }
   }
-  real3 current = hField.vectorAt(idx);
-  hField.setVectorInCell(idx, current + h / msat.valueAt(idx));
+  real3 h0 = hField.vectorAt(idx);
+  hField.setVectorInCell(idx, h0 + h / msat.valueAt(idx));
 }
 
 Field evalHomogeneousAfmExchangeField(const Ferromagnet* magnet) {

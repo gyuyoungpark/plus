@@ -156,8 +156,6 @@ __global__ void k_exchangeField(CuField hField,
     real inter = 0;
     real scale = 1;
     real Aex;
-    unsigned int ridx = system.getRegionIdx(idx);
-    unsigned int ridx_ = system.getRegionIdx(idx_);
 
     if(hField.cellInGeometry(coo_)) {
       if (msat.valueAt(idx_) == 0)
@@ -165,7 +163,8 @@ __global__ void k_exchangeField(CuField hField,
 
       m_ = m1Field.vectorAt(idx_);
       a_ = aex.valueAt(idx_);
-
+      unsigned int ridx = system.getRegionIdx(idx);
+      unsigned int ridx_ = system.getRegionIdx(idx_);
       if (ridx != ridx_) {
         scale = scaleEx.valueBetween(ridx, ridx_);
         inter = interEx.valueBetween(ridx, ridx_);
@@ -223,6 +222,8 @@ __global__ void k_effectiveSublattice(CuField netSub,
   for (int3 rel_coo : {int3{-1, 0, 0}, int3{1, 0, 0}, int3{0, -1, 0},
                        int3{0, 1, 0}, int3{0, 0, -1}, int3{0, 0, 1}}) {
     const int3 coo_ = mastergrid.wrap(coo - rel_coo);
+    if(!netSub.cellInGeometry(coo_))
+      continue;
     const int idx_ = grid.coord2index(coo_);
     const unsigned int ridx_ = system.getRegionIdx(idx_);
 

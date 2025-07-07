@@ -35,9 +35,9 @@ __global__ void k_homoDmiFieldAFM(CuField hField,
 
   real3 m2 = m2Field.vectorAt(idx);
   real3 D = dmiVector.vectorAt(idx);
-  real3 current = hField.vectorAt(idx);
+  real3 h0 = hField.vectorAt(idx);
 
-  hField.setVectorInCell(idx, current + symmetry_factor * cross(D, m2) / msat.valueAt(idx));
+  hField.setVectorInCell(idx, h0 + symmetry_factor * cross(D, m2) / msat.valueAt(idx));
 }
 
 __global__ void k_homoDmiFieldNcAfm(CuField hField,

@@ -1,6 +1,6 @@
 #include "ncafm.hpp"
 #include "cudalaunch.hpp"
-#include "ncafmexchange.hpp"
+#include "ncafmangle.hpp"
 #include "ferromagnet.hpp"
 #include "field.hpp"
 #include "parameter.hpp"
@@ -57,7 +57,8 @@ __global__ void k_maxAngle(real* result,
       continue;
     if (msat1.valueAt(i) == 0 || msat2.valueAt(i) == 0)
       continue;
-    real angle = acos(dot(sub1.vectorAt(i), sub2.vectorAt(i)));
+    real angle = fabs(acos(dot(sub1.vectorAt(i), sub2.vectorAt(i))) - 2.0 * M_PI / 3);
+
     threadValue = angle > threadValue ? angle : threadValue;
   }
   sdata[tid] = threadValue;
@@ -94,7 +95,7 @@ Field evalAngleField(const NcAfm* magnet) {
 
 real evalMaxAngle(const Ferromagnet* sub1, const Ferromagnet* sub2) {
   if (!sub1->hostMagnet()->asNcAfm() || !sub2->hostMagnet()->asNcAfm())
-    throw std::invalid_argument("Maximum angle can only be calculated for NCAFM sublattices.");
+    throw std::invalid_argument("Maximum angle can only be calculated for NcAfm sublattices.");
   if (sub1->hostMagnet()->asNcAfm() != sub2->hostMagnet()->asNcAfm())
     throw std::invalid_argument("Maximum angle can only be calculated for sublattices in the same NcAfm host.");
   if (sub1 == sub2)

@@ -11,7 +11,6 @@
 #include "fieldops.hpp"
 #include "local_dmi.hpp"
 #include "magnetoelasticfield.hpp"
-#include "ncafmexchange.hpp"
 #include "zeeman.hpp"
 
 Field evalEffectiveField(const Ferromagnet* magnet) {

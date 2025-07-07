@@ -95,7 +95,7 @@ class NcAfm(Magnet):
 
     def other_sublattices(self, sub: "Ferromagnet"):
         """Returns sister sublattices of given sublattice."""
-        return self._impl.other_sublattice(sub._impl)
+        return self._impl.other_sublattices(sub._impl)
 
     @property
     def bias_magnetic_field(self):
@@ -399,8 +399,8 @@ class NcAfm(Magnet):
         return FieldQuantity(_cpp.angle_field(self._impl))
 
     def max_intracell_angle_between(self, sub_i : "Ferromagnet", sub_j : "Ferromagnet"):
-        """The maximal angle between sublattice spins in the same simulation cell (rad).
-        Input should be two integers from {1, 2, 3} denoting a sublattice index.
+        """The maximal deviation from 120° between sublattice spins in the same simulation
+        cell (rad). Input should be two integers from {1, 2, 3} denoting a sublattice index.
 
         See Also
         --------

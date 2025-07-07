@@ -7,7 +7,7 @@
 #include "fullmag.hpp"
 #include "magnet.hpp"
 #include "mumaxworld.hpp"
-#include "ncafmexchange.hpp"
+#include "ncafmangle.hpp"
 #include "octupole.hpp"
 #include "parameter.hpp"
 #include "world.hpp"
@@ -19,7 +19,7 @@ void wrap_ncafm(py::module& m) {
       .def("sub2", &NcAfm::sub2, py::return_value_policy::reference)
       .def("sub3", &NcAfm::sub3, py::return_value_policy::reference)
       .def("sublattices", &NcAfm::sublattices, py::return_value_policy::reference)
-      .def("other_sublattice",
+      .def("other_sublattices",
           [](const NcAfm* m, Ferromagnet* mag) { return m->getOtherSublattices(mag); },
             py::return_value_policy::reference)
 
