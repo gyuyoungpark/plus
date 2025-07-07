@@ -53,7 +53,7 @@
     <link rel="prev" title="show" href="mumaxplus.util.show.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="June 25, 2025"/>
+    <meta name="docbuild:last-update" content="July 07, 2025"/>
   </head>
   
   
@@ -210,6 +210,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../mumaxplus/mumaxplus.Magnet.html">Magnet</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../mumaxplus/mumaxplus.Ferromagnet.html">Ferromagnet</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../mumaxplus/mumaxplus.Antiferromagnet.html">Antiferromagnet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mumaxplus/mumaxplus.NcAfm.html">NcAfm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../mumaxplus/mumaxplus.TimeSolver.html">TimeSolver</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../mumaxplus/mumaxplus.ScalarQuantity.html">ScalarQuantity</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../mumaxplus/mumaxplus.FieldQuantity.html">FieldQuantity</a></li>
@@ -406,8 +407,11 @@ generated Voronoi centers. If not specified, a random region index will be gener
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mumaxplus.util.voronoi.VoronoiTessellator.generate">
-<span class="sig-name descname"><span class="pre">generate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">world</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mumaxplus.util.voronoi.VoronoiTessellator.generate" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">generate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">world</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">make_2d</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mumaxplus.util.voronoi.VoronoiTessellator.generate" title="Link to this definition">#</a></dt>
 <dd><p>Generates a Voronoi tessellation.</p>
+<p>If make_2d is set to True (default: False) the VoronoiTesselator ignores the z-direction,
+resulting in a tessellation where a region index is uniform in the z-direction.</p>
+<p><strong>Important:</strong> 2D grids are assumed to lie in the xy-plane.</p>
 <p>Returns an ndarray of shape (nz, ny, nx) which is filled
 with region indices.</p>
 </dd></dl>
@@ -529,7 +533,7 @@ By the DyNaMat group, Ghent University, Belgium.
   
   <div class="footer-item">
     <p class="last-updated">
-  Last updated on June 25, 2025.
+  Last updated on July 07, 2025.
   <br/>
 </p>
   </div>

@@ -53,7 +53,7 @@
     <link rel="prev" title="Installation" href="install.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="June 25, 2025"/>
+    <meta name="docbuild:last-update" content="July 07, 2025"/>
   </head>
   
   
@@ -210,6 +210,7 @@
 <li class="toctree-l2"><a class="reference internal" href="_api/mumaxplus/mumaxplus.Magnet.html">Magnet</a></li>
 <li class="toctree-l2"><a class="reference internal" href="_api/mumaxplus/mumaxplus.Ferromagnet.html">Ferromagnet</a></li>
 <li class="toctree-l2"><a class="reference internal" href="_api/mumaxplus/mumaxplus.Antiferromagnet.html">Antiferromagnet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_api/mumaxplus/mumaxplus.NcAfm.html">NcAfm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="_api/mumaxplus/mumaxplus.TimeSolver.html">TimeSolver</a></li>
 <li class="toctree-l2"><a class="reference internal" href="_api/mumaxplus/mumaxplus.ScalarQuantity.html">ScalarQuantity</a></li>
 <li class="toctree-l2"><a class="reference internal" href="_api/mumaxplus/mumaxplus.FieldQuantity.html">FieldQuantity</a></li>
@@ -371,31 +372,34 @@ document.write(`
 <tr class="row-odd"><td><p><a class="reference internal" href="_api/mumaxplus/mumaxplus.Antiferromagnet.html#mumaxplus.Antiferromagnet" title="mumaxplus.Antiferromagnet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Antiferromagnet</span></code></a></p></td>
 <td><p>Create an antiferromagnet instance.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="_api/mumaxplus/mumaxplus.TimeSolver.html#mumaxplus.TimeSolver" title="mumaxplus.TimeSolver"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TimeSolver</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="_api/mumaxplus/mumaxplus.NcAfm.html#mumaxplus.NcAfm" title="mumaxplus.NcAfm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NcAfm</span></code></a></p></td>
+<td><p>Create a non-collinear antiferromagnet instance.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="_api/mumaxplus/mumaxplus.TimeSolver.html#mumaxplus.TimeSolver" title="mumaxplus.TimeSolver"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TimeSolver</span></code></a></p></td>
 <td><p>Evolve the world in time.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="_api/mumaxplus/mumaxplus.ScalarQuantity.html#mumaxplus.ScalarQuantity" title="mumaxplus.ScalarQuantity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ScalarQuantity</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="_api/mumaxplus/mumaxplus.ScalarQuantity.html#mumaxplus.ScalarQuantity" title="mumaxplus.ScalarQuantity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ScalarQuantity</span></code></a></p></td>
 <td><p>Functor representing a physical scalar quantity.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="_api/mumaxplus/mumaxplus.FieldQuantity.html#mumaxplus.FieldQuantity" title="mumaxplus.FieldQuantity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldQuantity</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="_api/mumaxplus/mumaxplus.FieldQuantity.html#mumaxplus.FieldQuantity" title="mumaxplus.FieldQuantity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldQuantity</span></code></a></p></td>
 <td><p>A functor representing a physical field quantity.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="_api/mumaxplus/mumaxplus.Variable.html#mumaxplus.Variable" title="mumaxplus.Variable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Variable</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="_api/mumaxplus/mumaxplus.Variable.html#mumaxplus.Variable" title="mumaxplus.Variable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Variable</span></code></a></p></td>
 <td><p>Represent a physical variable field, e.g. magnetization.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="_api/mumaxplus/mumaxplus.Parameter.html#mumaxplus.Parameter" title="mumaxplus.Parameter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Parameter</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="_api/mumaxplus/mumaxplus.Parameter.html#mumaxplus.Parameter" title="mumaxplus.Parameter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Parameter</span></code></a></p></td>
 <td><p>Represent a physical material parameter, e.g. the exchange stiffness.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="_api/mumaxplus/mumaxplus.InterParameter.html#mumaxplus.InterParameter" title="mumaxplus.InterParameter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">InterParameter</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="_api/mumaxplus/mumaxplus.InterParameter.html#mumaxplus.InterParameter" title="mumaxplus.InterParameter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">InterParameter</span></code></a></p></td>
 <td><p>Represent a physical material parameter which acts between different regions, i.e. <cite>inter_exchange</cite>.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="_api/mumaxplus/mumaxplus.StrayField.html#mumaxplus.StrayField" title="mumaxplus.StrayField"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StrayField</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="_api/mumaxplus/mumaxplus.StrayField.html#mumaxplus.StrayField" title="mumaxplus.StrayField"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StrayField</span></code></a></p></td>
 <td><p>Represent a stray field of a magnet in a specific grid.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="_api/mumaxplus/mumaxplus.PoissonSystem.html#mumaxplus.PoissonSystem" title="mumaxplus.PoissonSystem"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PoissonSystem</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="_api/mumaxplus/mumaxplus.PoissonSystem.html#mumaxplus.PoissonSystem" title="mumaxplus.PoissonSystem"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PoissonSystem</span></code></a></p></td>
 <td><p>Poisson System which can be solver for the electrostatic potential.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="_api/mumaxplus/mumaxplus.DmiTensor.html#mumaxplus.DmiTensor" title="mumaxplus.DmiTensor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DmiTensor</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="_api/mumaxplus/mumaxplus.DmiTensor.html#mumaxplus.DmiTensor" title="mumaxplus.DmiTensor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DmiTensor</span></code></a></p></td>
 <td><p>Contains the DMI parameters of a ferromagnet.</p></td>
 </tr>
 </tbody>
@@ -465,7 +469,7 @@ By the DyNaMat group, Ghent University, Belgium.
   
   <div class="footer-item">
     <p class="last-updated">
-  Last updated on June 25, 2025.
+  Last updated on July 07, 2025.
   <br/>
 </p>
   </div>

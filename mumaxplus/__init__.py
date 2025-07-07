@@ -28,6 +28,7 @@ __all__ = [
     "Grid",
     "InterParameter",
     "Magnet",
+    "NcAfm",
     "Parameter",
     "ScalarQuantity",
     "StrayField",

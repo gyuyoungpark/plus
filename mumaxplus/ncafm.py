@@ -243,11 +243,13 @@ class NcAfm(Magnet):
         is wanted, set `scale_ncafmex_nn` to zero.
 
         This parameter should be set with
+
         >>> magnet.inter_ncafmex_nn.set_between(region1, region2, value)
 
         See Also
         --------
-        ncafmex_nn, inter_exchange, scale_ncafmex_nn, scale_exchange
+        ncafmex_nn, Ferromagnet.inter_exchange, scale_ncafmex_nn
+        Ferromagnet.scale_exchange
         """
         return InterParameter(self._impl.inter_ncafmex_nn)
 
@@ -265,16 +267,18 @@ class NcAfm(Magnet):
         between different regions. This factor is multiplied by the harmonic
         mean of the exchange constants of the two regions.
 
-        If `inter_ncafmex_nn` is set to a non-zero value, then this
-        overrides `scale_ncafmex_nn`, i.e. `scale_ncafmex_nn` is
+        If :attr:`inter_ncafmex_nn` is set to a non-zero value, then this
+        overrides :attr:`scale_ncafmex_nn`, i.e. :attr:`scale_ncafmex_nn` is
         automatically set to zero when `inter_ncafmex_nn` is not.
 
         This parameter should be set with
+
         >>> magnet.scale_ncafmex_nn.set_between(region1, region2, value)
 
         See Also
         --------
-        ncafmex_nn, inter_ncafmex_nn, inter_exchange, scale_exchange
+        ncafmex_nn, inter_ncafmex_nn, Ferromagnet.inter_exchange
+        Ferromagnet.scale_exchange
         """
         return InterParameter(self._impl.scale_ncafmex_nn)
 
@@ -333,10 +337,12 @@ class NcAfm(Magnet):
 
         For example, to set interfacial DMI in the whole system to the same value,
         one could use
+
         >>> magnet = NcAfm(world, grid)
         >>> magnet.dmi_tensors.set_interfacial_dmi(1e-3)
 
         Or to set an individual tensor element, one could use
+        
         >>> magnet.dmi_tensors.xxy = 1e-3
 
         See Also
@@ -393,7 +399,7 @@ class NcAfm(Magnet):
 
         See Also
         --------
-        max_intracell_angle
+        max_intracell_angle_between
         ncafmex_cell
         """
         return FieldQuantity(_cpp.angle_field(self._impl))
@@ -419,7 +425,8 @@ class NcAfm(Magnet):
         See Also
         --------
         total_energy
-        enable_elastodynamics, elastic_energy_density, kinetic_energy_density
+        Magnet.enable_elastodynamics, Magnet.elastic_energy_density
+        Magnet.kinetic_energy_density
         """
         return FieldQuantity(_cpp.total_energy_density(self._impl))
 
@@ -432,6 +439,7 @@ class NcAfm(Magnet):
         See Also
         --------
         total_energy_density
-        enable_elastodynamics, elastic_energy, kinetic_energy
+        Magnet.enable_elastodynamics, Magnet.elastic_energy
+        Magnet.kinetic_energy
         """
         return ScalarQuantity(_cpp.total_energy(self._impl))

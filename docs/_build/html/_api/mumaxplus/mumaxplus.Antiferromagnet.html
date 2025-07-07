@@ -49,11 +49,11 @@
     <link rel="icon" href="../../_static/nimble-plus.png"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="TimeSolver" href="mumaxplus.TimeSolver.html" />
+    <link rel="next" title="NcAfm" href="mumaxplus.NcAfm.html" />
     <link rel="prev" title="Ferromagnet" href="mumaxplus.Ferromagnet.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="June 25, 2025"/>
+    <meta name="docbuild:last-update" content="July 07, 2025"/>
   </head>
   
   
@@ -210,6 +210,7 @@
 <li class="toctree-l2"><a class="reference internal" href="mumaxplus.Magnet.html">Magnet</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mumaxplus.Ferromagnet.html">Ferromagnet</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Antiferromagnet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mumaxplus.NcAfm.html">NcAfm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mumaxplus.TimeSolver.html">TimeSolver</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mumaxplus.ScalarQuantity.html">ScalarQuantity</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mumaxplus.FieldQuantity.html">FieldQuantity</a></li>
@@ -365,6 +366,7 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.latcon"><code class="docutils literal notranslate"><span class="pre">latcon</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.dmi_tensor"><code class="docutils literal notranslate"><span class="pre">dmi_tensor</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.dmi_tensors"><code class="docutils literal notranslate"><span class="pre">dmi_tensors</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.dmi_vector"><code class="docutils literal notranslate"><span class="pre">dmi_vector</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.neel_vector"><code class="docutils literal notranslate"><span class="pre">neel_vector</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.full_magnetization"><code class="docutils literal notranslate"><span class="pre">full_magnetization</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.angle_field"><code class="docutils literal notranslate"><span class="pre">angle_field</span></code></a></li>
@@ -603,7 +605,7 @@ to describe intrasublattice DMI exchange.</p>
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><a class="reference internal" href="mumaxplus.DmiTensor.html#mumaxplus.DmiTensor" title="mumaxplus.DmiTensor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DmiTensor</span></code></a>, <a class="reference internal" href="#mumaxplus.Antiferromagnet.dmi_tensors" title="mumaxplus.Antiferromagnet.dmi_tensors"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dmi_tensors</span></code></a></p>
+<p><a class="reference internal" href="mumaxplus.DmiTensor.html#mumaxplus.DmiTensor" title="mumaxplus.DmiTensor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DmiTensor</span></code></a>, <a class="reference internal" href="#mumaxplus.Antiferromagnet.dmi_tensors" title="mumaxplus.Antiferromagnet.dmi_tensors"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dmi_tensors</span></code></a>, <a class="reference internal" href="#mumaxplus.Antiferromagnet.dmi_vector" title="mumaxplus.Antiferromagnet.dmi_vector"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dmi_vector</span></code></a></p>
 </div>
 </dd></dl>
 
@@ -625,7 +627,21 @@ one could use</p>
 </div>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><a class="reference internal" href="mumaxplus.DmiTensor.html#mumaxplus.DmiTensor" title="mumaxplus.DmiTensor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DmiTensor</span></code></a>, <a class="reference internal" href="#mumaxplus.Antiferromagnet.dmi_tensor" title="mumaxplus.Antiferromagnet.dmi_tensor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dmi_tensor</span></code></a></p>
+<p><a class="reference internal" href="mumaxplus.DmiTensor.html#mumaxplus.DmiTensor" title="mumaxplus.DmiTensor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DmiTensor</span></code></a>, <a class="reference internal" href="#mumaxplus.Antiferromagnet.dmi_tensor" title="mumaxplus.Antiferromagnet.dmi_tensor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dmi_tensor</span></code></a>, <a class="reference internal" href="#mumaxplus.Antiferromagnet.dmi_vector" title="mumaxplus.Antiferromagnet.dmi_vector"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dmi_vector</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mumaxplus.Antiferromagnet.dmi_vector">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dmi_vector</span></span><a class="headerlink" href="#mumaxplus.Antiferromagnet.dmi_vector" title="Link to this definition">#</a></dt>
+<dd><dl class="simple">
+<dt>DMI vector D (J/m³) associated with the homogeneous DMI (in a single simulation cell),</dt><dd><p>defined by the energy density ε = D . (m1 x m2) with m1 and m2 being the sublattice
+magnetizations.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="mumaxplus.DmiTensor.html#mumaxplus.DmiTensor" title="mumaxplus.DmiTensor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DmiTensor</span></code></a>, <a class="reference internal" href="#mumaxplus.Antiferromagnet.dmi_tensor" title="mumaxplus.Antiferromagnet.dmi_tensor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dmi_tensor</span></code></a>, <a class="reference internal" href="#mumaxplus.Antiferromagnet.dmi_tensors" title="mumaxplus.Antiferromagnet.dmi_tensors"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dmi_tensors</span></code></a></p>
 </div>
 </dd></dl>
 
@@ -718,11 +734,11 @@ enabled.</p>
       </div>
     </a>
     <a class="right-next"
-       href="mumaxplus.TimeSolver.html"
+       href="mumaxplus.NcAfm.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">TimeSolver</p>
+        <p class="prev-next-title">NcAfm</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -759,6 +775,7 @@ enabled.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.latcon"><code class="docutils literal notranslate"><span class="pre">latcon</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.dmi_tensor"><code class="docutils literal notranslate"><span class="pre">dmi_tensor</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.dmi_tensors"><code class="docutils literal notranslate"><span class="pre">dmi_tensors</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.dmi_vector"><code class="docutils literal notranslate"><span class="pre">dmi_vector</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.neel_vector"><code class="docutils literal notranslate"><span class="pre">neel_vector</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.full_magnetization"><code class="docutils literal notranslate"><span class="pre">full_magnetization</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Antiferromagnet.angle_field"><code class="docutils literal notranslate"><span class="pre">angle_field</span></code></a></li>
@@ -793,7 +810,7 @@ By the DyNaMat group, Ghent University, Belgium.
   
   <div class="footer-item">
     <p class="last-updated">
-  Last updated on June 25, 2025.
+  Last updated on July 07, 2025.
   <br/>
 </p>
   </div>

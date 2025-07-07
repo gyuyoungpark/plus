@@ -54,7 +54,7 @@
     <link rel="prev" title="Magnet" href="mumaxplus.Magnet.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="June 25, 2025"/>
+    <meta name="docbuild:last-update" content="July 07, 2025"/>
   </head>
   
   
@@ -211,6 +211,7 @@
 <li class="toctree-l2"><a class="reference internal" href="mumaxplus.Magnet.html">Magnet</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Ferromagnet</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mumaxplus.Antiferromagnet.html">Antiferromagnet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mumaxplus.NcAfm.html">NcAfm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mumaxplus.TimeSolver.html">TimeSolver</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mumaxplus.ScalarQuantity.html">ScalarQuantity</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mumaxplus.FieldQuantity.html">FieldQuantity</a></li>
@@ -424,6 +425,9 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Ferromagnet.homogeneous_exchange_energy_density"><code class="docutils literal notranslate"><span class="pre">homogeneous_exchange_energy_density</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Ferromagnet.inhomogeneous_exchange_energy"><code class="docutils literal notranslate"><span class="pre">inhomogeneous_exchange_energy</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Ferromagnet.homogeneous_exchange_energy"><code class="docutils literal notranslate"><span class="pre">homogeneous_exchange_energy</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Ferromagnet.homogeneous_dmi_field"><code class="docutils literal notranslate"><span class="pre">homogeneous_dmi_field</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Ferromagnet.homogeneous_dmi_energy_density"><code class="docutils literal notranslate"><span class="pre">homogeneous_dmi_energy_density</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Ferromagnet.homogeneous_dmi_energy"><code class="docutils literal notranslate"><span class="pre">homogeneous_dmi_energy</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Ferromagnet.magnetoelastic_field"><code class="docutils literal notranslate"><span class="pre">magnetoelastic_field</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Ferromagnet.magnetoelastic_energy_density"><code class="docutils literal notranslate"><span class="pre">magnetoelastic_energy_density</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Ferromagnet.magnetoelastic_energy"><code class="docutils literal notranslate"><span class="pre">magnetoelastic_energy</span></code></a></li>
@@ -1267,6 +1271,24 @@ between spins in a single simulation cell.</p>
 </dd></dl>
 
 <dl class="py property">
+<dt class="sig sig-object py" id="mumaxplus.Ferromagnet.homogeneous_dmi_field">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">homogeneous_dmi_field</span></span><a class="headerlink" href="#mumaxplus.Ferromagnet.homogeneous_dmi_field" title="Link to this definition">#</a></dt>
+<dd><p>Effective field of the homogeneous DMI (T).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mumaxplus.Ferromagnet.homogeneous_dmi_energy_density">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">homogeneous_dmi_energy_density</span></span><a class="headerlink" href="#mumaxplus.Ferromagnet.homogeneous_dmi_energy_density" title="Link to this definition">#</a></dt>
+<dd><p>Energy density related to the homogeneous DMI (J/m³).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mumaxplus.Ferromagnet.homogeneous_dmi_energy">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">homogeneous_dmi_energy</span></span><a class="headerlink" href="#mumaxplus.Ferromagnet.homogeneous_dmi_energy" title="Link to this definition">#</a></dt>
+<dd><p>Energy related to the homogeneous DMI (J).</p>
+</dd></dl>
+
+<dl class="py property">
 <dt class="sig sig-object py" id="mumaxplus.Ferromagnet.magnetoelastic_field">
 <em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">magnetoelastic_field</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="mumaxplus.FieldQuantity.html#mumaxplus.FieldQuantity" title="mumaxplus.fieldquantity.FieldQuantity"><span class="pre">FieldQuantity</span></a></em><a class="headerlink" href="#mumaxplus.Ferromagnet.magnetoelastic_field" title="Link to this definition">#</a></dt>
 <dd><p>Magnetoelastic effective field due to effects of inverse
@@ -1431,6 +1453,9 @@ magnetostriction (T).</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Ferromagnet.homogeneous_exchange_energy_density"><code class="docutils literal notranslate"><span class="pre">homogeneous_exchange_energy_density</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Ferromagnet.inhomogeneous_exchange_energy"><code class="docutils literal notranslate"><span class="pre">inhomogeneous_exchange_energy</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Ferromagnet.homogeneous_exchange_energy"><code class="docutils literal notranslate"><span class="pre">homogeneous_exchange_energy</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Ferromagnet.homogeneous_dmi_field"><code class="docutils literal notranslate"><span class="pre">homogeneous_dmi_field</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Ferromagnet.homogeneous_dmi_energy_density"><code class="docutils literal notranslate"><span class="pre">homogeneous_dmi_energy_density</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Ferromagnet.homogeneous_dmi_energy"><code class="docutils literal notranslate"><span class="pre">homogeneous_dmi_energy</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Ferromagnet.magnetoelastic_field"><code class="docutils literal notranslate"><span class="pre">magnetoelastic_field</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Ferromagnet.magnetoelastic_energy_density"><code class="docutils literal notranslate"><span class="pre">magnetoelastic_energy_density</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.Ferromagnet.magnetoelastic_energy"><code class="docutils literal notranslate"><span class="pre">magnetoelastic_energy</span></code></a></li>
@@ -1463,7 +1488,7 @@ By the DyNaMat group, Ghent University, Belgium.
   
   <div class="footer-item">
     <p class="last-updated">
-  Last updated on June 25, 2025.
+  Last updated on July 07, 2025.
   <br/>
 </p>
   </div>
