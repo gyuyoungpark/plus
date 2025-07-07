@@ -14,7 +14,6 @@
 
 bool exchangeAssuredZero(const Ferromagnet* magnet) {
   return ((magnet->aex.assuredZero() && magnet->interExch.assuredZero())
-        || magnet->scaleExch.assuredZero()
         || magnet->msat.assuredZero());
 }
 

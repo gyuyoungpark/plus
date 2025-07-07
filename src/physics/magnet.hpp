@@ -81,11 +81,15 @@ class Magnet {
   VectorParameter rigidShearStrain;
 
   // stiffness constants; TODO: can this be generalized to a 6x6 tensor?
-  Parameter C11;  // C11 = c22 = c33
-  Parameter C12;  // C12 = c13 = c23
-  Parameter C44;  // C44 = c55 = c66
+  Parameter C11;  // C11 = C22 = C33
+  Parameter C12;  // C12 = C13 = C23
+  Parameter C44;  // C44 = C55 = C66
 
   Parameter eta;  // Phenomenological elastic damping constant
+  Parameter stiffnessDamping;  // eta_ij = stiffnessDamping * Cij
+  Parameter eta11;  // viscosity tensor
+  Parameter eta12;
+  Parameter eta44;
   Parameter rho;  // Mass density
 
 
