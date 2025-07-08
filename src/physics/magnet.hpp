@@ -13,11 +13,14 @@
 #include "variable.hpp"
 #include "world.hpp"
 #include "system.hpp"
+#include "traction.hpp"
 
 class Antiferromagnet;
 class Ferromagnet;
 class FieldQuantity;
+class HostMagnet;
 class MumaxWorld;
+class NcAfm;
 class System;
 
 class Magnet {
@@ -42,7 +45,9 @@ class Magnet {
 
   // Cast Magnet instance to child instances
   const Ferromagnet* asFM() const;
+  const HostMagnet* asHost() const;
   const Antiferromagnet* asAFM() const;
+  const NcAfm* asNcAfm() const;
 
   const StrayField* getStrayField(const Magnet*) const;
   std::vector<const StrayField*> getStrayFields() const;
@@ -75,6 +80,8 @@ class Magnet {
   VectorParameter externalBodyForce;  // Externally applied force density
   VectorParameter rigidNormStrain;
   VectorParameter rigidShearStrain;
+
+  BoundaryTraction boundaryTraction;  // Externally applied traction at the boundaries
 
   // stiffness constants; TODO: can this be generalized to a 6x6 tensor?
   Parameter C11;  // C11 = C22 = C33

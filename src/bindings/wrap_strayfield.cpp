@@ -21,5 +21,8 @@ void wrap_strayfield(py::module& m) {
         } else {
           throw std::invalid_argument("Method should be \"fft\" or \"brute\"");
         }
-      });
+      })
+      .def_property("order", &StrayField::order, &StrayField::setOrder)
+      .def_property("epsilon", &StrayField::eps, &StrayField::setEps)
+      .def_property("switching_radius", &StrayField::switchingradius, &StrayField::setSwitchingradius);
 }
