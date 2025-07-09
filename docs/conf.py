@@ -17,7 +17,7 @@ sys.path.insert(0, os.path.abspath("../mumaxplus"))
 project = "mumax⁺"
 # "Diego De Gusem, Oleh Kozynets, Ian Lateur, Lars Moreels, Jeroen Mulkers"
 author = "the DyNaMat group, Ghent University, Belgium."
-release = "1.0.2"
+release = "1.1.0"
 
 date = datetime.datetime.now()
 html_last_updated_fmt = f"{date.strftime("%B")} {date.strftime("%d")}, {date.strftime("%Y")}"
