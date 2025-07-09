@@ -20,7 +20,7 @@ author = "the DyNaMat group, Ghent University, Belgium."
 release = "1.1.0"
 
 date = datetime.datetime.now()
-html_last_updated_fmt = f"{date.strftime("%B")} {date.strftime("%d")}, {date.strftime("%Y")}"
+html_last_updated_fmt = f"{date.strftime("%Y")}-{date.strftime("%m")}-{date.strftime("%d")}, v{release}"
 
 # -- General configuration ---------------------------------------------------
 
