@@ -53,7 +53,7 @@
     <link rel="prev" title="InterParameter" href="mumaxplus.InterParameter.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="July 07, 2025"/>
+    <meta name="docbuild:last-update" content="July 09, 2025"/>
   </head>
   
   
@@ -220,12 +220,14 @@
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">StrayField</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mumaxplus.PoissonSystem.html">PoissonSystem</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mumaxplus.DmiTensor.html">DmiTensor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mumaxplus.BoundaryTraction.html">BoundaryTraction</a></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../util.html">util</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="../util/mumaxplus.util.config.html">config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../util/mumaxplus.util.formulary.html">formulary</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../util/mumaxplus.util.shape.html">shape</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../util/mumaxplus.util.show.html">show</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../util/mumaxplus.util.voronoi.html">voronoi</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../util/mumaxplus.util.mfm.html">mfm</a></li>
 </ul>
 </details></li>
 </ul>
@@ -352,6 +354,9 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.StrayField"><code class="docutils literal notranslate"><span class="pre">StrayField</span></code></a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.StrayField.__init__"><code class="docutils literal notranslate"><span class="pre">__init__()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.StrayField.set_method"><code class="docutils literal notranslate"><span class="pre">set_method()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.StrayField.order"><code class="docutils literal notranslate"><span class="pre">order</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.StrayField.epsilon"><code class="docutils literal notranslate"><span class="pre">epsilon</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.StrayField.switch_radius"><code class="docutils literal notranslate"><span class="pre">switch_radius</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -394,6 +399,51 @@ document.write(`
 <dd class="field-odd"><p><strong>method</strong> (<em>{&quot;brute&quot;</em><em>, </em><em>&quot;fft&quot;}</em><em>, </em><em>optional</em>) – The default value is “fft”.</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mumaxplus.StrayField.order">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">order</span></span><a class="headerlink" href="#mumaxplus.StrayField.order" title="Link to this definition">#</a></dt>
+<dd><p>Set the maximum order of 1/R, where R is the distance between cells, in the
+asymptotic expansion of the demag kernel.</p>
+<p>This value should be an integer and 3 &lt;= order &lt;= 12. Choosing an even
+order gives the same result as that order minus 1.</p>
+<p>The default value is 11.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#mumaxplus.StrayField.epsilon" title="mumaxplus.StrayField.epsilon"><code class="xref py py-obj docutils literal notranslate"><span class="pre">epsilon</span></code></a>, <a class="reference internal" href="#mumaxplus.StrayField.switch_radius" title="mumaxplus.StrayField.switch_radius"><code class="xref py py-obj docutils literal notranslate"><span class="pre">switch_radius</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mumaxplus.StrayField.epsilon">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">epsilon</span></span><a class="headerlink" href="#mumaxplus.StrayField.epsilon" title="Link to this definition">#</a></dt>
+<dd><p>Set epsilon to calculate the analytical error. The error is defined
+as epsilon * R³ / V.</p>
+<p>The default value is 5e-10.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#mumaxplus.StrayField.order" title="mumaxplus.StrayField.order"><code class="xref py py-obj docutils literal notranslate"><span class="pre">order</span></code></a>, <a class="reference internal" href="#mumaxplus.StrayField.switch_radius" title="mumaxplus.StrayField.switch_radius"><code class="xref py py-obj docutils literal notranslate"><span class="pre">switch_radius</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mumaxplus.StrayField.switch_radius">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">switch_radius</span></span><a class="headerlink" href="#mumaxplus.StrayField.switch_radius" title="Link to this definition">#</a></dt>
+<dd><p>Set the radius R, in meters, from which point the asymptotic expantion
+should be used.
+Default is -1, then the OOMMF error estimations are used:</p>
+<p>Assume the following errors on the analytical and asymptotic result</p>
+<p>E_analytic = eps R³/V</p>
+<p>E_asymptotic = V R²/(5(R²-dmax²)) dmax^(n-3)/R^(n)</p>
+<p>Here V is dx*dy*dz, dmax = max(dx,dy,dz), n is the order of asymptote
+and eps is a constant.
+Use the analytical model when</p>
+<p>E_analytic / E_asymptotic &lt; 1</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_order</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">set_epsilon</span></code></p>
+</div>
 </dd></dl>
 
 </dd></dl>
@@ -448,6 +498,9 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.StrayField"><code class="docutils literal notranslate"><span class="pre">StrayField</span></code></a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.StrayField.__init__"><code class="docutils literal notranslate"><span class="pre">__init__()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.StrayField.set_method"><code class="docutils literal notranslate"><span class="pre">set_method()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.StrayField.order"><code class="docutils literal notranslate"><span class="pre">order</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.StrayField.epsilon"><code class="docutils literal notranslate"><span class="pre">epsilon</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mumaxplus.StrayField.switch_radius"><code class="docutils literal notranslate"><span class="pre">switch_radius</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -476,7 +529,7 @@ By the DyNaMat group, Ghent University, Belgium.
   
   <div class="footer-item">
     <p class="last-updated">
-  Last updated on July 07, 2025.
+  Last updated on July 09, 2025.
   <br/>
 </p>
   </div>

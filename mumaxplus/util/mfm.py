@@ -1,9 +1,10 @@
+"""Create a magnetic force microscopy instance."""
 import _mumaxpluscpp as _cpp
-from mumaxplus import FieldQuantity
+from mumaxplus import FieldQuantity, Grid, World, Magnet
 
 class MFM(FieldQuantity):
 
-    def __init__(self, input, grid):
+    def __init__(self, input: World|Magnet, grid: Grid):
         """Create an MFM instance.
         
         This class is used to create a magnetic force microscopy image. The
@@ -19,10 +20,10 @@ class MFM(FieldQuantity):
         
         Parameters
         ----------
-        input : can be either a World or Magnet instance. If it is a
+        input : can be either a :class:`mumaxplus.World` or :class:`mumaxplus.Magnet` instance. If it is a
                 World, all magnets in that world will be used to calculate
                 the potential energy at the tip.
-        grid : this is a Grid instance used as a scanning surface.
+        grid : this is a :class:`mumaxplus.Grid` instance used as a scanning surface.
                Physically, this is the plane on which the MFM needle moves."""
         self._impl = _cpp.MFM(input._impl, grid._impl)
 
