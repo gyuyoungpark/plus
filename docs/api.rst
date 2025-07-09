@@ -26,6 +26,7 @@ API
    StrayField
    PoissonSystem
    DmiTensor
+   BoundaryTraction
 
 .. toctree::
    :maxdepth: 1

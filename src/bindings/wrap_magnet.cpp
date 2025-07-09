@@ -45,6 +45,7 @@ void wrap_magnet(py::module& m) {
       .def_readonly("rho", &Magnet::rho)
       .def_readonly("rigid_norm_strain", &Magnet::rigidNormStrain)
       .def_readonly("rigid_shear_strain", &Magnet::rigidShearStrain)
+      .def_readonly("boundary_traction", &Magnet::boundaryTraction)
 
       .def("stray_field_from_magnet",
           [](const Magnet* m, Magnet* magnet) {
@@ -57,8 +58,8 @@ void wrap_magnet(py::module& m) {
           py::return_value_policy::reference)
   ;
 
-  m.def("_demag_kernel", [](const Magnet* m) {
-    StrayFieldKernel demagKernel(m->grid(), m->grid(), m->world());
+  m.def("_demag_kernel", [](const Magnet* m, int order, double eps, double switchingradius) {
+    StrayFieldKernel demagKernel(m->grid(), m->grid(), m->world(), order, eps, switchingradius);
     return fieldToArray(demagKernel.field());
   });
 

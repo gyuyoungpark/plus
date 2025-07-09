@@ -36,7 +36,8 @@ Magnet::Magnet(std::shared_ptr<System> system_ptr,
       eta44(system(), 0.0, name + ":eta44", "Pa s"),
       rho(system(), 1.0, name + ":rho", "kg/m3"),
       rigidNormStrain(system(), {0.0, 0.0, 0.0}, name + ":rigid_norm_strain", ""),
-      rigidShearStrain(system(), {0.0, 0.0, 0.0}, name + ":rigid_shear_strain", "") {
+      rigidShearStrain(system(), {0.0, 0.0, 0.0}, name + ":rigid_shear_strain", ""),
+      boundaryTraction(system(), name + ":boundary_traction") {
   // Check that the system has at least size 1
   int3 size = system_->grid().size();
   if (size.x < 1 || size.y < 1 || size.z < 1)
@@ -62,7 +63,8 @@ Magnet::Magnet(Magnet&& other) noexcept
       stiffnessDamping(other.stiffnessDamping),
       rho(other.rho),
       rigidNormStrain(other.rigidNormStrain),
-      rigidShearStrain(other.rigidShearStrain) {
+      rigidShearStrain(other.rigidShearStrain),
+      boundaryTraction(other.boundaryTraction) {
   other.system_ = nullptr;
   other.name_ = "";
 }
@@ -87,6 +89,9 @@ Magnet& Magnet::operator=(Magnet&& other) noexcept {
         eta12 = other.eta12;
         eta44 = other.eta44;
         rho = other.rho;
+        rigidNormStrain = other.rigidNormStrain;
+        rigidShearStrain = other.rigidShearStrain;
+        boundaryTraction = other.boundaryTraction;
       }
       return *this;
   }

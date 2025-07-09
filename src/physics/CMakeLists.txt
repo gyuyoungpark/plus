@@ -12,6 +12,8 @@ add_library(physics STATIC
     constants.hpp
     demag.cpp
     demag.hpp
+    newellasymptotic.cu
+    newellasymptotic.hpp
     dmi.cu
     dmi.hpp
     dmitensor.cpp
@@ -46,6 +48,8 @@ add_library(physics STATIC
     magnetoelasticfield.hpp
     magnetoelasticforce.cu
     magnetoelasticforce.hpp
+    mfm.cu
+    mfm.hpp
     minimizer.cu
     minimizer.hpp
     mumaxworld.cpp
@@ -84,6 +88,8 @@ add_library(physics STATIC
     thermalnoise.hpp
     torque.cu 
     torque.hpp
+    traction.cpp
+    traction.hpp
     quantityevaluator.hpp
     zeeman.cu
     zeeman.hpp

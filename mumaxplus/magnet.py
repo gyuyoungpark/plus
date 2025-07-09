@@ -10,7 +10,9 @@ from .grid import Grid
 from .parameter import Parameter
 from .scalarquantity import ScalarQuantity
 from .strayfield import StrayField
+from .traction import BoundaryTraction
 from .variable import Variable
+
 
 class Magnet(ABC):
     """A Magnet should never be initialized by the user. It contains no physics.
@@ -478,6 +480,16 @@ class Magnet(ABC):
             raise Exception("Can not use shear strain with elastodynamics enabled.")
         self.rigid_shear_strain.set(value)
 
+    @property
+    def boundary_traction(self) -> BoundaryTraction:
+        """Get the boundary traction of this Magnet (Pa).
+        
+        See Also
+        --------
+        internal_body_force
+        """
+        return BoundaryTraction(self._impl.boundary_traction)
+
     # ----- ELASTIC QUANTITIES -------
 
     @property
@@ -577,11 +589,15 @@ class Magnet(ABC):
         """Internal body force density due to stress divergence (N/m³).
 
         f = ∇·σ
+
+        The boundary conditions of this force density are determined by the
+        applied :attr:`boundary_traction` (traction-free by default).
         
         See Also
         --------
         stress_tensor
         effective_body_force
+        boundary_traction
         """
         return FieldQuantity(_cpp.internal_body_force(self._impl))
 

@@ -149,9 +149,9 @@ __global__ void k_apply_kernel_2d(complex* hx,
 
 StrayFieldFFTExecutor::StrayFieldFFTExecutor(
     const Magnet* magnet,
-    std::shared_ptr<const System> system)
+    std::shared_ptr<const System> system, int order, double eps, double switchingradius)
     : StrayFieldExecutor(magnet, system),
-      kernel_(system->grid(), magnet_->grid(), magnet->world()),
+      kernel_(system->grid(), magnet_->grid(), magnet->world(), order, eps, switchingradius),
       kfft(6),
       hfft(3),
       mfft(3) {

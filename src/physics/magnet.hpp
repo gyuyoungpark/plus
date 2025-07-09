@@ -13,6 +13,7 @@
 #include "variable.hpp"
 #include "world.hpp"
 #include "system.hpp"
+#include "traction.hpp"
 
 class Antiferromagnet;
 class Ferromagnet;
@@ -80,6 +81,8 @@ class Magnet {
   VectorParameter rigidNormStrain;
   VectorParameter rigidShearStrain;
 
+  BoundaryTraction boundaryTraction;  // Externally applied traction at the boundaries
+
   // stiffness constants; TODO: can this be generalized to a 6x6 tensor?
   Parameter C11;  // C11 = C22 = C33
   Parameter C12;  // C12 = C13 = C23
@@ -91,7 +94,6 @@ class Magnet {
   Parameter eta12;
   Parameter eta44;
   Parameter rho;  // Mass density
-
 
   // Delete copy constructor and copy assignment operator to prevent shallow copies
   Magnet(const Magnet&) = delete;
