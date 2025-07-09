@@ -28,7 +28,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/logo.css?v=81431fe9" />
@@ -39,7 +39,7 @@
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../_static/documentation_options.js?v=5549cc85"></script>
+    <script src="../_static/documentation_options.js?v=051bfb12"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -53,7 +53,7 @@
     <link rel="prev" title="Magnetoelastics" href="magnetoelastics.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="July 09, 2025"/>
+    <meta name="docbuild:last-update" content="2025-07-09, v1.1.0"/>
   </head>
   
   
@@ -358,12 +358,12 @@ document.write(`
 <p>In this example we move a domain wall by setting a time and space dependent
 strain in a ferromagnet to simulate the effect of a SAW wave. This is
 based on the method used <a class="reference external" href="https://journals.aps.org/prb/abstract/10.1103/PhysRevB.108.104420">here</a>.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">tqdm</span><span class="w"> </span><span class="kn">import</span> <span class="n">tqdm</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">mumaxplus</span><span class="w"> </span><span class="kn">import</span> <span class="n">World</span><span class="p">,</span> <span class="n">Grid</span><span class="p">,</span> <span class="n">Ferromagnet</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">mumaxplus.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">twodomain</span>
+<span class="kn">from</span> <span class="nn">mumaxplus</span> <span class="kn">import</span> <span class="n">World</span><span class="p">,</span> <span class="n">Grid</span><span class="p">,</span> <span class="n">Ferromagnet</span>
+<span class="kn">from</span> <span class="nn">mumaxplus.util</span> <span class="kn">import</span> <span class="n">twodomain</span>
 
 <span class="c1"># simulation time</span>
 <span class="n">run</span> <span class="o">=</span> <span class="mf">10e-9</span>
@@ -427,7 +427,7 @@ based on the method used <a class="reference external" href="https://journals.ap
 <span class="n">ax1</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;y (µm)&quot;</span><span class="p">)</span>
 
 <span class="c1"># function to estimate the position of the DW</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">DW_position</span><span class="p">(</span><span class="n">magnet</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">DW_position</span><span class="p">(</span><span class="n">magnet</span><span class="p">):</span>
     <span class="n">m_av</span> <span class="o">=</span> <span class="n">magnet</span><span class="o">.</span><span class="n">magnetization</span><span class="o">.</span><span class="n">average</span><span class="p">()[</span><span class="mi">2</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">m_av</span><span class="o">*</span><span class="n">nx</span><span class="o">*</span><span class="n">cx</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">nx</span><span class="o">*</span><span class="n">cx</span><span class="o">/</span><span class="mi">2</span>
 
@@ -521,7 +521,7 @@ By the DyNaMat group, Ghent University, Belgium.
   
   <div class="footer-item">
     <p class="last-updated">
-  Last updated on July 09, 2025.
+  Last updated on 2025-07-09, v1.1.0.
   <br/>
 </p>
   </div>
