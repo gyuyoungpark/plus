@@ -13,6 +13,7 @@ from .strayfield import StrayField
 from .traction import BoundaryTraction
 from .variable import Variable
 
+
 class Magnet(ABC):
     """A Magnet should never be initialized by the user. It contains no physics.
     Use ``Ferromagnet`` or ``Antiferromagnet`` instead.
