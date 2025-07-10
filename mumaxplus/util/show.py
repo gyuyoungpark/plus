@@ -34,7 +34,7 @@ def hsl_to_rgb(H, S, L):
 
 
 def vector_to_rgb(x, y, z):
-    """Map vector (with norm<1) to RGB."""
+    """Map vector (with norm ≤ 1) to RGB."""
     H = _np.arctan2(y, x)
     S = _np.sqrt(x ** 2 + y ** 2 + z ** 2)
     L = 0.5 + 0.5 * z
@@ -57,7 +57,7 @@ def _quantity_img_xy_extent(quantity):
 def get_rgba(field, quantity=None, layer=None):
     """Get rgba values of given field.
     There is also a CUDA version of this function which utilizes the GPU.
-    Use `quantity.get_rgb()`, but it has a different shape.
+    Use :func:`mumaxplus.FieldQuantity.get_rgb()`, but it has a different shape.
 
     Parameters
     ----------
@@ -90,7 +90,7 @@ def get_rgba(field, quantity=None, layer=None):
 
 
 def show_field(quantity, layer=0):
-    """Plot a mumaxplus.FieldQuantity with 3 components using the mumax³ colorscheme."""
+    """Plot a :func:`mumaxplus.FieldQuantity` with 3 components using the mumax³ colorscheme."""
     if not isinstance(quantity, _mxp.FieldQuantity):
         raise TypeError("The first argument should be a FieldQuantity")
     
@@ -119,7 +119,7 @@ def plotter(quantity, rgba, name=""):
 
 
 def show_layer(quantity, component=0, layer=0):
-    """Visualize a single component of a mumaxplus.FieldQuantity."""
+    """Visualize a single component of a :func:`mumaxplus.FieldQuantity`."""
     if not isinstance(quantity, _mxp.FieldQuantity):
         raise TypeError("The first argument should be a FieldQuantity")
 
@@ -182,7 +182,7 @@ def show_neel_quiver(quantity, title=''):
 
 
 def show_magnet_geometry(magnet):
-    """Show the geometry of a mumaxplus.ferromagnet."""
+    """Show the geometry of a :func:`mumaxplus.Ferromagnet`."""
     geom = magnet.geometry
 
                  # [::-1] for [x,y,z] not [z,y,x] and +1 for cells, not points
@@ -203,7 +203,7 @@ def show_magnet_geometry(magnet):
 
 
 def show_field_3D(quantity, cmap="mumax3", quiver=True):
-    """Plot a mumaxplus.FieldQuantity with 3 components as a vectorfield.
+    """Plot a :func:`mumaxplus.FieldQuantity` with 3 components as a vectorfield.
 
     Parameters
     ----------
@@ -283,3 +283,20 @@ def show_field_3D(quantity, cmap="mumax3", quiver=True):
     plotter.show()
     _pv.global_theme = _pv.themes.Theme()  # reset theme
 
+def show_regions(magnet, layer=0):
+    """Plot the boundaries between regions of the given magnet."""
+    regions_array = magnet.regions
+    assert regions_array.ndim == 3, f"Expected 3D array, got {regions_array.ndim}D"
+
+    regions = regions_array[layer]
+    boundaries = _np.zeros_like(regions, dtype=bool)
+
+    boundaries[1:, :] |= regions[1:, :] != regions[:-1, :]   # up
+    boundaries[:, 1:] |= regions[:, 1:] != regions[:, :-1]   # left
+
+    _plt.figure()
+    _plt.imshow(~boundaries, cmap='gray', origin="lower", extent=_quantity_img_xy_extent(magnet))
+    _plt.xlabel("$x$ (m)")
+    _plt.ylabel("$y$ (m)")
+    _plt.title(magnet.name + ":region_boundaries")
+    _plt.show()
