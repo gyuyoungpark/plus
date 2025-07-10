@@ -10,6 +10,7 @@ mumax⁺ is described in the following paper:
 https://arxiv.org/abs/2411.18194
 
 Please cite this paper if you would like to cite mumax⁺.
+All demonstrations in the paper were simulated using version [v1.1.0](https://github.com/mumax/plus/tree/v1.1.0) of the code. The scripts used to generate the data can be found in the [paper2025 directory](https://github.com/mumax/plus/tree/paper2025/paper2025) under the [paper2025 tag](https://github.com/mumax/plus/tree/paper2025).
 
 ## Dependencies
 You should install these yourself
@@ -94,7 +95,7 @@ conda activate mumaxplus
 conda develop -b .
 ```
 
-## Building the documentation
+## Documentation
 
 Documentation for mumax⁺ can be found at http://mumax.github.io/plus.
 It follows the [NumPy style guide](https://numpydoc.readthedocs.io/en/latest/format.html) and is generated using [Sphinx](https://www.sphinx-doc.org). You can build it yourself by running the following command in the `docs/` directory:
