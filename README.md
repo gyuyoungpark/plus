@@ -17,6 +17,12 @@ mumax⁺ is described in the following paper:
 Please cite this paper if you would like to cite mumax⁺.
 All demonstrations in the paper were simulated using version [v1.1.0](https://github.com/mumax/plus/tree/v1.1.0) of the code. The scripts used to generate the data can be found in the [paper2025 directory](https://github.com/mumax/plus/tree/paper2025/paper2025) under the [paper2025 tag](https://github.com/mumax/plus/tree/paper2025).
 
+## Extensions
+
+This fork adds physics extensions on top of mumax⁺. Companion source and simulation code for each extension lives under [`extensions/`](extensions). Currently included:
+
+- [`extensions/SAW-magnonics`](extensions/SAW-magnonics) — Chiral surface-acoustic-wave kernel with switchable magnetoelastic, magneto-rotation, and Barnett channels, plus the simulation scripts that reproduce the datasets of *Finite-Momentum Parametric Magnon Pairing by Traveling Surface Acoustic Waves* (Physical Review Applied, submitted).
+
 ## Installation
 
 ### Dependencies
