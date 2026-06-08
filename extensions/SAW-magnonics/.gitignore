@@ -1,0 +1,17 @@
+# Cached simulation outputs — stored externally, see DATA_ARCHIVE.md
+data/
+checkpoints/
+
+# Generated paper figures
+figures/
+
+# Python bytecode and caches
+__pycache__/
+*.pyc
+*.pyo
+
+# Editor / OS noise
+.DS_Store
+.vscode/
+.idea/
+*.swp
