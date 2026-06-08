@@ -674,6 +674,134 @@ class Ferromagnet(Magnet):
                           + " is set to a positive value, instead of negative (or zero)."
                           + " Make sure this is intentional!", UserWarning)
 
+    # --- spin-rotation coupling (Barnett effect) ---
+
+    @property
+    def enable_barnett(self) -> bool:
+        """Enable the Barnett effect (spin-rotation coupling).
+
+        When enabled and elastodynamics is active, the lattice angular
+        velocity omega = 1/2 curl(v) produces an effective field
+        H_Barnett = omega / gamma.
+
+        Default is False for backward compatibility.
+        """
+        return self._impl.enable_barnett
+
+    @enable_barnett.setter
+    def enable_barnett(self, value):
+        self._impl.enable_barnett = value
+
+    # --- chiral SAW coupling (GPU kernel) ---
+
+    @property
+    def enable_saw(self) -> bool:
+        """Enable chiral SAW effective field (CUDA kernel)."""
+        return self._impl.enable_saw
+
+    @enable_saw.setter
+    def enable_saw(self, value):
+        self._impl.enable_saw = value
+
+    @property
+    def saw_frequency(self) -> float:
+        """SAW angular frequency omega (rad/s)."""
+        return self._impl.saw_frequency
+
+    @saw_frequency.setter
+    def saw_frequency(self, value):
+        self._impl.saw_frequency = value
+
+    @property
+    def saw_wavevector(self) -> float:
+        """SAW wavevector k (1/m). Sign encodes propagation direction."""
+        return self._impl.saw_wavevector
+
+    @saw_wavevector.setter
+    def saw_wavevector(self, value):
+        self._impl.saw_wavevector = value
+
+    @property
+    def saw_amplitude(self) -> float:
+        """Peak SAW strain amplitude eps0 (dimensionless)."""
+        return self._impl.saw_amplitude
+
+    @saw_amplitude.setter
+    def saw_amplitude(self, value):
+        self._impl.saw_amplitude = value
+
+    @property
+    def saw_ellipticity(self) -> float:
+        """Rayleigh wave ellipticity xi (dimensionless)."""
+        return self._impl.saw_ellipticity
+
+    @saw_ellipticity.setter
+    def saw_ellipticity(self, value):
+        self._impl.saw_ellipticity = value
+
+    @property
+    def saw_phase(self) -> float:
+        """SAW phase offset phi (rad)."""
+        return self._impl.saw_phase
+
+    @saw_phase.setter
+    def saw_phase(self, value):
+        self._impl.saw_phase = value
+
+    @property
+    def saw_direction(self) -> int:
+        """SAW propagation axis: 0=x, 1=y."""
+        return self._impl.saw_direction
+
+    @saw_direction.setter
+    def saw_direction(self, value):
+        self._impl.saw_direction = value
+
+    @property
+    def saw_gamma(self) -> float:
+        """Gyromagnetic ratio for Barnett field (rad/s/T)."""
+        return self._impl.saw_gamma
+
+    @saw_gamma.setter
+    def saw_gamma(self, value):
+        self._impl.saw_gamma = value
+
+    @property
+    def saw_enable_mel(self) -> bool:
+        """Enable magnetoelastic channel in SAW kernel."""
+        return self._impl.saw_enable_mel
+
+    @saw_enable_mel.setter
+    def saw_enable_mel(self, value):
+        self._impl.saw_enable_mel = value
+
+    @property
+    def saw_enable_barnett(self) -> bool:
+        """Enable Barnett channel in SAW kernel."""
+        return self._impl.saw_enable_barnett
+
+    @saw_enable_barnett.setter
+    def saw_enable_barnett(self, value):
+        self._impl.saw_enable_barnett = value
+
+    # --- magneto-rotation coupling ---
+
+    @property
+    def Kmr(self) -> Parameter:
+        """Magneto-rotation coupling constant (J/m3).
+
+        For PMA thin films: Kmr ~ Ku + 1/2 mu0 Ms^2
+
+        See Also
+        --------
+        B1, B2, anisU
+        """
+        return Parameter(self._impl.Kmr)
+
+    @Kmr.setter
+    def Kmr(self, value):
+        self.Kmr.set(value)
+
     # ----- POISSON SYSTEM ----------------------
 
     @property
@@ -1105,3 +1233,74 @@ class Ferromagnet(Magnet):
         Magnet.effective_body_force, magnetoelastic_field
         """
         return FieldQuantity(_cpp.magnetoelastic_force(self._impl))
+
+    # --- magneto-rotation coupling ---
+
+    @property
+    def magneto_rotation_field(self) -> FieldQuantity:
+        """Magneto-rotation effective field (T).
+
+        See Also
+        --------
+        Kmr, anisU
+        magneto_rotation_energy_density, magneto_rotation_energy
+        """
+        return FieldQuantity(_cpp.magneto_rotation_field(self._impl))
+
+    @property
+    def magneto_rotation_energy_density(self) -> FieldQuantity:
+        """Magneto-rotation coupling energy density (J/m3).
+
+        See Also
+        --------
+        magneto_rotation_energy, magneto_rotation_field
+        """
+        return FieldQuantity(
+            _cpp.magneto_rotation_energy_density(self._impl))
+
+    @property
+    def magneto_rotation_energy(self) -> ScalarQuantity:
+        """Magneto-rotation coupling energy (J).
+
+        See Also
+        --------
+        magneto_rotation_energy_density, magneto_rotation_field
+        """
+        return ScalarQuantity(
+            _cpp.magneto_rotation_energy(self._impl))
+
+    # --- spin-rotation coupling (Barnett effect) ---
+
+    @property
+    def spin_rotation_field(self) -> FieldQuantity:
+        """Barnett effective field H = omega/gamma (T).
+
+        Requires enable_barnett = True and elastodynamics enabled.
+
+        See Also
+        --------
+        enable_barnett, spin_rotation_energy_density, spin_rotation_energy
+        """
+        return FieldQuantity(_cpp.spin_rotation_field(self._impl))
+
+    @property
+    def spin_rotation_energy_density(self) -> FieldQuantity:
+        """Barnett spin-rotation energy density (J/m3).
+
+        See Also
+        --------
+        spin_rotation_energy, spin_rotation_field
+        """
+        return FieldQuantity(
+            _cpp.spin_rotation_energy_density(self._impl))
+
+    @property
+    def spin_rotation_energy(self) -> ScalarQuantity:
+        """Barnett spin-rotation energy (J).
+
+        See Also
+        --------
+        spin_rotation_energy_density, spin_rotation_field
+        """
+        return ScalarQuantity(
+            _cpp.spin_rotation_energy(self._impl))

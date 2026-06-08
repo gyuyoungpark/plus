@@ -59,7 +59,22 @@ Ferromagnet::Ferromagnet(std::shared_ptr<System> system_ptr,
       poissonSystem(this), 
       // magnetoelasticity
       B1(system(), 0.0, name + ":B1", "J/m3"),
-      B2(system(), 0.0, name + ":B1", "J/m3") {
+      B2(system(), 0.0, name + ":B2", "J/m3"),
+      // magneto-rotation coupling
+      Kmr(system(), 0.0, name + ":Kmr", "J/m3"),
+      // spin-rotation coupling (Barnett effect)
+      enableBarnett(false),
+      // chiral SAW coupling
+      enableSAW(false),
+      sawFrequency(0.0),
+      sawWavevector(0.0),
+      sawAmplitude(0.0),
+      sawEllipticity(0.68),
+      sawPhase(0.0),
+      sawDirection(0),
+      sawGammaLL(1.76e11),
+      sawEnableMEL(true),
+      sawEnableBarnett(false) {
     {// Initialize random magnetization
     // TODO: this can be done much more efficient somewhere else
     int nvalues = 3 * this->grid().ncells();

@@ -43,11 +43,17 @@ add_library(physics STATIC
     local_dmi.cu
     local_dmi.hpp
     magnet.cpp
-    magnet.hpp 
+    magnet.hpp
+    chiralsawfield.cu
+    chiralsawfield.hpp
     magnetoelasticfield.cu
     magnetoelasticfield.hpp
     magnetoelasticforce.cu
     magnetoelasticforce.hpp
+    magnetorotationfield.cu
+    magnetorotationfield.hpp
+    spinrotationfield.cu
+    spinrotationfield.hpp
     mfm.cu
     mfm.hpp
     minimizer.cu

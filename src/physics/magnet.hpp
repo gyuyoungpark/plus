@@ -80,6 +80,8 @@ class Magnet {
   VectorParameter externalBodyForce;  // Externally applied force density
   VectorParameter rigidNormStrain;
   VectorParameter rigidShearStrain;
+  VectorParameter rigidRotation;         // Prescribed rotation vector (rad)
+  VectorParameter rigidAngularVelocity;  // Prescribed angular velocity (rad/s)
 
   BoundaryTraction boundaryTraction;  // Externally applied traction at the boundaries
 

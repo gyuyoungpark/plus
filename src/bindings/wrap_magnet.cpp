@@ -6,6 +6,7 @@
 #include "elastodynamics.hpp"
 #include "internalbodyforce.hpp"
 #include "magnet.hpp"
+#include "magnetorotationfield.hpp"
 #include "mumaxworld.hpp"
 #include "poyntingvector.hpp"
 #include "straintensor.hpp"
@@ -45,6 +46,8 @@ void wrap_magnet(py::module& m) {
       .def_readonly("rho", &Magnet::rho)
       .def_readonly("rigid_norm_strain", &Magnet::rigidNormStrain)
       .def_readonly("rigid_shear_strain", &Magnet::rigidShearStrain)
+      .def_readonly("rigid_rotation", &Magnet::rigidRotation)
+      .def_readonly("rigid_angular_velocity", &Magnet::rigidAngularVelocity)
       .def_readonly("boundary_traction", &Magnet::boundaryTraction)
 
       .def("stray_field_from_magnet",
@@ -82,5 +85,11 @@ void wrap_magnet(py::module& m) {
   m.def("elastic_energy", &elasticEnergyQuantity);
 
   m.def("poynting_vector", &poyntingVectorQuantity);
+
+  // Rotation vector (antisymmetric part of displacement gradient)
+  m.def("rotation_vector", &rotationVectorQuantity);
+
+  // Angular velocity (antisymmetric part of velocity gradient)
+  m.def("angular_velocity", &angularVelocityQuantity);
 
 }

@@ -96,4 +96,22 @@ class Ferromagnet : public Magnet {
   // Magnetoelasticity
   Parameter B1;  // First magnetoelastic coupling constant
   Parameter B2;  // Second magnetoelastic coupling constant
+
+  // Magneto-rotation coupling
+  Parameter Kmr;  // Magneto-rotation coupling constant [J/m3]
+
+  // Spin-rotation coupling (Barnett effect)
+  bool enableBarnett;
+
+  // Chiral SAW coupling (all channels in one GPU kernel)
+  bool enableSAW;            // Master switch for SAW coupling
+  real sawFrequency;         // SAW angular frequency omega (rad/s)
+  real sawWavevector;        // SAW wavevector k (1/m), sign encodes direction
+  real sawAmplitude;         // Peak strain eps0 (dimensionless)
+  real sawEllipticity;       // Rayleigh ellipticity xi (dimensionless)
+  real sawPhase;             // Phase offset phi (rad)
+  int  sawDirection;         // Propagation axis: 0=x, 1=y
+  real sawGammaLL;           // Gyromagnetic ratio for Barnett (rad/s/T)
+  bool sawEnableMEL;         // Enable magnetoelastic channel
+  bool sawEnableBarnett;     // Enable Barnett channel in SAW kernel
 };

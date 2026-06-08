@@ -492,6 +492,59 @@ class Magnet(ABC):
         self.rigid_shear_strain.set(value)
 
     @property
+    def rigid_rotation(self) -> Parameter:
+        r"""Prescribed rotation pseudovector (rad).
+
+        This quantity has three components :math:`(\Omega_x, \Omega_y, \Omega_z)`,
+        representing the antisymmetric part of the displacement gradient:
+
+        .. math::
+            \Omega_i = \frac{1}{2} \epsilon_{ijk} \partial_j u_k
+
+        When set, the magneto-rotation effective field is computed by the
+        CUDA kernel using the current magnetization, without requiring
+        elastodynamics.
+
+        See Also
+        --------
+        rigid_angular_velocity
+        enable_elastodynamics
+        """
+        return Parameter(self._impl.rigid_rotation)
+
+    @rigid_rotation.setter
+    def rigid_rotation(self, value):
+        if self.enable_elastodynamics:
+            raise Exception("Can not use rigid rotation with elastodynamics enabled.")
+        self.rigid_rotation.set(value)
+
+    @property
+    def rigid_angular_velocity(self) -> Parameter:
+        r"""Prescribed angular velocity (rad/s).
+
+        This quantity has three components :math:`(\omega_x, \omega_y, \omega_z)`,
+        representing the time derivative of the rotation pseudovector:
+
+        .. math::
+            \omega_i = \dot{\Omega}_i = \frac{1}{2} \epsilon_{ijk} \partial_j v_k
+
+        When set, the Barnett (spin-rotation) effective field is computed
+        by the CUDA kernel, without requiring elastodynamics.
+
+        See Also
+        --------
+        rigid_rotation
+        enable_elastodynamics
+        """
+        return Parameter(self._impl.rigid_angular_velocity)
+
+    @rigid_angular_velocity.setter
+    def rigid_angular_velocity(self, value):
+        if self.enable_elastodynamics:
+            raise Exception("Can not use rigid angular velocity with elastodynamics enabled.")
+        self.rigid_angular_velocity.set(value)
+
+    @property
     def boundary_traction(self) -> BoundaryTraction:
         """Get the boundary traction of this Magnet (Pa).
         
@@ -705,6 +758,34 @@ class Magnet(ABC):
         elastic_velocity, stress_tensor
         """
         return FieldQuantity(_cpp.poynting_vector(self._impl))
+
+    @property
+    def rotation_vector(self) -> FieldQuantity:
+        r"""Rotation pseudovector (rad/m).
+
+        The antisymmetric part of the displacement gradient:
+
+        .. math:: \Omega = \frac{1}{2} \nabla \times \mathbf{u}
+
+        See Also
+        --------
+        strain_tensor, elastic_displacement
+        """
+        return FieldQuantity(_cpp.rotation_vector(self._impl))
+
+    @property
+    def angular_velocity(self) -> FieldQuantity:
+        r"""Angular velocity pseudovector (rad/s).
+
+        The antisymmetric part of the velocity gradient:
+
+        .. math:: \omega = \frac{1}{2} \nabla \times \mathbf{v}
+
+        See Also
+        --------
+        rotation_vector, elastic_velocity
+        """
+        return FieldQuantity(_cpp.angular_velocity(self._impl))
 
     # --- stray field ---
 

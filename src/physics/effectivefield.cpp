@@ -3,6 +3,7 @@
 #include "afmexchange.hpp"
 #include "anisotropy.hpp"
 #include "antiferromagnet.hpp"
+#include "chiralsawfield.hpp"
 #include "demag.hpp"
 #include "dmi.hpp"
 #include "exchange.hpp"
@@ -11,6 +12,8 @@
 #include "fieldops.hpp"
 #include "local_dmi.hpp"
 #include "magnetoelasticfield.hpp"
+#include "magnetorotationfield.hpp"
+#include "spinrotationfield.hpp"
 #include "zeeman.hpp"
 
 Field evalEffectiveField(const Ferromagnet* magnet) {
@@ -22,6 +25,12 @@ Field evalEffectiveField(const Ferromagnet* magnet) {
   if (!demagFieldAssuredZero(magnet)) {h += evalDemagField(magnet);}
   if (!magnetoelasticAssuredZero(magnet)) {
       h += evalMagnetoelasticField(magnet);}
+  if (!magnetoRotationAssuredZero(magnet)) {
+      h += evalMagnetoRotationField(magnet);}
+  if (!spinRotationAssuredZero(magnet)) {
+      h += evalSpinRotationField(magnet);}
+  if (!chiralSAWFieldAssuredZero(magnet)) {
+      h += evalChiralSAWField(magnet);}
   if (magnet->isSublattice())
       // AFM exchange terms
       if (!inHomoAfmExchangeAssuredZero(magnet)) {h += evalInHomogeneousAfmExchangeField(magnet);}

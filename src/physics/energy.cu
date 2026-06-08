@@ -12,7 +12,9 @@
 #include "field.hpp"
 #include "fieldops.hpp"
 #include "magnetoelasticfield.hpp"
+#include "magnetorotationfield.hpp"
 #include "ncafm.hpp"
+#include "spinrotationfield.hpp"
 #include "world.hpp"
 #include "zeeman.hpp"
 
@@ -68,6 +70,8 @@ Field evalTotalEnergyDensity(const Ferromagnet* magnet) {
   
   // magnetoelastics; works if host or if sublattice
   if (!magnetoelasticAssuredZero(magnet)) {edens += evalMagnetoelasticEnergyDensity(magnet);}
+  if (!magnetoRotationAssuredZero(magnet)) {edens += evalMagnetoRotationEnergyDensity(magnet);}
+  if (!spinRotationAssuredZero(magnet)) {edens += evalSpinRotationEnergyDensity(magnet);}
   // elastics; only works if independent host
   if (!kineticEnergyAssuredZero(magnet)) {edens += evalKineticEnergyDensity(magnet);}
   if (!elasticityAssuredZero(magnet)) {edens += evalElasticEnergyDensity(magnet);}

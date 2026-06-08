@@ -17,6 +17,9 @@
 #include "magnet.hpp"
 #include "magnetoelasticfield.hpp"
 #include "magnetoelasticforce.hpp"
+#include "chiralsawfield.hpp"
+#include "magnetorotationfield.hpp"
+#include "spinrotationfield.hpp"
 #include "mumaxworld.hpp"
 #include "parameter.hpp"
 #include "stt.hpp"
@@ -70,7 +73,21 @@ void wrap_ferromagnet(py::module& m) {
       .def_readonly("poisson_system", &Ferromagnet::poissonSystem)
       .def_readonly("B1", &Ferromagnet::B1)
       .def_readonly("B2", &Ferromagnet::B2)
-      
+      .def_readonly("Kmr", &Ferromagnet::Kmr)
+      // Spin-rotation coupling (Barnett effect)
+      .def_readwrite("enable_barnett", &Ferromagnet::enableBarnett)
+      // Chiral SAW coupling
+      .def_readwrite("enable_saw", &Ferromagnet::enableSAW)
+      .def_readwrite("saw_frequency", &Ferromagnet::sawFrequency)
+      .def_readwrite("saw_wavevector", &Ferromagnet::sawWavevector)
+      .def_readwrite("saw_amplitude", &Ferromagnet::sawAmplitude)
+      .def_readwrite("saw_ellipticity", &Ferromagnet::sawEllipticity)
+      .def_readwrite("saw_phase", &Ferromagnet::sawPhase)
+      .def_readwrite("saw_direction", &Ferromagnet::sawDirection)
+      .def_readwrite("saw_gamma", &Ferromagnet::sawGammaLL)
+      .def_readwrite("saw_enable_mel", &Ferromagnet::sawEnableMEL)
+      .def_readwrite("saw_enable_barnett", &Ferromagnet::sawEnableBarnett)
+
       .def("minimize", &Ferromagnet::minimize, py::arg("tol"), py::arg("nsamples"))
       .def("relax", &Ferromagnet::relax, py::arg("tol"));
 
@@ -131,4 +148,16 @@ void wrap_ferromagnet(py::module& m) {
   m.def("magnetoelastic_energy_density", &magnetoelasticEnergyDensityQuantity);
   m.def("magnetoelastic_energy", &magnetoelasticEnergyQuantity);
   m.def("magnetoelastic_force", &magnetoelasticForceQuantity);
+
+  // Magneto-rotation coupling
+  m.def("magneto_rotation_field", &magnetoRotationFieldQuantity);
+  m.def("magneto_rotation_energy_density",
+        &magnetoRotationEnergyDensityQuantity);
+  m.def("magneto_rotation_energy", &magnetoRotationEnergyQuantity);
+
+  // Spin-rotation coupling (Barnett effect)
+  m.def("spin_rotation_field", &spinRotationFieldQuantity);
+  m.def("spin_rotation_energy_density",
+        &spinRotationEnergyDensityQuantity);
+  m.def("spin_rotation_energy", &spinRotationEnergyQuantity);
 }
